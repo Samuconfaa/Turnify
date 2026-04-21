@@ -3,10 +3,114 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
              x:Class="Turnify.Mobile.Views.DashboardPage"
-             Title="{Binding Title}">
-    <VerticalStackLayout Spacing="20" Padding="20">
-        <Label Text="{Binding Title}" FontSize="24" FontAttributes="Bold" />
-        <Label Text="Panoramica turni e personale." />
-        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
-    </VerticalStackLayout>
+             Title="Dashboard"
+             BackgroundColor="{StaticResource Background}">
+    <ScrollView>
+        <VerticalStackLayout Spacing="24" Padding="16">
+            <!-- Header Section -->
+            <Grid ColumnDefinitions="*, Auto" Margin="0,16,0,8">
+                <VerticalStackLayout Grid.Column="0">
+                    <Label Text="Ciao, Mario!" FontSize="30" FontAttributes="Bold" TextColor="{StaticResource OnBackground}" />
+                    <Label Text="Pizzeria Roma · Giugno 2024" FontSize="14" TextColor="{StaticResource OnSurfaceVariant}" Margin="0,4,0,0" />
+                </VerticalStackLayout>
+            </Grid>
+
+            <!-- KPI Section -->
+            <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto" ColumnSpacing="16" RowSpacing="16">
+                <!-- Card 1 -->
+                <Frame Grid.Row="0" Grid.Column="0" BackgroundColor="{StaticResource Surface}" BorderColor="{StaticResource Outline}" HasShadow="True" Padding="16" CornerRadius="12">
+                    <VerticalStackLayout>
+                        <Label Text="👥" FontSize="20" HorizontalOptions="Start" Margin="0,0,0,8"/>
+                        <Label Text="12" FontSize="24" FontAttributes="Bold" TextColor="{StaticResource Primary}" />
+                        <Label Text="Dipendenti" FontSize="12" TextColor="{StaticResource OnSurfaceVariant}" />
+                    </VerticalStackLayout>
+                </Frame>
+                <!-- Card 2 -->
+                <Frame Grid.Row="0" Grid.Column="1" BackgroundColor="{StaticResource Surface}" BorderColor="{StaticResource Outline}" HasShadow="True" Padding="16" CornerRadius="12">
+                    <VerticalStackLayout>
+                        <Label Text="📅" FontSize="20" HorizontalOptions="Start" Margin="0,0,0,8"/>
+                        <Label Text="45" FontSize="24" FontAttributes="Bold" TextColor="{StaticResource Primary}" />
+                        <Label Text="Turni settimana" FontSize="12" TextColor="{StaticResource OnSurfaceVariant}" />
+                    </VerticalStackLayout>
+                </Frame>
+                <!-- Card 3 -->
+                <Frame Grid.Row="1" Grid.Column="0" BackgroundColor="{StaticResource Surface}" BorderColor="{StaticResource Outline}" HasShadow="True" Padding="16" CornerRadius="12">
+                    <VerticalStackLayout>
+                        <Label Text="🏖️" FontSize="20" HorizontalOptions="Start" Margin="0,0,0,8"/>
+                        <Label Text="3" FontSize="24" FontAttributes="Bold" TextColor="{StaticResource Tertiary}" />
+                        <Label Text="Ferie in attesa" FontSize="12" TextColor="{StaticResource OnSurfaceVariant}" />
+                    </VerticalStackLayout>
+                </Frame>
+                <!-- Card 4 -->
+                <Frame Grid.Row="1" Grid.Column="1" BackgroundColor="{StaticResource Surface}" BorderColor="{StaticResource Outline}" HasShadow="True" Padding="16" CornerRadius="12">
+                    <VerticalStackLayout>
+                        <Label Text="⏱️" FontSize="20" HorizontalOptions="Start" Margin="0,0,0,8"/>
+                        <Label Text="720h" FontSize="24" FontAttributes="Bold" TextColor="{StaticResource Success}" />
+                        <Label Text="Ore totali" FontSize="12" TextColor="{StaticResource OnSurfaceVariant}" />
+                    </VerticalStackLayout>
+                </Frame>
+            </Grid>
+
+            <!-- Turni Oggi Section -->
+            <VerticalStackLayout Spacing="16">
+                <Grid ColumnDefinitions="*, Auto">
+                    <Label Grid.Column="0" Text="TURNI OGGI" FontSize="20" FontAttributes="Bold" TextColor="{StaticResource OnBackground}" VerticalOptions="Center" />
+                    <Label Grid.Column="1" Text="Vedi tutti ➔" FontSize="14" TextColor="{StaticResource Primary}" TextDecorations="Underline" VerticalOptions="Center" />
+                </Grid>
+
+                <Frame BackgroundColor="{StaticResource Surface}" BorderColor="{StaticResource Outline}" HasShadow="True" Padding="0" CornerRadius="12" IsClippedToBounds="True">
+                    <Grid ColumnDefinitions="4, *" RowDefinitions="Auto">
+                        <BoxView Grid.Column="0" BackgroundColor="{StaticResource Success}" />
+                        <Grid Grid.Column="1" ColumnDefinitions="*, Auto" Padding="16">
+                            <VerticalStackLayout Grid.Column="0">
+                                <Label Text="Giulia Bianchi" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource OnBackground}" />
+                                <Label Text="8:00 - 16:00 · Sala" FontSize="14" TextColor="{StaticResource OnSurfaceVariant}" Margin="0,4,0,0" />
+                            </VerticalStackLayout>
+                            <Frame Grid.Column="1" BackgroundColor="#E6F4EA" BorderColor="#CEEAD6" CornerRadius="16" Padding="8,4" VerticalOptions="Center">
+                                <Label Text="Confermato" FontSize="12" TextColor="{StaticResource Success}" />
+                            </Frame>
+                        </Grid>
+                    </Grid>
+                </Frame>
+
+                <Frame BackgroundColor="{StaticResource Surface}" BorderColor="{StaticResource Outline}" HasShadow="True" Padding="0" CornerRadius="12" IsClippedToBounds="True">
+                    <Grid ColumnDefinitions="4, *" RowDefinitions="Auto">
+                        <BoxView Grid.Column="0" BackgroundColor="{StaticResource Success}" />
+                        <Grid Grid.Column="1" ColumnDefinitions="*, Auto" Padding="16">
+                            <VerticalStackLayout Grid.Column="0">
+                                <Label Text="Luca Verdi" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource OnBackground}" />
+                                <Label Text="16:00 - 00:00 · Cucina" FontSize="14" TextColor="{StaticResource OnSurfaceVariant}" Margin="0,4,0,0" />
+                            </VerticalStackLayout>
+                            <Frame Grid.Column="1" BackgroundColor="#E6F4EA" BorderColor="#CEEAD6" CornerRadius="16" Padding="8,4" VerticalOptions="Center">
+                                <Label Text="Confermato" FontSize="12" TextColor="{StaticResource Success}" />
+                            </Frame>
+                        </Grid>
+                    </Grid>
+                </Frame>
+            </VerticalStackLayout>
+
+            <!-- Richieste Pendenti Section -->
+            <VerticalStackLayout Spacing="16" Margin="0,8,0,0">
+                <Label Text="RICHIESTE PENDENTI" FontSize="20" FontAttributes="Bold" TextColor="{StaticResource OnBackground}" />
+                
+                <Frame BackgroundColor="{StaticResource Surface}" BorderColor="{StaticResource Outline}" HasShadow="True" Padding="16" CornerRadius="12">
+                    <VerticalStackLayout Spacing="16">
+                        <Grid ColumnDefinitions="Auto, *">
+                            <Frame Grid.Column="0" BackgroundColor="{StaticResource SurfaceContainerHigh}" CornerRadius="20" HeightRequest="40" WidthRequest="40" Padding="0" HasShadow="False" Margin="0,0,12,0" VerticalOptions="Center">
+                                <Label Text="MR" FontSize="14" FontAttributes="Bold" TextColor="{StaticResource OnSurfaceVariant}" HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Frame>
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                <Label Text="Marco Rossi" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource OnBackground}" />
+                                <Label Text="1 - 14 Luglio · Ferie" FontSize="14" TextColor="{StaticResource OnSurfaceVariant}" />
+                            </VerticalStackLayout>
+                        </Grid>
+                        <Grid ColumnDefinitions="*, *" ColumnSpacing="8">
+                            <Button Grid.Column="0" Text="Rifiuta" BackgroundColor="Transparent" TextColor="{StaticResource Error}" BorderColor="{StaticResource Outline}" BorderWidth="1" CornerRadius="8" />
+                            <Button Grid.Column="1" Text="Approva" BackgroundColor="{StaticResource Success}" TextColor="{StaticResource OnPrimary}" CornerRadius="8" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Frame>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

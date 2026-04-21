@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Profilo - Turnify</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#e7c365",
+                        "secondary": "#63597c",
+                        "on-primary-fixed-variant": "#4f378a",
+                        "on-tertiary-fixed": "#241a00",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed": "#1f1635",
+                        "on-primary-fixed": "#22005d",
+                        "primary-fixed-dim": "#cfbcff",
+                        "on-tertiary-fixed-variant": "#594400",
+                        "on-error": "#ffffff",
+                        "background": "#fdf7ff",
+                        "surface-container": "#f2ecf4",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#e0d2ff",
+                        "on-background": "#1d1b20",
+                        "primary-fixed": "#e9ddff",
+                        "tertiary-container": "#c9a74d",
+                        "outline-variant": "#cbc4d2",
+                        "surface-dim": "#ded8e0",
+                        "secondary-fixed": "#e9ddff",
+                        "on-secondary-container": "#645a7d",
+                        "secondary-container": "#e1d4fd",
+                        "surface-tint": "#6750a4",
+                        "inverse-surface": "#322f35",
+                        "primary": "#4f378a",
+                        "tertiary-fixed": "#ffdf93",
+                        "outline": "#7a7582",
+                        "on-error-container": "#93000a",
+                        "surface-variant": "#e6e0e9",
+                        "on-surface": "#1d1b20",
+                        "surface-bright": "#fdf7ff",
+                        "surface-container-low": "#f8f2fa",
+                        "inverse-primary": "#cfbcff",
+                        "on-secondary-fixed-variant": "#4b4263",
+                        "on-primary": "#ffffff",
+                        "surface-container-highest": "#e6e0e9",
+                        "error": "#ba1a1a",
+                        "secondary-fixed-dim": "#cdc0e9",
+                        "tertiary": "#765b00",
+                        "on-surface-variant": "#494551",
+                        "on-tertiary-container": "#503d00",
+                        "inverse-on-surface": "#f5eff7",
+                        "primary-container": "#6750a4",
+                        "surface-container-high": "#ece6ee",
+                        "surface": "#fdf7ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "base": "4px",
+                        "gutter": "16px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "xl": "32px",
+                        "lg": "24px",
+                        "margin": "16px"
+                    },
+                    "fontFamily": {
+                        "h1": ["Inter"],
+                        "h2": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "h3": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h1": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "h2": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "h3": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #F9FAFB;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-[#F9FAFB] text-on-surface antialiased min-h-screen flex flex-col pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface-container-lowest border-b border-surface-variant shadow-none flex justify-between items-center h-16 px-4">
+<button class="text-on-surface-variant hover:bg-surface-variant transition-colors p-2 rounded-full active:opacity-70">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-h3 text-h3 text-on-surface text-center absolute left-1/2 -translate-x-1/2">Profilo</h1>
+<div class="w-10"></div> <!-- Spacer for centering -->
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-20 px-4 md:px-lg max-w-3xl mx-auto w-full flex flex-col gap-md">
+<!-- Profile Card -->
+<section class="bg-surface-container-lowest rounded-xl border border-surface-variant p-lg flex flex-col items-center shadow-sm">
+<div class="w-[72px] h-[72px] rounded-full bg-primary flex items-center justify-center mb-sm">
+<span class="font-h2 text-h2 text-on-primary">LV</span>
+</div>
+<h2 class="font-h2 text-h2 text-on-surface mb-xs">Luigi Verdi</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Cameriere</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">Pizzeria Roma</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">luigi@example.com</p>
+</section>
+<!-- Informazioni -->
+<section>
+<h3 class="font-label-md text-label-md text-on-surface-variant mb-sm uppercase px-sm">Informazioni</h3>
+<div class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-sm overflow-hidden">
+<div class="flex items-center px-md py-sm border-b border-surface-variant last:border-0">
+<span class="material-symbols-outlined text-on-surface-variant mr-md" data-icon="call">call</span>
+<div class="flex-grow">
+<p class="font-body-md text-body-md text-on-surface">+39 333 1234567</p>
+</div>
+</div>
+<div class="flex items-center px-md py-sm border-b border-surface-variant last:border-0">
+<span class="material-symbols-outlined text-on-surface-variant mr-md" data-icon="calendar_today">calendar_today</span>
+<div class="flex-grow">
+<p class="font-body-md text-body-md text-on-surface">15 Gen 2024</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Data assunzione</p>
+</div>
+</div>
+<div class="flex items-center px-md py-sm border-b border-surface-variant last:border-0">
+<span class="material-symbols-outlined text-on-surface-variant mr-md" data-icon="schedule">schedule</span>
+<div class="flex-grow">
+<p class="font-body-md text-body-md text-on-surface">40h</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Ore settimanali</p>
+</div>
+</div>
+<div class="flex items-center px-md py-sm border-b border-surface-variant last:border-0">
+<span class="material-symbols-outlined text-on-surface-variant mr-md" data-icon="contract">contract</span>
+<div class="flex-grow">
+<p class="font-body-md text-body-md text-on-surface">Full Time</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Contratto</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Preferenze -->
+<section>
+<h3 class="font-label-md text-label-md text-on-surface-variant mb-sm uppercase px-sm">Preferenze</h3>
+<div class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-sm overflow-hidden">
+<div class="flex justify-between items-center px-md py-sm border-b border-surface-variant last:border-0">
+<p class="font-body-md text-body-md text-on-surface">Notifiche push</p>
+<button aria-pressed="true" class="w-11 h-6 bg-[#2563EB] rounded-full relative transition-colors">
+<span class="absolute right-[2px] top-[2px] bg-white w-5 h-5 rounded-full shadow transition-transform"></span>
+</button>
+</div>
+<div class="flex justify-between items-center px-md py-sm border-b border-surface-variant last:border-0">
+<p class="font-body-md text-body-md text-on-surface">Notifiche email</p>
+<button aria-pressed="false" class="w-11 h-6 bg-surface-variant rounded-full relative transition-colors">
+<span class="absolute left-[2px] top-[2px] bg-white w-5 h-5 rounded-full shadow transition-transform"></span>
+</button>
+</div>
+<div class="flex justify-between items-center px-md py-sm border-b border-surface-variant last:border-0">
+<p class="font-body-md text-body-md text-on-surface">Dark mode</p>
+<button aria-pressed="false" class="w-11 h-6 bg-surface-variant rounded-full relative transition-colors">
+<span class="absolute left-[2px] top-[2px] bg-white w-5 h-5 rounded-full shadow transition-transform"></span>
+</button>
+</div>
+</div>
+</section>
+<!-- Account -->
+<section>
+<h3 class="font-label-md text-label-md text-on-surface-variant mb-sm uppercase px-sm">Account</h3>
+<div class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-sm overflow-hidden">
+<button class="w-full flex justify-between items-center px-md py-sm border-b border-surface-variant last:border-0 hover:bg-surface-container-low transition-colors text-left active:opacity-70">
+<p class="font-body-md text-body-md text-on-surface">Cambia password</p>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="chevron_right">chevron_right</span>
+</button>
+<button class="w-full flex justify-start items-center px-md py-sm border-b border-surface-variant last:border-0 hover:bg-error-container transition-colors text-left active:opacity-70">
+<span class="material-symbols-outlined text-[#DC2626] mr-md" data-icon="logout">logout</span>
+<p class="font-body-md text-body-md text-[#DC2626]">Logout</p>
+</button>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 border-t border-surface-variant bg-surface-container-lowest shadow-[0_-1px_3px_0_rgba(0,0,0,0.05)] md:hidden">
+<div class="flex justify-around items-center h-20 pb-safe px-2">
+<button class="flex flex-col items-center justify-center text-on-surface-variant py-1 px-3 hover:text-primary active:scale-95 transition-transform duration-100">
+<span class="material-symbols-outlined mb-1" data-icon="calendar_month">calendar_month</span>
+<span class="font-label-sm text-[10px] font-medium">Turni</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant py-1 px-3 hover:text-primary active:scale-95 transition-transform duration-100">
+<span class="material-symbols-outlined mb-1" data-icon="event_busy">event_busy</span>
+<span class="font-label-sm text-[10px] font-medium">Ferie</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant py-1 px-3 hover:text-primary active:scale-95 transition-transform duration-100">
+<span class="material-symbols-outlined mb-1" data-icon="notifications">notifications</span>
+<span class="font-label-sm text-[10px] font-medium">Notifiche</span>
+</button>
+<button class="flex flex-col items-center justify-center text-primary bg-primary-fixed rounded-xl py-1 px-3 hover:text-primary active:scale-95 transition-transform duration-100">
+<span class="material-symbols-outlined mb-1" data-icon="person" data-weight="fill" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-sm text-[10px] font-medium">Profilo</span>
+</button>
+</div>
+</nav>
+</body></html>

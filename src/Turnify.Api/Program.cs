@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Turnify.Core.Interfaces.Services;
+using Turnify.Core.Interfaces.Repositories;
 using Turnify.Infrastructure.Services;
+using Turnify.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +58,10 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IShiftService, ShiftService>();
+builder.Services.AddScoped<IShiftRepository, ShiftRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IVacationRepository, VacationRepository>();
 
 var app = builder.Build();
 

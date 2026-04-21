@@ -1,183 +1,296 @@
-# Architettura
+# Architettura del progetto
 
-## 1. Obiettivo architetturale
+## Obiettivo
 
-Costruire una app `.NET MAUI` Android-first che resti semplice da spiegare, estendere e testare, separando chiaramente:
+App mobile .NET MAUI per la gestione turni di piccole imprese italiane. Il progetto è strutturato in soluzione multi-progetto: un layer Core condiviso, un backend ASP.NET Core 10, un'app mobile MAUI, un portale web Next.js 14 e un progetto test xUnit. I target ufficiali del build MAUI sono `net10.0-android` (sempre), `net10.0-ios` e `net10.0-maccatalyst` (se build non su Linux), `net10.0-windows10.0.19041.0` (se build su Windows).
 
-- UI XAML e navigazione;
-- logica di stato nei ViewModels;
-- integrazione remota con Google Books;
-- persistenza locale di favoriti e cronologia.
+---
 
-L'architettura deve supportare il MVP approvato senza anticipare le funzionalità post-MVP, ma lasciando abbastanza isolamento per introdurle in seguito senza rifattorizzazioni invasive.
+## Pattern architetturale
 
-## 2. Struttura del repository e del progetto
+**MVVM** implementato via `CommunityToolkit.Mvvm 8.4.2`. Tutti i ViewModel ereditano da `BaseViewModel : ObservableObject` e usano i source generator `[ObservableProperty]` e `[RelayCommand]`. I code-behind delle View contengono solo il costruttore con dependency injection; zero logica applicativa nel `.xaml.cs`.
 
-### Cartelle principali
+Il layer mobile dipende direttamente da `Turnify.Core` (modelli e interfacce); non dipende da `Turnify.Infrastructure`.
 
-- `docs/`: specifica, piano, architettura, matrice test, iterazioni.
-- `src/`: conterrà il progetto applicativo MAUI reale.
-- `src/BookScout.Mobile/`: root proposta del progetto MAUI da creare in IT-01.
+---
 
-### Responsabilità per area
+## Componenti principali
 
-- `src/BookScout.Mobile/Views/`: pagine XAML, layout, binding e componenti visuali senza business logic.
-- `src/BookScout.Mobile/ViewModels/`: stato della UI, comandi, orchestrazione di servizi e navigazione.
-- `src/BookScout.Mobile/Services/`: accesso API, persistenza locale, eventuale verifica connettività, nessuna logica di presentazione.
-- `src/BookScout.Mobile/Models/`: modelli di dominio e DTO di integrazione; i DTO possono essere separati in sottocartelle se il volume cresce.
-- `src/BookScout.Mobile/Resources/`: stili, placeholder, immagini statiche, temi.
-- `src/BookScout.Mobile/Platforms/Android/`: configurazioni specifiche Android.
+### Views (23 file XAML in `Turnify.Mobile/Views/`)
 
-Poiché oggi `src/` è vuota, questa struttura è proposta ma coerente con il workflow del repository e con la futura implementazione del progetto.
+| View | Scopo |
+|---|---|
+| `LoginPage` | Form login — admin con email, dipendente con companySlug + username |
+| `RegisterPage` | Registrazione nuova azienda con account admin |
+| `ForgotPasswordPage` | Richiesta reset password via email |
+| `GdprConsentPage` | Consenso GDPR al primo avvio (obbligatorio) |
+| `OnboardingPage` | Guida multi-step per admin al primo accesso post-consenso |
+| `DashboardPage` | Dashboard admin: turni del giorno, ferie pendenti, contatori |
+| `ShiftCalendarPage` | Calendario settimanale turni; include sezione timbratura per dipendenti |
+| `VacationListPage` | Lista richieste ferie con filtro per stato |
+| `VacationEditPage` | Form creazione/modifica richiesta ferie |
+| `NotificationsPage` | Lista notifiche utente |
+| `ProfilePage` | Profilo: email, avatar emoji, cambio password, logout |
+| `EmojiPickerPage` | Griglia emoji per selezione avatar |
+| `EmployeeListPage` | Lista dipendenti con SearchBar testuale |
+| `EmployeeDetailPage` | Dettaglio e modifica dati dipendente |
+| `ShiftDetailPage` | Dettaglio singolo turno |
+| `BusinessListPage` | Lista sedi/attività azienda |
+| `BusinessDetailPage` | Dettaglio e modifica sede |
+| `BusinessOpeningHoursPage` | Modifica orari apertura/chiusura sede |
+| `AvailabilityPage` | Impostazione giorni disponibili dipendente |
+| `EmployeeDashboardPage` | Dashboard personale dipendente |
+| `AttendanceHistoryPage` | Storico check-in/check-out del dipendente |
+| `ChangePasswordPage` | Cambio password |
+| `ReportsPage` | Download CSV ore turni e presenze con selezione intervallo date |
 
-## 3. Pattern applicativi
+> `ManageDataPage` è registrata in `AppShell.RegisterAllRoutes` ma il file `.xaml` non esiste nel repository.
 
-- `.NET MAUI` single-project come base applicativa.
-- MVVM con `CommunityToolkit.Mvvm` per proprietà osservabili e comandi.
-- Shell navigation per rotte top-level e dettaglio.
-- XAML con compiled bindings dove possibile.
-- `HttpClient` asincrono per il provider remoto.
-- `System.Text.Json` per parsing e mapping difensivo delle risposte.
-- Nessuna business logic nei code-behind.
+### ViewModels (23 file in `Turnify.Mobile/ViewModels/`)
 
-## 4. Componenti principali
+| ViewModel | View abbinata |
+|---|---|
+| `BaseViewModel` | — (classe base: `IsBusy`, `Title`) |
+| `LoginViewModel` | `LoginPage` |
+| `RegisterViewModel` | `RegisterPage` |
+| `ForgotPasswordViewModel` | `ForgotPasswordPage` |
+| `GdprConsentViewModel` | `GdprConsentPage` |
+| `OnboardingViewModel` | `OnboardingPage` |
+| `DashboardViewModel` | `DashboardPage` |
+| `ShiftCalendarViewModel` | `ShiftCalendarPage` |
+| `ShiftDetailViewModel` | `ShiftDetailPage` |
+| `VacationListViewModel` | `VacationListPage` |
+| `VacationEditViewModel` | `VacationEditPage` |
+| `NotificationsViewModel` | `NotificationsPage` |
+| `ProfileViewModel` | `ProfilePage` |
+| `EmployeeListViewModel` | `EmployeeListPage` |
+| `EmployeeDetailViewModel` | `EmployeeDetailPage` |
+| `BusinessListViewModel` | `BusinessListPage` |
+| `BusinessDetailViewModel` | `BusinessDetailPage` |
+| `BusinessOpeningHoursViewModel` | `BusinessOpeningHoursPage` |
+| `AvailabilityViewModel` | `AvailabilityPage` |
+| `EmployeeDashboardViewModel` | `EmployeeDashboardPage` |
+| `AttendanceHistoryViewModel` | `AttendanceHistoryPage` |
+| `ChangePasswordViewModel` | `ChangePasswordPage` |
+| `ReportsViewModel` | `ReportsPage` |
 
-### Views
+> `EmojiPickerPage.xaml` esiste ma non ha un ViewModel dedicato nel Glob dei file `.cs`.
 
-- `SearchPage`: ricerca e risultati nella stessa pagina con `SearchBar` e `CollectionView`.
-- `BookDetailPage`: dettaglio esteso del libro e azione sui favoriti.
-- `FavoritesPage`: elenco dei libri salvati localmente.
-- `HistoryPage`: elenco delle query recenti con replay e pulizia.
+### Services (5 file in `Turnify.Mobile/Services/`)
 
-### ViewModels
+| Service | Responsabilità |
+|---|---|
+| `AuthService` | `LoginAsync` (email+password → JWT), `EmployeeLoginAsync` (companySlug+username+password → JWT), `ForgotPasswordAsync`, `ResetPasswordAsync`. Salva JWT e refresh token in `SecureStorage`. Metodi `RegisterCompanyAsync`, `RefreshTokenAsync`, `LogoutAsync` non implementati (`throw NotImplementedException`). |
+| `AuthDelegatingHandler` | Inietta `Authorization: Bearer <jwt>` da `SecureStorage` su ogni richiesta HTTP "TurnifyApi". Su risposta 401: cancella sessione (`SecureStorage` + `Preferences`) e sostituisce `Window.Page` con nuovo `AppShell` in Login. Non esegue refresh token automatico. |
+| `CertificatePinningHandler` | Verifica thumbprint certificato SSL del server prima di inviare la richiesta; usato come `PrimaryHttpMessageHandler` su entrambi i named clients. |
+| `ErrorReporterService` | Implementa `IErrorReporterService` (interfaccia definita nello stesso file). Singleton; espone `static Current` per i ViewModel che non ricevono DI. Fire-and-forget verso `POST /api/errorlogs`. Genera `device_id` persistente via `Preferences`. Fallisce silenziosamente su qualsiasi errore. |
+| `MobilePushService` | Registra il device token FCM al login via `POST /api/device-tokens`. |
 
-- `SearchViewModel`: gestisce query testuale, risultati, retry e stati `loading/error/empty/success`.
-- `BookDetailViewModel`: carica il dettaglio, gestisce add/remove favoriti e il refresh remoto in background quando il libro viene aperto dai favoriti.
-- `FavoritesViewModel`: carica la lista locale dei favoriti, rimuove elementi e apre il dettaglio da sorgente locale.
-- `HistoryViewModel`: legge la cronologia, esegue delete singolo o totale e richiede il replay della query verso `Search`.
+### Modelli Core (`Turnify.Core/Models/`, 12 file)
 
-Ogni ViewModel dovrà esporre proprietà di stato esplicite come `IsBusy`, `ErrorMessage`, `HasData`, `IsEmpty` o equivalenti più specifici per la schermata.
+| File | Contenuto |
+|---|---|
+| `User.cs` | Account: `Email`, `Username` (nullable), `PasswordHash`, `RefreshTokenHash`, `AvatarEmoji`, `UserRole`, `CompanyId`, `PasswordResetToken`, `PasswordResetTokenExpiryTime` |
+| `Company.cs` | Azienda tenant: `Name`, `Slug` (univoco) |
+| `Employee.cs` | Anagrafica dipendente: `ContractType`, `WeeklyHours`, `AvailableDays` (CSV string) |
+| `Business.cs` | Sede/attività: `Name`, `Address`, `OpeningTime`, `ClosingTime`, `IsActive` |
+| `Shift.cs` | Turno: `StartTime`, `EndTime`, `Status` (ShiftStatus), `EmployeeId`, `Label`, `Note` |
+| `VacationRequest.cs` | Richiesta ferie: `Type` (VacationRequestType), `Status` (VacationRequestStatus), `StartDate`, `EndDate`, `TotalDays`, `Reason` |
+| `AttendanceLog.cs` | Timbratura: `CheckInTime` (UTC), `CheckOutTime` (nullable), `Method` (CheckInMethod) |
+| `Notification.cs` | Notifica: `Type`, `IsRead`, `UserId` |
+| `DeviceToken.cs` | Token FCM: `UserId`, `Token`, `Platform` |
+| `AppErrorLog.cs` | Log errore client: `DeviceId`, `Platform`, `AppVersion`, `ErrorType`, `Message`, `StackTrace`, `ScreenName`, `OccurredAt` |
+| `DashboardModels.cs` | DTOs server: `DashboardSummaryDto`, `EmployeeHoursDto` |
+| `Enums.cs` | `UserRole` (Admin/Employee/Manager), `ContractType`, `ShiftStatus`, `VacationRequestType`, `VacationRequestStatus`, `CheckInMethod` |
 
-### Services
+### DTOs locali ai ViewModel
 
-- servizio remoto catalogo libri: ricerca per query e dettaglio per `bookId` tramite Google Books API;
-- servizio di mapping DTO -> modelli di dominio, con gestione centralizzata dei campi mancanti;
-- servizio database locale basato su `sqlite-net-pcl`, responsabile di creare e condividere una singola `SQLiteAsyncConnection` per il progetto;
-- repository locale favoriti sopra la connessione condivisa SQLite, con snapshot completa dei dati principali del dettaglio;
-- repository locale cronologia sopra la stessa connessione SQLite, con deduplica e ordinamento per recenza;
-- utilizzo di `IConnectivity` nativo di .NET MAUI, iniettato via DI solo nel servizio che decide se tentare il refresh remoto in background dai favoriti.
+I ViewModel che necessitano di strutture per il binding definiscono i propri DTO nello stesso file `.cs`. Esempio: `DashboardViewModel.cs` contiene `DashboardShiftDto`, `DashboardPendingVacationDto`, `DashboardSummaryDto` con proprietà calcolate (`DisplayTime`, `Initials`, `TypeDisplay`) utili al binding XAML.
 
-### Models e DTO
+### Controller API (`Turnify.Api/Controllers/`, 13 file)
 
-- modelli di dominio per lista risultati, dettaglio libro, snapshot favorito e voce cronologia;
-- DTO specifici di Google Books separati dai modelli usati dalla UI;
-- mapping responsabile della conversione di `null`, campi assenti e placeholder visuali coerenti.
+| Controller | Endpoint principali |
+|---|---|
+| `AuthController` | `POST /api/auth/register`, `/login`, `/employee-login`, `/forgot-password`, `/reset-password` |
+| `ShiftsController` | CRUD `/api/shifts`, `POST /api/shifts/recurring` |
+| `VacationRequestsController` | CRUD `/api/vacation-requests`, `/approve`, `/reject` |
+| `AttendanceController` | `POST /api/attendance/checkin`, `/checkout`, `GET /today`, `/history` |
+| `DashboardController` | `GET /api/dashboard/summary`, `/hours-by-employee` |
+| `ReportsController` | `GET /api/reports/hours`, `/attendance` (risposta CSV) |
+| `EmployeesController` | CRUD `/api/employees` |
+| `BusinessesController` | CRUD `/api/businesses`, `PUT /opening-hours` |
+| `UsersController` + `UsersController.GdprPartial.cs` | `GET /api/users/me`, `PUT /change-password`, GDPR export/delete |
+| `NotificationsController` | `GET /api/notifications` |
+| `DeviceTokensController` | `POST /api/device-tokens` |
+| `ErrorLogsController` | `POST /api/errorlogs` (pubblico, rate-limited), `GET` (admin-only) |
 
-## 5. Navigazione
+---
 
-### Route Shell
+## Navigazione
 
-- `Search`, `Favorites` e `History` come sezioni principali Shell;
-- `BookDetailPage` come route dedicata fuori dal livello root, aperta da Search e Favorites.
+L'app usa `Shell` come root. La navigazione è gestita interamente da `AppShell.xaml.cs`; non esiste NavigationPage o altre strutture.
 
-### Parametri di navigazione
+### Costruttore AppShell
 
-- verso il dettaglio: `bookId` obbligatorio;
-- verso il dettaglio da Favorites: `bookId` e `source=favorite`, così il ViewModel può caricare prima la snapshot locale e poi tentare refresh remoto;
-- verso Search da History: `queryText` o parametro equivalente per rieseguire la ricerca nella pagina unificata.
+```csharp
+public AppShell(bool isAdmin = false, string startRoute = "Login")
+```
 
-Il dettaglio aperto da Search carica direttamente il contenuto remoto. Il dettaglio aperto da Favorites mostra prima il contenuto locale disponibile e, se la rete è accessibile, prova ad aggiornare silenziosamente i dati in background.
+Il costruttore accetta `isAdmin` e `startRoute`. Le route accettate per `startRoute`:
+- `"GdprFirst"` → naviga a `GdprConsentPage`
+- `"Onboarding"` → naviga a `OnboardingPage`
+- `"Main"` → naviga a `//Dashboard` (admin) o `EmployeeDashboardPage` (dipendente)
+- `"Login"` (default) → nessuna navigazione; la LoginPage è la prima tab
 
-## 6. Stato della UI
+### Registrazione route
 
-### Loading
+`RegisterAllRoutes` registra tutte le 27 route con `Routing.RegisterRoute`. Le tab principali sono dichiarate nello XAML dell'AppShell e non nelle route programmatiche.
 
-- `SearchPage`: loading esplicito durante una richiesta remota;
-- `BookDetailPage`: loading bloccante all'apertura da Search, non bloccante per refresh da Favorites;
-- `FavoritesPage` e `HistoryPage`: loading leggero durante lettura iniziale dei dati locali.
+### Tab per ruolo
 
-### Error
+`ConfigureForRole(bool isAdmin)` rimuove o ripristina tab dalla `TabBar` a runtime:
 
-- errori remoti di Search e Detail mostrati come stati pagina o messaggi con retry;
-- fallimento del refresh remoto da Favorites mostrato con feedback visibile ma non invasivo;
-- nessun errore tecnico grezzo o stack trace in UI.
+| Tab | Admin | Dipendente |
+|---|---|---|
+| DashboardTab | ✓ | ✗ rimossa |
+| TeamTab (EmployeeList) | ✓ | ✗ rimossa |
+| ShiftCalendarTab | ✓ | ✓ |
+| VacationListTab | ✓ | ✓ |
+| NotificationsTab | ✓ | ✓ |
+| ProfileTab | ✓ | ✓ |
+| EmployeeDashboardTab | ✗ rimossa | ✓ |
 
-### Empty
+### Flusso startup (App.xaml.cs)
 
-- Search senza risultati remoti;
-- Favorites senza libri salvati;
-- History senza ricerche registrate.
+```
+App.GetStartPage
+  ├── GdprConsentViewModel.NeedsConsent == true
+  │     → AppShell(isAdmin: false, startRoute: "GdprFirst")
+  ├── Preferences["has_valid_session"] == true && role salvato
+  │     ├── isAdmin && OnboardingViewModel.NeedsOnboarding
+  │     │     → AppShell(isAdmin: true, startRoute: "Onboarding")
+  │     └── altrimenti
+  │           → AppShell(isAdmin, startRoute: "Main")
+  └── altrimenti
+        → AppShell(isAdmin: false, startRoute: "Login")
+```
 
-### Success
+### Cambio sessione a runtime
 
-- risultati presenti su Search;
-- dettaglio caricato e leggibile anche con campi parziali;
-- elenco favoriti o cronologia disponibile;
-- refresh riuscito da Favorites gestito in modo silenzioso, senza messaggio di successo obbligatorio.
+Al login riuscito: `LoginViewModel` sostituisce `Window.Page` con un nuovo `AppShell` configurato per il ruolo. Su 401: `AuthDelegatingHandler` esegue la stessa operazione rimpiazzando con `AppShell` in Login.
 
-## 7. Dati e integrazioni
+---
 
-### Chiamate remote
+## Flusso dati tipico
 
-- provider base: Google Books API;
-- endpoint previsti per il MVP:
-  - `GET /volumes?q={query}` per ricerca;
-  - `GET /volumes/{id}` per dettaglio.
+```
+View (XAML binding)
+  → [RelayCommand] su ViewModel
+    → IsBusy = true
+    → HttpClient.GetFromJsonAsync<TDto>(endpoint)  // named client "TurnifyApi"
+      → AuthDelegatingHandler aggiunge header JWT
+        → CertificatePinningHandler verifica certificato
+          → API backend ASP.NET Core
+            → Controller → Service → Repository → MySQL
+          ← risposta JSON
+        ← risposta
+      ← risposta
+    → deserializzazione → aggiornamento ObservableCollection / proprietà
+    ← PropertyChanged notifica binding XAML
+  → IsBusy = false
+```
 
-Il progetto deve avere un solo boundary di servizio verso il catalogo libri, così da poter introdurre in futuro Open Library senza riscrivere i ViewModels.
+I ViewModel che richiedono autenticazione usano il named client `"TurnifyApi"` ottenuto via `IHttpClientFactory`. Il client auth (`IAuthService`) usa un named client separato senza `AuthDelegatingHandler` (le chiamate di login non portano JWT).
 
-### Parsing JSON
+---
 
-- uso di `System.Text.Json` con DTO dedicati;
-- mapping difensivo centralizzato per evitare null-handling disperso nei ViewModels;
-- trasformazione dei dati API in modelli adatti alla UI prima di arrivare alle Views.
+## Gestione stato UI
 
-### Persistenza locale
+Ogni ViewModel eredita da `BaseViewModel`:
 
-- SQLite come storage locale per favoriti e cronologia;
-- wrapper previsto: `sqlite-net-pcl`, coerente con le preferenze tecniche del repository;
-- un unico database locale con tabelle distinte e sufficiente per il MVP;
-- una sola `SQLiteAsyncConnection` condivisa, inizializzata da un servizio database registrato come singleton in `MauiProgram`;
-- favoriti: memorizzano identificatore remoto e snapshot locale completa dei campi principali del dettaglio;
-- cronologia: memorizza query normalizzata, testo originale e timestamp o ordinamento per recenza;
-- delete singolo e clear totale esposti dal layer locale senza duplicare logica in UI.
+```csharp
+public partial class BaseViewModel : ObservableObject
+{
+    [ObservableProperty] private bool _isBusy;
+    [ObservableProperty] private string _title = string.Empty;
+}
+```
 
-Non è previsto un repository generico: il layer locale resta esplicito e limitato ai due casi d'uso del MVP, così da mantenere il codice leggibile e didattico.
+I ViewModel che caricano dati aggiungono tipicamente:
 
-Per le immagini remote, nel MVP è preferibile affidarsi al comportamento standard di `Image` e alla cache HTTP di base della piattaforma, usando placeholder visuali senza introdurre librerie dedicate se non motivate da problemi reali.
+```csharp
+[ObservableProperty] private bool _hasError;
+[ObservableProperty] private string _errorMessage = string.Empty;
+[ObservableProperty] private bool _isEmptyState;
+[ObservableProperty] private bool _hasData;
+```
 
-## 8. Dependency injection e composition root
+Le collection sono `ObservableCollection<T>` come proprietà get-only inizializzate a `new`:
 
-`MauiProgram.cs` è il punto di composizione del progetto. Qui dovranno essere registrati:
+```csharp
+public ObservableCollection<DashboardShiftDto> ShiftsToday { get; } = new;
+```
 
-- servizio remoto catalogo libri;
-- servizio database SQLite condiviso;
-- servizi o repository locali per favoriti e cronologia;
-- `IConnectivity` nativo di .NET MAUI, senza wrapper custom aggiuntivo;
-- logging standard MAUI, se necessario;
-- ViewModels e pagine.
+`ShiftCalendarViewModel` aggiunge stato specifico per la timbratura:
 
-Linee guida iniziali:
+```csharp
+[ObservableProperty] private bool _hasCheckedIn;
+[ObservableProperty] private bool _hasCheckedOut;
+public bool CanCheckIn  => !HasCheckedIn && !HasCheckedOut;
+public bool CanCheckOut => HasCheckedIn && !HasCheckedOut;
+```
 
-- servizi remoti e locali con lifetime applicativo;
-- ViewModels e Views con lifetime leggero, coerente con la navigazione MAUI;
-- nessuna istanziazione manuale di servizi nelle pagine.
+Il badge tab Notifiche è aggiornato tramite `WeakReferenceMessenger.Default` con `ValueChangedMessage<int>`, ascoltato direttamente in `AppShell`.
 
-## 9. Error handling e logging
+---
 
-- Le eccezioni di rete, parsing e persistenza devono essere intercettate dal layer di servizio o dal ViewModel, non propagate direttamente alla UI.
-- I ViewModels traducono i guasti in messaggi comprensibili e stati coerenti.
-- I log diagnostici possono usare il logging standard disponibile in MAUI, senza introdurre telemetria o analytics nel MVP.
-- Il refresh remoto dei favoriti non deve mai compromettere la disponibilità del contenuto locale già salvato.
+## Gestione errori
 
-## 10. Decisioni confermate
+Pattern catch uniforme nei ViewModel:
 
-- SQLite resta la tecnologia di storage locale del MVP ed è previsto l'uso di `sqlite-net-pcl` come wrapper pratico sopra SQLite.
-- Il progetto userà una sola `SQLiteAsyncConnection` condivisa, creata e inizializzata da un servizio database singleton registrato in `MauiProgram`.
-- Sopra questa connessione vivranno due repository dedicati e separati: uno per `Favorites`, uno per `History`.
-- Non verrà introdotto un repository generico o un ulteriore strato ORM: per questo progetto didattico la soluzione più leggibile è avere un layer locale piccolo e specifico.
-- Non verrà introdotto un wrapper custom della connettività nel MVP.
-- Il controllo della rete per il refresh da `Favorites` userà direttamente `IConnectivity` di .NET MAUI tramite dependency injection, confinato al servizio che orchestra il refresh remoto non bloccante.
-- Questa scelta è considerata abbastanza testabile e abbastanza poco dipendente dalla piattaforma per il perimetro del MVP; verrà rivalutata solo se, durante l'implementazione, emergerà un limite concreto.
+```csharp
+catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.TooManyRequests)
+    → ErrorMessage = "Troppi tentativi. Riprova tra qualche minuto."
+catch (HttpRequestException)
+    → ErrorMessage = "Errore di connessione al server."
+catch (TaskCanceledException)
+    → ErrorMessage = "Richiesta scaduta. Riprova."
+catch (Exception ex)
+    → ErrorMessage = "Si è verificato un errore. Riprova."
+    → ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(ViewModel))
+```
 
-Non risultano al momento ulteriori `TBD` architetturali bloccanti per l'avvio del MVP.
+Alcuni ViewModel aggiungono `catch (JsonException)` per errori di deserializzazione.
+
+Il 401 non è gestito a livello di ViewModel ma da `AuthDelegatingHandler`, che sostituisce la pagina corrente con il Login.
+
+Eccezioni non gestite a livello di processo sono intercettate in `MauiProgram.cs`:
+
+```csharp
+AppDomain.CurrentDomain.UnhandledException += (_, args) => reporter.ReportAsync(ex, "UnhandledException");
+TaskScheduler.UnobservedTaskException     += (_, args) => reporter.ReportAsync(ex, "UnobservedTask");
+```
+
+---
+
+## Persistenza locale
+
+| Storage | Chiavi usate | Gestita da |
+|---|---|---|
+| `SecureStorage.Default` | `jwt_token`, `refresh_token`, `user_role` | `AuthService`, `AuthDelegatingHandler`, `LoginViewModel` |
+| `Preferences.Default` | `user_role_cached`, `has_valid_session` | `LoginViewModel`, `AuthDelegatingHandler`, `App.xaml.cs` |
+| `Preferences.Default` | `gdpr_consent_given`, `gdpr_consent_version` | `GdprConsentViewModel` |
+| `Preferences.Default` | `device_id` | `ErrorReporterService` |
+| `FileSystem.CacheDirectory` | File CSV temporaneo | `ReportsViewModel` (prima di `Share.RequestAsync`) |
+
+Non è presente SQLite.
+
+---
+
+## Estendibilità
+
+La struttura DI registra tutti i ViewModel e View come `AddTransient`; aggiungere una nuova pagina richiede: creare il file `.xaml` + `.xaml.cs`, creare il ViewModel, registrare entrambi in `MauiProgram.cs`, aggiungere la route in `AppShell.RegisterAllRoutes`.
+
+Il named client `"TurnifyApi"` è il punto di integrazione verso il backend; cambiare base URL richiede di modificare la sola costante `API_BASE` in `MauiProgram.cs`.
+
+Il `ConfigureForRole` su `AppShell` consente di aggiungere tab specifiche per ruolo aggiungendo l'elemento XAML nel `TabBar` e una condizione nel metodo.

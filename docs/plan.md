@@ -1,282 +1,172 @@
-# Piano di Sviluppo — Turnify
+# Piano di lavoro
 
-**Versione:** 1.0  
-**Metodologia:** Iterativa / Sprint bisettimanali  
-**Orizzonte pianificazione:** 6 mesi al rilascio MVP  
+## Titolo del progetto
+Turnify
+
+## Obiettivo del piano
+Documentare le fasi di sviluppo effettive del progetto, derivate dallo stato attuale del progetto, dalle verifiche svolte e dalla documentazione di iterazione.
+
+## Architettura prevista
+
+Clean Architecture a layer separati in soluzione multi-progetto:
+
+- **Turnify.Core** — modelli di dominio e interfacce (nessuna dipendenza esterna)
+- **Turnify.Infrastructure** — implementazioni EF Core + MySQL (Pomelo), repository concreti, service concreti
+- **Turnify.Api** — ASP.NET Core 10 Web API, controller, DTOs, middleware, validator FluentValidation
+- **Turnify.Mobile** — .NET MAUI 10, pattern MVVM con CommunityToolkit.Mvvm, Shell navigation
+- **Turnify.Tests** — xUnit, unit test su service/repository, integration test con WebApplicationFactory
+- **Turnify.Web** — Next.js 14 + TypeScript + Tailwind CSS, portale admin separato
+
+Pattern MVVM mobile:
+- `BaseViewModel : ObservableObject` con `IsBusy` e `Title`
+- Source generators CommunityToolkit: `[ObservableProperty]`, `[RelayCommand]`
+- Zero logica nel code-behind; tutto nei ViewModel
+- `x:DataType` su tutte le View XAML per binding type-safe compile-time
+- Navigazione Shell con route registrate; tab configurate dinamicamente per ruolo
+
+Database: MySQL, accesso via EF Core + Pomelo, migration-first.
 
 ---
 
-## Panoramica Milestone
+## Struttura prevista delle cartelle
 
 ```
-Mese 1        Mese 2        Mese 3        Mese 4        Mese 5        Mese 6
-  │             │             │             │             │             │
-[M1: Analisi]─[M2: UI Proto]─[M3: Backend]─[M4: Auth]───[M5-7: Core]──[M8-10: Deploy]
+Turnify/
+├── docs/
+│   └── iterations/
+├── src/
+│   ├── Turnify.Api/
+│   │   ├── Controllers/
+│   │   ├── DTOs/
+│   │   ├── Middleware/
+│   │   ├── Validators/
+│   │   ├── Program.cs
+│   │   └── appsettings.json
+│   ├── Turnify.Core/
+│   │   ├── Interfaces/
+│   │   │   ├── Repositories/
+│   │   │   └── Services/
+│   │   └── Models/
+│   ├── Turnify.Infrastructure/
+│   │   ├── Data/
+│   │   ├── Migrations/
+│   │   ├── Repositories/
+│   │   └── Services/
+│   ├── Turnify.Mobile/
+│   │   ├── Converters/
+│   │   ├── Platforms/
+│   │   ├── Resources/
+│   │   │   └── Styles/
+│   │   ├── Services/
+│   │   ├── ViewModels/
+│   │   └── Views/
+│   ├── Turnify.Tests/
+│   │   ├── Integration/
+│   │   ├── Middleware/
+│   │   ├── Repositories/
+│   │   └── Services/
+│   └── Turnify.Web/
+│       ├── app/
+│       │   ├── admin/login/
+│       │   └── dashboard/
+│       ├── components/
+│       └── lib/
+└── Turnify.slnx
 ```
 
 ---
 
-## Milestone Dettagliate
+## Dipendenze previste
+
+### Turnify.Mobile
+
+| Dipendenza | Motivo | Tipo |
+|---|---|---|
+| CommunityToolkit.Mvvm 8.4.2 | MVVM: ObservableObject, RelayCommand, source generators | Obbligatoria |
+| Microsoft.Maui.Controls | Framework UI multipiattaforma | Obbligatoria |
+| Microsoft.Extensions.Http 10.0.7 | IHttpClientFactory, AuthDelegatingHandler | Obbligatoria |
+| System.IdentityModel.Tokens.Jwt 8.0.1 | Lettura e validazione del JWT sul client | Obbligatoria |
+| Microsoft.Extensions.Logging.Debug | Logging in debug build | Dev |
+
+### Turnify.Api
+
+| Dipendenza | Motivo | Tipo |
+|---|---|---|
+| Swashbuckle.AspNetCore 10.1.7 | Swagger UI e documentazione OpenAPI | Dev |
+| Microsoft.AspNetCore.OpenApi 10.0.4 | Generazione schema OpenAPI | Dev |
+| FluentValidation.AspNetCore 11.3.0 | Validazione input su tutti gli endpoint critici | Obbligatoria |
+| Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore 9.0.2 | Health check DB | Obbligatoria |
+| DotNetEnv 3.1.1 | Caricamento variabili da file .env | Obbligatoria |
+
+### Turnify.Infrastructure
+
+| Dipendenza | Motivo | Tipo |
+|---|---|---|
+| Pomelo.EntityFrameworkCore.MySql | Provider EF Core per MySQL | Obbligatoria |
+| Microsoft.EntityFrameworkCore.Design 9.0.2 | CLI migration e scaffolding | Dev |
+| Microsoft.AspNetCore.Authentication.JwtBearer | Validazione JWT nel middleware | Obbligatoria |
+
+### Turnify.Web
+
+| Dipendenza | Motivo | Tipo |
+|---|---|---|
+| Next.js 14.2 | Framework React SSR/SSG per portale admin | Obbligatoria |
+| React 18.3 | UI library | Obbligatoria |
+| Tailwind CSS 3.4 | Utility-first CSS | Obbligatoria |
+| TypeScript 5.4 | Tipizzazione statica | Obbligatoria |
 
 ---
 
-### M1 — Analisi e Setup (Settimane 1–2)
+## Iterazioni previste
 
-**Priorità:** 🔴 Critica  
-**Durata stimata:** 2 settimane  
+### Iterazione 1 — Setup, dominio e backend core
+**Data:** 2026-04-21
 
-**Obiettivi:**
-- Definizione definitiva requisiti funzionali e non funzionali
-- Progettazione architettura sistema
-- Schema database iniziale
-- Setup repository Git e struttura progetto
-- Scelta definitiva tech stack (conferma PostgreSQL vs MySQL)
-- Setup ambiente di sviluppo (locale + VPS test)
+**Lavoro svolto:**
+- Creazione soluzione multi-progetto (Core, Infrastructure, Api, Mobile, Tests)
+- Modelli di dominio: `User`, `Company`, `Employee`, `Shift`, `VacationRequest`, `AttendanceLog`, `Notification`, enumerazioni (`UserRole`, `ContractType`, `ShiftStatus`, `VacationRequestType`, `CheckInMethod`)
+- Interfacce repository: `IShiftRepository`, `IUserRepository`, `IVacationRepository`
+- Interfacce service: `IAuthService`, `IShiftService`, `IVacationService`, `INotificationService`
+- `TurnifyDbContext` con EF Core + Pomelo MySQL
+- Migrazione `InitialCreate` (tutte le tabelle principali)
+- Endpoint `/health` con risposta JSON e Swagger attivo in development
+- `AuthService` con generazione JWT, `AuthController` (register + login)
+- `ShiftRepository`, `ShiftService`, `ShiftsController`
+- `VacationRequestsController`
+- Documentazione agente AI (`AGENTS.md`, file `.md` iniziali)
 
-**Deliverable:**
-- `docs/spec.md` completato e validato ✅
-- `docs/architecture.md` completato ✅
-- `docs/database.md` completato ✅
-- Repository Git con struttura cartelle base
-- Ambiente dev funzionante (backend compila, DB connesso)
+**File principali:**
+- `Turnify.Core/Models/*.cs` (8 modelli)
+- `Turnify.Core/Interfaces/**/*.cs` (7 interfacce)
+- `Turnify.Infrastructure/Data/TurnifyDbContext.cs`
+- `Turnify.Infrastructure/Migrations/20260421185539_InitialCreate.*`
+- `Turnify.Api/Controllers/AuthController.cs`, `ShiftsController.cs`, `VacationRequestsController.cs`
+- `Turnify.Infrastructure/Services/AuthService.cs`, `ShiftService.cs`
+- `Turnify.Api/Program.cs`
 
-**Rischi:**
-- Scope creep nelle funzionalità → mitigato con freeze dei requisiti v1.0
-- Problemi setup VPS → fallback su macchina locale per sviluppo
-
----
-
-### M2 — Prototipo UI/UX (Settimane 3–4)
-
-**Priorità:** 🔴 Critica  
-**Durata stimata:** 2 settimane  
-
-**Obiettivi:**
-- Wireframe schermate principali (carta o Figma)
-- Definizione palette colori e design system
-- Prototipo navigazione app in .NET MAUI (shell + tab bar)
-- Schermate statiche: Login, Dashboard, Calendario, Profilo
-
-**Deliverable:**
-- Wireframe approvati
-- `docs/ui-ux.md` completato ✅
-- App MAUI con navigazione funzionante (senza dati reali)
-- Palette colori e componenti base definiti
-
-**Rischi:**
-- MAUI learning curve → allocare tempo extra per documentazione
-- Inconsistenza UI iOS vs Android → test su entrambi i target
+**Risultato:** backend compilabile, DB connesso, auth JWT funzionante, endpoint turni e ferie esposti.
 
 ---
 
-### M3 — Backend Base (Settimane 5–6)
+### Iterazione 2 — Fondamenta MAUI e test unitari
+**Data:** 2026-04-21
 
-**Priorità:** 🔴 Critica  
-**Durata stimata:** 2 settimane  
+**Lavoro svolto:**
+- Shell navigation: registrazione di tutte le route, `AppShell.xaml`
+- `LoginPage.xaml` + `LoginViewModel.cs` con autenticazione reale verso l'API
+- `Mobile/Services/AuthService.cs`: login, persistenza JWT in `SecureStorage`
+- Conversione mockup HTML → XAML (prime pagine)
+- `AuthServiceTests.cs` e `ShiftServiceTests.cs` (prime unit test)
+- Credenziali spostate in `.env` (DotNetEnv)
 
-**Obiettivi:**
-- Setup progetto ASP.NET Core Web API
-- Configurazione Entity Framework Core + PostgreSQL
-- Migrazioni database (tabelle Users, Companies, Employees)
-- Endpoint base CRUD: Companies, Users
-- Logging strutturato (Serilog)
-- Gestione errori centralizzata (middleware)
+**File principali:**
+- `Turnify.Mobile/AppShell.xaml`, `AppShell.xaml.cs`
+- `Turnify.Mobile/Views/LoginPage.xaml`
+- `Turnify.Mobile/ViewModels/LoginViewModel.cs`
+- `Turnify.Mobile/Services/AuthService.cs`
+- `Turnify.Tests/Services/AuthServiceTests.cs`, `ShiftServiceTests.cs`
 
-**Deliverable:**
-- API avviabile e connessa al DB
-- Endpoint `/health` funzionante
-- CRUD Companies e Users testati con Postman/Swagger
-- Swagger UI attivo in development
-
-**Rischi:**
-- Configurazione EF Core con PostgreSQL → documentare attentamente la config
-- Performance query iniziali → aggiungere indici base sin dall'inizio
+**Risultato:** app mobile avviabile, login reale funzionante end-to-end, prime unit test verdi.
 
 ---
 
-### M4 — Login e Autenticazione JWT (Settimane 7–8)
-
-**Priorità:** 🔴 Critica  
-**Durata stimata:** 2 settimane  
-
-**Obiettivi:**
-- Endpoint registrazione azienda e login
-- Generazione JWT access token + refresh token
-- Middleware autenticazione e autorizzazione
-- Gestione ruoli (SuperAdmin, CompanyAdmin, Employee)
-- Login funzionante nella app mobile MAUI
-- Persistenza token su device (SecureStorage)
-
-**Deliverable:**
-- Flusso login completo funzionante end-to-end
-- Token refresh automatico nell'app
-- Accesso agli endpoint protetti funzionante
-- Test unitari auth service
-
-**Rischi:**
-- Gestione sicura token su mobile → usare MAUI SecureStorage, non Preferences
-- Token refresh race condition → implementare retry logic lato client
-
----
-
-### M5 — Gestione Turni (Settimane 9–11)
-
-**Priorità:** 🔴 Critica  
-**Durata stimata:** 3 settimane  
-
-**Obiettivi:**
-- CRUD completo turni (backend + frontend)
-- Calendario turni lato admin (vista settimanale)
-- Calendario personale lato dipendente
-- Validazione sovrapposizioni turni
-- Test completi funzionalità turni
-
-**Deliverable:**
-- Admin può creare, modificare, eliminare turni
-- Dipendente vede i propri turni nel calendario
-- Validazione: non si possono assegnare due turni sovrapposti allo stesso dipendente
-- Copertura test > 70% su ShiftService
-
-**Rischi:**
-- UI calendario complessa in MAUI → valutare libreria esistente vs custom
-- Gestione timezone → usare UTC nel DB, conversione lato client
-
----
-
-### M6 — Richieste Ferie (Settimane 12–13)
-
-**Priorità:** 🟡 Alta  
-**Durata stimata:** 2 settimane  
-
-**Obiettivi:**
-- Flusso completo richiesta ferie (dipendente → admin)
-- Form richiesta con date e nota
-- Lista richieste pendenti per admin
-- Approvazione / rifiuto con nota
-- Aggiornamento calendario dopo approvazione
-
-**Deliverable:**
-- Dipendente invia richiesta ferie
-- Admin approva o rifiuta
-- Stato richiesta visibile a entrambi
-- Test scenari principali coperti
-
-**Rischi:**
-- Gestione ferie che si sovrappongono a turni già assegnati → definire regola business (blocca o avvisa?)
-
----
-
-### M7 — Notifiche Push (Settimane 14–15)
-
-**Priorità:** 🟡 Alta  
-**Durata stimata:** 2 settimane  
-
-**Obiettivi:**
-- Integrazione Firebase Cloud Messaging (FCM) per Android
-- Integrazione APNs per iOS
-- Notifiche per: nuovo turno, modifica turno, ferie approvate/rifiutate
-- Gestione permessi notifiche nell'app
-
-**Deliverable:**
-- Notifiche push funzionanti su entrambi i SO
-- Notifiche in-app (quando app è aperta)
-- Preferenze notifiche nel profilo dipendente
-
-**Rischi:**
-- Configurazione certificati APNs (iOS) → richiede account Apple Developer
-- Costo FCM: gratuito fino a volumi alti → nessun rischio per MVP
-
----
-
-### M8 — Dashboard e Statistiche (Settimane 16–17)
-
-**Priorità:** 🟢 Media  
-**Durata stimata:** 2 settimane  
-
-**Obiettivi:**
-- Dashboard admin con KPI chiave
-- Ore lavorate per dipendente (settimana/mese)
-- Presenze vs assenze
-- Riepilogo ferie utilizzate
-- Grafici base (barre o linee)
-
-**Deliverable:**
-- Dashboard admin con dati reali
-- Almeno 3 widget statistiche utili
-- Filtro per periodo (settimana corrente, mese corrente, custom)
-
-**Rischi:**
-- Performance query aggregazioni su grandi dataset → aggiungere indici e considerare view materializzate
-
----
-
-### M9 — Testing e Bug Fixing (Settimane 18–19)
-
-**Priorità:** 🔴 Critica  
-**Durata stimata:** 2 settimane  
-
-**Obiettivi:**
-- Test end-to-end su scenari principali (vedere `docs/test-matrix.md`)
-- Bug fixing
-- Test su dispositivi fisici Android e iOS
-- Ottimizzazione performance app
-- Code review generale
-- Documentazione API Swagger completa
-
-**Deliverable:**
-- Test matrix completata al 90%
-- Nessun bug critico aperto
-- Performance API sotto i target definiti in `docs/spec.md`
-- Swagger aggiornato
-
----
-
-### M10 — Deploy VPS e Go-Live (Settimane 20–21)
-
-**Priorità:** 🔴 Critica  
-**Durata stimata:** 2 settimane  
-
-**Obiettivi:**
-- Configurazione VPS Ubuntu 22.04
-- Deploy API ASP.NET Core come systemd service
-- Configurazione Nginx reverse proxy
-- SSL con Let's Encrypt
-- Configurazione PostgreSQL in produzione
-- Monitoraggio uptime (UptimeRobot)
-- Build app mobile per distribuzione (beta testing)
-
-**Deliverable:**
-- API live su dominio HTTPS
-- Database produzione configurato e sicuro
-- Backup automatico configurato
-- App inviata a beta tester (TestFlight iOS, Firebase App Distribution Android)
-
-Per dettagli → `docs/deployment.md`
-
----
-
-## Riepilogo Tempi
-
-| Milestone | Settimane | Durata | Priorità |
-|---|---|---|---|
-| M1 Analisi e Setup | 1–2 | 2 sett. | 🔴 Critica |
-| M2 Prototipo UI/UX | 3–4 | 2 sett. | 🔴 Critica |
-| M3 Backend Base | 5–6 | 2 sett. | 🔴 Critica |
-| M4 Login / Auth JWT | 7–8 | 2 sett. | 🔴 Critica |
-| M5 Gestione Turni | 9–11 | 3 sett. | 🔴 Critica |
-| M6 Richieste Ferie | 12–13 | 2 sett. | 🟡 Alta |
-| M7 Notifiche Push | 14–15 | 2 sett. | 🟡 Alta |
-| M8 Dashboard | 16–17 | 2 sett. | 🟢 Media |
-| M9 Testing | 18–19 | 2 sett. | 🔴 Critica |
-| M10 Deploy | 20–21 | 2 sett. | 🔴 Critica |
-
-**Totale: ~21 settimane (~5 mesi) per MVP completo**
-
----
-
-## Note di Pianificazione
-
-- Le milestone M1–M5 sono **bloccanti**: nessuna delle successive può iniziare prima del completamento
-- M6, M7, M8 possono essere sviluppate in parallelo da team separati (se disponibili)
-- Mantenere sempre 1 settimana di buffer per imprevisti tecnici
-- Review di progetto ogni 2 sprint con rivalutazione priorità

@@ -11,7 +11,7 @@ Turnify è un'applicazione mobile per la gestione turni dei dipendenti, rivolta 
 
 - **Frontend:** .NET MAUI, pattern MVVM
 - **Backend:** ASP.NET Core Web API, RESTful
-- **Database:** PostgreSQL
+- **Database:** MySQL
 - **Auth:** JWT
 - **Hosting:** VPS Linux con Nginx
 

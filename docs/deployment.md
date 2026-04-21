@@ -35,7 +35,7 @@ Internet (HTTPS :443)
     └────┬──────────┘
          │ TCP :5432 (localhost)
     ┌────▼──────┐
-    │ PostgreSQL│  ← Solo localhost, non esposto
+    │ MySQL│  ← Solo localhost, non esposto
     └───────────┘
 ```
 

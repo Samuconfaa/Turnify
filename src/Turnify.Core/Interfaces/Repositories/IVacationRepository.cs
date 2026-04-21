@@ -13,4 +13,5 @@ public interface IVacationRepository
     Task<IReadOnlyList<VacationRequest>> GetByEmployeeAsync(int employeeId, CancellationToken ct = default);
     Task<VacationRequest> AddAsync(VacationRequest request, CancellationToken ct = default);
     Task<VacationRequest> UpdateAsync(VacationRequest request, CancellationToken ct = default);
+    Task<bool> DeleteAsync(int id, CancellationToken ct = default);
 }

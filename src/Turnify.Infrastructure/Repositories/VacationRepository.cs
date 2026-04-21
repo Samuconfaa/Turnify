@@ -53,4 +53,14 @@ public class VacationRepository : IVacationRepository
         await _context.SaveChangesAsync(ct);
         return request;
     }
+
+    public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
+    {
+        var request = await GetByIdAsync(id, ct);
+        if (request == null) return false;
+
+        _context.VacationRequests.Remove(request);
+        await _context.SaveChangesAsync(ct);
+        return true;
+    }
 }

@@ -3,12 +3,32 @@
     x:Class="Turnify.Mobile.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:Turnify.Mobile"
-    Title="Turnify.Mobile">
+    xmlns:views="clr-namespace:Turnify.Mobile.Views"
+    Title="Turnify">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <ShellItem Route="Login" FlyoutItemIsVisible="False">
+        <ShellContent ContentTemplate="{DataTemplate views:LoginPage}" />
+    </ShellItem>
+
+    <TabBar Route="Main" x:Name="MainTabBar">
+        <!-- Admin only tab -->
+        <Tab Title="Dashboard" x:Name="DashboardTab" Route="Dashboard">
+            <ShellContent ContentTemplate="{DataTemplate views:DashboardPage}" />
+        </Tab>
+        
+        <!-- Shared tabs -->
+        <Tab Title="Turni" x:Name="ShiftsTab" Route="Shifts">
+            <ShellContent ContentTemplate="{DataTemplate views:ShiftCalendarPage}" />
+        </Tab>
+        <Tab Title="Ferie" x:Name="VacationsTab" Route="Vacations">
+            <ShellContent ContentTemplate="{DataTemplate views:VacationListPage}" />
+        </Tab>
+        <Tab Title="Notifiche" x:Name="NotificationsTab" Route="Notifications">
+            <ShellContent ContentTemplate="{DataTemplate views:NotificationsPage}" />
+        </Tab>
+        <Tab Title="Profilo" x:Name="ProfileTab" Route="Profile">
+            <ShellContent ContentTemplate="{DataTemplate views:ProfilePage}" />
+        </Tab>
+    </TabBar>
 
 </Shell>

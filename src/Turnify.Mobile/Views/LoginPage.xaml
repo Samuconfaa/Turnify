@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
+             x:Class="Turnify.Mobile.Views.LoginPage"
+             Title="{Binding Title}">
+    <VerticalStackLayout Spacing="20" Padding="30" VerticalOptions="Center">
+        <Label Text="Turnify" FontSize="36" FontAttributes="Bold" HorizontalOptions="Center" />
+        <Label Text="Accedi al tuo account" FontSize="18" HorizontalOptions="Center" />
+        <Entry Placeholder="Email" Keyboard="Email" />
+        <Entry Placeholder="Password" IsPassword="True" />
+        <Button Text="Login" Command="{Binding LoginCommand}" />
+        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" HorizontalOptions="Center" />
+    </VerticalStackLayout>
+</ContentPage>

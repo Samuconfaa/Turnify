@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
+             x:Class="Turnify.Mobile.Views.VacationListPage"
+             Title="{Binding Title}">
+    <VerticalStackLayout Spacing="20" Padding="20">
+        <Label Text="{Binding Title}" FontSize="24" FontAttributes="Bold" />
+        <Label Text="Elenco delle richieste di ferie e permessi." />
+        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+    </VerticalStackLayout>
+</ContentPage>

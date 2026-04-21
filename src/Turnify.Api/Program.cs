@@ -10,6 +10,9 @@ using Turnify.Core.Interfaces.Services;
 using Turnify.Core.Interfaces.Repositories;
 using Turnify.Infrastructure.Services;
 using Turnify.Infrastructure.Repositories;
+using DotNetEnv;
+
+Env.TraversePath().Load();
 
 var builder = WebApplication.CreateBuilder(args);
 

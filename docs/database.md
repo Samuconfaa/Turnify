@@ -1,7 +1,7 @@
 # Progettazione Database — Turnify
 
 **Versione:** 1.0  
-**DBMS target:** PostgreSQL 15  
+**DBMS target:** MySQL 
 **Approccio:** Code-First con Entity Framework Core  
 
 ---

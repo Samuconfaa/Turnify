@@ -22,6 +22,11 @@ public class ShiftService : IShiftService
         return _shiftRepository.GetByCompanyAsync(companyId, from, to, ct);
     }
 
+    public Task<Shift?> GetShiftByIdAsync(int id, CancellationToken ct = default)
+    {
+        return _shiftRepository.GetByIdAsync(id, ct);
+    }
+
     public Task<IReadOnlyList<Shift>> GetShiftsByEmployeeAsync(int employeeId, DateTime from, DateTime to, CancellationToken ct = default)
     {
         return _shiftRepository.GetByEmployeeAsync(employeeId, from, to, ct);

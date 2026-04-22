@@ -59,7 +59,7 @@ public partial class EmployeeListViewModel : BaseViewModel
 
             if (Businesses.Count == 0)
             {
-                var businesses = await _httpClient.GetFromJsonAsync<BusinessItemDto[]>("/api/businesses");
+                var businesses = await _httpClient.GetFromJsonAsync<BusinessItemDto[]>("api/businesses");
                 if (businesses != null)
                 {
                     Businesses.Clear();
@@ -69,7 +69,7 @@ public partial class EmployeeListViewModel : BaseViewModel
                 }
             }
 
-            string url = "/api/employees";
+            string url = "api/employees";
             if (SelectedBusiness != null && SelectedBusiness.Id > 0)
             {
                 url += $"?businessId={SelectedBusiness.Id}";

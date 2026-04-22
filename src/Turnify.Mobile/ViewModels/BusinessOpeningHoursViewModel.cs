@@ -78,7 +78,7 @@ public partial class BusinessOpeningHoursViewModel : BaseViewModel
         {
             IsBusy = true;
             
-            var response = await _httpClient.GetAsync($"/api/businesses/{BusinessId}/opening-hours");
+            var response = await _httpClient.GetAsync($"api/businesses/{BusinessId}/opening-hours");
             
             if (response.IsSuccessStatusCode)
             {
@@ -130,7 +130,7 @@ public partial class BusinessOpeningHoursViewModel : BaseViewModel
                 };
             }
 
-            var response = await _httpClient.PutAsJsonAsync($"/api/businesses/{BusinessId}/opening-hours", payload);
+            var response = await _httpClient.PutAsJsonAsync($"api/businesses/{BusinessId}/opening-hours", payload);
 
             if (App.Current?.MainPage != null)
             {

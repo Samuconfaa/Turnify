@@ -44,6 +44,8 @@ public static class MauiProgram
         builder.Services.AddTransient<NotificationsViewModel>();
         builder.Services.AddTransient<ProfileViewModel>();
         builder.Services.AddTransient<BusinessOpeningHoursViewModel>();
+        builder.Services.AddTransient<EmployeeListViewModel>();
+        builder.Services.AddTransient<EmployeeDetailViewModel>();
 
         // Views
         builder.Services.AddTransient<LoginPage>();
@@ -53,6 +55,8 @@ public static class MauiProgram
         builder.Services.AddTransient<NotificationsPage>();
         builder.Services.AddTransient<ProfilePage>();
         builder.Services.AddTransient<BusinessOpeningHoursPage>();
+        builder.Services.AddTransient<EmployeeListPage>();
+        builder.Services.AddTransient<EmployeeDetailPage>();
 
         return builder.Build();
     }

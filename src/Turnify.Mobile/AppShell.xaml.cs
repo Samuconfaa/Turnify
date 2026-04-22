@@ -14,8 +14,9 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(nameof(Views.VacationListPage), typeof(Views.VacationListPage));
         Routing.RegisterRoute(nameof(Views.NotificationsPage), typeof(Views.NotificationsPage));
         Routing.RegisterRoute(nameof(Views.ProfilePage), typeof(Views.ProfilePage));
+        Routing.RegisterRoute(nameof(Views.EmployeeDetailPage), typeof(Views.EmployeeDetailPage));
         
-        // Hide dashboard by default (assume Employee until Login)
+        // Hide admin tabs by default (assume Employee until Login)
         ConfigureForRole(isAdmin: false);
     }
 
@@ -27,12 +28,20 @@ public partial class AppShell : Shell
             {
                 MainTabBar.Items.Remove(DashboardTab);
             }
+            if (MainTabBar.Items.Contains(TeamTab))
+            {
+                MainTabBar.Items.Remove(TeamTab);
+            }
         }
         else
         {
             if (!MainTabBar.Items.Contains(DashboardTab))
             {
                 MainTabBar.Items.Insert(0, DashboardTab);
+            }
+            if (!MainTabBar.Items.Contains(TeamTab))
+            {
+                MainTabBar.Items.Insert(1, TeamTab);
             }
         }
     }

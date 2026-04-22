@@ -3,38 +3,187 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
              x:Class="Turnify.Mobile.Views.ShiftCalendarPage"
-             Title="I Miei Turni"
+             Title="Turni"
              BackgroundColor="{StaticResource Background}">
-    <ScrollView>
-        <VerticalStackLayout Spacing="16" Padding="16">
-            <Label Text="Giugno 2024" FontSize="24" FontAttributes="Bold" TextColor="{StaticResource OnBackground}" Margin="0,8,0,16" />
-            
-            <Frame BackgroundColor="{StaticResource Surface}" BorderColor="{StaticResource Outline}" HasShadow="True" Padding="0" CornerRadius="12" IsClippedToBounds="True">
-                <Grid ColumnDefinitions="4, *" RowDefinitions="Auto">
-                    <BoxView Grid.Column="0" BackgroundColor="{StaticResource Success}" />
-                    <Grid Grid.Column="1" ColumnDefinitions="*, Auto" Padding="16">
-                        <VerticalStackLayout Grid.Column="0">
-                            <Label Text="Oggi" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource OnBackground}" />
-                            <Label Text="8:00 - 16:00 · Sala" FontSize="14" TextColor="{StaticResource OnSurfaceVariant}" Margin="0,4,0,0" />
-                        </VerticalStackLayout>
-                        <Frame Grid.Column="1" BackgroundColor="#E6F4EA" BorderColor="#CEEAD6" CornerRadius="16" Padding="8,4" VerticalOptions="Center">
-                            <Label Text="Confermato" FontSize="12" TextColor="{StaticResource Success}" />
-                        </Frame>
-                    </Grid>
-                </Grid>
-            </Frame>
 
-            <Frame BackgroundColor="{StaticResource Surface}" BorderColor="{StaticResource Outline}" HasShadow="True" Padding="0" CornerRadius="12" IsClippedToBounds="True">
-                <Grid ColumnDefinitions="4, *" RowDefinitions="Auto">
-                    <BoxView Grid.Column="0" BackgroundColor="{StaticResource Primary}" />
-                    <Grid Grid.Column="1" ColumnDefinitions="*, Auto" Padding="16">
-                        <VerticalStackLayout Grid.Column="0">
-                            <Label Text="Domani" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource OnBackground}" />
-                            <Label Text="16:00 - 00:00 · Cucina" FontSize="14" TextColor="{StaticResource OnSurfaceVariant}" Margin="0,4,0,0" />
-                        </VerticalStackLayout>
-                    </Grid>
+    <ContentPage.Content>
+        <Grid>
+            <!-- VISTA DIPENDENTE -->
+            <ScrollView IsVisible="{Binding IsAdmin, Converter={StaticResource InverseBoolConverter}}">
+                <VerticalStackLayout Spacing="16" Padding="16">
+                    <Label Text="{Binding WeekLabel}"
+                           FontSize="20" FontAttributes="Bold"
+                           TextColor="{StaticResource OnBackground}"
+                           Margin="0,8,0,0"/>
+
+                    <CollectionView ItemsSource="{Binding Shifts}">
+                        <CollectionView.EmptyView>
+                            <VerticalStackLayout HorizontalOptions="Center" Margin="0,40,0,0" Spacing="8">
+                                <Label Text="📅" FontSize="48" HorizontalOptions="Center"/>
+                                <Label Text="Nessun turno questa settimana"
+                                       TextColor="{StaticResource OnSurfaceVariant}"
+                                       HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                        </CollectionView.EmptyView>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="vm:ShiftDto">
+                                <Frame BackgroundColor="{StaticResource Surface}"
+                                       BorderColor="{StaticResource Outline}"
+                                       HasShadow="True" Padding="0"
+                                       CornerRadius="12" Margin="0,0,0,12"
+                                       IsClippedToBounds="True">
+                                    <Grid ColumnDefinitions="4,*">
+                                        <BoxView Grid.Column="0" BackgroundColor="{StaticResource Primary}"/>
+                                        <Grid Grid.Column="1" ColumnDefinitions="*,Auto" Padding="16">
+                                            <VerticalStackLayout Grid.Column="0">
+                                                <Label Text="{Binding StartTime, StringFormat='{0:dddd dd MMMM}'}"
+                                                       FontSize="15" FontAttributes="Bold"
+                                                       TextColor="{StaticResource OnBackground}"/>
+                                                <Label Text="{Binding StartTime, StringFormat='{0:HH:mm}'}"
+                                                       FontSize="13"
+                                                       TextColor="{StaticResource OnSurfaceVariant}"
+                                                       Margin="0,2,0,0"/>
+                                                <Label Text="{Binding Label}"
+                                                       FontSize="12"
+                                                       TextColor="{StaticResource OnSurfaceVariant}"/>
+                                            </VerticalStackLayout>
+                                            <Label Grid.Column="1"
+                                                   Text="{Binding EndTime, StringFormat='{0:HH:mm}'}"
+                                                   FontSize="13"
+                                                   TextColor="{StaticResource OnSurfaceVariant}"
+                                                   VerticalOptions="Center"/>
+                                        </Grid>
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <!-- VISTA ADMIN -->
+            <Grid IsVisible="{Binding IsAdmin}" RowDefinitions="Auto,Auto,*">
+
+                <!-- Header navigazione settimana -->
+                <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto,Auto"
+                      Padding="16,12" BackgroundColor="{StaticResource Surface}">
+                    <Button Grid.Column="0" Text="‹"
+                            Command="{Binding PreviousWeekCommand}"
+                            BackgroundColor="Transparent"
+                            TextColor="{StaticResource Primary}"
+                            FontSize="22" Padding="8,0"/>
+                    <Label Grid.Column="1" Text="{Binding WeekLabel}"
+                           FontSize="16" FontAttributes="Bold"
+                           TextColor="{StaticResource OnBackground}"
+                           VerticalOptions="Center" HorizontalOptions="Center"/>
+                    <Button Grid.Column="2" Text="›"
+                            Command="{Binding NextWeekCommand}"
+                            BackgroundColor="Transparent"
+                            TextColor="{StaticResource Primary}"
+                            FontSize="22" Padding="8,0"/>
+                    <Button Grid.Column="3" Text="+"
+                            Command="{Binding AddShiftCommand}"
+                            BackgroundColor="{StaticResource Primary}"
+                            TextColor="White"
+                            CornerRadius="20"
+                            HeightRequest="40" WidthRequest="40"
+                            Padding="0" Margin="8,0,0,0"/>
                 </Grid>
-            </Frame>
-        </VerticalStackLayout>
-    </ScrollView>
+
+                <!-- Intestazione giorni -->
+                <Grid Grid.Row="1"
+                      ColumnDefinitions="100,*,*,*,*,*"
+                      BackgroundColor="{StaticResource Surface2}"
+                      Padding="0,8">
+                    <Label Grid.Column="0" Text="" />
+                    <Label Grid.Column="1" Text="LUN" HorizontalOptions="Center"
+                           FontSize="12" FontAttributes="Bold"
+                           TextColor="{StaticResource OnSurfaceVariant}"/>
+                    <Label Grid.Column="2" Text="MAR" HorizontalOptions="Center"
+                           FontSize="12" FontAttributes="Bold"
+                           TextColor="{StaticResource OnSurfaceVariant}"/>
+                    <Label Grid.Column="3" Text="MER" HorizontalOptions="Center"
+                           FontSize="12" FontAttributes="Bold"
+                           TextColor="{StaticResource OnSurfaceVariant}"/>
+                    <Label Grid.Column="4" Text="GIO" HorizontalOptions="Center"
+                           FontSize="12" FontAttributes="Bold"
+                           TextColor="{StaticResource OnSurfaceVariant}"/>
+                    <Label Grid.Column="5" Text="VEN" HorizontalOptions="Center"
+                           FontSize="12" FontAttributes="Bold"
+                           TextColor="{StaticResource OnSurfaceVariant}"/>
+                </Grid>
+
+                <!-- Righe dipendenti -->
+                <CollectionView Grid.Row="2" ItemsSource="{Binding EmployeeRows}" Margin="0,4,0,0">
+                    <CollectionView.EmptyView>
+                        <Label Text="Nessun turno questa settimana"
+                               HorizontalOptions="Center" Margin="0,40,0,0"
+                               TextColor="{StaticResource OnSurfaceVariant}"/>
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="vm:EmployeeWeekRow">
+                            <Grid ColumnDefinitions="100,*,*,*,*,*"
+                                  Padding="4,4" RowDefinitions="56">
+                                <!-- Nome dipendente -->
+                                <Label Grid.Column="0"
+                                       Text="{Binding EmployeeName}"
+                                       FontSize="12" FontAttributes="Bold"
+                                       TextColor="{StaticResource OnBackground}"
+                                       VerticalOptions="Center"
+                                       Margin="8,0,4,0" LineBreakMode="TailTruncation"/>
+                                <!-- 5 celle giorno -->
+                                <Frame Grid.Column="1" Margin="2"
+                                       BackgroundColor="{Binding Days[0].HasShift, Converter={StaticResource BoolToShiftColorConverter}}"
+                                       CornerRadius="6" Padding="4" HasShadow="False"
+                                       BorderColor="Transparent">
+                                    <Label Text="{Binding Days[0].Label}"
+                                           FontSize="10" TextColor="White"
+                                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                                </Frame>
+                                <Frame Grid.Column="2" Margin="2"
+                                       BackgroundColor="{Binding Days[1].HasShift, Converter={StaticResource BoolToShiftColorConverter}}"
+                                       CornerRadius="6" Padding="4" HasShadow="False"
+                                       BorderColor="Transparent">
+                                    <Label Text="{Binding Days[1].Label}"
+                                           FontSize="10" TextColor="White"
+                                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                                </Frame>
+                                <Frame Grid.Column="3" Margin="2"
+                                       BackgroundColor="{Binding Days[2].HasShift, Converter={StaticResource BoolToShiftColorConverter}}"
+                                       CornerRadius="6" Padding="4" HasShadow="False"
+                                       BorderColor="Transparent">
+                                    <Label Text="{Binding Days[2].Label}"
+                                           FontSize="10" TextColor="White"
+                                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                                </Frame>
+                                <Frame Grid.Column="4" Margin="2"
+                                       BackgroundColor="{Binding Days[3].HasShift, Converter={StaticResource BoolToShiftColorConverter}}"
+                                       CornerRadius="6" Padding="4" HasShadow="False"
+                                       BorderColor="Transparent">
+                                    <Label Text="{Binding Days[3].Label}"
+                                           FontSize="10" TextColor="White"
+                                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                                </Frame>
+                                <Frame Grid.Column="5" Margin="2"
+                                       BackgroundColor="{Binding Days[4].HasShift, Converter={StaticResource BoolToShiftColorConverter}}"
+                                       CornerRadius="6" Padding="4" HasShadow="False"
+                                       BorderColor="Transparent">
+                                    <Label Text="{Binding Days[4].Label}"
+                                           FontSize="10" TextColor="White"
+                                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                                </Frame>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+
+            <!-- Loading overlay -->
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               Color="{StaticResource Primary}"/>
+        </Grid>
+    </ContentPage.Content>
 </ContentPage>

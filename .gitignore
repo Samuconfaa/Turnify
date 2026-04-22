@@ -24,6 +24,7 @@ coverage/
 ## .NET / C#
 ## =========================
 # Build folders
+publish/
 bin/
 obj/
 [Bb]in/

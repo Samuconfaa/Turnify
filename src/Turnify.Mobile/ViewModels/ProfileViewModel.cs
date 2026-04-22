@@ -30,9 +30,9 @@ public partial class ProfileViewModel : BaseViewModel
 
     public string FullName => $"{FirstName} {LastName}".Trim();
 
-    public ProfileViewModel(HttpClient httpClient)
+    public ProfileViewModel(IHttpClientFactory httpClientFactory)
     {
-        _httpClient = httpClient;
+        _httpClient = httpClientFactory.CreateClient("TurnifyApi");
         Title = "Profilo";
     }
 
@@ -46,12 +46,6 @@ public partial class ProfileViewModel : BaseViewModel
         IsBusy = true;
         try
         {
-            var token = await SecureStorage.Default.GetAsync("jwt_token");
-            if (string.IsNullOrEmpty(token)) return;
-
-            _httpClient.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", token);
-
             var user = await _httpClient.GetFromJsonAsync<UserMeResponse>("api/users/me");
             if (user == null) return;
 
@@ -91,9 +85,7 @@ public partial class ProfileViewModel : BaseViewModel
 
         try
         {
-            var token = await SecureStorage.Default.GetAsync("jwt_token");
-            _httpClient.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", token);
+            // Auth is handled by AuthDelegatingHandler
 
             var response = await _httpClient.PutAsJsonAsync("api/users/me/password", new
             {
@@ -136,8 +128,7 @@ public partial class ProfileViewModel : BaseViewModel
             var token = await SecureStorage.Default.GetAsync("jwt_token");
             if (!string.IsNullOrEmpty(token))
             {
-                _httpClient.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue("Bearer", token);
+                // Auth is handled by AuthDelegatingHandler
                 await _httpClient.PostAsync("api/auth/logout", null);
             }
         }

@@ -31,10 +31,12 @@ public static class MauiProgram
             client.BaseAddress = new Uri("https://samuconfa.it/turnify/"); 
         });
 
+        builder.Services.AddTransient<AuthDelegatingHandler>();
+
         builder.Services.AddHttpClient("TurnifyApi", client =>
         {
             client.BaseAddress = new Uri("https://samuconfa.it/turnify/");
-        });
+        }).AddHttpMessageHandler<AuthDelegatingHandler>();
 
         // ViewModels
         builder.Services.AddTransient<LoginViewModel>();

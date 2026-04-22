@@ -14,10 +14,7 @@ public partial class DashboardPage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        
         if (BindingContext is DashboardViewModel vm)
-        {
             vm.LoadDataCommand.Execute(null);
-        }
     }
 }

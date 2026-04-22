@@ -130,3 +130,128 @@ Nessuna correzione successiva documentata immediato sui controller. I DTOs gener
 
 ---
 
+## Prompt 06
+
+### Data
+2026-04-21
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Creare la struttura Shell e i ViewModel stub per l'app MAUI
+
+### Prompt
+> "Crea la navigazione Shell per l'app .NET MAUI. `AppShell.xaml` con un `TabBar` principale: tab Dashboard, ShiftCalendar, VacationList, Notifications, Profile. In `AppShell.xaml.cs` registra le route per tutte le pagine con `Routing.RegisterRoute`. Crea `BaseViewModel : ObservableObject` con `[ObservableProperty] bool IsBusy` e `string Title`. Crea ViewModel stub per ogni tab che ereditano `BaseViewModel`. Crea le View XAML corrispondenti con `ContentPage` minimali e `x:DataType` sul ViewModel. Registra tutto nel DI in `MauiProgram.cs` con `AddSingleton` per i ViewModel e `AddTransient` per le View."
+
+### Output utile
+`BaseViewModel.cs`, 6 ViewModel stub, 6 View XAML con code-behind, `AppShell.xaml` con TabBar, registrazione DI in `MauiProgram.cs`. 411 righe in 29 file (incluse modifiche a file esistenti).
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+La struttura generata è rimasta la base invariata per tutta l'evoluzione del progetto. Il pattern `BaseViewModel : ObservableObject` con `[ObservableProperty]` è coerente con CommunityToolkit.Mvvm 8.4.2 dichiarato nel `.csproj`.
+
+---
+
+## Prompt 07
+
+### Data
+2026-04-21
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Implementare LoginViewModel con autenticazione reale e mobile AuthService
+
+### Prompt
+> "Implementa `LoginViewModel` completo con `[RelayCommand] async Task LoginAsync`. Il comando deve: mostrare `IsBusy = true`, chiamare `POST /api/auth/login` via `HttpClient`, salvare il JWT in `SecureStorage.SetAsync(\"jwt_token\", token)`, navigare a `//Dashboard` o `//EmployeeDashboard` in base al claim `role` nel token. Gestisci gli errori HTTP mostrando il codice di stato nel messaggio. Crea `Mobile/Services/AuthService.cs` con `LoginAsync(email, password)` e `GetTokenAsync`. Configura `HttpClient` con base address dell'API in `MauiProgram.cs`."
+
+### Output utile
+`AuthService.cs` mobile (58 righe), `LoginViewModel.cs` riscritto (+68 righe nette), `LoginPage.xaml` aggiornata con binding. `MauiProgram.cs` aggiornato con `AddHttpClient` e base address. Aggiunto `System.IdentityModel.Tokens.Jwt` al `.csproj` per leggere i claims del token.
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Il pattern di lettura claims dal JWT (`JwtSecurityTokenHandler.ReadJwtToken(token)`) è visibile nel codice attuale di `LoginViewModel` e `AuthService` mobile, confermando che questa era la logica richiesta e generata.
+
+---
+
+## Prompt 08
+
+### Data
+2026-04-21
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Aggiungere unit test per AuthService e ShiftService
+
+### Prompt
+> "Aggiungi test unitari xUnit in `Turnify.Tests/Services/`. Crea `AuthServiceTests.cs` con test per: registrazione nuovo utente (verifica salvataggio DB e JWT restituito), login con credenziali corrette, login con password errata (atteso eccezione o null), claims JWT contenenti userId/email/role/companyId. Crea `ShiftServiceTests.cs` con test per: creazione turno valido, recupero turni per companyId. Usa Moq per mockare i repository. Configura il progetto `Turnify.Tests` con riferimento a `Turnify.Infrastructure`."
+
+### Output utile
+`AuthServiceTests.cs` (175 righe), `ShiftServiceTests.cs` (152 righe), `Turnify.Tests.csproj` con dipendenze xUnit + Moq. Il primo aggiornamento dei test aveva aggiunto interfacce mancanti e refactored `AuthService`; il secondo ha aggiunto i file test veri e propri.
+
+### Decisione presa
+Modificato — refactor di AuthService richiesto prima
+
+### Motivazione
+Il aggiornamento documentato modifica `AuthService.cs` per 41 righe prima di aggiungere i test: indica che la versione generata in non era testabile (dipendenze hardcodate) e ha richiesto un refactor per iniettarle correttamente prima di poter scrivere i mock.
+
+---
+
+## Prompt 09
+
+### Data
+2026-04-21
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Convertire i mockup HTML del design in XAML per le pagine MAUI
+
+### Prompt
+> "Ho una serie di mockup HTML/CSS per le pagine dell'app (login, dashboard admin, calendario turni, richiesta ferie, notifiche, profilo) in modalità dark e light. Convertili in XAML .NET MAUI mantenendo la struttura visiva: layout con `Grid`/`StackLayout`/`ScrollView`, colori mappati su risorse in `Colors.xaml`, font e dimensioni preservate. Genera: `LoginPage.xaml`, `DashboardPage.xaml`, `ShiftCalendarPage.xaml`, `VacationListPage.xaml`, `NotificationsPage.xaml`, `ProfilePage.xaml`."
+
+### Output utile
+6 pagine XAML aggiornate con contenuto reale (da 12 righe stub a 40–128 righe per pagina). I mockup HTML originali erano stati salvati nel repository insieme alla conversione e rimossi subito dopo in (3.680 righe eliminate).
+
+### Decisione presa
+Accettato con pulizia immediata
+
+### Motivazione
+Il aggiornamento documentato immediatamente successivo rimuove tutti i file HTML e PNG dei mockup dal repository e corregge i colori mancanti in `Colors.xaml`: il passaggio di conversione aveva omesso alcune variabili di colore presenti nei mockup ma assenti nel design system MAUI.
+
+---
+
+## Prompt 10
+
+### Data
+2026-04-22
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Aggiungere il modello Business per gestione multi-attività con orari apertura
+
+### Prompt
+> "Aggiungi il modello `Business` per rappresentare sedi/attività di un'azienda: campi `Name`, `Address`, `CompanyId`, `OpeningTime`, `ClosingTime`, `IsActive`. Crea la migrazione EF Core `AddBusinessModel`. Crea `IBusinessRepository` e `BusinessRepository`. Crea `BusinessesController` con CRUD completo e endpoint `PUT /api/businesses/{id}/opening-hours` per aggiornare gli orari. Aggiungi `BusinessDto` e `OpeningHoursDto`. Registra nel DI in `Program.cs`."
+
+### Output utile
+`Business.cs`, `IBusinessRepository.cs`, `BusinessRepository.cs` (50 righe), `BusinessesController.cs` (157 righe), `BusinessDto.cs`, migrazione `20260422190154_AddBusinessModel` (65 righe DDL). 839 righe in 10 file.
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Nessuna correzione successiva documentata direttamente collegato a questo modello. La struttura `Business` con `CompanyId` e `OpeningTime`/`ClosingTime` è rimasta invariata fino all'ultimo aggiornamento del repository.
+
+---
+

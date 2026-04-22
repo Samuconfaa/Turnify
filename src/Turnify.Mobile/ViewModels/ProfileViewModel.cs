@@ -14,13 +14,21 @@ public partial class ProfileViewModel : BaseViewModel
 {
     private readonly HttpClient _httpClient;
 
-    [ObservableProperty] private string _firstName = string.Empty;
-    [ObservableProperty] private string _lastName = string.Empty;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(FullName))]
+    private string _firstName = string.Empty;
+    
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(FullName))]
+    private string _lastName = string.Empty;
+    
     [ObservableProperty] private string _email = string.Empty;
     [ObservableProperty] private string _role = string.Empty;
     [ObservableProperty] private string _initials = "??";
     [ObservableProperty] private bool _isPushEnabled = true;
     [ObservableProperty] private bool _isEmailEnabled = false;
+
+    public string FullName => $"{FirstName} {LastName}".Trim();
 
     public ProfileViewModel(HttpClient httpClient)
     {
@@ -49,11 +57,19 @@ public partial class ProfileViewModel : BaseViewModel
 
             Email = user.Email;
             Role = user.Role;
-            FirstName = user.Email.Split('@')[0]; // placeholder finché non hai endpoint nome
-            LastName = string.Empty;
-            Initials = FirstName.Length > 0
-                ? FirstName[0].ToString().ToUpper()
-                : "?";
+            FirstName = user.FirstName ?? string.Empty;
+            LastName = user.LastName ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(FirstName) && string.IsNullOrWhiteSpace(LastName))
+            {
+                Initials = !string.IsNullOrWhiteSpace(Email) ? Email.Substring(0, 1).ToUpper() : "?";
+            }
+            else
+            {
+                var initF = !string.IsNullOrWhiteSpace(FirstName) ? FirstName.Substring(0, 1) : "";
+                var initL = !string.IsNullOrWhiteSpace(LastName) ? LastName.Substring(0, 1) : "";
+                Initials = $"{initF}{initL}".ToUpper();
+            }
         }
         catch { }
         finally { IsBusy = false; }
@@ -138,5 +154,7 @@ public partial class ProfileViewModel : BaseViewModel
     {
         public string Email { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
     }
 }

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
+             x:Class="Turnify.Mobile.Views.EmployeeDetailPage"
+             x:DataType="vm:EmployeeDetailViewModel"
+             Title="{Binding Title}">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="15" Padding="20">
+
+            <Label Text="Nome" FontAttributes="Bold" />
+            <Entry Text="{Binding Employee.FirstName}" Placeholder="Es. Mario" />
+
+            <Label Text="Cognome" FontAttributes="Bold" />
+            <Entry Text="{Binding Employee.LastName}" Placeholder="Es. Rossi" />
+
+            <Label Text="Email" FontAttributes="Bold" />
+            <Entry Text="{Binding Employee.Email}" Keyboard="Email" Placeholder="mario.rossi@example.com" />
+
+            <Label Text="Telefono" FontAttributes="Bold" />
+            <Entry Text="{Binding Employee.Phone}" Keyboard="Telephone" Placeholder="+39 333 1234567" />
+
+            <Label Text="Ruolo in azienda" FontAttributes="Bold" />
+            <Entry Text="{Binding Employee.Role}" Placeholder="Es. Cameriere" />
+
+            <Label Text="Tipo Contratto" FontAttributes="Bold" />
+            <Picker ItemsSource="{Binding ContractTypes}" SelectedItem="{Binding SelectedContractType}" />
+
+            <Label Text="Ore settimanali" FontAttributes="Bold" />
+            <Entry Text="{Binding Employee.WeeklyHours}" Keyboard="Numeric" Placeholder="Es. 40" />
+
+            <Label Text="Attività di appartenenza" FontAttributes="Bold" />
+            <Picker ItemsSource="{Binding Businesses}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedBusiness}" Title="Seleziona attività" />
+
+            <!-- Password is only required when creating a new employee -->
+            <VerticalStackLayout IsVisible="{Binding IsCreateMode}" Spacing="5" Margin="0,10,0,0">
+                <Label Text="Password temporanea" FontAttributes="Bold" />
+                <Entry Text="{Binding Employee.Password}" IsPassword="False" Placeholder="TempPass123!" />
+                <Label Text="Da comunicare al dipendente per il primo accesso." FontSize="12" TextColor="Gray" />
+            </VerticalStackLayout>
+
+            <Grid ColumnDefinitions="*, *" ColumnSpacing="10" Margin="0,20,0,0">
+                <Button Grid.Column="0" 
+                        Text="Disattiva" 
+                        Command="{Binding DeleteCommand}"
+                        IsVisible="{Binding IsEditMode}"
+                        BackgroundColor="Transparent" 
+                        TextColor="{StaticResource Error}" 
+                        BorderColor="{StaticResource Error}" 
+                        BorderWidth="1" />
+                
+                <Button Grid.Column="1" 
+                        Text="Salva" 
+                        Command="{Binding SaveCommand}"
+                        BackgroundColor="{StaticResource Primary}" 
+                        TextColor="White">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding IsCreateMode}" Value="True">
+                            <Setter Property="Grid.ColumnSpan" Value="2" />
+                            <Setter Property="Grid.Column" Value="0" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
+            </Grid>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

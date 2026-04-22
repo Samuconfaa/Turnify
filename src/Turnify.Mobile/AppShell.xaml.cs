@@ -9,6 +9,7 @@ public partial class AppShell : Shell
         InitializeComponent();
         
         Routing.RegisterRoute(nameof(Views.LoginPage), typeof(Views.LoginPage));
+        Routing.RegisterRoute(nameof(Views.RegisterPage), typeof(Views.RegisterPage));
         Routing.RegisterRoute(nameof(Views.DashboardPage), typeof(Views.DashboardPage));
         Routing.RegisterRoute(nameof(Views.ShiftCalendarPage), typeof(Views.ShiftCalendarPage));
         Routing.RegisterRoute(nameof(Views.VacationListPage), typeof(Views.VacationListPage));

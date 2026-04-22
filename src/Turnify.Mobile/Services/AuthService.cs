@@ -19,7 +19,7 @@ public class AuthService : IAuthService
 
     public async Task<(string AccessToken, string RefreshToken)?> LoginAsync(string email, string password, CancellationToken ct = default)
     {
-        var response = await _httpClient.PostAsJsonAsync("/api/auth/login", new { email, password }, ct);
+        var response = await _httpClient.PostAsJsonAsync("api/auth/login", new { email, password }, ct);
         if (!response.IsSuccessStatusCode)
         {
             return null;

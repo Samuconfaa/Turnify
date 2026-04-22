@@ -4,7 +4,7 @@ namespace Turnify.Mobile;
 
 public partial class AppShell : Shell
 {
-    public AppShell()
+    public AppShell(bool isAdmin = false)
     {
         InitializeComponent();
         
@@ -17,8 +17,7 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(nameof(Views.ProfilePage), typeof(Views.ProfilePage));
         Routing.RegisterRoute(nameof(Views.EmployeeDetailPage), typeof(Views.EmployeeDetailPage));
         
-        // Hide admin tabs by default (assume Employee until Login)
-        ConfigureForRole(isAdmin: false);
+        ConfigureForRole(isAdmin);
     }
 
     public void ConfigureForRole(bool isAdmin)

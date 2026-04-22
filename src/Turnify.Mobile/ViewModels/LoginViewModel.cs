@@ -49,10 +49,10 @@ public partial class LoginViewModel : BaseViewModel
             {
                 // Qui in futuro leggeremo i claims dal JWT per impostare il ruolo (es. Admin o Dipendente)
                 // Per ora simuliamo
-                if (Application.Current?.MainPage is AppShell shell)
-                {
-                    shell.ConfigureForRole(isAdmin: true); 
-                }
+                bool isAdmin = true;
+                
+                // Ricreiamo l'AppShell per forzare MAUI a renderizzare correttamente le nuove tab
+                Application.Current!.MainPage = new AppShell(isAdmin);
                 
                 await Shell.Current.GoToAsync("//Dashboard");
             }

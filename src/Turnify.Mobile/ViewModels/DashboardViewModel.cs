@@ -74,7 +74,7 @@ public partial class DashboardViewModel : BaseViewModel
         {
             IsBusy = true;
             
-            var summary = await _httpClient.GetFromJsonAsync<DashboardSummaryDto>("/api/dashboard/summary");
+            var summary = await _httpClient.GetFromJsonAsync<DashboardSummaryDto>("api/dashboard/summary");
             if (summary != null)
             {
                 TotalEmployees = summary.TotalEmployees;

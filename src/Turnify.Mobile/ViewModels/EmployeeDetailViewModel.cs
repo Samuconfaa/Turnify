@@ -70,7 +70,7 @@ public partial class EmployeeDetailViewModel : BaseViewModel
         {
             IsBusy = true;
 
-            var businesses = await _httpClient.GetFromJsonAsync<BusinessItemDto[]>("/api/businesses");
+            var businesses = await _httpClient.GetFromJsonAsync<BusinessItemDto[]>("api/businesses");
             if (businesses != null)
             {
                 Businesses.Clear();
@@ -79,7 +79,7 @@ public partial class EmployeeDetailViewModel : BaseViewModel
 
             if (IsEditMode)
             {
-                var emp = await _httpClient.GetFromJsonAsync<EmployeeDetailDto>($"/api/employees/{EmployeeId}");
+                var emp = await _httpClient.GetFromJsonAsync<EmployeeDetailDto>($"api/employees/{EmployeeId}");
                 if (emp != null)
                 {
                     Employee = emp;
@@ -123,7 +123,7 @@ public partial class EmployeeDetailViewModel : BaseViewModel
             HttpResponseMessage response;
             if (IsCreateMode)
             {
-                response = await _httpClient.PostAsJsonAsync("/api/employees", Employee);
+                response = await _httpClient.PostAsJsonAsync("api/employees", Employee);
                 if (response.IsSuccessStatusCode)
                 {
                     if (App.Current?.MainPage != null)
@@ -138,7 +138,7 @@ public partial class EmployeeDetailViewModel : BaseViewModel
             }
             else
             {
-                response = await _httpClient.PutAsJsonAsync($"/api/employees/{EmployeeId}", Employee);
+                response = await _httpClient.PutAsJsonAsync($"api/employees/{EmployeeId}", Employee);
                 if (response.IsSuccessStatusCode)
                 {
                     await Shell.Current.GoToAsync("..");
@@ -175,7 +175,7 @@ public partial class EmployeeDetailViewModel : BaseViewModel
         try
         {
             IsBusy = true;
-            var response = await _httpClient.DeleteAsync($"/api/employees/{EmployeeId}");
+            var response = await _httpClient.DeleteAsync($"api/employees/{EmployeeId}");
             if (response.IsSuccessStatusCode)
             {
                 await Shell.Current.GoToAsync("..");

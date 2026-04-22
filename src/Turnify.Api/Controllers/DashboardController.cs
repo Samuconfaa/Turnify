@@ -1,0 +1,89 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading;
+using System.Threading.Tasks;
+using Turnify.Api.DTOs;
+using Turnify.Core.Interfaces.Services;
+using Turnify.Core.Models;
+
+namespace Turnify.Api.Controllers;
+
+[ApiController]
+[Route("api/dashboard")]
+[Authorize]
+public class DashboardController : ControllerBase
+{
+    private readonly IDashboardService _dashboardService;
+
+    public DashboardController(IDashboardService dashboardService)
+    {
+        _dashboardService = dashboardService;
+    }
+
+    private int GetCompanyId()
+    {
+        var claim = User.FindFirst("companyId");
+        return claim != null ? int.Parse(claim.Value) : 0;
+    }
+
+    private bool IsAdmin()
+    {
+        return User.IsInRole(UserRole.Admin.ToString());
+    }
+
+    [HttpGet("summary")]
+    public async Task<IActionResult> GetSummary([FromQuery] DateTime? from, [FromQuery] DateTime? to, CancellationToken ct)
+    {
+        if (!IsAdmin()) return Forbid();
+
+        var summary = await _dashboardService.GetSummaryAsync(GetCompanyId(), from, to, ct);
+
+        var dto = new DashboardSummaryDto
+        {
+            TotalEmployees = summary.TotalEmployees,
+            ShiftsThisWeek = summary.ShiftsThisWeek,
+            PendingVacations = summary.PendingVacations,
+            TotalHoursScheduled = summary.TotalHoursScheduled,
+            ShiftsToday = summary.ShiftsToday.Select(s => new DashboardShiftDto
+            {
+                Id = s.Id,
+                EmployeeName = s.EmployeeName,
+                StartTime = s.StartTime,
+                EndTime = s.EndTime,
+                Role = s.Role,
+                Status = s.Status
+            }).ToList(),
+            PendingRequests = summary.PendingRequests.Select(v => new DashboardPendingVacationDto
+            {
+                Id = v.Id,
+                EmployeeName = v.EmployeeName,
+                StartDate = v.StartDate,
+                EndDate = v.EndDate,
+                Type = v.Type
+            }).ToList()
+        };
+
+        return Ok(dto);
+    }
+
+    [HttpGet("hours-by-employee")]
+    public async Task<IActionResult> GetHoursByEmployee([FromQuery] DateTime? from, [FromQuery] DateTime? to, CancellationToken ct)
+    {
+        if (!IsAdmin()) return Forbid();
+
+        var data = await _dashboardService.GetHoursByEmployeeAsync(GetCompanyId(), from, to, ct);
+
+        var dtos = data.Select(d => new EmployeeHoursDto
+        {
+            EmployeeId = d.EmployeeId,
+            EmployeeName = d.EmployeeName,
+            ScheduledHours = d.ScheduledHours,
+            ShiftsCount = d.ShiftsCount
+        }).ToList();
+
+        return Ok(dtos);
+    }
+}

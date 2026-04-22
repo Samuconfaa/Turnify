@@ -1,8 +1,6 @@
-using System;
+namespace Turnify.Api.DTOs;
 
-namespace Turnify.Core.Models;
-
-public class Employee
+public class EmployeeDto
 {
     public int Id { get; set; }
     public int CompanyId { get; set; }
@@ -12,12 +10,8 @@ public class Employee
     public string Email { get; set; } = string.Empty;
     public string Phone { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
-    public ContractType ContractType { get; set; }
+    public string ContractType { get; set; } = string.Empty;
     public decimal WeeklyHours { get; set; }
-    public DateTime HireDate { get; set; }
     public bool IsActive { get; set; }
-    public string Notes { get; set; } = string.Empty;
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
     public int? BusinessId { get; set; }
 }

@@ -25,10 +25,15 @@ public class UsersController : ControllerBase
 
     private int GetUserId()
     {
-        var claim = User.FindFirst(ClaimTypes.NameIdentifier) ?? User.FindFirst(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub);
+        var claim = User.FindFirst(ClaimTypes.NameIdentifier)
+                 ?? User.FindFirst(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub);
         return claim != null ? int.Parse(claim.Value) : 0;
     }
 
+    /// <summary>
+    /// Returns the current authenticated user's profile, including their employeeId.
+    /// Fix: expose employeeId so the mobile app can submit vacation requests correctly.
+    /// </summary>
     [HttpGet("me")]
     public async Task<IActionResult> GetMe(CancellationToken ct)
     {
@@ -45,9 +50,11 @@ public class UsersController : ControllerBase
             email = user.Email,
             role = user.Role.ToString(),
             companyId = user.CompanyId,
-            firstName = employee?.FirstName ?? "",
-            lastName = employee?.LastName ?? "",
-            phone = employee?.Phone ?? ""
+            // Fix 4: expose employeeId so mobile can use it for vacation requests
+            employeeId = employee?.Id ?? 0,
+            firstName = employee?.FirstName ?? string.Empty,
+            lastName = employee?.LastName ?? string.Empty,
+            phone = employee?.Phone ?? string.Empty
         });
     }
 
@@ -59,9 +66,7 @@ public class UsersController : ControllerBase
         if (user == null) return NotFound();
 
         if (!BCrypt.Net.BCrypt.Verify(request.CurrentPassword, user.PasswordHash))
-        {
-            return BadRequest("Password attuale errata.");
-        }
+            return BadRequest(new { message = "Password attuale errata." });
 
         user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
         await _userRepository.UpdateAsync(user, ct);

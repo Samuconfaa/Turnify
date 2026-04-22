@@ -1,4 +1,4 @@
-﻿<?xml version = "1.0" encoding = "UTF-8" ?>
+<?xml version = "1.0" encoding = "UTF-8" ?>
 <Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:converters="clr-namespace:Turnify.Mobile.Converters"
@@ -11,8 +11,14 @@
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
+            <!-- Existing converters -->
             <converters:BoolToShiftColorConverter x:Key="BoolToShiftColorConverter"/>
             <converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
+
+            <!-- New converters (Fix 1, 3, 6) -->
+            <converters:StringNotEmptyConverter x:Key="StringNotEmptyConverter"/>
+            <converters:StatusIsPendingConverter x:Key="StatusIsPendingConverter"/>
+            <converters:InvertedBoolConverter x:Key="InvertedBoolConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

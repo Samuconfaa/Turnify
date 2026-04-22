@@ -17,7 +17,7 @@ public class EmployeeDetailDto
     public string Phone { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
     public string ContractType { get; set; } = "FullTime";
-    public decimal WeeklyHours { get; set; }
+    public decimal WeeklyHours { get; set; } = 40;
     public bool IsActive { get; set; } = true;
     public int? BusinessId { get; set; }
     public string Password { get; set; } = string.Empty;
@@ -28,21 +28,17 @@ public partial class EmployeeDetailViewModel : BaseViewModel
 {
     private readonly HttpClient _httpClient;
 
-    [ObservableProperty]
-    private int _employeeId;
-
-    [ObservableProperty]
-    private EmployeeDetailDto _employee = new();
+    [ObservableProperty] private int _employeeId;
+    [ObservableProperty] private EmployeeDetailDto _employee = new();
+    [ObservableProperty] private BusinessItemDto? _selectedBusiness;
+    [ObservableProperty] private string _selectedContractType = "FullTime";
 
     public ObservableCollection<BusinessItemDto> Businesses { get; } = new();
+    public ObservableCollection<string> ContractTypes { get; } = new()
+        { "FullTime", "PartTime", "Apprenticeship", "FixedTerm", "OnCall" };
 
-    [ObservableProperty]
-    private BusinessItemDto? _selectedBusiness;
-
-    public ObservableCollection<string> ContractTypes { get; } = new() { "FullTime", "PartTime" };
-
-    [ObservableProperty]
-    private string _selectedContractType = "FullTime";
+    public ObservableCollection<string> ContractTypesDisplay { get; } = new()
+        { "Tempo pieno", "Part-time", "Apprendistato", "Tempo determinato", "A chiamata" };
 
     public bool IsEditMode => EmployeeId > 0;
     public bool IsCreateMode => !IsEditMode;
@@ -65,17 +61,14 @@ public partial class EmployeeDetailViewModel : BaseViewModel
     public async Task LoadDataAsync()
     {
         if (IsBusy) return;
-
         try
         {
             IsBusy = true;
 
             var businesses = await _httpClient.GetFromJsonAsync<BusinessItemDto[]>("api/businesses");
+            Businesses.Clear();
             if (businesses != null)
-            {
-                Businesses.Clear();
                 foreach (var b in businesses) Businesses.Add(b);
-            }
 
             if (IsEditMode)
             {
@@ -84,24 +77,15 @@ public partial class EmployeeDetailViewModel : BaseViewModel
                 {
                     Employee = emp;
                     SelectedContractType = emp.ContractType;
-                    if (emp.BusinessId.HasValue)
-                    {
-                        foreach (var b in Businesses)
-                        {
-                            if (b.Id == emp.BusinessId.Value)
-                            {
-                                SelectedBusiness = b;
-                                break;
-                            }
-                        }
-                    }
+                    SelectedBusiness = emp.BusinessId.HasValue
+                        ? Businesses.FirstOrDefault(b => b.Id == emp.BusinessId.Value)
+                        : null;
                 }
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            if (App.Current?.MainPage != null)
-                await App.Current.MainPage.DisplayAlert("Errore", "Impossibile caricare i dati.", "OK");
+            await Shell.Current.DisplayAlert("Errore", $"Impossibile caricare i dati: {ex.Message}", "OK");
         }
         finally
         {
@@ -114,6 +98,21 @@ public partial class EmployeeDetailViewModel : BaseViewModel
     {
         if (IsBusy) return;
 
+        // Validate required fields
+        if (string.IsNullOrWhiteSpace(Employee.FirstName) ||
+            string.IsNullOrWhiteSpace(Employee.LastName) ||
+            string.IsNullOrWhiteSpace(Employee.Email))
+        {
+            await Shell.Current.DisplayAlert("Campi mancanti", "Nome, cognome ed email sono obbligatori.", "OK");
+            return;
+        }
+
+        if (IsCreateMode && string.IsNullOrWhiteSpace(Employee.Password))
+        {
+            await Shell.Current.DisplayAlert("Password mancante", "Inserisci una password temporanea per il dipendente.", "OK");
+            return;
+        }
+
         try
         {
             IsBusy = true;
@@ -121,39 +120,45 @@ public partial class EmployeeDetailViewModel : BaseViewModel
             Employee.BusinessId = SelectedBusiness?.Id;
 
             HttpResponseMessage response;
+
             if (IsCreateMode)
             {
                 response = await _httpClient.PostAsJsonAsync("api/employees", Employee);
+
                 if (response.IsSuccessStatusCode)
                 {
-                    if (App.Current?.MainPage != null)
-                        await App.Current.MainPage.DisplayAlert("Successo", $"Dipendente creato!\nEmail: {Employee.Email}\nPassword: {Employee.Password}", "OK");
+                    // Fix 4: Show credentials to admin clearly
+                    await Shell.Current.DisplayAlert(
+                        "✅ Dipendente creato!",
+                        $"Comunica queste credenziali al dipendente:\n\n" +
+                        $"📧 Email: {Employee.Email}\n" +
+                        $"🔑 Password: {Employee.Password}\n\n" +
+                        $"Il dipendente potrà cambiarla dal suo profilo.",
+                        "Ho capito");
                     await Shell.Current.GoToAsync("..");
                 }
                 else
                 {
-                    if (App.Current?.MainPage != null)
-                        await App.Current.MainPage.DisplayAlert("Errore", "Impossibile creare il dipendente.", "OK");
+                    var error = await response.Content.ReadAsStringAsync();
+                    await Shell.Current.DisplayAlert("Errore",
+                        response.StatusCode == System.Net.HttpStatusCode.BadRequest
+                            ? "Email già in uso. Usa un'altra email."
+                            : "Impossibile creare il dipendente.",
+                        "OK");
                 }
             }
             else
             {
                 response = await _httpClient.PutAsJsonAsync($"api/employees/{EmployeeId}", Employee);
                 if (response.IsSuccessStatusCode)
-                {
                     await Shell.Current.GoToAsync("..");
-                }
                 else
-                {
-                    if (App.Current?.MainPage != null)
-                        await App.Current.MainPage.DisplayAlert("Errore", "Impossibile aggiornare il dipendente.", "OK");
-                }
+                    await Shell.Current.DisplayAlert("Errore", "Impossibile aggiornare il dipendente.", "OK");
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            if (App.Current?.MainPage != null)
-                await App.Current.MainPage.DisplayAlert("Errore", "Errore durante il salvataggio.", "OK");
+            await Shell.Current.DisplayAlert("Errore", $"Errore durante il salvataggio: {ex.Message}", "OK");
         }
         finally
         {
@@ -166,25 +171,25 @@ public partial class EmployeeDetailViewModel : BaseViewModel
     {
         if (IsBusy || !IsEditMode) return;
 
-        if (App.Current?.MainPage != null)
-        {
-            bool confirm = await App.Current.MainPage.DisplayAlert("Conferma", "Sei sicuro di voler disattivare questo dipendente?", "Sì", "No");
-            if (!confirm) return;
-        }
+        bool confirm = await Shell.Current.DisplayAlert(
+            "Disattiva dipendente",
+            $"Vuoi disattivare {Employee.FirstName} {Employee.LastName}?\n" +
+            "I turni storici verranno conservati.",
+            "Sì, disattiva", "Annulla");
+        if (!confirm) return;
 
         try
         {
             IsBusy = true;
             var response = await _httpClient.DeleteAsync($"api/employees/{EmployeeId}");
             if (response.IsSuccessStatusCode)
-            {
                 await Shell.Current.GoToAsync("..");
-            }
+            else
+                await Shell.Current.DisplayAlert("Errore", "Impossibile disattivare il dipendente.", "OK");
         }
-        catch (Exception)
+        catch
         {
-            if (App.Current?.MainPage != null)
-                await App.Current.MainPage.DisplayAlert("Errore", "Impossibile disattivare il dipendente.", "OK");
+            await Shell.Current.DisplayAlert("Errore", "Errore di connessione.", "OK");
         }
         finally
         {

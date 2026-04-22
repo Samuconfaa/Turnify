@@ -154,4 +154,53 @@ public class BusinessesController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpGet("{id}/opening-hours")]
+    public async Task<IActionResult> GetOpeningHours(int id, CancellationToken ct)
+    {
+        if (!IsAdmin()) return Forbid();
+
+        var business = await _businessRepository.GetByIdAsync(id, ct);
+        if (business == null) return NotFound();
+
+        if (business.CompanyId != GetCompanyId()) return Forbid();
+
+        if (string.IsNullOrWhiteSpace(business.OpeningHours))
+        {
+            return Ok(new OpeningHoursDto());
+        }
+
+        try
+        {
+            var hours = System.Text.Json.JsonSerializer.Deserialize<OpeningHoursDto>(
+                business.OpeningHours,
+                new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+            );
+            return Ok(hours ?? new OpeningHoursDto());
+        }
+        catch
+        {
+            return Ok(new OpeningHoursDto());
+        }
+    }
+
+    [HttpPut("{id}/opening-hours")]
+    public async Task<IActionResult> UpdateOpeningHours(int id, [FromBody] OpeningHoursDto request, CancellationToken ct)
+    {
+        if (!IsAdmin()) return Forbid();
+
+        var business = await _businessRepository.GetByIdAsync(id, ct);
+        if (business == null) return NotFound();
+
+        if (business.CompanyId != GetCompanyId()) return Forbid();
+
+        business.OpeningHours = System.Text.Json.JsonSerializer.Serialize(
+            request,
+            new System.Text.Json.JsonSerializerOptions { PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase }
+        );
+
+        await _businessRepository.UpdateAsync(business, ct);
+
+        return Ok(request);
+    }
 }

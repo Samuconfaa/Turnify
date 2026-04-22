@@ -31,6 +31,11 @@ public static class MauiProgram
             client.BaseAddress = new Uri("https://samuconfa.it/turnify/"); 
         });
 
+        builder.Services.AddHttpClient("TurnifyApi", client =>
+        {
+            client.BaseAddress = new Uri("https://samuconfa.it/turnify/");
+        });
+
         // ViewModels
         builder.Services.AddTransient<LoginViewModel>();
         builder.Services.AddTransient<DashboardViewModel>();
@@ -38,6 +43,7 @@ public static class MauiProgram
         builder.Services.AddTransient<VacationListViewModel>();
         builder.Services.AddTransient<NotificationsViewModel>();
         builder.Services.AddTransient<ProfileViewModel>();
+        builder.Services.AddTransient<BusinessOpeningHoursViewModel>();
 
         // Views
         builder.Services.AddTransient<LoginPage>();
@@ -46,6 +52,7 @@ public static class MauiProgram
         builder.Services.AddTransient<VacationListPage>();
         builder.Services.AddTransient<NotificationsPage>();
         builder.Services.AddTransient<ProfilePage>();
+        builder.Services.AddTransient<BusinessOpeningHoursPage>();
 
         return builder.Build();
     }

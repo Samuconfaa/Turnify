@@ -38,9 +38,9 @@ public partial class ShiftCalendarViewModel : BaseViewModel
         }
     }
 
-    public ShiftCalendarViewModel(HttpClient httpClient)
+    public ShiftCalendarViewModel(IHttpClientFactory httpClientFactory)
     {
-        _httpClient = httpClient;
+        _httpClient = httpClientFactory.CreateClient("TurnifyApi");
         Title = "Turni";
         // Calcola il lunedì della settimana corrente
         var today = DateTime.Today;
@@ -76,12 +76,6 @@ public partial class ShiftCalendarViewModel : BaseViewModel
         IsBusy = true;
         try
         {
-            var token = await SecureStorage.Default.GetAsync("jwt_token");
-            if (string.IsNullOrEmpty(token)) return;
-
-            _httpClient.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", token);
-
             var from = CurrentWeekStart.ToString("yyyy-MM-ddTHH:mm:ssZ");
             var to = CurrentWeekStart.AddDays(5).ToString("yyyy-MM-ddTHH:mm:ssZ");
             var url = $"api/shifts?from={from}&to={to}";

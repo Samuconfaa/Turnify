@@ -18,9 +18,13 @@
                            TextColor="{StaticResource Primary}"
                            HorizontalOptions="Center" VerticalOptions="Center"/>
                 </Frame>
-                <Label Text="{Binding Email}"
-                       FontSize="16" FontAttributes="Bold"
+                <Label Text="{Binding FullName}"
+                       FontSize="20" FontAttributes="Bold"
                        TextColor="{StaticResource OnBackground}"
+                       HorizontalOptions="Center"/>
+                <Label Text="{Binding Email}"
+                       FontSize="14"
+                       TextColor="{StaticResource OnSurfaceVariant}"
                        HorizontalOptions="Center"/>
                 <Frame BackgroundColor="{StaticResource PrimaryContainer}"
                        BorderColor="Transparent" CornerRadius="16"

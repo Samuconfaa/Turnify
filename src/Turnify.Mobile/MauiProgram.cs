@@ -27,8 +27,8 @@ public static class MauiProgram
         // Services
         builder.Services.AddHttpClient<IAuthService, AuthService>(client =>
         {
-            // Base URL dell'API (su emulatore Android 10.0.2.2 mappa a localhost)
-            client.BaseAddress = new Uri("http://10.0.2.2:5000"); 
+            // Base URL dell'API di produzione
+            client.BaseAddress = new Uri("https://samuconfa.it/turnify/"); 
         });
 
         // ViewModels

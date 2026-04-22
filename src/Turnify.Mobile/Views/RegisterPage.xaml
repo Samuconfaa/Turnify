@@ -21,31 +21,49 @@
                     
                     <Label Text="Dati Azienda" FontAttributes="Bold" TextColor="{StaticResource Primary}" />
                     
-                    <Frame Padding="0" BorderColor="{StaticResource OutlineVariant}" CornerRadius="8" BackgroundColor="{StaticResource SurfaceContainer}" HasShadow="False">
-                        <Entry Text="{Binding CompanyName}" Placeholder="Nome Azienda" HeightRequest="52" Margin="16,0" TextColor="{StaticResource OnBackground}" />
-                    </Frame>
+                    <Border Padding="0" Stroke="{StaticResource OutlineVariant}" BackgroundColor="{StaticResource SurfaceContainer}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8" />
+                        </Border.StrokeShape>
+                        <Entry Text="{Binding CompanyName}" Placeholder="Nome Azienda" HeightRequest="52" Margin="16,0" TextColor="{StaticResource OnBackground}" BackgroundColor="Transparent" />
+                    </Border>
 
-                    <Frame Padding="0" BorderColor="{StaticResource OutlineVariant}" CornerRadius="8" BackgroundColor="{StaticResource SurfaceContainer}" HasShadow="False">
-                        <Entry Text="{Binding CompanySlug}" Placeholder="Slug (es. la-mia-azienda)" HeightRequest="52" Margin="16,0" TextColor="{StaticResource OnBackground}" />
-                    </Frame>
+                    <Border Padding="0" Stroke="{StaticResource OutlineVariant}" BackgroundColor="{StaticResource SurfaceContainer}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8" />
+                        </Border.StrokeShape>
+                        <Entry Text="{Binding CompanySlug}" Placeholder="Slug (es. la-mia-azienda)" HeightRequest="52" Margin="16,0" TextColor="{StaticResource OnBackground}" BackgroundColor="Transparent" />
+                    </Border>
 
-                    <Frame Padding="0" BorderColor="{StaticResource OutlineVariant}" CornerRadius="8" BackgroundColor="{StaticResource SurfaceContainer}" HasShadow="False">
-                        <Entry Text="{Binding CompanyEmail}" Placeholder="Email Aziendale" Keyboard="Email" HeightRequest="52" Margin="16,0" TextColor="{StaticResource OnBackground}" />
-                    </Frame>
+                    <Border Padding="0" Stroke="{StaticResource OutlineVariant}" BackgroundColor="{StaticResource SurfaceContainer}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8" />
+                        </Border.StrokeShape>
+                        <Entry Text="{Binding CompanyEmail}" Placeholder="Email Aziendale" Keyboard="Email" HeightRequest="52" Margin="16,0" TextColor="{StaticResource OnBackground}" BackgroundColor="Transparent" />
+                    </Border>
 
                     <Label Text="Account Amministratore" FontAttributes="Bold" TextColor="{StaticResource Primary}" Margin="0,8,0,0" />
 
-                    <Frame Padding="0" BorderColor="{StaticResource OutlineVariant}" CornerRadius="8" BackgroundColor="{StaticResource SurfaceContainer}" HasShadow="False">
-                        <Entry Text="{Binding AdminEmail}" Placeholder="Email Admin" Keyboard="Email" HeightRequest="52" Margin="16,0" TextColor="{StaticResource OnBackground}" />
-                    </Frame>
+                    <Border Padding="0" Stroke="{StaticResource OutlineVariant}" BackgroundColor="{StaticResource SurfaceContainer}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8" />
+                        </Border.StrokeShape>
+                        <Entry Text="{Binding AdminEmail}" Placeholder="Email Admin" Keyboard="Email" HeightRequest="52" Margin="16,0" TextColor="{StaticResource OnBackground}" BackgroundColor="Transparent" />
+                    </Border>
 
-                    <Frame Padding="0" BorderColor="{StaticResource OutlineVariant}" CornerRadius="8" BackgroundColor="{StaticResource SurfaceContainer}" HasShadow="False">
-                        <Entry Text="{Binding AdminPassword}" Placeholder="Password Admin" IsPassword="True" HeightRequest="52" Margin="16,0" TextColor="{StaticResource OnBackground}" />
-                    </Frame>
+                    <Border Padding="0" Stroke="{StaticResource OutlineVariant}" BackgroundColor="{StaticResource SurfaceContainer}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8" />
+                        </Border.StrokeShape>
+                        <Entry Text="{Binding AdminPassword}" Placeholder="Password Admin" IsPassword="True" HeightRequest="52" Margin="16,0" TextColor="{StaticResource OnBackground}" BackgroundColor="Transparent" />
+                    </Border>
 
-                    <Frame Padding="0" BorderColor="{StaticResource OutlineVariant}" CornerRadius="8" BackgroundColor="{StaticResource SurfaceContainer}" HasShadow="False">
-                        <Entry Text="{Binding ConfirmPassword}" Placeholder="Conferma Password" IsPassword="True" HeightRequest="52" Margin="16,0" TextColor="{StaticResource OnBackground}" />
-                    </Frame>
+                    <Border Padding="0" Stroke="{StaticResource OutlineVariant}" BackgroundColor="{StaticResource SurfaceContainer}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8" />
+                        </Border.StrokeShape>
+                        <Entry Text="{Binding ConfirmPassword}" Placeholder="Conferma Password" IsPassword="True" HeightRequest="52" Margin="16,0" TextColor="{StaticResource OnBackground}" BackgroundColor="Transparent" />
+                    </Border>
 
                     <Button Text="Registrati" Command="{Binding RegisterCommand}" BackgroundColor="{StaticResource Primary}" TextColor="{StaticResource OnPrimary}" HeightRequest="52" CornerRadius="8" FontAttributes="Bold" Margin="0,8,0,0" />
                 </VerticalStackLayout>

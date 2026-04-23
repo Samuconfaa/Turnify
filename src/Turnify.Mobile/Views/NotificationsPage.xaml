@@ -5,31 +5,133 @@
              x:Class="Turnify.Mobile.Views.NotificationsPage"
              Title="Notifiche"
              BackgroundColor="{StaticResource Background}">
-    <ScrollView>
-        <VerticalStackLayout Spacing="16" Padding="16">
-            <Label Text="Oggi" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource OnBackground}" Margin="0,8,0,0" />
 
-            <Frame BackgroundColor="{StaticResource SurfaceContainerLowest}" BorderColor="{StaticResource OutlineVariant}" HasShadow="True" Padding="16" CornerRadius="12">
-                <Grid ColumnDefinitions="Auto, *">
-                    <Label Grid.Column="0" Text="✅" FontSize="20" VerticalOptions="Center" Margin="0,0,12,0" />
-                    <VerticalStackLayout Grid.Column="1">
-                        <Label Text="Ferie approvate" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource OnBackground}" />
-                        <Label Text="La tua richiesta per il 1 Agosto è stata approvata." FontSize="14" TextColor="{StaticResource OnSurfaceVariant}" Margin="0,2,0,0" />
-                        <Label Text="2 ore fa" FontSize="12" TextColor="{StaticResource Outline}" Margin="0,4,0,0" />
-                    </VerticalStackLayout>
-                </Grid>
-            </Frame>
+    <Grid RowDefinitions="Auto,*">
 
-            <Frame BackgroundColor="{StaticResource Surface}" BorderColor="{StaticResource Outline}" HasShadow="True" Padding="16" CornerRadius="12">
-                <Grid ColumnDefinitions="Auto, *">
-                    <Label Grid.Column="0" Text="📅" FontSize="20" VerticalOptions="Center" Margin="0,0,12,0" />
-                    <VerticalStackLayout Grid.Column="1">
-                        <Label Text="Nuovo turno assegnato" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource OnBackground}" />
-                        <Label Text="Sei stato assegnato al turno Sala per domani." FontSize="14" TextColor="{StaticResource OnSurfaceVariant}" Margin="0,2,0,0" />
-                        <Label Text="5 ore fa" FontSize="12" TextColor="{StaticResource Outline}" Margin="0,4,0,0" />
+        <!-- Header con badge e pulsante segna tutto letto -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Padding="16,12,16,4">
+            <HorizontalStackLayout Grid.Column="0" Spacing="10" VerticalOptions="Center">
+                <Label Text="Notifiche"
+                       FontSize="22" FontAttributes="Bold"
+                       TextColor="{StaticResource OnBackground}"/>
+                <Border BackgroundColor="{StaticResource Primary}"
+                        IsVisible="{Binding UnreadCount, Converter={StaticResource IntIsZeroConverter}, ConverterParameter=invert}"
+                        Padding="8,3">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                    <Label Text="{Binding UnreadCount}"
+                           FontSize="12" FontAttributes="Bold"
+                           TextColor="White"/>
+                </Border>
+            </HorizontalStackLayout>
+            <Button Grid.Column="1"
+                    Text="Segna tutte lette"
+                    Command="{Binding MarkAllReadCommand}"
+                    IsVisible="{Binding UnreadCount, Converter={StaticResource IntIsZeroConverter}, ConverterParameter=invert}"
+                    BackgroundColor="Transparent"
+                    TextColor="{StaticResource Primary}"
+                    FontSize="13" Padding="0"/>
+        </Grid>
+
+        <!-- Error -->
+        <Border Grid.Row="0" Grid.RowSpan="2"
+                IsVisible="{Binding HasError}"
+                BackgroundColor="#FEF2F2"
+                Stroke="#FECACA" StrokeThickness="1"
+                Padding="16" Margin="16,60,16,0"
+                VerticalOptions="Start">
+            <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+            <Label Text="{Binding ErrorMessage}"
+                   FontSize="14" TextColor="#DC2626"/>
+        </Border>
+
+        <RefreshView Grid.Row="1"
+                     Command="{Binding LoadCommand}"
+                     IsRefreshing="{Binding IsBusy}">
+            <CollectionView ItemsSource="{Binding Notifications}">
+
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout HorizontalOptions="Center"
+                                         Margin="0,60,0,0" Spacing="12"
+                                         IsVisible="{Binding HasError, Converter={StaticResource InverseBoolConverter}}">
+                        <Label Text="🔔" FontSize="52" HorizontalOptions="Center"/>
+                        <Label Text="Nessuna notifica"
+                               FontSize="18" FontAttributes="Bold"
+                               TextColor="{StaticResource OnBackground}"
+                               HorizontalOptions="Center"/>
+                        <Label Text="Le notifiche appariranno qui quando ci sono aggiornamenti sui tuoi turni o ferie."
+                               FontSize="14"
+                               TextColor="{StaticResource OnSurfaceVariant}"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"
+                               Margin="32,0"/>
                     </VerticalStackLayout>
-                </Grid>
-            </Frame>
-        </VerticalStackLayout>
-    </ScrollView>
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:NotificationDto">
+                        <Border BackgroundColor="{Binding BackgroundColor}"
+                                Stroke="{StaticResource Outline}" StrokeThickness="1"
+                                Padding="16" Margin="16,0,16,8">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NotificationsViewModel}}, Path=MarkReadCommand}"
+                                    CommandParameter="{Binding .}"/>
+                            </Border.GestureRecognizers>
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+
+                                <!-- Icon -->
+                                <Border Grid.Column="0"
+                                        BackgroundColor="{StaticResource PrimaryContainer}"
+                                        HeightRequest="44" WidthRequest="44"
+                                        VerticalOptions="Start">
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="22"/></Border.StrokeShape>
+                                    <Label Text="{Binding Icon}"
+                                           FontSize="20"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"/>
+                                </Border>
+
+                                <!-- Content -->
+                                <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+                                    <Label Text="{Binding Title}"
+                                           FontSize="15" FontAttributes="Bold"
+                                           TextColor="{StaticResource OnBackground}"/>
+                                    <Label Text="{Binding Body}"
+                                           FontSize="13"
+                                           TextColor="{StaticResource OnSurfaceVariant}"
+                                           LineBreakMode="WordWrap"/>
+                                    <Label Text="{Binding TimeAgo}"
+                                           FontSize="11"
+                                           TextColor="{StaticResource Outline}"
+                                           Margin="0,2,0,0"/>
+                                </VerticalStackLayout>
+
+                                <!-- Unread dot -->
+                                <Ellipse Grid.Column="2"
+                                         Fill="{StaticResource Primary}"
+                                         HeightRequest="8" WidthRequest="8"
+                                         VerticalOptions="Start"
+                                         Margin="0,4,0,0">
+                                    <Ellipse.Triggers>
+                                        <DataTrigger TargetType="Ellipse"
+                                                     Binding="{Binding IsRead}" Value="True">
+                                            <Setter Property="IsVisible" Value="False"/>
+                                        </DataTrigger>
+                                    </Ellipse.Triggers>
+                                </Ellipse>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <ActivityIndicator Grid.Row="1"
+                           IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           Color="{StaticResource Primary}"/>
+    </Grid>
 </ContentPage>

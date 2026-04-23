@@ -20,7 +20,6 @@ public partial class ProfilePage : ContentPage
         await _viewModel.OnAppearingAsync();
     }
 
-    // Navigate to Team tab
     private async void OnTeamTapped(object? sender, EventArgs e)
     {
         await Shell.Current.GoToAsync("//Team");

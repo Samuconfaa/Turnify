@@ -29,21 +29,21 @@ public class ShiftsController : ControllerBase
 
     private int GetCompanyId()
     {
-        var claim = User.FindFirst("companyId");
-        return claim != null ? int.Parse(claim.Value) : 0;
+        var claim = User.FindFirst("companyId")
+                 ?? User.FindFirst("CompanyId");
+        return claim != null && int.TryParse(claim.Value, out int id) ? id : 0;
     }
 
     private int GetUserId()
     {
         var claim = User.FindFirst(ClaimTypes.NameIdentifier)
                  ?? User.FindFirst(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub);
-        return claim != null ? int.Parse(claim.Value) : 0;
+        return claim != null && int.TryParse(claim.Value, out int id) ? id : 0;
     }
 
     private bool IsAdmin() => User.IsInRole(UserRole.Admin.ToString());
 
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<ShiftDto>), 200)]
     public async Task<IActionResult> GetShifts(
         [FromQuery] DateTime from,
         [FromQuery] DateTime to,
@@ -53,67 +53,77 @@ public class ShiftsController : ControllerBase
         CancellationToken ct = default)
     {
         var companyId = GetCompanyId();
+        if (companyId == 0) return Unauthorized();
+
         IReadOnlyList<Shift> shifts;
 
         if (IsAdmin())
         {
-            // Admin: get all shifts for company, optionally filtered by employee
             shifts = await _shiftService.GetShiftsAsync(companyId, from, to, ct);
             if (employeeId.HasValue)
                 shifts = shifts.Where(s => s.EmployeeId == employeeId.Value).ToList();
         }
         else
         {
-            // Fix 2 & 6: Employee automatically sees only their own shifts — no way to see others
-            var userId = GetUserId();
+            var userId   = GetUserId();
             var employee = await _employeeRepository.GetByUserIdAsync(userId, ct);
-            if (employee == null) return Ok(new List<ShiftDto>()); // no employee profile yet
-
+            if (employee == null) return Ok(new { data = new List<object>(), total = 0 });
             shifts = await _shiftService.GetShiftsByEmployeeAsync(employee.Id, from, to, ct);
-
-            // Extra safety: ensure these shifts actually belong to the employee's company
             shifts = shifts.Where(s => s.CompanyId == companyId).ToList();
         }
 
+        // Load all employees for the company once to build a name lookup
+        var employees = await _employeeRepository.GetAllByCompanyIdAsync(companyId, null, ct);
+        var nameMap   = employees.ToDictionary(e => e.Id, e => $"{e.FirstName} {e.LastName}".Trim());
+
         var paged = shifts
+            .OrderBy(s => s.StartTime)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Select(MapToDto)
+            .Select(s => new
+            {
+                id               = s.Id,
+                companyId        = s.CompanyId,
+                employeeId       = s.EmployeeId,
+                employeeName     = nameMap.TryGetValue(s.EmployeeId, out var n) ? n : string.Empty,
+                startTime        = s.StartTime,
+                endTime          = s.EndTime,
+                label            = s.Label,
+                note             = s.Note,
+                status           = s.Status.ToString(),
+                isRecurring      = s.IsRecurring,
+                recurringGroupId = s.RecurringGroupId
+            })
             .ToList();
 
-        // Return wrapped in object for mobile pagination support
         return Ok(new { data = paged, total = shifts.Count, page, pageSize });
     }
 
     [HttpPost]
-    [ProducesResponseType(typeof(ShiftDto), 201)]
-    [ProducesResponseType(403)]
-    [ProducesResponseType(409)]
     public async Task<IActionResult> CreateShift([FromBody] CreateShiftRequest request, CancellationToken ct)
     {
-        // Fix 6: Only admins can create shifts
         if (!IsAdmin())
             return StatusCode(403, new { message = "Solo gli amministratori possono creare turni." });
 
         var companyId = GetCompanyId();
+        if (companyId == 0) return Unauthorized();
 
-        // Verify employee belongs to this company
         var employee = await _employeeRepository.GetByIdAsync(request.EmployeeId, ct);
         if (employee == null || employee.CompanyId != companyId)
             return StatusCode(403, new { message = "Il dipendente non appartiene a questa azienda." });
 
         var shift = new Shift
         {
-            CompanyId = companyId,
-            EmployeeId = request.EmployeeId,
-            StartTime = request.StartTime,
-            EndTime = request.EndTime,
-            Label = request.Label,
-            Note = request.Note,
-            Status = request.Status == default ? ShiftStatus.Scheduled : request.Status,
-            IsRecurring = request.IsRecurring,
+            CompanyId        = companyId,
+            EmployeeId       = request.EmployeeId,
+            StartTime        = request.StartTime,
+            EndTime          = request.EndTime,
+            Label            = request.Label ?? string.Empty,
+            Note             = request.Note  ?? string.Empty,
+            Status           = request.Status == default ? ShiftStatus.Scheduled : request.Status,
+            IsRecurring      = request.IsRecurring,
             RecurringGroupId = request.RecurringGroupId,
-            CreatedByUserId = GetUserId()
+            CreatedByUserId  = GetUserId()
         };
 
         try
@@ -128,7 +138,6 @@ public class ShiftsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    [ProducesResponseType(typeof(ShiftDto), 200)]
     public async Task<IActionResult> GetShift(int id, CancellationToken ct)
     {
         var shift = await _shiftService.GetShiftByIdAsync(id, ct);
@@ -137,22 +146,17 @@ public class ShiftsController : ControllerBase
 
         if (!IsAdmin())
         {
-            // Employee can only see their own shift
-            var userId = GetUserId();
-            var employee = await _employeeRepository.GetByUserIdAsync(userId, ct);
-            if (employee == null || shift.EmployeeId != employee.Id)
-                return StatusCode(403, new { message = "Non hai accesso a questo turno." });
+            var emp = await _employeeRepository.GetByUserIdAsync(GetUserId(), ct);
+            if (emp == null || shift.EmployeeId != emp.Id)
+                return StatusCode(403);
         }
 
         return Ok(MapToDto(shift));
     }
 
     [HttpPut("{id}")]
-    [ProducesResponseType(typeof(ShiftDto), 200)]
-    [ProducesResponseType(403)]
     public async Task<IActionResult> UpdateShift(int id, [FromBody] UpdateShiftRequest request, CancellationToken ct)
     {
-        // Fix 6: Only admins can modify shifts
         if (!IsAdmin())
             return StatusCode(403, new { message = "Solo gli amministratori possono modificare turni." });
 
@@ -160,12 +164,12 @@ public class ShiftsController : ControllerBase
         if (shift == null) return NotFound();
         if (shift.CompanyId != GetCompanyId()) return StatusCode(403);
 
-        shift.StartTime = request.StartTime;
-        shift.EndTime = request.EndTime;
-        shift.Label = request.Label;
-        shift.Note = request.Note;
-        shift.Status = request.Status;
-        shift.IsRecurring = request.IsRecurring;
+        shift.StartTime        = request.StartTime;
+        shift.EndTime          = request.EndTime;
+        shift.Label            = request.Label;
+        shift.Note             = request.Note;
+        shift.Status           = request.Status;
+        shift.IsRecurring      = request.IsRecurring;
         shift.RecurringGroupId = request.RecurringGroupId;
 
         try
@@ -180,11 +184,8 @@ public class ShiftsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [ProducesResponseType(204)]
-    [ProducesResponseType(403)]
     public async Task<IActionResult> DeleteShift(int id, CancellationToken ct)
     {
-        // Fix 6: Only admins can delete shifts
         if (!IsAdmin())
             return StatusCode(403, new { message = "Solo gli amministratori possono eliminare turni." });
 
@@ -198,15 +199,15 @@ public class ShiftsController : ControllerBase
 
     private static ShiftDto MapToDto(Shift s) => new()
     {
-        Id = s.Id,
-        CompanyId = s.CompanyId,
-        EmployeeId = s.EmployeeId,
-        StartTime = s.StartTime,
-        EndTime = s.EndTime,
-        Label = s.Label,
-        Note = s.Note,
-        Status = s.Status,
-        IsRecurring = s.IsRecurring,
+        Id               = s.Id,
+        CompanyId        = s.CompanyId,
+        EmployeeId       = s.EmployeeId,
+        StartTime        = s.StartTime,
+        EndTime          = s.EndTime,
+        Label            = s.Label,
+        Note             = s.Note,
+        Status           = s.Status,
+        IsRecurring      = s.IsRecurring,
         RecurringGroupId = s.RecurringGroupId
     };
 }

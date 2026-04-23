@@ -1,12 +1,12 @@
-using Android.Telephony;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.Storage;
 using System;
 using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Storage;
 
 namespace Turnify.Mobile.ViewModels;
 
@@ -22,52 +22,51 @@ public class VacationRequestDto
     public string Status { get; set; } = string.Empty;
     public string ReviewNote { get; set; } = string.Empty;
     public DateTime? ReviewedAt { get; set; }
+    // Admin only — employee name shown in admin list
+    public string EmployeeName { get; set; } = string.Empty;
 
     public string StatusDisplay => Status switch
     {
-        "Pending" => "In Attesa",
-        "Approved" => "Approvata",
-        "Rejected" => "Rifiutata",
+        "Pending"   => "In Attesa",
+        "Approved"  => "Approvata",
+        "Rejected"  => "Rifiutata",
         "Cancelled" => "Annullata",
-        _ => Status
+        _           => Status
     };
-
     public string TypeDisplay => Type switch
     {
-        "Holiday" => "Ferie",
-        "PaidLeave" => "Permesso pagato",
+        "Holiday"     => "Ferie",
+        "PaidLeave"   => "Permesso pagato",
         "UnpaidLeave" => "Permesso non pagato",
-        "SickLeave" => "Malattia",
-        _ => Type
+        "SickLeave"   => "Malattia",
+        _             => Type
     };
-
-    public string DateRange => $"{StartDate:dd MMM} – {EndDate:dd MMM yyyy}";
-
-    public string StatusColor => Status switch
+    public string DateRange    => $"{StartDate:dd MMM} – {EndDate:dd MMM yyyy}";
+    public string StatusColor  => Status switch
     {
-        "Approved" => "#16A34A",
-        "Rejected" => "#DC2626",
-        "Pending" => "#D97706",
-        _ => "#6B7280"
+        "Approved"  => "#16A34A",
+        "Rejected"  => "#DC2626",
+        "Pending"   => "#D97706",
+        _           => "#6B7280"
     };
-
     public string StatusBgColor => Status switch
     {
-        "Approved" => "#E6F4EA",
-        "Rejected" => "#FCE8E6",
-        "Pending" => "#FEF3C7",
-        _ => "#F3F4F6"
+        "Approved"  => "#E6F4EA",
+        "Rejected"  => "#FCE8E6",
+        "Pending"   => "#FEF3C7",
+        _           => "#F3F4F6"
     };
-}
-
-public class CreateVacationDto
-{
-    public int EmployeeId { get; set; }
-    public string Type { get; set; } = "Holiday";
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
-    public int TotalDays { get; set; }
-    public string Reason { get; set; } = string.Empty;
+    public string Initials
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(EmployeeName)) return "?";
+            var parts = EmployeeName.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            return parts.Length >= 2
+                ? $"{parts[0][0]}{parts[^1][0]}".ToUpper()
+                : EmployeeName[0].ToString().ToUpper();
+        }
+    }
 }
 
 public partial class VacationListViewModel : BaseViewModel
@@ -81,15 +80,15 @@ public partial class VacationListViewModel : BaseViewModel
     [ObservableProperty] private bool _hasError;
     [ObservableProperty] private string _errorMessage = string.Empty;
     [ObservableProperty] private bool _isEmpty;
-
-    // New request form fields
-    [ObservableProperty] private DateTime _newStartDate = DateTime.Today;
-    [ObservableProperty] private DateTime _newEndDate = DateTime.Today.AddDays(1);
-    [ObservableProperty] private string _newReason = string.Empty;
-    [ObservableProperty] private string _newType = "Holiday";
     [ObservableProperty] private bool _isFormVisible;
 
-    public string[] VacationTypes { get; } = { "Holiday", "PaidLeave", "SickLeave", "UnpaidLeave" };
+    // New request form
+    [ObservableProperty] private DateTime _newStartDate = DateTime.Today;
+    [ObservableProperty] private DateTime _newEndDate   = DateTime.Today.AddDays(1);
+    [ObservableProperty] private string   _newReason    = string.Empty;
+    [ObservableProperty] private string   _newType      = "Holiday";
+
+    public string[] VacationTypes        { get; } = { "Holiday", "PaidLeave", "SickLeave", "UnpaidLeave" };
     public string[] VacationTypesDisplay { get; } = { "Ferie", "Permesso Pagato", "Malattia", "Permesso Non Pagato" };
 
     public VacationListViewModel(IHttpClientFactory httpClientFactory)
@@ -100,15 +99,8 @@ public partial class VacationListViewModel : BaseViewModel
 
     public async Task OnAppearingAsync()
     {
-        await LoadRoleAndDataAsync();
-    }
-
-    private async Task LoadRoleAndDataAsync()
-    {
-        // Get role from SecureStorage
         var storedRole = await SecureStorage.Default.GetAsync("user_role");
         IsAdmin = storedRole == "Admin";
-
         await LoadRequestsAsync();
     }
 
@@ -117,12 +109,11 @@ public partial class VacationListViewModel : BaseViewModel
     {
         if (IsBusy) return;
         HasError = false;
-
         try
         {
             IsBusy = true;
 
-            // Load my employee profile to get my employeeId
+            // Always fetch /me to get employeeId for submission
             var me = await _httpClient.GetFromJsonAsync<UserMeDto>("api/users/me");
             if (me != null)
                 _myEmployeeId = me.EmployeeId;
@@ -146,19 +137,16 @@ public partial class VacationListViewModel : BaseViewModel
             HasError = true;
             ErrorMessage = ex.Message;
         }
-        finally
-        {
-            IsBusy = false;
-        }
+        finally { IsBusy = false; }
     }
 
     [RelayCommand]
     private void ShowNewRequestForm()
     {
-        NewStartDate = DateTime.Today;
-        NewEndDate = DateTime.Today.AddDays(1);
-        NewReason = string.Empty;
-        NewType = "Holiday";
+        NewStartDate  = DateTime.Today;
+        NewEndDate    = DateTime.Today.AddDays(1);
+        NewReason     = string.Empty;
+        NewType       = "Holiday";
         IsFormVisible = true;
     }
 
@@ -170,24 +158,42 @@ public partial class VacationListViewModel : BaseViewModel
     {
         if (NewEndDate < NewStartDate)
         {
-            await Shell.Current.DisplayAlert("Errore", "La data di fine deve essere dopo la data di inizio.", "OK");
+            await Shell.Current.DisplayAlert("Errore",
+                "La data di fine deve essere dopo la data di inizio.", "OK");
+            return;
+        }
+
+        // If employeeId is still 0, try to reload it
+        if (_myEmployeeId == 0)
+        {
+            try
+            {
+                var me = await _httpClient.GetFromJsonAsync<UserMeDto>("api/users/me");
+                if (me != null) _myEmployeeId = me.EmployeeId;
+            }
+            catch { }
+        }
+
+        if (_myEmployeeId == 0)
+        {
+            await Shell.Current.DisplayAlert("Errore",
+                "Impossibile identificare il profilo dipendente. Riprova tra poco.", "OK");
             return;
         }
 
         try
         {
             IsBusy = true;
-
             int businessDays = CountBusinessDays(NewStartDate, NewEndDate);
 
-            var dto = new CreateVacationDto
+            var dto = new
             {
-                EmployeeId = _myEmployeeId,
-                Type = NewType,
-                StartDate = NewStartDate,
-                EndDate = NewEndDate,
-                TotalDays = businessDays,
-                Reason = NewReason
+                employeeId = _myEmployeeId,
+                type       = NewType,
+                startDate  = NewStartDate.Date,
+                endDate    = NewEndDate.Date,
+                totalDays  = businessDays,
+                reason     = NewReason ?? string.Empty
             };
 
             var response = await _httpClient.PostAsJsonAsync("api/vacation-requests", dto);
@@ -196,58 +202,49 @@ public partial class VacationListViewModel : BaseViewModel
             {
                 IsFormVisible = false;
                 await LoadRequestsAsync();
-                await Shell.Current.DisplayAlert("Richiesta inviata", "La tua richiesta è stata inviata all'amministratore.", "OK");
+                await Shell.Current.DisplayAlert("Richiesta inviata",
+                    "La tua richiesta è stata inviata all'amministratore.", "OK");
             }
             else
             {
-                await Shell.Current.DisplayAlert("Errore", "Impossibile inviare la richiesta.", "OK");
+                var body = await response.Content.ReadAsStringAsync();
+                await Shell.Current.DisplayAlert("Errore",
+                    $"Impossibile inviare la richiesta ({(int)response.StatusCode}).", "OK");
             }
         }
-        catch
+        catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Errore", "Errore di connessione.", "OK");
+            await Shell.Current.DisplayAlert("Errore", ex.Message, "OK");
         }
-        finally
-        {
-            IsBusy = false;
-        }
+        finally { IsBusy = false; }
     }
 
     [RelayCommand]
     private async Task CancelRequestAsync(VacationRequestDto request)
     {
         if (request == null || request.Status != "Pending") return;
-
         bool confirm = await Shell.Current.DisplayAlert(
             "Annulla richiesta", "Vuoi annullare questa richiesta?", "Sì", "No");
         if (!confirm) return;
-
         try
         {
-            var response = await _httpClient.DeleteAsync($"api/vacation-requests/{request.Id}");
-            if (response.IsSuccessStatusCode)
-                await LoadRequestsAsync();
-            else
-                await Shell.Current.DisplayAlert("Errore", "Impossibile annullare la richiesta.", "OK");
+            var r = await _httpClient.DeleteAsync($"api/vacation-requests/{request.Id}");
+            if (r.IsSuccessStatusCode) await LoadRequestsAsync();
+            else await Shell.Current.DisplayAlert("Errore", "Impossibile annullare la richiesta.", "OK");
         }
-        catch
-        {
-            await Shell.Current.DisplayAlert("Errore", "Errore di connessione.", "OK");
-        }
+        catch { await Shell.Current.DisplayAlert("Errore", "Errore di connessione.", "OK"); }
     }
 
-    // Admin: approve directly from list
     [RelayCommand]
     private async Task ApproveAsync(VacationRequestDto request)
     {
         if (!IsAdmin || request == null) return;
         try
         {
-            var response = await _httpClient.PutAsJsonAsync(
+            var r = await _httpClient.PutAsJsonAsync(
                 $"api/vacation-requests/{request.Id}/approve",
                 new { note = string.Empty });
-            if (response.IsSuccessStatusCode)
-                await LoadRequestsAsync();
+            if (r.IsSuccessStatusCode) await LoadRequestsAsync();
         }
         catch { }
     }
@@ -256,15 +253,15 @@ public partial class VacationListViewModel : BaseViewModel
     private async Task RejectAsync(VacationRequestDto request)
     {
         if (!IsAdmin || request == null) return;
-        var note = await Shell.Current.DisplayPromptAsync("Rifiuta", "Nota (opzionale):", "Rifiuta", "Annulla");
+        var note = await Shell.Current.DisplayPromptAsync(
+            "Rifiuta", "Nota (opzionale):", "Rifiuta", "Annulla");
         if (note == null) return;
         try
         {
-            var response = await _httpClient.PutAsJsonAsync(
+            var r = await _httpClient.PutAsJsonAsync(
                 $"api/vacation-requests/{request.Id}/reject",
                 new { note = note ?? string.Empty });
-            if (response.IsSuccessStatusCode)
-                await LoadRequestsAsync();
+            if (r.IsSuccessStatusCode) await LoadRequestsAsync();
         }
         catch { }
     }
@@ -280,8 +277,11 @@ public partial class VacationListViewModel : BaseViewModel
 
     private class UserMeDto
     {
+        [JsonPropertyName("id")]
         public int Id { get; set; }
-        public string Email { get; set; } = string.Empty;
+        [JsonPropertyName("employeeId")]
         public int EmployeeId { get; set; }
+        [JsonPropertyName("email")]
+        public string Email { get; set; } = string.Empty;
     }
 }

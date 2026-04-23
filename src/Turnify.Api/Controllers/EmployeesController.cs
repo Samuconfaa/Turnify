@@ -51,22 +51,29 @@ public class EmployeesController : ControllerBase
         _userRepository = userRepository;
     }
 
+    // Fix: try multiple claim names to handle different JWT formats
     private int GetCompanyId()
     {
-        var claim = User.FindFirst("companyId");
-        return claim != null ? int.Parse(claim.Value) : 0;
+        var claim = User.FindFirst("companyId")
+                 ?? User.FindFirst("CompanyId")
+                 ?? User.FindFirst("company_id");
+
+        if (claim != null && int.TryParse(claim.Value, out int id))
+            return id;
+
+        return 0;
     }
 
     private int GetUserId()
     {
-        var claim = User.FindFirst(ClaimTypes.NameIdentifier) ?? User.FindFirst(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub);
-        return claim != null ? int.Parse(claim.Value) : 0;
+        var claim = User.FindFirst(ClaimTypes.NameIdentifier)
+                 ?? User.FindFirst(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub);
+        if (claim != null && int.TryParse(claim.Value, out int id))
+            return id;
+        return 0;
     }
 
-    private bool IsAdmin()
-    {
-        return User.IsInRole(UserRole.Admin.ToString());
-    }
+    private bool IsAdmin() => User.IsInRole(UserRole.Admin.ToString());
 
     [HttpGet]
     public async Task<IActionResult> GetEmployees([FromQuery] int? businessId, CancellationToken ct)
@@ -74,6 +81,9 @@ public class EmployeesController : ControllerBase
         if (!IsAdmin()) return Forbid();
 
         var companyId = GetCompanyId();
+        if (companyId == 0)
+            return Unauthorized(new { message = "CompanyId non trovato nel token." });
+
         var employees = await _employeeRepository.GetAllByCompanyIdAsync(companyId, businessId, ct);
 
         var dtos = employees.Select(MapToDto).ToList();
@@ -86,46 +96,50 @@ public class EmployeesController : ControllerBase
         if (!IsAdmin()) return Forbid();
 
         var companyId = GetCompanyId();
+        if (companyId == 0)
+            return Unauthorized(new { message = "CompanyId non trovato nel token." });
 
         if (await _userRepository.ExistsByEmailAsync(request.Email, ct))
-        {
             return BadRequest(new { message = "Email già in uso." });
-        }
+
+        if (string.IsNullOrWhiteSpace(request.Password))
+            return BadRequest(new { message = "La password è obbligatoria." });
 
         var user = new User
         {
-            Email = request.Email,
+            Email        = request.Email,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
-            Role = UserRole.Employee,
-            CompanyId = companyId,
-            IsActive = true
+            Role         = UserRole.Employee,
+            CompanyId    = companyId,
+            IsActive     = true,
+            CreatedAt    = DateTime.UtcNow,
+            UpdatedAt    = DateTime.UtcNow
         };
-
         var createdUser = await _userRepository.AddAsync(user, ct);
 
-        var contractType = Enum.TryParse<ContractType>(request.ContractType, true, out var ctEnum) 
-            ? ctEnum 
-            : ContractType.FullTime;
+        var contractType = Enum.TryParse<ContractType>(request.ContractType, true, out var ct2)
+            ? ct2 : ContractType.FullTime;
 
         var employee = new Employee
         {
-            CompanyId = companyId,
-            UserId = createdUser.Id,
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-            Email = request.Email,
-            Phone = request.Phone,
-            Role = request.Role,
+            CompanyId    = companyId,
+            UserId       = createdUser.Id,
+            FirstName    = request.FirstName,
+            LastName     = request.LastName,
+            Email        = request.Email,
+            Phone        = request.Phone ?? string.Empty,
+            Role         = request.Role ?? string.Empty,
             ContractType = contractType,
-            WeeklyHours = request.WeeklyHours,
-            IsActive = true,
-            BusinessId = request.BusinessId,
-            HireDate = DateTime.UtcNow
+            WeeklyHours  = request.WeeklyHours,
+            IsActive     = true,
+            BusinessId   = request.BusinessId,
+            HireDate     = DateTime.UtcNow,
+            CreatedAt    = DateTime.UtcNow,
+            UpdatedAt    = DateTime.UtcNow
         };
+        var created = await _employeeRepository.AddAsync(employee, ct);
 
-        var createdEmployee = await _employeeRepository.AddAsync(employee, ct);
-
-        return Created($"/api/employees/{createdEmployee.Id}", MapToDto(createdEmployee));
+        return Created($"/api/employees/{created.Id}", MapToDto(created));
     }
 
     [HttpGet("{id}")]
@@ -138,9 +152,7 @@ public class EmployeesController : ControllerBase
         if (employee.CompanyId != companyId) return Forbid();
 
         if (!IsAdmin() && employee.UserId != GetUserId())
-        {
             return Forbid();
-        }
 
         return Ok(MapToDto(employee));
     }
@@ -152,22 +164,20 @@ public class EmployeesController : ControllerBase
 
         var employee = await _employeeRepository.GetByIdAsync(id, ct);
         if (employee == null) return NotFound();
-
         if (employee.CompanyId != GetCompanyId()) return Forbid();
 
-        var contractType = Enum.TryParse<ContractType>(request.ContractType, true, out var ctEnum) 
-            ? ctEnum 
-            : employee.ContractType;
+        var contractType = Enum.TryParse<ContractType>(request.ContractType, true, out var ct2)
+            ? ct2 : employee.ContractType;
 
-        employee.FirstName = request.FirstName;
-        employee.LastName = request.LastName;
-        employee.Email = request.Email;
-        employee.Phone = request.Phone;
-        employee.Role = request.Role;
+        employee.FirstName    = request.FirstName;
+        employee.LastName     = request.LastName;
+        employee.Email        = request.Email;
+        employee.Phone        = request.Phone;
+        employee.Role         = request.Role;
         employee.ContractType = contractType;
-        employee.WeeklyHours = request.WeeklyHours;
-        employee.BusinessId = request.BusinessId;
-        employee.IsActive = request.IsActive;
+        employee.WeeklyHours  = request.WeeklyHours;
+        employee.BusinessId   = request.BusinessId;
+        employee.IsActive     = request.IsActive;
 
         await _employeeRepository.UpdateAsync(employee, ct);
 
@@ -191,7 +201,6 @@ public class EmployeesController : ControllerBase
 
         var employee = await _employeeRepository.GetByIdAsync(id, ct);
         if (employee == null) return NotFound();
-
         if (employee.CompanyId != GetCompanyId()) return Forbid();
 
         employee.IsActive = false;
@@ -210,22 +219,19 @@ public class EmployeesController : ControllerBase
         return NoContent();
     }
 
-    private static EmployeeDto MapToDto(Employee e)
+    private static EmployeeDto MapToDto(Employee e) => new()
     {
-        return new EmployeeDto
-        {
-            Id = e.Id,
-            CompanyId = e.CompanyId,
-            UserId = e.UserId,
-            FirstName = e.FirstName,
-            LastName = e.LastName,
-            Email = e.Email,
-            Phone = e.Phone,
-            Role = e.Role,
-            ContractType = e.ContractType.ToString(),
-            WeeklyHours = e.WeeklyHours,
-            IsActive = e.IsActive,
-            BusinessId = e.BusinessId
-        };
-    }
+        Id           = e.Id,
+        CompanyId    = e.CompanyId,
+        UserId       = e.UserId,
+        FirstName    = e.FirstName,
+        LastName     = e.LastName,
+        Email        = e.Email,
+        Phone        = e.Phone,
+        Role         = e.Role,
+        ContractType = e.ContractType.ToString(),
+        WeeklyHours  = e.WeeklyHours,
+        IsActive     = e.IsActive,
+        BusinessId   = e.BusinessId
+    };
 }

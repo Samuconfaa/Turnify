@@ -18,7 +18,6 @@ public partial class ShiftCalendarViewModel : BaseViewModel
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(WeekLabel))]
-    [NotifyPropertyChangedFor(nameof(DayHeaders))]
     private DateTime _currentWeekStart;
 
     [ObservableProperty] private bool _isAdmin;
@@ -36,17 +35,12 @@ public partial class ShiftCalendarViewModel : BaseViewModel
         }
     }
 
-    // 7 day headers with date number for display
-    public List<string> DayHeaders => Enumerable.Range(0, 7)
-        .Select(i => CurrentWeekStart.AddDays(i).ToString("ddd\ndd"))
-        .ToList();
-
     public ShiftCalendarViewModel(IHttpClientFactory httpClientFactory)
     {
         _httpClient = httpClientFactory.CreateClient("TurnifyApi");
         Title = "Turni";
         var today = DateTime.Today;
-        int diff = (7 + (today.DayOfWeek - DayOfWeek.Monday)) % 7;
+        int diff  = (7 + (today.DayOfWeek - DayOfWeek.Monday)) % 7;
         CurrentWeekStart = today.AddDays(-diff);
     }
 
@@ -75,22 +69,26 @@ public partial class ShiftCalendarViewModel : BaseViewModel
         {
             IsBusy = true;
 
-            // Full 7-day week: Monday to Sunday
-            var from = CurrentWeekStart.Date;
-            var to   = CurrentWeekStart.Date.AddDays(7); // exclusive
-
+            var from    = CurrentWeekStart.Date;
+            var to      = CurrentWeekStart.Date.AddDays(7);
             var fromStr = Uri.EscapeDataString(from.ToString("yyyy-MM-ddTHH:mm:ssZ"));
             var toStr   = Uri.EscapeDataString(to.ToString("yyyy-MM-ddTHH:mm:ssZ"));
-            var url     = $"api/shifts?from={fromStr}&to={toStr}&pageSize=200";
 
-            // The API returns { data: [...], total: N }
-            var result = await _httpClient.GetFromJsonAsync<ShiftListResponse>(url);
-            var list   = result?.Data ?? new List<ShiftDto>();
-
-            Shifts = new ObservableCollection<ShiftDto>(list);
+            // Load shifts
+            var shiftResult = await _httpClient.GetFromJsonAsync<ShiftListResponse>(
+                $"api/shifts?from={fromStr}&to={toStr}&pageSize=200");
+            var shiftList = shiftResult?.Data ?? new List<ShiftDto>();
+            Shifts = new ObservableCollection<ShiftDto>(shiftList);
 
             if (IsAdmin)
-                BuildEmployeeRows();
+            {
+                // Also load approved vacations for the week
+                var vacations = await _httpClient.GetFromJsonAsync<List<ApprovedVacationDto>>(
+                    $"api/vacation-requests/approved?from={fromStr}&to={toStr}")
+                    ?? new List<ApprovedVacationDto>();
+
+                BuildEmployeeRows(shiftList, vacations);
+            }
         }
         catch (HttpRequestException)
         {
@@ -105,47 +103,71 @@ public partial class ShiftCalendarViewModel : BaseViewModel
         finally { IsBusy = false; }
     }
 
-    private void BuildEmployeeRows()
+    private void BuildEmployeeRows(
+        List<ShiftDto> shifts,
+        List<ApprovedVacationDto> vacations)
     {
-        var grouped = Shifts
-            .GroupBy(s => s.EmployeeId)
-            .Select(g =>
+        // Collect all employee IDs from both shifts and vacations
+        var employeeIds = shifts.Select(s => s.EmployeeId)
+            .Union(vacations.Select(v => v.EmployeeId))
+            .Distinct()
+            .ToList();
+
+        var rows = employeeIds.Select(empId =>
+        {
+            // Name from shifts first, then vacations
+            var name = shifts.FirstOrDefault(s => s.EmployeeId == empId)?.EmployeeName
+                    ?? vacations.FirstOrDefault(v => v.EmployeeId == empId)?.EmployeeName
+                    ?? $"Dipendente {empId}";
+
+            var parts    = name.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var initials = parts.Length >= 2
+                ? $"{parts[0][0]}{parts[^1][0]}".ToUpper()
+                : name.Length > 0 ? name[0].ToString().ToUpper() : "?";
+
+            var days = Enumerable.Range(0, 7).Select(i =>
             {
-                var name = g.First().EmployeeName;
-                if (string.IsNullOrWhiteSpace(name))
-                    name = $"Dipendente {g.Key}";
+                var day   = CurrentWeekStart.AddDays(i);
+                var shift = shifts.FirstOrDefault(s =>
+                    s.EmployeeId == empId &&
+                    s.StartTime.ToLocalTime().Date == day.Date);
 
-                // Build initials for avatar
-                var parts    = name.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                var initials = parts.Length >= 2
-                    ? $"{parts[0][0]}{parts[^1][0]}".ToUpper()
-                    : name.Length > 0 ? name[0].ToString().ToUpper() : "?";
+                // Check if employee is on approved vacation this day
+                var onVacation = vacations.Any(v =>
+                    v.EmployeeId == empId &&
+                    day.Date >= v.StartDate.Date &&
+                    day.Date <= v.EndDate.Date);
 
-                // 7 days (Mon–Sun)
-                var days = Enumerable.Range(0, 7).Select(i =>
-                {
-                    var day   = CurrentWeekStart.AddDays(i);
-                    var shift = g.FirstOrDefault(s => s.StartTime.ToLocalTime().Date == day.Date);
+                if (onVacation && shift == null)
                     return new DayCell
                     {
-                        HasShift = shift != null,
-                        Label    = shift != null
-                            ? $"{shift.StartTime.ToLocalTime():HH:mm}-{shift.EndTime.ToLocalTime():HH:mm}"
-                            : string.Empty,
-                        ShiftId  = shift?.Id ?? 0
+                        HasShift    = false,
+                        IsVacation  = true,
+                        Label       = "🏖️",
+                        ShiftId     = 0
                     };
-                }).ToList();
 
-                return new EmployeeWeekRow
+                return new DayCell
                 {
-                    EmployeeId   = g.Key,
-                    EmployeeName = name,
-                    Initials     = initials,
-                    Days         = days
+                    HasShift   = shift != null,
+                    IsVacation = false,
+                    Label      = shift != null
+                        ? $"{shift.StartTime.ToLocalTime():HH:mm}-{shift.EndTime.ToLocalTime():HH:mm}"
+                        : string.Empty,
+                    ShiftId    = shift?.Id ?? 0
                 };
             }).ToList();
 
-        EmployeeRows = new ObservableCollection<EmployeeWeekRow>(grouped);
+            return new EmployeeWeekRow
+            {
+                EmployeeId   = empId,
+                EmployeeName = name,
+                Initials     = initials,
+                Days         = days
+            };
+        }).ToList();
+
+        EmployeeRows = new ObservableCollection<EmployeeWeekRow>(rows);
     }
 
     [RelayCommand]
@@ -172,8 +194,14 @@ public partial class ShiftCalendarViewModel : BaseViewModel
     [RelayCommand]
     private async Task TapShiftAsync(DayCell cell)
     {
-        if (!IsAdmin || cell == null || !cell.HasShift) return;
-        await Shell.Current.GoToAsync($"{nameof(Views.ShiftDetailPage)}?shiftId={cell.ShiftId}");
+        if (!IsAdmin || cell == null) return;
+        if (cell.IsVacation)
+        {
+            await Shell.Current.DisplayAlert("In ferie", "Il dipendente è in ferie in questo giorno.", "OK");
+            return;
+        }
+        if (cell.HasShift && cell.ShiftId > 0)
+            await Shell.Current.GoToAsync($"{nameof(Views.ShiftDetailPage)}?shiftId={cell.ShiftId}");
     }
 }
 
@@ -197,6 +225,20 @@ public class ShiftListResponse
     public int Total { get; set; }
 }
 
+public class ApprovedVacationDto
+{
+    [JsonPropertyName("employeeId")]
+    public int EmployeeId { get; set; }
+    [JsonPropertyName("employeeName")]
+    public string EmployeeName { get; set; } = string.Empty;
+    [JsonPropertyName("startDate")]
+    public DateTime StartDate { get; set; }
+    [JsonPropertyName("endDate")]
+    public DateTime EndDate { get; set; }
+    [JsonPropertyName("type")]
+    public string Type { get; set; } = string.Empty;
+}
+
 public class EmployeeWeekRow
 {
     public int EmployeeId { get; set; }
@@ -208,6 +250,10 @@ public class EmployeeWeekRow
 public class DayCell
 {
     public bool HasShift { get; set; }
+    public bool IsVacation { get; set; }
     public string Label { get; set; } = string.Empty;
     public int ShiftId { get; set; }
+    // Color: blue for shift, orange for vacation, grey for empty
+    public string CellColor => IsVacation ? "#D97706" : HasShift ? "#2563EB" : "#E5E7EB";
+    public string LabelColor => (HasShift || IsVacation) ? "White" : "Transparent";
 }

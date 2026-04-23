@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
+             x:Class="Turnify.Mobile.Views.VacationEditPage"
+             x:DataType="vm:VacationEditViewModel"
+             Title="{Binding Title}"
+             BackgroundColor="{StaticResource Background}">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="14" Padding="20">
+
+            <Border BackgroundColor="{StaticResource PrimaryContainer}"
+                    Padding="14,10">
+                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                <HorizontalStackLayout Spacing="10">
+                    <Label Text="👤" FontSize="18" VerticalOptions="Center"/>
+                    <Label Text="{Binding EmployeeName}"
+                           FontSize="16" FontAttributes="Bold"
+                           TextColor="{StaticResource Primary}"
+                           VerticalOptions="Center"/>
+                </HorizontalStackLayout>
+            </Border>
+
+            <Label Text="Tipo richiesta" FontSize="13"
+                   TextColor="{StaticResource OnSurfaceVariant}" Margin="2,0,0,0"/>
+            <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="0">
+                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                <Picker ItemsSource="{Binding VacationTypesDisplay}"
+                        SelectedIndexChanged="OnTypeChanged"
+                        Margin="10,0"/>
+            </Border>
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                <VerticalStackLayout Grid.Column="0" Spacing="4">
+                    <Label Text="Data inizio" FontSize="13"
+                           TextColor="{StaticResource OnSurfaceVariant}" Margin="2,0,0,0"/>
+                    <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="4">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                        <DatePicker Date="{Binding StartDate}" Margin="6,0"/>
+                    </Border>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1" Spacing="4">
+                    <Label Text="Data fine" FontSize="13"
+                           TextColor="{StaticResource OnSurfaceVariant}" Margin="2,0,0,0"/>
+                    <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="4">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                        <DatePicker Date="{Binding EndDate}" Margin="6,0"/>
+                    </Border>
+                </VerticalStackLayout>
+            </Grid>
+
+            <Label Text="Stato" FontSize="13"
+                   TextColor="{StaticResource OnSurfaceVariant}" Margin="2,0,0,0"/>
+            <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="0">
+                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                <Picker ItemsSource="{Binding StatusOptionsDisplay}"
+                        SelectedIndexChanged="OnStatusChanged"
+                        Margin="10,0"/>
+            </Border>
+
+            <Label Text="Motivazione" FontSize="13"
+                   TextColor="{StaticResource OnSurfaceVariant}" Margin="2,0,0,0"/>
+            <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="0">
+                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                <Editor Text="{Binding Reason}" Placeholder="Motivazione..."
+                        HeightRequest="70" Margin="10,4"/>
+            </Border>
+
+            <Button Text="Salva modifiche"
+                    Command="{Binding SaveCommand}"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="White" CornerRadius="10" HeightRequest="50"
+                    FontAttributes="Bold" Margin="0,8,0,0"/>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                               HorizontalOptions="Center" Color="{StaticResource Primary}"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

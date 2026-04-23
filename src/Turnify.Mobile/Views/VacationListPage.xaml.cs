@@ -22,16 +22,21 @@ public partial class VacationListPage : ContentPage
 
     private void OnVacationTypeChanged(object? sender, EventArgs e)
     {
-        if (sender is Picker picker && BindingContext is VacationListViewModel vm)
-        {
-            vm.NewType = picker.SelectedIndex switch
+        if (sender is Picker p && BindingContext is VacationListViewModel vm)
+            vm.NewType = p.SelectedIndex switch
             {
-                0 => "Holiday",
-                1 => "PaidLeave",
-                2 => "SickLeave",
-                3 => "UnpaidLeave",
+                0 => "Holiday", 1 => "PaidLeave",
+                2 => "SickLeave", 3 => "UnpaidLeave",
                 _ => "Holiday"
             };
+    }
+
+    private async void OnFilterChanged(object? sender, EventArgs e)
+    {
+        if (sender is Picker p && BindingContext is VacationListViewModel vm)
+        {
+            vm.SetFilterByIndex(p.SelectedIndex);
+            await vm.LoadRequestsCommand.ExecuteAsync(null);
         }
     }
 }

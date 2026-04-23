@@ -170,3 +170,33 @@ Turnify/
 
 ---
 
+### Iterazione 3 — Espansione API e feature mobile admin
+**Date:** 2026-04-22 → 2026-04-23
+
+**Lavoro svolto:**
+- `UsersController`: endpoint `/api/users/me` e `change-password`
+- `EmployeesController`: CRUD dipendenti lato admin
+- Modello `Business` con migrazione `AddBusinessModel`; `BusinessesController` con orari apertura/chiusura
+- Migrazione `AddRefreshTokenToUser`
+- Dashboard mobile con dati reali dal backend (eliminati dati fake)
+- `ProfileViewModel` con dati reali da `/api/users/me`
+- Registrazione azienda direttamente da `LoginPage`
+- Fix `RegisterPage.xaml`: sostituzione `Frame` → `Border` per consentire input
+- `AuthDelegatingHandler`: JWT iniettato automaticamente su ogni chiamata HTTP
+- `AppShell` reinizializzata al login per mostrare correttamente le tab admin o dipendente
+- Avatar emoji: `EmojiPickerPage` + picker integrato nel profilo
+- Sistema ferie completo mobile: `VacationListPage`, `VacationEditPage`, `VacationListViewModel`, `VacationEditViewModel`
+
+**File principali:**
+- `Turnify.Api/Controllers/UsersController.cs`, `EmployeesController.cs`, `BusinessesController.cs`
+- `Turnify.Core/Models/Business.cs`
+- `Turnify.Infrastructure/Migrations/20260422190154_AddBusinessModel.*`
+- `Turnify.Mobile/Services/AuthDelegatingHandler.cs`
+- `Turnify.Mobile/ViewModels/DashboardViewModel.cs`, `ProfileViewModel.cs`
+- `Turnify.Mobile/Views/VacationListPage.xaml`, `VacationEditPage.xaml`
+- `Turnify.Mobile/Views/EmojiPickerPage.xaml`
+
+**Risultato:** admin gestisce dipendenti e attività, profilo reale, ferie operative, JWT automatico su tutte le chiamate.
+
+---
+

@@ -1,0 +1,10 @@
+{
+  "eval_id": 6,
+  "eval_name": "iteration-drafting",
+  "prompt": "Scrivi un esempio completo di `docs/iterations/it-04.md` a partire da queste note grezze: obiettivo = aggiungere la pagina dettaglio libro; file creati = BookDetailPage.xaml, BookDetailPage.xaml.cs, BookDetailViewModel.cs; file modificati = AppShell.xaml.cs per la route e MauiProgram.cs per DI; test eseguiti = apertura dettaglio OK, id non valido mostra errore, rete assente mostra errore, back navigation OK, landscape da rifinire; problemi = risposta API nulla non gestita inizialmente e immagine mancante senza placeholder; correzioni = controllo null nel service e placeholder image; esito = completato con riserva. Usa il formato di iterazione coerente con il workflow del repository.",
+  "assertions": [
+    "Il risultato è strutturato come un file `docs/iterations/it-04.md` con sezioni tipiche di iterazione.",
+    "Include file creati, file modificati, test eseguiti, problemi trovati, correzioni effettuate ed esito.",
+    "Non restituisce solo un riassunto breve: produce un esempio completo utilizzabile come base documentale."
+  ]
+}

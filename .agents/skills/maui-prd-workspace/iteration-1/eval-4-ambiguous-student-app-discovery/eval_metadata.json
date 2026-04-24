@@ -1,0 +1,10 @@
+{
+  "eval_id": 4,
+  "eval_name": "ambiguous-student-app-discovery",
+  "prompt": "Ho solo questa idea: una app mobile utile per studenti universitari. Non so ancora se servirà login, dati remoti, offline o notifiche. Aiutami a impostare `docs/spec.md` senza inventare dettagli non ancora decisi.",
+  "assertions": [
+    "Gestisce l'ambiguità con domande e non con supposizioni forti.",
+    "Usa `TBD` o questioni aperte per gli aspetti non decisi.",
+    "Evita di presentare decisioni tecniche non confermate come già approvate."
+  ]
+}

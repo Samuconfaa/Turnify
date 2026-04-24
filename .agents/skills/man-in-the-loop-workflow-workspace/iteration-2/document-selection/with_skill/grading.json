@@ -1,0 +1,19 @@
+{
+  "expectations": [
+    {
+      "text": "Include `docs/iterations/it-xx.md`, `docs/test-matrix.md` e `docs/prompt-log.md` tra gli aggiornamenti necessari.",
+      "passed": true,
+      "evidence": "Elenca esplicitamente `docs/iterations/it-02.md`, `docs/test-matrix.md` e `docs/prompt-log.md` come aggiornamenti sicuri."
+    },
+    {
+      "text": "Tratta `docs/spec.md` come opzionale o non necessario perché i requisiti funzionali non sono cambiati.",
+      "passed": true,
+      "evidence": "Indica `docs/spec.md` come aggiornamento opzionale, non obbligatorio."
+    },
+    {
+      "text": "Spiega il motivo per ogni documento invece di dare solo un elenco.",
+      "passed": true,
+      "evidence": "Per ciascun documento spiega il perché dell'aggiornamento o della non necessità di aggiornarlo."
+    }
+  ]
+}

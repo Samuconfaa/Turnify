@@ -1,0 +1,19 @@
+{
+  "expectations": [
+    {
+      "text": "Include le sezioni Piano breve, File da creare o modificare, Implementazione richiesta, Rischi o punti da controllare e Test manuali suggeriti.",
+      "passed": true,
+      "evidence": "Il file contiene le sezioni richieste, pur con una numerazione aggiuntiva e una sezione Dipendenze separata."
+    },
+    {
+      "text": "Mantiene fuori scope la generazione di XAML o altre parti non richieste.",
+      "passed": true,
+      "evidence": "Specifica ripetutamente che XAML, code-behind e navigazione grafica restano fuori scope."
+    },
+    {
+      "text": "Esplicita criteri di accettazione o condizioni verificabili per la chiusura della singola iterazione.",
+      "passed": true,
+      "evidence": "Contiene una sezione dedicata ai criteri di accettazione con condizioni verificabili."
+    }
+  ]
+}

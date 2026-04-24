@@ -1,0 +1,10 @@
+{
+  "eval_id": 4,
+  "eval_name": "path-normalization",
+  "prompt": "Sto preparando il piano di una iterazione ma ho scritto file e cartelle in modo incoerente: `src/ViewModels/BookDetailViewModel.cs`, `src/Views/BookDetailPage.xaml`, `plan.md`, `iterations/it-04.md`, `BookScout.Mobile.csproj`. Correggi i percorsi in stile repository-relative coerente con la struttura del progetto e dimmi quali file sono plausibili per una iterazione che aggiunge il dettaglio libro in una app MAUI MVVM.",
+  "assertions": [
+    "Corregge i path usando una struttura tipo `src/BookScout.Mobile/...` e `docs/...` invece dei path incompleti iniziali.",
+    "Cita almeno un file sotto `docs/iterations/` e almeno un file applicativo sotto `src/BookScout.Mobile/`.",
+    "Non lascia path ambigui come `src/ViewModels/...` o `plan.md` senza prefisso di cartella."
+  ]
+}

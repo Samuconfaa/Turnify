@@ -1,0 +1,10 @@
+{
+  "eval_id": 1,
+  "eval_name": "books-mvp-doc-derivation",
+  "prompt": "Abbiamo già `docs/spec.md` per una app MAUI di ricerca libri con MVP composto da ricerca, dettaglio libro e salvataggio preferiti. Deriva `docs/plan.md`, `docs/architecture.md` e `docs/test-matrix.md` in modo che il progetto possa seguire il workflow planning -> build -> review -> testing -> documentation -> Git.",
+  "assertions": [
+    "Produce o prepara tutti e tre i documenti target senza collassare tutto in un solo piano generico.",
+    "Le iterazioni sono piccole, con obiettivi verificabili e criteri di accettazione concreti.",
+    "La matrice di test distingue manuale, automatico ora e automatico più avanti."
+  ]
+}

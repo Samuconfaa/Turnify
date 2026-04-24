@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ExampleApp.Views.ProductsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewmodels="clr-namespace:ExampleApp.ViewModels"
+    x:DataType="viewmodels:ProductsPageViewModel"
+    Title="Products">
+
+    <Grid RowDefinitions="Auto,Auto,*" Padding="16">
+        <ActivityIndicator
+            Grid.RowSpan="3"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}" />
+
+        <Label
+            Grid.Row="0"
+            Text="{Binding ErrorMessage}"
+            TextColor="Red"
+            IsVisible="{Binding HasError}" />
+
+        <VerticalStackLayout
+            Grid.Row="1"
+            Margin="0,12,0,12"
+            Spacing="8"
+            IsVisible="{Binding IsEmptyState}">
+            <Label FontAttributes="Bold" Text="No products available." />
+            <Button Command="{Binding LoadCommand}" Text="Retry" />
+        </VerticalStackLayout>
+
+        <RefreshView
+            Grid.Row="2"
+            Command="{Binding RefreshCommand}"
+            IsRefreshing="{Binding IsBusy}"
+            IsVisible="{Binding HasData}">
+            <CollectionView ItemsSource="{Binding Products}" SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="viewmodels:ProductListItem">
+                        <Border Margin="0,0,0,12" Padding="12" StrokeThickness="1">
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                                <Label FontAttributes="Bold" Text="{Binding Name}" />
+                                <Label
+                                    Grid.Column="1"
+                                    Text="{Binding Price, StringFormat='{}{0:C}'}"
+                                    HorizontalTextAlignment="End" />
+                                <Label
+                                    Grid.Row="1"
+                                    Grid.ColumnSpan="2"
+                                    Margin="0,4,0,0"
+                                    Text="{Binding Subtitle}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+</ContentPage>

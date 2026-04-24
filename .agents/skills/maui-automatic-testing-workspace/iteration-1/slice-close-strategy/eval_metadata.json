@@ -1,0 +1,10 @@
+{
+  "eval_id": 4,
+  "eval_name": "slice-close-strategy",
+  "prompt": "A fine iterazione ho modificato `SearchViewModel.cs`, `BookService.cs`, `SearchPage.xaml` e `AppShell.xaml.cs` in una app .NET MAUI. Nel repository non esistono ancora test project né UI automation. Voglio una strategia di test automatico davvero sensata per chiudere la slice: quali test aggiungeresti subito, quali comandi eseguiresti e quali parti lasceresti ancora a verifica manuale?",
+  "assertions": [
+    "Propone unit test o service test prima della UI automation.",
+    "Include build verification per XAML o Shell tra i controlli automatici.",
+    "Esplicita che alcune verifiche restano manuali in assenza di infrastruttura UI automation o device testing."
+  ]
+}

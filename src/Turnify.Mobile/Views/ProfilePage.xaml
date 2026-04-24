@@ -191,7 +191,7 @@
 
                         <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,14">
                             <Grid.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnTeamTapped"/>
+                                <TapGestureRecognizer Command="{Binding GoToTeamCommand}"/>
                             </Grid.GestureRecognizers>
                             <Label Grid.Column="0" Text="👥" FontSize="20"
                                    VerticalOptions="Center" Margin="0,0,14,0"/>

@@ -30,8 +30,7 @@
                     <Label Text="Tipo richiesta" FontSize="13"
                            TextColor="{StaticResource OnSurfaceVariant}"/>
                     <Picker ItemsSource="{Binding VacationTypesDisplay}"
-                            SelectedIndex="0"
-                            SelectedIndexChanged="OnVacationTypeChanged"/>
+                            SelectedIndex="{Binding NewTypeIndex}"/>
                 </VerticalStackLayout>
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                     <VerticalStackLayout Grid.Column="0" Spacing="4">
@@ -82,8 +81,7 @@
             <Picker Grid.Row="1"
                     IsVisible="{Binding IsAdmin}"
                     ItemsSource="{Binding FilterOptions}"
-                    SelectedIndex="0"
-                    SelectedIndexChanged="OnFilterChanged"
+                    SelectedIndex="{Binding FilterIndex}"
                     Margin="0,4,0,0"/>
         </Grid>
 

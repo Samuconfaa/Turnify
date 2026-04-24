@@ -19,17 +19,20 @@
             </VerticalStackLayout>
 
             <!-- Form -->
-            <Frame BackgroundColor="{StaticResource SurfaceContainerLowest}" BorderColor="{StaticResource OutlineVariant}" HasShadow="True" CornerRadius="12" Padding="16">
+            <Border BackgroundColor="{StaticResource SurfaceContainerLowest}" Stroke="{StaticResource OutlineVariant}" Padding="16">
+                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
                 <VerticalStackLayout Spacing="16">
                     <Label Text="{Binding ErrorMessage}" TextColor="{StaticResource Error}" IsVisible="{Binding HasError}" HorizontalOptions="Center" />
 
-                    <Frame Padding="0" BorderColor="{StaticResource OutlineVariant}" CornerRadius="8" BackgroundColor="{StaticResource SurfaceContainer}" HasShadow="False">
+                    <Border Stroke="{StaticResource OutlineVariant}" BackgroundColor="{StaticResource SurfaceContainer}">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
                         <Entry Text="{Binding Email}" Placeholder="Email" Keyboard="Email" HeightRequest="52" Margin="16,0" TextColor="{StaticResource OnBackground}" PlaceholderColor="{StaticResource Outline}" BackgroundColor="Transparent" />
-                    </Frame>
+                    </Border>
 
-                    <Frame Padding="0" BorderColor="{StaticResource OutlineVariant}" CornerRadius="8" BackgroundColor="{StaticResource SurfaceContainer}" HasShadow="False">
+                    <Border Stroke="{StaticResource OutlineVariant}" BackgroundColor="{StaticResource SurfaceContainer}">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
                         <Entry Text="{Binding Password}" Placeholder="Password" IsPassword="True" HeightRequest="52" Margin="16,0" TextColor="{StaticResource OnBackground}" PlaceholderColor="{StaticResource Outline}" BackgroundColor="Transparent" />
-                    </Frame>
+                    </Border>
 
                     <Label Text="Password dimenticata?" TextDecorations="Underline" TextColor="{StaticResource Primary}" FontSize="12" HorizontalOptions="Center" Margin="0,8,0,0">
                         <!-- Command placeholder -->
@@ -37,7 +40,7 @@
 
                     <Button Text="Accedi" Command="{Binding LoginCommand}" BackgroundColor="{StaticResource Primary}" TextColor="{StaticResource OnPrimary}" HeightRequest="52" CornerRadius="8" FontAttributes="Bold" Margin="0,8,0,0" />
                 </VerticalStackLayout>
-            </Frame>
+            </Border>
             
             <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" HorizontalOptions="Center" Color="{StaticResource Primary}" />
 

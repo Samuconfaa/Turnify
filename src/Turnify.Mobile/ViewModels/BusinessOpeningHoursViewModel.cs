@@ -101,8 +101,7 @@ public partial class BusinessOpeningHoursViewModel : BaseViewModel
         }
         catch (Exception)
         {
-            if (App.Current?.MainPage != null)
-                await App.Current.MainPage.DisplayAlert("Errore", "Impossibile caricare gli orari", "OK");
+            await Shell.Current.DisplayAlertAsync("Errore", "Impossibile caricare gli orari", "OK");
         }
         finally
         {
@@ -132,22 +131,14 @@ public partial class BusinessOpeningHoursViewModel : BaseViewModel
 
             var response = await _httpClient.PutAsJsonAsync($"api/businesses/{BusinessId}/opening-hours", payload);
 
-            if (App.Current?.MainPage != null)
-            {
-                if (response.IsSuccessStatusCode)
-                {
-                    await App.Current.MainPage.DisplayAlert("Successo", "Orari salvati correttamente.", "OK");
-                }
-                else
-                {
-                    await App.Current.MainPage.DisplayAlert("Errore", "Salvataggio fallito.", "OK");
-                }
-            }
+            if (response.IsSuccessStatusCode)
+                await Shell.Current.DisplayAlertAsync("Successo", "Orari salvati correttamente.", "OK");
+            else
+                await Shell.Current.DisplayAlertAsync("Errore", "Salvataggio fallito.", "OK");
         }
         catch (Exception)
         {
-            if (App.Current?.MainPage != null)
-                await App.Current.MainPage.DisplayAlert("Errore", "Si è verificato un errore durante il salvataggio.", "OK");
+            await Shell.Current.DisplayAlertAsync("Errore", "Si è verificato un errore durante il salvataggio.", "OK");
         }
         finally
         {

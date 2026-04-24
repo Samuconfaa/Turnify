@@ -73,7 +73,7 @@ public partial class ShiftDetailViewModel : BaseViewModel
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Errore", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Errore", ex.Message, "OK");
         }
         finally { IsBusy = false; }
     }
@@ -99,12 +99,12 @@ public partial class ShiftDetailViewModel : BaseViewModel
     {
         if (SelectedEmployee == null)
         {
-            await Shell.Current.DisplayAlert("Errore", "Seleziona un dipendente.", "OK");
+            await Shell.Current.DisplayAlertAsync("Errore", "Seleziona un dipendente.", "OK");
             return;
         }
         if (EndTime <= StartTime)
         {
-            await Shell.Current.DisplayAlert("Errore",
+            await Shell.Current.DisplayAlertAsync("Errore",
                 "L'orario di fine deve essere dopo l'orario di inizio.", "OK");
             return;
         }
@@ -143,17 +143,17 @@ public partial class ShiftDetailViewModel : BaseViewModel
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
             {
-                await Shell.Current.DisplayAlert("Conflitto",
+                await Shell.Current.DisplayAlertAsync("Conflitto",
                     "Il dipendente ha già un turno in questo orario.", "OK");
             }
             else
             {
-                await Shell.Current.DisplayAlert("Errore", "Impossibile salvare il turno.", "OK");
+                await Shell.Current.DisplayAlertAsync("Errore", "Impossibile salvare il turno.", "OK");
             }
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Errore", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Errore", ex.Message, "OK");
         }
         finally { IsBusy = false; }
     }
@@ -162,7 +162,7 @@ public partial class ShiftDetailViewModel : BaseViewModel
     private async Task DeleteAsync()
     {
         if (!IsEditMode) return;
-        bool confirm = await Shell.Current.DisplayAlert(
+        bool confirm = await Shell.Current.DisplayAlertAsync(
             "Elimina turno", "Vuoi eliminare questo turno?", "Sì", "Annulla");
         if (!confirm) return;
         try

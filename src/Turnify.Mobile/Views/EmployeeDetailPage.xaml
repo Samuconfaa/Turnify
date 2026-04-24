@@ -63,8 +63,7 @@
             <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="0">
                 <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
                 <Picker ItemsSource="{Binding ContractTypesDisplay}"
-                        SelectedIndex="0"
-                        SelectedIndexChanged="OnContractTypeChanged"
+                        SelectedIndex="{Binding SelectedContractTypeIndex}"
                         Margin="10,0"/>
             </Border>
 

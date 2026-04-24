@@ -16,7 +16,8 @@
             </VerticalStackLayout>
 
             <!-- Form -->
-            <Frame BackgroundColor="{StaticResource SurfaceContainerLowest}" BorderColor="{StaticResource OutlineVariant}" HasShadow="True" CornerRadius="12" Padding="16">
+            <Border BackgroundColor="{StaticResource SurfaceContainerLowest}" Stroke="{StaticResource OutlineVariant}" Padding="16">
+                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
                 <VerticalStackLayout Spacing="16">
                     
                     <Label Text="Dati Azienda" FontAttributes="Bold" TextColor="{StaticResource Primary}" />
@@ -67,7 +68,7 @@
 
                     <Button Text="Registrati" Command="{Binding RegisterCommand}" BackgroundColor="{StaticResource Primary}" TextColor="{StaticResource OnPrimary}" HeightRequest="52" CornerRadius="8" FontAttributes="Bold" Margin="0,8,0,0" />
                 </VerticalStackLayout>
-            </Frame>
+            </Border>
             
             <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" HorizontalOptions="Center" Color="{StaticResource Primary}" />
 

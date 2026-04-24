@@ -51,7 +51,7 @@ public partial class GdprConsentViewModel : BaseViewModel
         // Dopo il consenso GDPR → sempre LoginPage
         // L'utente da lì può fare login (se ha già un account)
         // oppure toccare "Registra la tua azienda" per creare un nuovo account
-        Application.Current!.MainPage = new AppShell(isAdmin: false, startRoute: "Login");
+        Application.Current!.Windows[0].Page = new AppShell(isAdmin: false, startRoute: "Login");
     }
 
     [RelayCommand]
@@ -84,7 +84,7 @@ public partial class GdprConsentViewModel : BaseViewModel
         }
         catch
         {
-            await Shell.Current.DisplayAlert("Errore",
+            await Shell.Current.DisplayAlertAsync("Errore",
                 "Impossibile avviare l'esportazione dati.", "OK");
         }
         finally { IsBusy = false; }
@@ -93,7 +93,7 @@ public partial class GdprConsentViewModel : BaseViewModel
     [RelayCommand]
     private async Task RequestAccountDeletionAsync()
     {
-        var confirm1 = await Shell.Current.DisplayAlert(
+        var confirm1 = await Shell.Current.DisplayAlertAsync(
             "Elimina account",
             "Vuoi eliminare il tuo account? Tutti i tuoi dati personali saranno rimossi " +
             "entro 30 giorni come previsto dal GDPR.\n\n" +
@@ -101,7 +101,7 @@ public partial class GdprConsentViewModel : BaseViewModel
             "Continua", "Annulla");
         if (!confirm1) return;
 
-        var confirm2 = await Shell.Current.DisplayAlert(
+        var confirm2 = await Shell.Current.DisplayAlertAsync(
             "Conferma eliminazione",
             "Questa operazione è irreversibile. Sei sicuro?",
             "Sì, elimina il mio account", "Annulla");
@@ -121,23 +121,23 @@ public partial class GdprConsentViewModel : BaseViewModel
                 Preferences.Default.Remove(CONSENT_GIVEN_KEY);
                 Preferences.Default.Remove(CONSENT_VERSION_KEY);
 
-                await Shell.Current.DisplayAlert(
+                await Shell.Current.DisplayAlertAsync(
                     "Richiesta inviata",
                     "I tuoi dati saranno rimossi entro 30 giorni. " +
                     "Riceverai una email di conferma.",
                     "OK");
 
-                Application.Current!.MainPage = new AppShell(isAdmin: false, startRoute: "Login");
+                Application.Current!.Windows[0].Page = new AppShell(isAdmin: false, startRoute: "Login");
             }
             else
             {
-                await Shell.Current.DisplayAlert("Errore",
+                await Shell.Current.DisplayAlertAsync("Errore",
                     "Impossibile completare la richiesta. Contatta privacy@turnify.it", "OK");
             }
         }
         catch
         {
-            await Shell.Current.DisplayAlert("Errore", "Errore di connessione.", "OK");
+            await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione.", "OK");
         }
         finally { IsBusy = false; }
     }

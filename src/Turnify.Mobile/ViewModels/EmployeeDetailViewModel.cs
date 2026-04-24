@@ -46,12 +46,16 @@ public partial class EmployeeDetailViewModel : BaseViewModel
     [ObservableProperty] private string _password = string.Empty;
     [ObservableProperty] private NullableBusinessItem? _selectedBusiness;
     [ObservableProperty] private string _selectedContractType = "FullTime";
+    [ObservableProperty] private int _selectedContractTypeIndex;
 
     public ObservableCollection<NullableBusinessItem> Businesses { get; } = new();
     public ObservableCollection<string> ContractTypes { get; } = new()
         { "FullTime", "PartTime", "Apprenticeship", "FixedTerm", "OnCall" };
     public ObservableCollection<string> ContractTypesDisplay { get; } = new()
         { "Tempo pieno", "Part-time", "Apprendistato", "Tempo determinato", "A chiamata" };
+
+    partial void OnSelectedContractTypeIndexChanged(int value) =>
+        SelectedContractType = ContractTypes.ElementAtOrDefault(value) ?? "FullTime";
 
     public bool IsEditMode  => EmployeeId > 0;
     public bool IsCreateMode => !IsEditMode;
@@ -101,7 +105,8 @@ public partial class EmployeeDetailViewModel : BaseViewModel
                     JobRole    = emp.Role;
                     WeeklyHours = emp.WeeklyHours;
                     IsActive   = emp.IsActive;
-                    SelectedContractType = emp.ContractType;
+                    var contractIdx = ContractTypes.IndexOf(emp.ContractType);
+                    SelectedContractTypeIndex = contractIdx >= 0 ? contractIdx : 0;
                     SelectedBusiness = emp.BusinessId.HasValue
                         ? Businesses.FirstOrDefault(b => b.Id == emp.BusinessId) ?? Businesses[0]
                         : Businesses[0];
@@ -110,7 +115,7 @@ public partial class EmployeeDetailViewModel : BaseViewModel
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Errore", $"Impossibile caricare i dati: {ex.Message}", "OK");
+            await Shell.Current.DisplayAlertAsync("Errore", $"Impossibile caricare i dati: {ex.Message}", "OK");
         }
         finally { IsBusy = false; }
     }
@@ -129,12 +134,12 @@ public partial class EmployeeDetailViewModel : BaseViewModel
         if (string.IsNullOrWhiteSpace(FirstName) || string.IsNullOrWhiteSpace(LastName) ||
             string.IsNullOrWhiteSpace(Email))
         {
-            await Shell.Current.DisplayAlert("Campi mancanti", "Nome, cognome ed email sono obbligatori.", "OK");
+            await Shell.Current.DisplayAlertAsync("Campi mancanti", "Nome, cognome ed email sono obbligatori.", "OK");
             return;
         }
         if (IsCreateMode && string.IsNullOrWhiteSpace(Password))
         {
-            await Shell.Current.DisplayAlert("Password mancante",
+            await Shell.Current.DisplayAlertAsync("Password mancante",
                 "Inserisci una password temporanea da comunicare al dipendente.", "OK");
             return;
         }
@@ -166,7 +171,7 @@ public partial class EmployeeDetailViewModel : BaseViewModel
             {
                 if (IsCreateMode)
                 {
-                    await Shell.Current.DisplayAlert(
+                    await Shell.Current.DisplayAlertAsync(
                         "✅ Dipendente creato!",
                         $"Comunica queste credenziali al dipendente:\n\n" +
                         $"📧 Email: {Email}\n" +
@@ -178,16 +183,16 @@ public partial class EmployeeDetailViewModel : BaseViewModel
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
             {
-                await Shell.Current.DisplayAlert("Errore", "Email già in uso. Usa un'altra email.", "OK");
+                await Shell.Current.DisplayAlertAsync("Errore", "Email già in uso. Usa un'altra email.", "OK");
             }
             else
             {
-                await Shell.Current.DisplayAlert("Errore", "Impossibile salvare il dipendente.", "OK");
+                await Shell.Current.DisplayAlertAsync("Errore", "Impossibile salvare il dipendente.", "OK");
             }
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Errore", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Errore", ex.Message, "OK");
         }
         finally { IsBusy = false; }
     }
@@ -196,7 +201,7 @@ public partial class EmployeeDetailViewModel : BaseViewModel
     private async Task DeleteAsync()
     {
         if (!IsEditMode) return;
-        bool confirm = await Shell.Current.DisplayAlert(
+        bool confirm = await Shell.Current.DisplayAlertAsync(
             "Disattiva dipendente",
             $"Vuoi disattivare {FirstName} {LastName}? Lo storico turni verrà conservato.",
             "Sì, disattiva", "Annulla");
@@ -208,9 +213,9 @@ public partial class EmployeeDetailViewModel : BaseViewModel
             if (r.IsSuccessStatusCode)
                 await Shell.Current.GoToAsync("..");
             else
-                await Shell.Current.DisplayAlert("Errore", "Impossibile disattivare il dipendente.", "OK");
+                await Shell.Current.DisplayAlertAsync("Errore", "Impossibile disattivare il dipendente.", "OK");
         }
-        catch { await Shell.Current.DisplayAlert("Errore", "Errore di connessione.", "OK"); }
+        catch { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione.", "OK"); }
         finally { IsBusy = false; }
     }
 

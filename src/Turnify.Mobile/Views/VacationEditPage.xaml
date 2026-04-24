@@ -27,7 +27,7 @@
             <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="0">
                 <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
                 <Picker ItemsSource="{Binding VacationTypesDisplay}"
-                        SelectedIndexChanged="OnTypeChanged"
+                        SelectedIndex="{Binding SelectedTypeIndex}"
                         Margin="10,0"/>
             </Border>
 
@@ -55,7 +55,7 @@
             <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="0">
                 <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
                 <Picker ItemsSource="{Binding StatusOptionsDisplay}"
-                        SelectedIndexChanged="OnStatusChanged"
+                        SelectedIndex="{Binding SelectedStatusIndex}"
                         Margin="10,0"/>
             </Border>
 

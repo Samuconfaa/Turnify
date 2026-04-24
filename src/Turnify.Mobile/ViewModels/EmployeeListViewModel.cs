@@ -84,8 +84,7 @@ public partial class EmployeeListViewModel : BaseViewModel
         }
         catch (Exception)
         {
-            if (App.Current?.MainPage != null)
-                await App.Current.MainPage.DisplayAlert("Errore", "Impossibile caricare i dipendenti.", "OK");
+            await Shell.Current.DisplayAlertAsync("Errore", "Impossibile caricare i dipendenti.", "OK");
         }
         finally
         {

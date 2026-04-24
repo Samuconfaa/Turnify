@@ -20,8 +20,5 @@ public partial class ProfilePage : ContentPage
         await _viewModel.OnAppearingAsync();
     }
 
-    private async void OnTeamTapped(object? sender, EventArgs e)
-    {
-        await Shell.Current.GoToAsync("//Team");
-    }
+
 }

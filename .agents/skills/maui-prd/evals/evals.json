@@ -1,0 +1,60 @@
+{
+  "skill_name": "maui-prd",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Sono uno studente e voglio sviluppare una app .NET MAUI per cercare libri, vedere il dettaglio e salvare i preferiti. Mi serve il PRD del progetto in `docs/spec.md` per lavorare poi a iterazioni con un agente AI.",
+      "expected_output": "Guida la discovery con domande chiarificatrici o assunzioni dichiarate, poi produce o prepara `docs/spec.md` con MVP, non-obiettivi, criteri di accettazione e vincoli MAUI coerenti con il repository.",
+      "assertions": [
+        "Chiede domande chiarificatrici prima di completare un nuovo `docs/spec.md`, oppure esplicita con precisione le assunzioni mancanti se il contesto è già sufficiente.",
+        "Mantiene distinta la specifica di progetto dal piano di iterazioni e rimanda a `prd-to-plan` per `docs/plan.md`, `docs/architecture.md` e `docs/test-matrix.md`.",
+        "Rende espliciti MVP, non-obiettivi, criteri di accettazione e vincoli MAUI coerenti con il repository."
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Voglio una app MAUI per organizzare ricette personali con categorie, foto, ricerca locale e piano pasti settimanale. Android è il target principale, iOS è opzionale. Niente login nella prima versione. Scrivi `docs/spec.md` in modo che sia utile a studenti che lavorano con MVVM, Shell e documentazione strutturata.",
+      "expected_output": "Produce una bozza strutturata di `docs/spec.md` con requisiti misurabili, epic, user stories, criteri di accettazione e limiti chiari dell'MVP.",
+      "assertions": [
+        "La specifica distingue chiaramente funzionalità MVP, funzionalità future e non-obiettivi.",
+        "Tiene Android come target principale e non promette supporto iOS completo se non richiesto.",
+        "Cita stati UI rilevanti come loading, empty ed error quando il flusso lo richiede."
+      ],
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Definisci il PRD della mia app .NET MAUI per cercare film e subito dopo implementa SearchPage, SearchViewModel e il service REST.",
+      "expected_output": "Resta nella fase PRD, produce o prepara `docs/spec.md`, spiega perché non passa direttamente al codice e indica `prd-to-plan` come passaggio successivo.",
+      "assertions": [
+        "Non passa direttamente alla scrittura di codice o file applicativi.",
+        "Spiega in modo didattico la differenza tra PRD, planning e implementazione.",
+        "Indica il passaggio successivo coerente con il workflow del repository."
+      ],
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Ho solo questa idea: una app mobile utile per studenti universitari. Non so ancora se servirà login, dati remoti, offline o notifiche. Aiutami a impostare `docs/spec.md` senza inventare dettagli non ancora decisi.",
+      "expected_output": "Gestisce l'ambiguità con discovery strutturata, usa `TBD` dove necessario e non inventa API, autenticazione o strategie offline non confermate.",
+      "assertions": [
+        "Gestisce l'ambiguità con domande e non con supposizioni forti.",
+        "Usa `TBD` o questioni aperte per gli aspetti non decisi.",
+        "Evita di presentare decisioni tecniche non confermate come già approvate."
+      ],
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "Ho già definito quasi tutto: app .NET MAUI per studenti Erasmus che cercano alloggi, salvano preferiti e consultano dettagli con contatti. Android primario, iOS opzionale, niente login nell'MVP, dati remoti da API pubblica e preferiti locali. Fammi subito una prima bozza di `docs/spec.md`; se manca qualcosa usa `TBD` e al massimo fammi 1-2 chiarimenti mirati.",
+      "expected_output": "Produce subito una prima bozza di `docs/spec.md` con al massimo 1-2 chiarimenti mirati, senza bloccare il lavoro con una discovery troppo lunga, e rende espliciti `TBD` e assunzioni residue.",
+      "assertions": [
+        "Non trasforma un prompt già ben definito in un'intervista lunga 3-5 domande.",
+        "Produce una bozza strutturata di `docs/spec.md` nella stessa risposta, con eventuali `TBD` o assunzioni residue chiaramente etichettati.",
+        "Mantiene la distinzione tra spec di progetto e documenti successivi di planning."
+      ],
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "skill_name": "prd-to-plan",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Abbiamo già `docs/spec.md` per una app MAUI di ricerca libri con MVP composto da ricerca, dettaglio libro e salvataggio preferiti. Deriva `docs/plan.md`, `docs/architecture.md` e `docs/test-matrix.md` in modo che il progetto possa seguire il workflow planning -> build -> review -> testing -> documentation -> Git.",
+      "expected_output": "Produce i tre documenti con iterazioni piccole e verificabili, architettura coerente con MVVM e Shell, e una matrice di test che distingue manuale e automatico realistico.",
+      "assertions": [
+        "Produce o prepara tutti e tre i documenti target senza collassare tutto in un solo piano generico.",
+        "Le iterazioni sono piccole, con obiettivi verificabili e criteri di accettazione concreti.",
+        "La matrice di test distingue manuale, automatico ora e automatico più avanti."
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Il mio spec è pronto ma io vorrei fare solo due iterazioni: una per costruire tutta l'app e una per rifinire. Preparami `docs/plan.md` e spiegami se va bene così.",
+      "expected_output": "Riduce la dimensione delle iterazioni, spiega perché due iterazioni gigantesche sono rischiose e propone un piano più controllato e didattico.",
+      "assertions": [
+        "Non accetta passivamente un piano troppo ampio senza spiegare il problema.",
+        "Spiega perché iterazioni più piccole sono più reviewable e testabili.",
+        "Propone una roadmap più granulare invece di lasciare il piano in due blocchi enormi."
+      ],
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Partendo dal PRD della mia app MAUI, voglio soprattutto una `docs/test-matrix.md` realistica. Il repository non ha ancora UI automation. Indicami cosa metteresti come verifiche manuali, automatiche subito e automatiche più avanti.",
+      "expected_output": "Produce una matrice di test pragmatica, privilegia test unitari e di service dove sensati, non inventa UI automation già disponibile e mantiene separate le verifiche manuali.",
+      "assertions": [
+        "Non inventa copertura UI automation già pronta se il repository non la possiede.",
+        "Distingue chiaramente verifiche manuali e automatiche realistiche per una app MAUI.",
+        "Mantiene il linguaggio di pianificazione senza dichiarare test come già eseguiti."
+      ],
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Vorrei `docs/plan.md` e `docs/architecture.md`, ma in realtà non ho ancora scritto `docs/spec.md`: ho solo l'idea di una app per studenti. Procedi pure con le assunzioni.",
+      "expected_output": "Si ferma, spiega perché manca il prerequisito, chiede il minimo indispensabile e indirizza prima a `maui-prd`.",
+      "assertions": [
+        "Non costruisce piano e architettura completi da uno spec inesistente senza segnalare il problema.",
+        "Indica `maui-prd` come passaggio corretto prima di derivare i documenti successivi.",
+        "Chiede solo le informazioni minime o i blocker necessari per poter continuare."
+      ],
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "Non ho ancora salvato `docs/spec.md`, ma il PRD è già definito così: app .NET MAUI per trovare alloggi Erasmus, vedere dettagli alloggio, salvare preferiti locali, Android primario, niente login nell'MVP, dati remoti da API esterna. Voglio una bozza provvisoria di `docs/plan.md`, `docs/architecture.md` e `docs/test-matrix.md`, chiarendo bene cosa andrà validato quando salverò lo spec definitivo.",
+      "expected_output": "Non si blocca inutilmente: produce una bozza provvisoria dei documenti, la etichetta come derivata dal riassunto del prompt, esplicita blocker o punti da validare e non la presenta come finale.",
+      "assertions": [
+        "Consente una bozza provvisoria quando il riassunto del PRD nel prompt è sufficientemente credibile e completo.",
+        "Etichetta chiaramente il risultato come draft da validare contro `docs/spec.md` definitivo.",
+        "Non usa l'assenza del file come scusa per fermarsi del tutto quando goal, MVP e vincoli principali sono già noti."
+      ],
+      "files": []
+    }
+  ]
+}

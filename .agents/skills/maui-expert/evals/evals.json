@@ -1,0 +1,29 @@
+{
+  "skill_name": "maui-expert",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "In una app .NET MAUI crea una ProductsPage che mostri un elenco remoto con CollectionView, ViewModel basato su CommunityToolkit.Mvvm, binding compilati, quattro stati di pagina e gestione degli errori HTTP e JSON.",
+      "expected_output": "Una pagina XAML con x:DataType, un ViewModel con [ObservableProperty] e [RelayCommand], servizio iniettato via costruttore, gestione di IsBusy, ErrorMessage, HasData, IsEmptyState e catch espliciti per HttpRequestException, JsonException e TaskCanceledException.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Refattorizza una pagina MAUI che oggi carica dati nel code-behind in modo da spostare la logica in un ViewModel MVVM, mantenere solo Shell Navigation e non usare più logica nella classe .xaml.cs.",
+      "expected_output": "Spostamento della logica in ViewModel e servizi, code-behind ridotto a wiring minimo, navigazione gestita con Shell e stato della pagina esposto in modo esplicito.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Aggiungi una schermata dettagli in .NET MAUI raggiungibile da una lista ordini, usando solo Shell Navigation, DI per i servizi, XAML con x:DataType e gestione di loading, error, data ed empty state.",
+      "expected_output": "Registrazione della route Shell, comando di navigazione nel ViewModel, pagina dettagli con binding compilati, servizio iniettato e gestione coerente dei quattro stati e delle eccezioni HTTP/JSON/timeout.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Crea una pagina .NET MAUI che carichi dati all'apertura, ma senza mettere logica nel code-behind. Voglio MVVM con CommunityToolkit.Mvvm, Shell Navigation, XAML con x:DataType e stati espliciti della pagina.",
+      "expected_output": "Una proposta che mantenga `.xaml.cs` come puro wiring, eviti `OnAppearing` e altri event handler della pagina per il caricamento iniziale, e spieghi un'alternativa basata su ViewModel, behavior esistenti o flusso di navigazione Shell.",
+      "files": []
+    }
+  ]
+}

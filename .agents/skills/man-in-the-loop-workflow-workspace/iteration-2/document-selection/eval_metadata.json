@@ -1,0 +1,10 @@
+{
+  "eval_id": 5,
+  "eval_name": "document-selection",
+  "prompt": "Abbiamo appena completato una iterazione che ha introdotto SearchViewModel, SearchPage e BookService. I test manuali eseguiti sono: input vuoto gestito, timeout gestito, loading state visibile, lista vuota mostrata. Non sono cambiati i requisiti funzionali, ma abbiamo chiarito meglio gli stati UI e usato due prompt importanti per ottenere il service e correggere il ViewModel. Dimmi esattamente quali documenti aggiornare e perché, seguendo il workflow del repository.",
+  "assertions": [
+    "Include `docs/iterations/it-xx.md`, `docs/test-matrix.md` e `docs/prompt-log.md` tra gli aggiornamenti necessari.",
+    "Tratta `docs/spec.md` come opzionale o non necessario perché i requisiti funzionali non sono cambiati.",
+    "Spiega il motivo per ogni documento invece di dare solo un elenco."
+  ]
+}

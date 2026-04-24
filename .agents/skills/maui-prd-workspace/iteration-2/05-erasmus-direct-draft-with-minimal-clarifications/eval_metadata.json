@@ -1,0 +1,10 @@
+{
+  "eval_id": 5,
+  "eval_name": "erasmus-direct-draft-with-minimal-clarifications",
+  "prompt": "Ho già definito quasi tutto: app .NET MAUI per studenti Erasmus che cercano alloggi, salvano preferiti e consultano dettagli con contatti. Android primario, iOS opzionale, niente login nell'MVP, dati remoti da API pubblica e preferiti locali. Fammi subito una prima bozza di `docs/spec.md`; se manca qualcosa usa `TBD` e al massimo fammi 1-2 chiarimenti mirati.",
+  "assertions": [
+    "Non trasforma un prompt già ben definito in un'intervista lunga 3-5 domande.",
+    "Produce una bozza strutturata di `docs/spec.md` nella stessa risposta, con eventuali `TBD` o assunzioni residue chiaramente etichettati.",
+    "Mantiene la distinzione tra spec di progetto e documenti successivi di planning."
+  ]
+}

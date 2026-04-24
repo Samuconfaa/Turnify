@@ -1,0 +1,10 @@
+{
+  "eval_id": 3,
+  "eval_name": "iteration-closure",
+  "prompt": "La feature di ricerca sembra pronta. Aiutami a chiudere l'iterazione seguendo il workflow del repository: quali documenti devo aggiornare, quali test manuali devo ancora fare e quali passi Git hanno senso, senza fare merge o push automaticamente?",
+  "assertions": [
+    "Indica almeno docs/iterations/it-xx.md e docs/test-matrix.md tra i documenti da aggiornare.",
+    "Propone test manuali concreti per chiudere l'iterazione.",
+    "Esplicita che merge e push non vanno eseguiti automaticamente."
+  ]
+}

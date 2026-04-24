@@ -1,0 +1,24 @@
+{
+  "expectations": [
+    {
+      "text": "Sconsiglia esplicitamente di partire subito con UI automation in questo scenario.",
+      "passed": true,
+      "evidence": "Apre dicendo chiaramente `Non partirei subito con UI automation` e conclude che non è una buona idea in questo scenario."
+    },
+    {
+      "text": "Propone build verification come controllo automatico principale per modifiche a XAML e Shell.",
+      "passed": true,
+      "evidence": "Indica `dotnet build` del progetto MAUI come primo controllo automatico obbligatorio dopo modifiche a XAML e Shell."
+    },
+    {
+      "text": "Spiega in modo didattico almeno un errore di ragionamento, non solo la strategia finale.",
+      "passed": true,
+      "evidence": "Elenca esplicitamente cinque errori di ragionamento tipici, tra cui partire da UI automation e confondere build con copertura completa."
+    },
+    {
+      "text": "Distingue chiaramente tra controlli automatici e verifiche ancora manuali.",
+      "passed": true,
+      "evidence": "Usa una tabella con colonne `Automatico ora` e `Manuale` e una sezione separata sui controlli che restano manuali."
+    }
+  ]
+}

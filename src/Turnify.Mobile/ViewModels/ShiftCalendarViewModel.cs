@@ -197,7 +197,7 @@ public partial class ShiftCalendarViewModel : BaseViewModel
         if (!IsAdmin || cell == null) return;
         if (cell.IsVacation)
         {
-            await Shell.Current.DisplayAlert("In ferie", "Il dipendente è in ferie in questo giorno.", "OK");
+            await Shell.Current.DisplayAlertAsync("In ferie", "Il dipendente è in ferie in questo giorno.", "OK");
             return;
         }
         if (cell.HasShift && cell.ShiftId > 0)

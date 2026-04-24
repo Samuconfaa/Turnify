@@ -4,6 +4,7 @@ using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Turnify.Mobile.ViewModels;
@@ -69,6 +70,16 @@ public partial class ProfileViewModel : BaseViewModel
         }
     }
 
+    [ObservableProperty] private string? _selectedEmoji;
+
+    partial void OnSelectedEmojiChanged(string? value)
+    {
+        if (string.IsNullOrEmpty(value)) return;
+        SetEmoji(value);
+        SelectedEmoji = null;
+        _ = Shell.Current.GoToAsync("..");
+    }
+
     // Emoji grid for picker (4 per row)
     public string[] AvailableEmojis { get; } =
     {
@@ -131,7 +142,7 @@ public partial class ProfileViewModel : BaseViewModel
     [RelayCommand]
     private async Task PickAvatarAsync()
     {
-        var choice = await Shell.Current.DisplayActionSheet(
+        var choice = await Shell.Current.DisplayActionSheetAsync(
             "Cambia foto profilo", "Annulla", null,
             "Scegli emoji", "Carica foto dalla galleria");
 
@@ -160,10 +171,11 @@ public partial class ProfileViewModel : BaseViewModel
     {
         try
         {
-            var result = await MediaPicker.Default.PickPhotoAsync(new MediaPickerOptions
+            var photos = await MediaPicker.Default.PickPhotosAsync(new MediaPickerOptions
             {
                 Title = "Scegli foto profilo"
             });
+            var result = photos?.FirstOrDefault();
 
             if (result == null) return;
 
@@ -176,7 +188,7 @@ public partial class ProfileViewModel : BaseViewModel
         }
         catch
         {
-            await Shell.Current.DisplayAlert("Errore", "Impossibile caricare la foto.", "OK");
+            await Shell.Current.DisplayAlertAsync("Errore", "Impossibile caricare la foto.", "OK");
         }
     }
 
@@ -193,7 +205,7 @@ public partial class ProfileViewModel : BaseViewModel
             "Cambia Password", "Nuova password (min. 8 caratteri):", "Conferma", "Annulla");
         if (string.IsNullOrEmpty(newPwd) || newPwd.Length < 8)
         {
-            await Shell.Current.DisplayAlert("Errore", "La password deve avere almeno 8 caratteri.", "OK");
+            await Shell.Current.DisplayAlertAsync("Errore", "La password deve avere almeno 8 caratteri.", "OK");
             return;
         }
         try
@@ -201,11 +213,11 @@ public partial class ProfileViewModel : BaseViewModel
             var response = await _httpClient.PutAsJsonAsync("api/users/me/password",
                 new { currentPassword = current, newPassword = newPwd });
             if (response.IsSuccessStatusCode)
-                await Shell.Current.DisplayAlert("Successo", "Password aggiornata.", "OK");
+                await Shell.Current.DisplayAlertAsync("Successo", "Password aggiornata.", "OK");
             else
-                await Shell.Current.DisplayAlert("Errore", "Password attuale non corretta.", "OK");
+                await Shell.Current.DisplayAlertAsync("Errore", "Password attuale non corretta.", "OK");
         }
-        catch { await Shell.Current.DisplayAlert("Errore", "Errore di connessione.", "OK"); }
+        catch { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione.", "OK"); }
     }
 
     [RelayCommand]
@@ -217,7 +229,7 @@ public partial class ProfileViewModel : BaseViewModel
             var businesses = await _httpClient.GetFromJsonAsync<BusinessItemDto[]>("api/businesses");
             if (businesses == null || businesses.Length == 0)
             {
-                bool create = await Shell.Current.DisplayAlert(
+                bool create = await Shell.Current.DisplayAlertAsync(
                     "Nessuna attività",
                     "Non hai ancora creato nessuna attività. Vuoi crearne una adesso?",
                     "Sì", "No");
@@ -233,7 +245,7 @@ public partial class ProfileViewModel : BaseViewModel
             else
             {
                 var names = businesses.Select(b => b.Name).ToArray();
-                var chosen = await Shell.Current.DisplayActionSheet(
+                var chosen = await Shell.Current.DisplayActionSheetAsync(
                     "Seleziona attività", "Annulla", null, names);
                 var biz = businesses.FirstOrDefault(b => b.Name == chosen);
                 if (biz != null)
@@ -241,8 +253,16 @@ public partial class ProfileViewModel : BaseViewModel
                         $"{nameof(Views.BusinessOpeningHoursPage)}?businessId={biz.Id}");
             }
         }
-        catch { await Shell.Current.DisplayAlert("Errore", "Impossibile caricare le attività.", "OK"); }
+        catch { await Shell.Current.DisplayAlertAsync("Errore", "Impossibile caricare le attività.", "OK"); }
     }
+
+    [RelayCommand]
+    private async Task GoToTeamAsync() =>
+        await Shell.Current.GoToAsync("//Team");
+
+    [RelayCommand]
+    private async Task CloseAsync() =>
+        await Shell.Current.GoToAsync("..");
 
     [RelayCommand]
     private async Task ManageBusinessesAsync()
@@ -253,7 +273,7 @@ public partial class ProfileViewModel : BaseViewModel
     [RelayCommand]
     private async Task LogoutAsync()
     {
-        bool confirm = await Shell.Current.DisplayAlert("Logout", "Sei sicuro?", "Esci", "Annulla");
+        bool confirm = await Shell.Current.DisplayAlertAsync("Logout", "Sei sicuro?", "Esci", "Annulla");
         if (!confirm) return;
         try { await _httpClient.PostAsync("api/auth/logout", null); } catch { }
         finally
@@ -261,7 +281,7 @@ public partial class ProfileViewModel : BaseViewModel
             SecureStorage.Default.Remove("jwt_token");
             SecureStorage.Default.Remove("refresh_token");
             SecureStorage.Default.Remove("user_role");
-            Application.Current!.MainPage = new AppShell();
+            Application.Current!.Windows[0].Page = new AppShell();
         }
     }
 

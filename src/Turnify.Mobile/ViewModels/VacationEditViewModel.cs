@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
@@ -16,16 +17,24 @@ public partial class VacationEditViewModel : BaseViewModel
     [ObservableProperty] private int _requestId;
     [ObservableProperty] private string _employeeName = string.Empty;
     [ObservableProperty] private string _selectedType = "Holiday";
+    [ObservableProperty] private int _selectedTypeIndex;
     [ObservableProperty] private DateTime _startDate = DateTime.Today;
     [ObservableProperty] private DateTime _endDate = DateTime.Today.AddDays(1);
     [ObservableProperty] private string _reason = string.Empty;
     [ObservableProperty] private string _selectedStatus = "Pending";
+    [ObservableProperty] private int _selectedStatusIndex;
     [ObservableProperty] private string _reviewNote = string.Empty;
 
     public string[] VacationTypes        { get; } = { "Holiday", "PaidLeave", "SickLeave", "UnpaidLeave" };
     public string[] VacationTypesDisplay { get; } = { "Ferie", "Permesso Pagato", "Malattia", "Permesso Non Pagato" };
     public string[] StatusOptions        { get; } = { "Pending", "Approved", "Rejected", "Cancelled" };
     public string[] StatusOptionsDisplay { get; } = { "In Attesa", "Approvata", "Rifiutata", "Annullata" };
+
+    partial void OnSelectedTypeIndexChanged(int value) =>
+        SelectedType = VacationTypes.ElementAtOrDefault(value) ?? "Holiday";
+
+    partial void OnSelectedStatusIndexChanged(int value) =>
+        SelectedStatus = StatusOptions.ElementAtOrDefault(value) ?? "Pending";
 
     public VacationEditViewModel(IHttpClientFactory httpClientFactory)
     {
@@ -49,11 +58,13 @@ public partial class VacationEditViewModel : BaseViewModel
             if (item == null) return;
 
             EmployeeName   = item.EmployeeName;
-            SelectedType   = item.Type;
+            var typeIdx = Array.IndexOf(VacationTypes, item.Type);
+            SelectedTypeIndex   = typeIdx >= 0 ? typeIdx : 0;
             StartDate      = item.StartDate;
             EndDate        = item.EndDate;
             Reason         = item.Reason;
-            SelectedStatus = item.Status;
+            var statusIdx = Array.IndexOf(StatusOptions, item.Status);
+            SelectedStatusIndex = statusIdx >= 0 ? statusIdx : 0;
             ReviewNote     = item.ReviewNote ?? string.Empty;
         }
         catch { }
@@ -65,7 +76,7 @@ public partial class VacationEditViewModel : BaseViewModel
     {
         if (EndDate < StartDate)
         {
-            await Shell.Current.DisplayAlert("Errore", "La data di fine deve essere dopo la data di inizio.", "OK");
+            await Shell.Current.DisplayAlertAsync("Errore", "La data di fine deve essere dopo la data di inizio.", "OK");
             return;
         }
         try
@@ -83,15 +94,15 @@ public partial class VacationEditViewModel : BaseViewModel
             var r = await _httpClient.PutAsJsonAsync($"api/vacation-requests/{RequestId}", dto);
             if (r.IsSuccessStatusCode)
             {
-                await Shell.Current.DisplayAlert("Salvato", "Richiesta aggiornata.", "OK");
+                await Shell.Current.DisplayAlertAsync("Salvato", "Richiesta aggiornata.", "OK");
                 await Shell.Current.GoToAsync("..");
             }
             else
             {
-                await Shell.Current.DisplayAlert("Errore", "Impossibile salvare.", "OK");
+                await Shell.Current.DisplayAlertAsync("Errore", "Impossibile salvare.", "OK");
             }
         }
-        catch (Exception ex) { await Shell.Current.DisplayAlert("Errore", ex.Message, "OK"); }
+        catch (Exception ex) { await Shell.Current.DisplayAlertAsync("Errore", ex.Message, "OK"); }
         finally { IsBusy = false; }
     }
 

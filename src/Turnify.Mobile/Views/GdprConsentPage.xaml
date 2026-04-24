@@ -54,7 +54,7 @@
 
                         <HorizontalStackLayout Spacing="14">
                             <Label Text="🔒" FontSize="22" VerticalOptions="Start" Margin="0,2,0,0"/>
-                            <VerticalStackLayout Spacing="2" HorizontalOptions="FillAndExpand">
+                            <VerticalStackLayout Spacing="2" HorizontalOptions="Fill">
                                 <Label Text="Dati al sicuro"
                                        FontSize="13" FontAttributes="Bold"
                                        TextColor="{StaticResource OnBackground}"/>
@@ -67,7 +67,7 @@
 
                         <HorizontalStackLayout Spacing="14">
                             <Label Text="👥" FontSize="22" VerticalOptions="Start" Margin="0,2,0,0"/>
-                            <VerticalStackLayout Spacing="2" HorizontalOptions="FillAndExpand">
+                            <VerticalStackLayout Spacing="2" HorizontalOptions="Fill">
                                 <Label Text="Solo per te"
                                        FontSize="13" FontAttributes="Bold"
                                        TextColor="{StaticResource OnBackground}"/>
@@ -80,7 +80,7 @@
 
                         <HorizontalStackLayout Spacing="14">
                             <Label Text="⚙️" FontSize="22" VerticalOptions="Start" Margin="0,2,0,0"/>
-                            <VerticalStackLayout Spacing="2" HorizontalOptions="FillAndExpand">
+                            <VerticalStackLayout Spacing="2" HorizontalOptions="Fill">
                                 <Label Text="Controllo totale"
                                        FontSize="13" FontAttributes="Bold"
                                        TextColor="{StaticResource OnBackground}"/>

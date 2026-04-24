@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using Turnify.Core.Interfaces.Repositories;
+using Turnify.Core.Interfaces.Services;
 using Turnify.Core.Models;
 using Turnify.Infrastructure.Services;
 using Xunit;
@@ -14,16 +15,23 @@ namespace Turnify.Tests.Services;
 public class ShiftServiceTests
 {
     private readonly Mock<IShiftRepository> _shiftRepositoryMock;
-    private readonly Mock<IVacationRepository> _vacationRepositoryMock; // Fix 2: era mancante
+    private readonly Mock<IVacationRepository> _vacationRepositoryMock;
+    private readonly Mock<IEmployeeRepository> _employeeRepositoryMock;
+    private readonly Mock<IPushNotificationService> _pushServiceMock;
     private readonly ShiftService _sut;
 
     public ShiftServiceTests()
     {
         _shiftRepositoryMock    = new Mock<IShiftRepository>();
         _vacationRepositoryMock = new Mock<IVacationRepository>();
+        _employeeRepositoryMock = new Mock<IEmployeeRepository>();
+        _pushServiceMock        = new Mock<IPushNotificationService>();
 
-        // Fix 2: ShiftService richiede IVacationRepository per controllare ferie approvate
-        _sut = new ShiftService(_shiftRepositoryMock.Object, _vacationRepositoryMock.Object);
+        _sut = new ShiftService(
+            _shiftRepositoryMock.Object,
+            _vacationRepositoryMock.Object,
+            _employeeRepositoryMock.Object,
+            _pushServiceMock.Object);
 
         // Default: nessuna ferie approvata (non blocca la creazione turni)
         _vacationRepositoryMock
@@ -165,10 +173,21 @@ public class ShiftServiceTests
     {
         // Arrange
         var shiftId = 1;
+        var shift = new Shift { Id = shiftId, EmployeeId = 1,
+            StartTime = new DateTime(2026, 1, 1, 9, 0, 0),
+            EndTime   = new DateTime(2026, 1, 1, 17, 0, 0) };
+
+        _shiftRepositoryMock
+            .Setup(r => r.GetByIdAsync(shiftId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(shift);
 
         _shiftRepositoryMock
             .Setup(r => r.DeleteAsync(shiftId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
+
+        _employeeRepositoryMock
+            .Setup(r => r.GetByIdAsync(1, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Employee { Id = 1, UserId = null });
 
         // Act
         var result = await _sut.DeleteShiftAsync(shiftId);

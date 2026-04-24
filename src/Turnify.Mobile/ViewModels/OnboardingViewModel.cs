@@ -77,7 +77,7 @@ public partial class OnboardingViewModel : BaseViewModel
     {
         if (string.IsNullOrWhiteSpace(BusinessName))
         {
-            await Shell.Current.DisplayAlert("Errore",
+            await Shell.Current.DisplayAlertAsync("Errore",
                 "Il nome dell'attività è obbligatorio.", "OK");
             return;
         }
@@ -95,12 +95,12 @@ public partial class OnboardingViewModel : BaseViewModel
             if (response.IsSuccessStatusCode)
                 CurrentStep = 3;
             else
-                await Shell.Current.DisplayAlert("Errore",
+                await Shell.Current.DisplayAlertAsync("Errore",
                     "Impossibile salvare l'attività. Riprova.", "OK");
         }
         catch
         {
-            await Shell.Current.DisplayAlert("Errore", "Errore di connessione.", "OK");
+            await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione.", "OK");
         }
         finally { IsBusy = false; }
     }
@@ -113,7 +113,7 @@ public partial class OnboardingViewModel : BaseViewModel
             string.IsNullOrWhiteSpace(EmployeeEmail)     ||
             string.IsNullOrWhiteSpace(EmployeePassword))
         {
-            await Shell.Current.DisplayAlert("Errore",
+            await Shell.Current.DisplayAlertAsync("Errore",
                 "Tutti i campi del dipendente sono obbligatori.", "OK");
             return;
         }
@@ -132,15 +132,15 @@ public partial class OnboardingViewModel : BaseViewModel
             if (response.IsSuccessStatusCode)
                 await CompleteOnboardingAsync();
             else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
-                await Shell.Current.DisplayAlert("Errore",
+                await Shell.Current.DisplayAlertAsync("Errore",
                     "Email già in uso. Usa un'altra email.", "OK");
             else
-                await Shell.Current.DisplayAlert("Errore",
+                await Shell.Current.DisplayAlertAsync("Errore",
                     "Impossibile creare il dipendente. Riprova.", "OK");
         }
         catch
         {
-            await Shell.Current.DisplayAlert("Errore", "Errore di connessione.", "OK");
+            await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione.", "OK");
         }
         finally { IsBusy = false; }
     }
@@ -158,7 +158,7 @@ public partial class OnboardingViewModel : BaseViewModel
         var storedRole = await SecureStorage.Default.GetAsync("user_role");
         bool isAdmin   = storedRole == "Admin";
 
-        Application.Current!.MainPage = new AppShell(isAdmin);
+        Application.Current!.Windows[0].Page = new AppShell(isAdmin);
         await Shell.Current.GoToAsync(isAdmin ? "//Dashboard" : "//Shifts");
     }
 }

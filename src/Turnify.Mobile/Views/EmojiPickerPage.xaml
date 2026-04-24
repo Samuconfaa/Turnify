@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
              x:Class="Turnify.Mobile.Views.EmojiPickerPage"
+             x:DataType="vm:ProfileViewModel"
              Title="Scegli emoji"
              BackgroundColor="{StaticResource Background}">
 
@@ -18,7 +20,7 @@
                         x:Name="EmojiGrid"
                         ItemsSource="{Binding AvailableEmojis}"
                         SelectionMode="Single"
-                        SelectionChanged="OnEmojiSelected">
+                        SelectedItem="{Binding SelectedEmoji}">
             <CollectionView.ItemsLayout>
                 <GridItemsLayout Orientation="Vertical" Span="6" HorizontalItemSpacing="8" VerticalItemSpacing="8"/>
             </CollectionView.ItemsLayout>
@@ -43,7 +45,7 @@
 
         <Button Grid.Row="2"
                 Text="Annulla"
-                Clicked="OnCancelClicked"
+                Command="{Binding CloseCommand}"
                 BackgroundColor="Transparent"
                 TextColor="{StaticResource Primary}"
                 BorderColor="{StaticResource Primary}"

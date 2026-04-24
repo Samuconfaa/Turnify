@@ -200,3 +200,28 @@ Turnify/
 
 ---
 
+### Iterazione 4 — GDPR, onboarding e push notification
+**Data:** 2026-04-24
+
+**Lavoro svolto:**
+- `GdprConsentPage.xaml` + `GdprConsentViewModel.cs`: schermata consenso GDPR al primo avvio, con raccolta esplicita e salvataggio in `Preferences` (`CONSENT_GIVEN_KEY`, `CONSENT_VERSION_KEY`, `gdpr_marketing_accepted`, `gdpr_consent_date`)
+- `OnboardingPage.xaml` + `OnboardingViewModel.cs`: guida multi-step al primo accesso post-consenso
+- `DeviceTokensController.cs` + `DeviceTokenRepository.cs`: registrazione device token FCM lato backend
+- Migrazione `AddDeviceTokens`: tabella `DeviceTokens` con `UserId`, `Token`, `Platform`
+- `FcmPushNotificationService.cs`: invio push notification via Firebase FCM (292 righe)
+- `MobilePushService.cs` (mobile): registrazione del device token al login
+- `App.xaml.cs`: logica di startup aggiornata — controlla `Preferences` per GDPR e sessione, smista verso `GdprConsentPage`, `OnboardingPage` o login
+
+**File principali:**
+- `Turnify.Mobile/Views/GdprConsentPage.xaml`, `OnboardingPage.xaml`
+- `Turnify.Mobile/ViewModels/GdprConsentViewModel.cs`, `OnboardingViewModel.cs`
+- `Turnify.Api/Controllers/DeviceTokensController.cs`
+- `Turnify.Infrastructure/Repositories/DeviceTokenRepository.cs`
+- `Turnify.Infrastructure/Services/FcmPushNotificationService.cs`
+- `Turnify.Infrastructure/Migrations/*_AddDeviceTokens.*`
+- `Turnify.Mobile/App.xaml.cs`
+
+**Risultato:** flusso di primo avvio completo con consenso GDPR e onboarding; push notification FCM operative; device token gestiti lato backend.
+
+---
+

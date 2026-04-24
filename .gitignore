@@ -25,6 +25,7 @@ coverage/
 ## =========================
 # Build folders
 publish/
+logos/
 prompt/
 bin/
 obj/

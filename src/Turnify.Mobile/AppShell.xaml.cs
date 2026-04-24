@@ -1,21 +1,55 @@
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Storage;
 
 namespace Turnify.Mobile;
 
 public partial class AppShell : Shell
 {
-    public AppShell(bool isAdmin = false)
+    /// <summary>
+    /// startRoute: "GdprFirst" | "Login" | "Onboarding" | "Main"
+    /// </summary>
+    public AppShell(bool isAdmin = false, string startRoute = "Login")
     {
         InitializeComponent();
+        RegisterAllRoutes();
+        ConfigureForRole(isAdmin);
 
+        // Naviga alla schermata iniziale corretta dopo l'init
+        Dispatcher.Dispatch(async () =>
+        {
+            switch (startRoute)
+            {
+                case "GdprFirst":
+                    await Shell.Current.GoToAsync(nameof(Views.GdprConsentPage));
+                    break;
+                case "Onboarding":
+                    await Shell.Current.GoToAsync(nameof(Views.OnboardingPage));
+                    break;
+                case "Main":
+                    await Shell.Current.GoToAsync(isAdmin ? "//Dashboard" : "//Shifts");
+                    break;
+                default: // "Login"
+                    // La LoginPage è già la prima tab/route dello shell
+                    break;
+            }
+        });
+    }
+
+    private void RegisterAllRoutes()
+    {
         // Auth
         Routing.RegisterRoute(nameof(Views.LoginPage),    typeof(Views.LoginPage));
         Routing.RegisterRoute(nameof(Views.RegisterPage), typeof(Views.RegisterPage));
 
-        // Main pages (also registered as tabs via XAML)
+        // GDPR e Onboarding
+        Routing.RegisterRoute(nameof(Views.GdprConsentPage), typeof(Views.GdprConsentPage));
+        Routing.RegisterRoute(nameof(Views.OnboardingPage),  typeof(Views.OnboardingPage));
+
+        // Main pages
         Routing.RegisterRoute(nameof(Views.DashboardPage),     typeof(Views.DashboardPage));
         Routing.RegisterRoute(nameof(Views.ShiftCalendarPage), typeof(Views.ShiftCalendarPage));
         Routing.RegisterRoute(nameof(Views.VacationListPage),  typeof(Views.VacationListPage));
+        Routing.RegisterRoute(nameof(Views.VacationEditPage),  typeof(Views.VacationEditPage));
         Routing.RegisterRoute(nameof(Views.NotificationsPage), typeof(Views.NotificationsPage));
         Routing.RegisterRoute(nameof(Views.ProfilePage),       typeof(Views.ProfilePage));
 
@@ -33,8 +67,7 @@ public partial class AppShell : Shell
 
         // Profile extras
         Routing.RegisterRoute(nameof(Views.EmojiPickerPage), typeof(Views.EmojiPickerPage));
-
-        ConfigureForRole(isAdmin);
+        Routing.RegisterRoute(nameof(Views.ManageDataPage),  typeof(Views.ManageDataPage));
     }
 
     public void ConfigureForRole(bool isAdmin)

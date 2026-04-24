@@ -24,8 +24,8 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new()
     {
-        Title = "Turnify API",
-        Version = "v1",
+        Title       = "Turnify API",
+        Version     = "v1",
         Description = "API per la gestione turni Turnify"
     });
 });
@@ -61,19 +61,24 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
-// Services
-builder.Services.AddScoped<IAuthService,      AuthService>();
-builder.Services.AddScoped<IShiftService,     ShiftService>();
-builder.Services.AddScoped<IVacationService,  VacationService>();
-builder.Services.AddScoped<IDashboardService, DashboardService>();
+// HttpClient per FcmPushNotificationService
+builder.Services.AddHttpClient<FcmPushNotificationService>();
 
-// Repositories
-builder.Services.AddScoped<IShiftRepository,    ShiftRepository>();
-builder.Services.AddScoped<IUserRepository,     UserRepository>();
-builder.Services.AddScoped<ICompanyRepository,  CompanyRepository>();
-builder.Services.AddScoped<IVacationRepository, VacationRepository>();
-builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-builder.Services.AddScoped<IBusinessRepository, BusinessRepository>();
+// ── Services ─────────────────────────────────────────────────────
+builder.Services.AddScoped<IAuthService,              AuthService>();
+builder.Services.AddScoped<IShiftService,             ShiftService>();
+builder.Services.AddScoped<IVacationService,          VacationService>();
+builder.Services.AddScoped<IDashboardService,         DashboardService>();
+builder.Services.AddScoped<IPushNotificationService,  FcmPushNotificationService>();
+
+// ── Repositories ─────────────────────────────────────────────────
+builder.Services.AddScoped<IShiftRepository,       ShiftRepository>();
+builder.Services.AddScoped<IUserRepository,        UserRepository>();
+builder.Services.AddScoped<ICompanyRepository,     CompanyRepository>();
+builder.Services.AddScoped<IVacationRepository,    VacationRepository>();
+builder.Services.AddScoped<IEmployeeRepository,    EmployeeRepository>();
+builder.Services.AddScoped<IBusinessRepository,    BusinessRepository>();
+builder.Services.AddScoped<IDeviceTokenRepository, DeviceTokenRepository>();
 
 var app = builder.Build();
 
@@ -84,7 +89,6 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 
 app.UsePathBase("/turnify");
 
-// Global exception handler — logs real errors and returns structured JSON
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())

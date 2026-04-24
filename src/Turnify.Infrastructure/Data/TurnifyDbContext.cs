@@ -19,6 +19,7 @@ public class TurnifyDbContext : DbContext
     public DbSet<VacationRequest> VacationRequests => Set<VacationRequest>();
     public DbSet<Notification> Notifications => Set<Notification>();
     public DbSet<AttendanceLog> AttendanceLogs => Set<AttendanceLog>();
+    public DbSet<DeviceToken> DeviceTokens => Set<DeviceToken>(); // nuovo — push notifications
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -26,18 +27,15 @@ public class TurnifyDbContext : DbContext
 
         // Users
         modelBuilder.Entity<User>()
-            .HasIndex(u => u.Email)
-            .IsUnique();
+            .HasIndex(u => u.Email).IsUnique();
         modelBuilder.Entity<User>()
             .HasIndex(u => u.CompanyId);
         modelBuilder.Entity<User>()
-            .Property(u => u.Role)
-            .HasConversion<string>();
+            .Property(u => u.Role).HasConversion<string>();
 
         // Companies
         modelBuilder.Entity<Company>()
-            .HasIndex(c => c.Slug)
-            .IsUnique();
+            .HasIndex(c => c.Slug).IsUnique();
 
         // Businesses
         modelBuilder.Entity<Business>()
@@ -45,13 +43,11 @@ public class TurnifyDbContext : DbContext
 
         // Employees
         modelBuilder.Entity<Employee>()
-            .HasIndex(e => new { e.CompanyId, e.Email })
-            .IsUnique();
+            .HasIndex(e => new { e.CompanyId, e.Email }).IsUnique();
         modelBuilder.Entity<Employee>()
             .HasIndex(e => e.UserId);
         modelBuilder.Entity<Employee>()
-            .Property(e => e.ContractType)
-            .HasConversion<string>();
+            .Property(e => e.ContractType).HasConversion<string>();
 
         // Shifts
         modelBuilder.Entity<Shift>()
@@ -59,8 +55,7 @@ public class TurnifyDbContext : DbContext
         modelBuilder.Entity<Shift>()
             .HasIndex(s => s.CompanyId);
         modelBuilder.Entity<Shift>()
-            .Property(s => s.Status)
-            .HasConversion<string>();
+            .Property(s => s.Status).HasConversion<string>();
 
         // VacationRequests
         modelBuilder.Entity<VacationRequest>()
@@ -68,27 +63,31 @@ public class TurnifyDbContext : DbContext
         modelBuilder.Entity<VacationRequest>()
             .HasIndex(v => v.Status);
         modelBuilder.Entity<VacationRequest>()
-            .Property(v => v.Type)
-            .HasConversion<string>();
+            .Property(v => v.Type).HasConversion<string>();
         modelBuilder.Entity<VacationRequest>()
-            .Property(v => v.Status)
-            .HasConversion<string>();
+            .Property(v => v.Status).HasConversion<string>();
 
         // Notifications
         modelBuilder.Entity<Notification>()
             .HasIndex(n => new { n.RecipientUserId, n.IsRead });
         modelBuilder.Entity<Notification>()
-            .Property(n => n.Type)
-            .HasConversion<string>();
+            .Property(n => n.Type).HasConversion<string>();
 
         // AttendanceLogs
         modelBuilder.Entity<AttendanceLog>()
             .HasIndex(a => new { a.EmployeeId, a.CheckInTime });
         modelBuilder.Entity<AttendanceLog>()
-            .Property(a => a.CheckInMethod)
-            .HasConversion<string>();
+            .Property(a => a.CheckInMethod).HasConversion<string>();
 
-        // Convert DateTimes to UTC
+        // DeviceTokens — indice su UserId+IsActive per query veloci
+        modelBuilder.Entity<DeviceToken>()
+            .HasIndex(t => new { t.UserId, t.IsActive });
+        modelBuilder.Entity<DeviceToken>()
+            .HasIndex(t => t.Token).IsUnique();
+        modelBuilder.Entity<DeviceToken>()
+            .Property(t => t.Platform).HasConversion<string>();
+
+        // Converte tutti i DateTime in UTC
         var dateTimeConverter = new ValueConverter<DateTime, DateTime>(
             v => v.ToUniversalTime(),
             v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
@@ -102,13 +101,9 @@ public class TurnifyDbContext : DbContext
             foreach (var property in entityType.GetProperties())
             {
                 if (property.ClrType == typeof(DateTime))
-                {
                     property.SetValueConverter(dateTimeConverter);
-                }
                 else if (property.ClrType == typeof(DateTime?))
-                {
                     property.SetValueConverter(nullableDateTimeConverter);
-                }
             }
         }
     }

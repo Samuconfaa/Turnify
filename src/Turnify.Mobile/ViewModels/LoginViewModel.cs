@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
 using Turnify.Core.Interfaces.Services;
+using Turnify.Mobile.ViewModels;
 
 namespace Turnify.Mobile.ViewModels;
 
@@ -31,7 +32,7 @@ public partial class LoginViewModel : BaseViewModel
     public LoginViewModel(IAuthService authService)
     {
         _authService = authService;
-        Title = "Login";
+        Title        = "Login";
     }
 
     private bool CanLogin() =>
@@ -41,34 +42,41 @@ public partial class LoginViewModel : BaseViewModel
     private async Task LoginAsync()
     {
         ErrorMessage = string.Empty;
-        IsBusy = true;
+        IsBusy       = true;
 
         try
         {
             var result = await _authService.LoginAsync(Email, Password);
-            if (result != null)
-            {
-                // Decode JWT to get the real role
-                bool isAdmin = ExtractIsAdminFromToken(result.Value.AccessToken);
-
-                // Save role in SecureStorage so other ViewModels can use it
-                await SecureStorage.Default.SetAsync("user_role", isAdmin ? "Admin" : "Employee");
-
-                // Rebuild AppShell with correct tabs for the role
-                Application.Current!.MainPage = new AppShell(isAdmin);
-
-                await Shell.Current.GoToAsync(isAdmin ? "//Dashboard" : "//Shifts");
-            }
-            else
+            if (result == null)
             {
                 ErrorMessage = "Credenziali non valide. Verifica email e password.";
+                return;
             }
+
+            bool isAdmin = ExtractIsAdminFromToken(result.Value.AccessToken);
+
+            // Salva ruolo e flag sessione per il prossimo avvio
+            await SecureStorage.Default.SetAsync("user_role", isAdmin ? "Admin" : "Employee");
+            Preferences.Default.Set("user_role_cached",   isAdmin ? "Admin" : "Employee");
+            Preferences.Default.Set("has_valid_session",  true);
+
+            // Admin al primo accesso → mostra onboarding wizard
+            if (isAdmin && OnboardingViewModel.NeedsOnboarding())
+            {
+                Application.Current!.MainPage = new AppShell(isAdmin: true, startRoute: "Login");
+                await Shell.Current.GoToAsync(nameof(Views.OnboardingPage));
+                return;
+            }
+
+            // Accesso normale
+            Application.Current!.MainPage = new AppShell(isAdmin);
+            await Shell.Current.GoToAsync(isAdmin ? "//Dashboard" : "//Shifts");
         }
         catch (HttpRequestException)
         {
             ErrorMessage = "Errore di connessione al server.";
         }
-        catch (System.Exception)
+        catch
         {
             ErrorMessage = "Si è verificato un errore. Riprova.";
         }
@@ -83,18 +91,15 @@ public partial class LoginViewModel : BaseViewModel
         try
         {
             var handler = new JwtSecurityTokenHandler();
-            var jwt = handler.ReadJwtToken(token);
-            var role = jwt.Claims
+            var jwt     = handler.ReadJwtToken(token);
+            var role    = jwt.Claims
                 .FirstOrDefault(c =>
                     c.Type == "role" ||
                     c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")
                 ?.Value;
             return role == "Admin";
         }
-        catch
-        {
-            return false;
-        }
+        catch { return false; }
     }
 
     [RelayCommand]

@@ -10,10 +10,10 @@
         <VerticalStackLayout Spacing="24" Padding="24" VerticalOptions="Center" HorizontalOptions="Fill" MaximumWidthRequest="400">
             <!-- Header -->
             <VerticalStackLayout Spacing="8" HorizontalOptions="Center" Margin="0,0,0,16">
-                <Frame BackgroundColor="{StaticResource PrimaryContainer}" CornerRadius="12" HeightRequest="64" WidthRequest="64" Padding="0" HorizontalOptions="Center" HasShadow="True" BorderColor="{StaticResource OutlineVariant}">
-                    <!-- Placeholder icon -->
+                <!--<Frame BackgroundColor="{StaticResource PrimaryContainer}" CornerRadius="12" HeightRequest="64" WidthRequest="64" Padding="0" HorizontalOptions="Center" HasShadow="True" BorderColor="{StaticResource OutlineVariant}">
+                    --><!-- Placeholder icon --><!--
                     <Label Text="📅" FontSize="32" HorizontalOptions="Center" VerticalOptions="Center" />
-                </Frame>
+                </Frame>-->
                 <Label Text="Turnify" FontSize="30" FontAttributes="Bold" TextColor="{StaticResource Primary}" HorizontalOptions="Center" />
                 <Label Text="Gestisci il tuo team" FontSize="16" TextColor="{StaticResource OnSurfaceVariant}" HorizontalOptions="Center" />
             </VerticalStackLayout>

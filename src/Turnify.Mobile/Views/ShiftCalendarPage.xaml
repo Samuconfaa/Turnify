@@ -6,76 +6,130 @@
              Title="Turni"
              BackgroundColor="{StaticResource Background}">
 
-    <Grid RowDefinitions="Auto,Auto,Auto,*">
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,*">
 
-        <!-- Week navigation -->
-        <Grid Grid.Row="0" ColumnDefinitions="48,*,48,Auto,Auto"
-              BackgroundColor="{StaticResource Surface}" Padding="8,10">
-            <Button Grid.Column="0" Text="‹"
-                    Command="{Binding PreviousWeekCommand}"
-                    BackgroundColor="Transparent" TextColor="{StaticResource Primary}"
-                    FontSize="26" Padding="0" HorizontalOptions="Center"/>
-            <Label Grid.Column="1" Text="{Binding WeekLabel}"
-                   FontSize="15" FontAttributes="Bold"
-                   TextColor="{StaticResource OnBackground}"
-                   HorizontalOptions="Center" VerticalOptions="Center">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding GoToTodayCommand}"/>
-                </Label.GestureRecognizers>
-            </Label>
-            <Button Grid.Column="2" Text="›"
-                    Command="{Binding NextWeekCommand}"
-                    BackgroundColor="Transparent" TextColor="{StaticResource Primary}"
-                    FontSize="26" Padding="0" HorizontalOptions="Center"/>
-            <!-- Feature 1: Oggi button -->
-            <Button Grid.Column="3" Text="Oggi"
-                    Command="{Binding GoToTodayCommand}"
-                    IsVisible="{Binding IsCurrentWeek, Converter={StaticResource InverseBoolConverter}}"
-                    BackgroundColor="Transparent" TextColor="{StaticResource Primary}"
-                    FontSize="13" Padding="4,0" Margin="2,0"/>
-            <!-- Feature 5: Duplica settimana (admin) -->
-            <Button Grid.Column="4" Text="+"
-                    Command="{Binding AddShiftCommand}"
-                    IsVisible="{Binding IsAdmin}"
-                    BackgroundColor="{StaticResource Primary}" TextColor="White"
-                    CornerRadius="20" HeightRequest="38" WidthRequest="38"
-                    Padding="0" Margin="0,0,8,0" FontSize="22"/>
-        </Grid>
-
-        <!-- Feature 5: Duplica pulsante (admin, sotto la nav) -->
-        <Button Grid.Row="1"
-                Text="📋 Duplica settimana precedente"
-                Command="{Binding CopyPreviousWeekCommand}"
-                IsVisible="{Binding IsAdmin}"
-                BackgroundColor="Transparent"
-                TextColor="{StaticResource Primary}"
-                BorderColor="{StaticResource Primary}"
-                BorderWidth="1"
-                CornerRadius="8" HeightRequest="36"
-                FontSize="13" Margin="16,4,16,0"/>
-
-        <!-- Error banner -->
-        <Border Grid.Row="2" IsVisible="{Binding HasError}"
-                BackgroundColor="#FEF2F2" Stroke="#FECACA" StrokeThickness="1"
-                Padding="12,8" Margin="16,8,16,0">
-            <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
-            <Label Text="{Binding ErrorMessage}" FontSize="13" TextColor="#DC2626"/>
+        <!-- ── Week navigation ──────────────────────────────────────── -->
+        <Border Grid.Row="0"
+                BackgroundColor="{StaticResource Surface}"
+                Stroke="#E2E8F0" StrokeThickness="0,0,0,1"
+                Padding="8,10">
+            <Border.StrokeShape><RoundRectangle CornerRadius="0"/></Border.StrokeShape>
+            <Grid ColumnDefinitions="44,*,44,Auto,Auto">
+                <Button Grid.Column="0" Text="‹"
+                        Command="{Binding PreviousWeekCommand}"
+                        BackgroundColor="Transparent" TextColor="{StaticResource Primary}"
+                        FontSize="26" Padding="0" HorizontalOptions="Center"/>
+                <Label Grid.Column="1" Text="{Binding WeekLabel}"
+                       FontSize="16" FontAttributes="Bold"
+                       TextColor="{StaticResource OnBackground}"
+                       HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToTodayCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <Button Grid.Column="2" Text="›"
+                        Command="{Binding NextWeekCommand}"
+                        BackgroundColor="Transparent" TextColor="{StaticResource Primary}"
+                        FontSize="26" Padding="0" HorizontalOptions="Center"/>
+                <!-- Oggi pill -->
+                <Border Grid.Column="3"
+                        BackgroundColor="{StaticResource SurfaceContainerLow}"
+                        Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                        IsVisible="{Binding IsCurrentWeek, Converter={StaticResource InverseBoolConverter}}"
+                        Padding="10,5" Margin="2,0">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToTodayCommand}"/>
+                    </Border.GestureRecognizers>
+                    <Label Text="Oggi" FontSize="12" FontAttributes="Bold"
+                           TextColor="{StaticResource Primary}"/>
+                </Border>
+                <!-- Add button (admin) -->
+                <Border Grid.Column="4"
+                        BackgroundColor="{StaticResource Primary}"
+                        Stroke="Transparent"
+                        IsVisible="{Binding IsAdmin}"
+                        HeightRequest="36" WidthRequest="36"
+                        Margin="4,0,8,0">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding AddShiftCommand}"/>
+                    </Border.GestureRecognizers>
+                    <Label Text="+" FontSize="22" FontAttributes="Bold"
+                           TextColor="White"
+                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                </Border>
+            </Grid>
         </Border>
 
-        <!-- ══ EMPLOYEE VIEW ══ -->
-        <Grid Grid.Row="3" RowDefinitions="Auto,*"
+        <!-- ── Duplica settimana (admin) ───────────────────────────── -->
+        <Border Grid.Row="1"
+                BackgroundColor="{StaticResource Surface}"
+                Stroke="Transparent" StrokeThickness="0"
+                IsVisible="{Binding IsAdmin}"
+                Padding="16,8,16,4">
+            <Border.StrokeShape><RoundRectangle CornerRadius="0"/></Border.StrokeShape>
+            <Border BackgroundColor="Transparent"
+                    Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                    Padding="0">
+                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding CopyPreviousWeekCommand}"/>
+                </Border.GestureRecognizers>
+                <HorizontalStackLayout Spacing="8" HorizontalOptions="Center" Padding="16,10">
+                    <Label Text="📋" FontSize="15" VerticalOptions="Center"/>
+                    <Label Text="Duplica settimana precedente"
+                           FontSize="13" FontAttributes="Bold"
+                           TextColor="{StaticResource Primary}"
+                           VerticalOptions="Center"/>
+                </HorizontalStackLayout>
+            </Border>
+        </Border>
+
+        <!-- ── Legenda (admin) ─────────────────────────────────────── -->
+        <HorizontalStackLayout Grid.Row="2" Spacing="16"
+                               Padding="16,8,16,4"
+                               IsVisible="{Binding IsAdmin}">
+            <HorizontalStackLayout Spacing="6">
+                <BoxView Color="{StaticResource Primary}" HeightRequest="10" WidthRequest="10"
+                         VerticalOptions="Center" CornerRadius="5"/>
+                <Label Text="Turno" FontSize="11" FontAttributes="Bold"
+                       TextColor="{StaticResource OnSurfaceVariant}" VerticalOptions="Center"/>
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Spacing="6">
+                <BoxView Color="#F59E0B" HeightRequest="10" WidthRequest="10"
+                         VerticalOptions="Center" CornerRadius="5"/>
+                <Label Text="Ferie" FontSize="11" FontAttributes="Bold"
+                       TextColor="{StaticResource OnSurfaceVariant}" VerticalOptions="Center"/>
+            </HorizontalStackLayout>
+        </HorizontalStackLayout>
+
+        <!-- ── Error banner ───────────────────────────────────────── -->
+        <Border Grid.Row="3" IsVisible="{Binding HasError}"
+                BackgroundColor="#FEF2F2" Stroke="#FECACA" StrokeThickness="1"
+                Padding="12,8" Margin="16,4,16,0">
+            <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+            <HorizontalStackLayout Spacing="8">
+                <Label Text="⚠️" FontSize="14" VerticalOptions="Center"/>
+                <Label Text="{Binding ErrorMessage}" FontSize="13" TextColor="#DC2626"
+                       VerticalOptions="Center"/>
+            </HorizontalStackLayout>
+        </Border>
+
+        <!-- ══ EMPLOYEE VIEW ══ ──────────────────────────────────── -->
+        <Grid Grid.Row="4" RowDefinitions="Auto,*"
               IsVisible="{Binding IsAdmin, Converter={StaticResource InverseBoolConverter}}">
 
-            <!-- Feature 7: Timbratura card -->
+            <!-- Timbratura card -->
             <Border Grid.Row="0"
                     BackgroundColor="{StaticResource Surface}"
-                    Stroke="{StaticResource Outline}" StrokeThickness="1"
-                    Padding="16,12" Margin="16,8,16,0">
-                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                    Stroke="#E2E8F0" StrokeThickness="1"
+                    Padding="16,14" Margin="16,10,16,2">
+                <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
                 <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
-                    <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
+                    <VerticalStackLayout Grid.Column="0" Spacing="3" VerticalOptions="Center">
                         <Label Text="Timbratura oggi"
-                               FontSize="12" FontAttributes="Bold"
+                               FontSize="11" FontAttributes="Bold"
                                TextColor="{StaticResource OnSurfaceVariant}"/>
                         <Label Text="{Binding AttendanceStatusText}"
                                FontSize="13" TextColor="{StaticResource OnBackground}"/>
@@ -84,14 +138,16 @@
                             Command="{Binding CheckInCommand}"
                             IsVisible="{Binding CanCheckIn}"
                             BackgroundColor="{StaticResource Success}"
-                            TextColor="White" CornerRadius="8"
-                            HeightRequest="38" Padding="12,0" FontSize="13"/>
+                            TextColor="White" CornerRadius="10"
+                            HeightRequest="38" Padding="14,0" FontSize="13"
+                            FontAttributes="Bold"/>
                     <Button Grid.Column="2" Text="Uscita"
                             Command="{Binding CheckOutCommand}"
                             IsVisible="{Binding CanCheckOut}"
                             BackgroundColor="{StaticResource Error}"
-                            TextColor="White" CornerRadius="8"
-                            HeightRequest="38" Padding="12,0" FontSize="13"/>
+                            TextColor="White" CornerRadius="10"
+                            HeightRequest="38" Padding="14,0" FontSize="13"
+                            FontAttributes="Bold"/>
                 </Grid>
             </Border>
 
@@ -100,7 +156,7 @@
                          IsRefreshing="{Binding IsBusy}">
                 <CollectionView ItemsSource="{Binding Shifts}">
                     <CollectionView.EmptyView>
-                        <VerticalStackLayout HorizontalOptions="Center" Margin="0,48,0,0" Spacing="12">
+                        <VerticalStackLayout HorizontalOptions="Center" Margin="0,52,0,0" Spacing="12">
                             <Label Text="📅" FontSize="52" HorizontalOptions="Center"/>
                             <Label Text="Nessun turno questa settimana"
                                    FontSize="17" FontAttributes="Bold"
@@ -109,20 +165,20 @@
                             <Label Text="I tuoi turni appariranno qui quando l'admin li assegna."
                                    FontSize="14" TextColor="{StaticResource OnSurfaceVariant}"
                                    HorizontalOptions="Center" HorizontalTextAlignment="Center"
-                                   Margin="24,0"/>
+                                   Margin="28,0"/>
                         </VerticalStackLayout>
                     </CollectionView.EmptyView>
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="vm:ShiftDto">
                             <Border BackgroundColor="{StaticResource Surface}"
-                                    Stroke="{StaticResource Outline}" StrokeThickness="1"
+                                    Stroke="#E2E8F0" StrokeThickness="1"
                                     Padding="0" Margin="16,0,16,10">
                                 <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                                <Grid ColumnDefinitions="5,*">
+                                <Grid ColumnDefinitions="6,*">
                                     <BoxView Grid.Column="0" BackgroundColor="{StaticResource Primary}"
                                              VerticalOptions="Fill"/>
-                                    <Grid Grid.Column="1" ColumnDefinitions="*,Auto" Padding="14,12">
-                                        <VerticalStackLayout Grid.Column="0" Spacing="3">
+                                    <Grid Grid.Column="1" ColumnDefinitions="*,Auto" Padding="14,14">
+                                        <VerticalStackLayout Grid.Column="0" Spacing="4">
                                             <Label Text="{Binding StartTime, StringFormat='{0:dddd dd MMMM}'}"
                                                    FontSize="15" FontAttributes="Bold"
                                                    TextColor="{StaticResource OnBackground}"/>
@@ -132,10 +188,15 @@
                                                    TextColor="{StaticResource OnSurfaceVariant}"
                                                    IsVisible="{Binding Label, Converter={StaticResource StringNotEmptyConverter}}"/>
                                         </VerticalStackLayout>
-                                        <Label Grid.Column="1"
-                                               Text="{Binding EndTime, StringFormat='fino {0:HH:mm}'}"
-                                               FontSize="13" TextColor="{StaticResource OnSurfaceVariant}"
-                                               VerticalOptions="Center"/>
+                                        <Border Grid.Column="1"
+                                                BackgroundColor="{StaticResource SecondaryContainer}"
+                                                Stroke="Transparent" Padding="10,5"
+                                                VerticalOptions="Center">
+                                            <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                                            <Label Text="{Binding EndTime, StringFormat='fino {0:HH:mm}'}"
+                                                   FontSize="11" FontAttributes="Bold"
+                                                   TextColor="{StaticResource OnSecondaryContainer}"/>
+                                        </Border>
                                     </Grid>
                                 </Grid>
                             </Border>
@@ -145,50 +206,53 @@
             </RefreshView>
         </Grid>
 
-        <!-- ══ ADMIN VIEW ══ -->
-        <Grid Grid.Row="3" IsVisible="{Binding IsAdmin}" RowDefinitions="Auto,Auto,*">
+        <!-- ══ ADMIN VIEW ══ ─────────────────────────────────────── -->
+        <Grid Grid.Row="4" IsVisible="{Binding IsAdmin}" RowDefinitions="Auto,*">
 
-            <!-- Legend -->
-            <HorizontalStackLayout Grid.Row="0" Spacing="16" Padding="16,8,16,4">
-                <HorizontalStackLayout Spacing="6">
-                    <BoxView Color="#2563EB" HeightRequest="12" WidthRequest="12"
-                             VerticalOptions="Center" CornerRadius="3"/>
-                    <Label Text="Turno" FontSize="12" TextColor="{StaticResource OnSurfaceVariant}"
-                           VerticalOptions="Center"/>
-                </HorizontalStackLayout>
-                <HorizontalStackLayout Spacing="6">
-                    <BoxView Color="#D97706" HeightRequest="12" WidthRequest="12"
-                             VerticalOptions="Center" CornerRadius="3"/>
-                    <Label Text="Ferie" FontSize="12" TextColor="{StaticResource OnSurfaceVariant}"
-                           VerticalOptions="Center"/>
-                </HorizontalStackLayout>
-            </HorizontalStackLayout>
-
-            <!-- Day headers (7 days) -->
-            <Grid Grid.Row="1" ColumnDefinitions="72,*,*,*,*,*,*,*"
-                  BackgroundColor="{StaticResource Surface}" Padding="0,6">
-                <Label Grid.Column="0"/>
-                <Label Grid.Column="1" Text="Lun" HorizontalOptions="Center"
-                       FontSize="12" FontAttributes="Bold" TextColor="{StaticResource OnSurfaceVariant}"/>
-                <Label Grid.Column="2" Text="Mar" HorizontalOptions="Center"
-                       FontSize="12" FontAttributes="Bold" TextColor="{StaticResource OnSurfaceVariant}"/>
-                <Label Grid.Column="3" Text="Mer" HorizontalOptions="Center"
-                       FontSize="12" FontAttributes="Bold" TextColor="{StaticResource OnSurfaceVariant}"/>
-                <Label Grid.Column="4" Text="Gio" HorizontalOptions="Center"
-                       FontSize="12" FontAttributes="Bold" TextColor="{StaticResource OnSurfaceVariant}"/>
-                <Label Grid.Column="5" Text="Ven" HorizontalOptions="Center"
-                       FontSize="12" FontAttributes="Bold" TextColor="{StaticResource OnSurfaceVariant}"/>
-                <Label Grid.Column="6" Text="Sab" HorizontalOptions="Center"
-                       FontSize="12" FontAttributes="Bold" TextColor="#D97706"/>
-                <Label Grid.Column="7" Text="Dom" HorizontalOptions="Center"
-                       FontSize="12" FontAttributes="Bold" TextColor="#DC2626"/>
-            </Grid>
+            <!-- Day headers sticky -->
+            <Border Grid.Row="0"
+                    BackgroundColor="{StaticResource Surface}"
+                    Stroke="#E2E8F0" StrokeThickness="0,0,0,1"
+                    Padding="0,6,0,6">
+                <Border.StrokeShape><RoundRectangle CornerRadius="0"/></Border.StrokeShape>
+                <Grid ColumnDefinitions="72,*,*,*,*,*,*,*">
+                    <Label Grid.Column="0"/>
+                    <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center" Spacing="1">
+                        <Label Text="LUN" HorizontalOptions="Center" FontSize="9"
+                               FontAttributes="Bold" TextColor="{StaticResource OnSurfaceVariant}"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center" Spacing="1">
+                        <Label Text="MAR" HorizontalOptions="Center" FontSize="9"
+                               FontAttributes="Bold" TextColor="{StaticResource OnSurfaceVariant}"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="3" HorizontalOptions="Center" Spacing="1">
+                        <Label Text="MER" HorizontalOptions="Center" FontSize="9"
+                               FontAttributes="Bold" TextColor="{StaticResource OnSurfaceVariant}"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="4" HorizontalOptions="Center" Spacing="1">
+                        <Label Text="GIO" HorizontalOptions="Center" FontSize="9"
+                               FontAttributes="Bold" TextColor="{StaticResource OnSurfaceVariant}"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="5" HorizontalOptions="Center" Spacing="1">
+                        <Label Text="VEN" HorizontalOptions="Center" FontSize="9"
+                               FontAttributes="Bold" TextColor="{StaticResource OnSurfaceVariant}"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="6" HorizontalOptions="Center" Spacing="1">
+                        <Label Text="SAB" HorizontalOptions="Center" FontSize="9"
+                               FontAttributes="Bold" TextColor="#D97706"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="7" HorizontalOptions="Center" Spacing="1">
+                        <Label Text="DOM" HorizontalOptions="Center" FontSize="9"
+                               FontAttributes="Bold" TextColor="{StaticResource Error}"/>
+                    </VerticalStackLayout>
+                </Grid>
+            </Border>
 
             <!-- Employee rows -->
-            <RefreshView Grid.Row="2" Command="{Binding LoadShiftsCommand}" IsRefreshing="{Binding IsBusy}">
+            <RefreshView Grid.Row="1" Command="{Binding LoadShiftsCommand}" IsRefreshing="{Binding IsBusy}">
                 <CollectionView ItemsSource="{Binding EmployeeRows}">
                     <CollectionView.EmptyView>
-                        <VerticalStackLayout HorizontalOptions="Center" Margin="0,40,0,0" Spacing="10">
+                        <VerticalStackLayout HorizontalOptions="Center" Margin="0,48,0,0" Spacing="10">
                             <Label Text="Nessun dato questa settimana"
                                    FontSize="16" TextColor="{StaticResource OnSurfaceVariant}"
                                    HorizontalOptions="Center"/>
@@ -196,37 +260,43 @@
                     </CollectionView.EmptyView>
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="vm:EmployeeWeekRow">
-                            <!-- Feature 4: MinimumHeightRequest 52→64, FontSize 9→11 -->
                             <Grid ColumnDefinitions="72,*,*,*,*,*,*,*"
-                                  Padding="2,2" MinimumHeightRequest="64">
+                                  Padding="2,3" MinimumHeightRequest="66">
 
                                 <!-- Avatar + name -->
-                                <Grid Grid.Column="0" ColumnDefinitions="Auto,*"
-                                      Padding="4,0" ColumnSpacing="4">
-                                    <Border Grid.Column="0"
-                                            BackgroundColor="{StaticResource PrimaryContainer}"
-                                            HeightRequest="32" WidthRequest="32">
-                                        <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                                <VerticalStackLayout Grid.Column="0"
+                                                     HorizontalOptions="Center"
+                                                     VerticalOptions="Center"
+                                                     Spacing="3" Padding="4,0">
+                                    <Border BackgroundColor="{StaticResource PrimaryFixed}"
+                                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                                            HeightRequest="34" WidthRequest="34"
+                                            HorizontalOptions="Center">
+                                        <Border.StrokeShape><RoundRectangle CornerRadius="17"/></Border.StrokeShape>
                                         <Label Text="{Binding Initials}" FontSize="11" FontAttributes="Bold"
                                                TextColor="{StaticResource Primary}"
                                                HorizontalOptions="Center" VerticalOptions="Center"/>
                                     </Border>
-                                    <Label Grid.Column="1" Text="{Binding EmployeeName}"
-                                           FontSize="10" TextColor="{StaticResource OnBackground}"
-                                           VerticalOptions="Center" LineBreakMode="TailTruncation"/>
-                                </Grid>
+                                    <Label Text="{Binding EmployeeName}"
+                                           FontSize="9" FontAttributes="Bold"
+                                           TextColor="{StaticResource OnBackground}"
+                                           HorizontalOptions="Center"
+                                           HorizontalTextAlignment="Center"
+                                           LineBreakMode="TailTruncation"
+                                           MaxLines="2"/>
+                                </VerticalStackLayout>
 
                                 <!-- 7 day cells -->
                                 <Border Grid.Column="1" Margin="1"
                                         BackgroundColor="{Binding Days[0].CellColor}"
                                         Stroke="Transparent" Padding="2">
-                                    <Border.StrokeShape><RoundRectangle CornerRadius="6"/></Border.StrokeShape>
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
                                     <Border.GestureRecognizers>
                                         <TapGestureRecognizer
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftCalendarViewModel}}, Path=TapShiftCommand}"
                                             CommandParameter="{Binding Days[0]}"/>
                                     </Border.GestureRecognizers>
-                                    <Label Text="{Binding Days[0].Label}" FontSize="11"
+                                    <Label Text="{Binding Days[0].Label}" FontSize="10" FontAttributes="Bold"
                                            TextColor="{Binding Days[0].LabelColor}"
                                            HorizontalOptions="Center" VerticalOptions="Center"
                                            HorizontalTextAlignment="Center"/>
@@ -234,13 +304,13 @@
                                 <Border Grid.Column="2" Margin="1"
                                         BackgroundColor="{Binding Days[1].CellColor}"
                                         Stroke="Transparent" Padding="2">
-                                    <Border.StrokeShape><RoundRectangle CornerRadius="6"/></Border.StrokeShape>
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
                                     <Border.GestureRecognizers>
                                         <TapGestureRecognizer
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftCalendarViewModel}}, Path=TapShiftCommand}"
                                             CommandParameter="{Binding Days[1]}"/>
                                     </Border.GestureRecognizers>
-                                    <Label Text="{Binding Days[1].Label}" FontSize="11"
+                                    <Label Text="{Binding Days[1].Label}" FontSize="10" FontAttributes="Bold"
                                            TextColor="{Binding Days[1].LabelColor}"
                                            HorizontalOptions="Center" VerticalOptions="Center"
                                            HorizontalTextAlignment="Center"/>
@@ -248,13 +318,13 @@
                                 <Border Grid.Column="3" Margin="1"
                                         BackgroundColor="{Binding Days[2].CellColor}"
                                         Stroke="Transparent" Padding="2">
-                                    <Border.StrokeShape><RoundRectangle CornerRadius="6"/></Border.StrokeShape>
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
                                     <Border.GestureRecognizers>
                                         <TapGestureRecognizer
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftCalendarViewModel}}, Path=TapShiftCommand}"
                                             CommandParameter="{Binding Days[2]}"/>
                                     </Border.GestureRecognizers>
-                                    <Label Text="{Binding Days[2].Label}" FontSize="11"
+                                    <Label Text="{Binding Days[2].Label}" FontSize="10" FontAttributes="Bold"
                                            TextColor="{Binding Days[2].LabelColor}"
                                            HorizontalOptions="Center" VerticalOptions="Center"
                                            HorizontalTextAlignment="Center"/>
@@ -262,13 +332,13 @@
                                 <Border Grid.Column="4" Margin="1"
                                         BackgroundColor="{Binding Days[3].CellColor}"
                                         Stroke="Transparent" Padding="2">
-                                    <Border.StrokeShape><RoundRectangle CornerRadius="6"/></Border.StrokeShape>
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
                                     <Border.GestureRecognizers>
                                         <TapGestureRecognizer
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftCalendarViewModel}}, Path=TapShiftCommand}"
                                             CommandParameter="{Binding Days[3]}"/>
                                     </Border.GestureRecognizers>
-                                    <Label Text="{Binding Days[3].Label}" FontSize="11"
+                                    <Label Text="{Binding Days[3].Label}" FontSize="10" FontAttributes="Bold"
                                            TextColor="{Binding Days[3].LabelColor}"
                                            HorizontalOptions="Center" VerticalOptions="Center"
                                            HorizontalTextAlignment="Center"/>
@@ -276,13 +346,13 @@
                                 <Border Grid.Column="5" Margin="1"
                                         BackgroundColor="{Binding Days[4].CellColor}"
                                         Stroke="Transparent" Padding="2">
-                                    <Border.StrokeShape><RoundRectangle CornerRadius="6"/></Border.StrokeShape>
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
                                     <Border.GestureRecognizers>
                                         <TapGestureRecognizer
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftCalendarViewModel}}, Path=TapShiftCommand}"
                                             CommandParameter="{Binding Days[4]}"/>
                                     </Border.GestureRecognizers>
-                                    <Label Text="{Binding Days[4].Label}" FontSize="11"
+                                    <Label Text="{Binding Days[4].Label}" FontSize="10" FontAttributes="Bold"
                                            TextColor="{Binding Days[4].LabelColor}"
                                            HorizontalOptions="Center" VerticalOptions="Center"
                                            HorizontalTextAlignment="Center"/>
@@ -290,13 +360,13 @@
                                 <Border Grid.Column="6" Margin="1"
                                         BackgroundColor="{Binding Days[5].CellColor}"
                                         Stroke="Transparent" Padding="2">
-                                    <Border.StrokeShape><RoundRectangle CornerRadius="6"/></Border.StrokeShape>
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
                                     <Border.GestureRecognizers>
                                         <TapGestureRecognizer
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftCalendarViewModel}}, Path=TapShiftCommand}"
                                             CommandParameter="{Binding Days[5]}"/>
                                     </Border.GestureRecognizers>
-                                    <Label Text="{Binding Days[5].Label}" FontSize="11"
+                                    <Label Text="{Binding Days[5].Label}" FontSize="10" FontAttributes="Bold"
                                            TextColor="{Binding Days[5].LabelColor}"
                                            HorizontalOptions="Center" VerticalOptions="Center"
                                            HorizontalTextAlignment="Center"/>
@@ -304,13 +374,13 @@
                                 <Border Grid.Column="7" Margin="1"
                                         BackgroundColor="{Binding Days[6].CellColor}"
                                         Stroke="Transparent" Padding="2">
-                                    <Border.StrokeShape><RoundRectangle CornerRadius="6"/></Border.StrokeShape>
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
                                     <Border.GestureRecognizers>
                                         <TapGestureRecognizer
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftCalendarViewModel}}, Path=TapShiftCommand}"
                                             CommandParameter="{Binding Days[6]}"/>
                                     </Border.GestureRecognizers>
-                                    <Label Text="{Binding Days[6].Label}" FontSize="11"
+                                    <Label Text="{Binding Days[6].Label}" FontSize="10" FontAttributes="Bold"
                                            TextColor="{Binding Days[6].LabelColor}"
                                            HorizontalOptions="Center" VerticalOptions="Center"
                                            HorizontalTextAlignment="Center"/>
@@ -323,7 +393,7 @@
         </Grid>
 
         <!-- Loading overlay -->
-        <ActivityIndicator Grid.Row="3"
+        <ActivityIndicator Grid.Row="4"
                            IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
                            HorizontalOptions="Center" VerticalOptions="Center"
                            Color="{StaticResource Primary}" ZIndex="10"/>

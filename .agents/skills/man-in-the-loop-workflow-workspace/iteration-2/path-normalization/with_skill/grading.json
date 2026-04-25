@@ -1,0 +1,19 @@
+{
+  "expectations": [
+    {
+      "text": "Corregge i path usando una struttura tipo `src/BookScout.Mobile/...` e `docs/...` invece dei path incompleti iniziali.",
+      "passed": true,
+      "evidence": "Normalizza tutti i path incoerenti verso `src/BookScout.Mobile/...` e `docs/...`, inclusi `docs/plan.md` e `docs/iterations/it-04.md`."
+    },
+    {
+      "text": "Cita almeno un file sotto `docs/iterations/` e almeno un file applicativo sotto `src/BookScout.Mobile/`.",
+      "passed": true,
+      "evidence": "Cita `docs/iterations/it-04.md` e più file applicativi sotto `src/BookScout.Mobile/`."
+    },
+    {
+      "text": "Non lascia path ambigui come `src/ViewModels/...` o `plan.md` senza prefisso di cartella.",
+      "passed": true,
+      "evidence": "Espone una tabella di normalizzazione che corregge proprio i path ambigui iniziali."
+    }
+  ]
+}

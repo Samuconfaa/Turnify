@@ -1,0 +1,71 @@
+{
+  "skill_name": "man-in-the-loop-workflow",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Dobbiamo implementare solo il BookDetailViewModel della prossima iterazione. Voglio seguire il workflow del progetto: aiutami a definire obiettivo, file coinvolti, dipendenze, criteri di accettazione e rischi. Non generare ancora XAML.",
+      "expected_output": "Restituisce un piano di iterazione ben delimitato, con un obiettivo verificabile, file coinvolti, dipendenze, criteri di accettazione, rischi e nessun codice fuori scope.",
+      "assertions": [
+        "Include le sezioni Piano breve, File da creare o modificare, Implementazione richiesta, Rischi o punti da controllare e Test manuali suggeriti.",
+        "Mantiene fuori scope la generazione di XAML o altre parti non richieste.",
+        "Esplicita criteri di accettazione o condizioni verificabili per la chiusura della singola iterazione."
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Ho appena modificato un service REST e il relativo ViewModel. Fai una review seguendo il modello Man-in-the-Loop: indicami problemi di architettura, naming, nullability, error handling e i test che dovrei eseguire. Non riscrivere ancora il codice.",
+      "expected_output": "Restituisce findings di review prima di tutto, con attenzione a MVVM, naming, nullability, error handling e test suggeriti, senza procedere a una riscrittura automatica.",
+      "assertions": [
+        "Presenta findings o un blocker onesto prima di proporre soluzioni o riscritture.",
+        "Non inventa una review puntuale se i file richiesti non sono presenti nel workspace.",
+        "Suggerisce comunque controlli o test rilevanti per architettura, nullability ed error handling."
+      ],
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "La feature di ricerca sembra pronta. Aiutami a chiudere l'iterazione seguendo il workflow del repository: quali documenti devo aggiornare, quali test manuali devo ancora fare e quali passi Git hanno senso, senza fare merge o push automaticamente?",
+      "expected_output": "Restituisce una checklist di chiusura dell'iterazione che copre documentazione, test manuali e passi Git sensati, esplicitando che merge e push restano decisioni dell'utente.",
+      "assertions": [
+        "Indica almeno docs/iterations/it-xx-nome-corto.md e docs/test-matrix.md tra i documenti da aggiornare.",
+        "Propone test manuali concreti per chiudere l'iterazione.",
+        "Esplicita che merge e push non vanno eseguiti automaticamente."
+      ],
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Sto preparando il piano di una iterazione ma ho scritto file e cartelle in modo incoerente: `src/ViewModels/BookDetailViewModel.cs`, `src/Views/BookDetailPage.xaml`, `plan.md`, `iterations/it-04.md`, `BookScout.Mobile.csproj`. Correggi i percorsi in stile repository-relative coerente con la struttura del progetto, applica la convenzione descrittiva `docs/iterations/it-04-detail.md` e dimmi quali file sono plausibili per una iterazione che aggiunge il dettaglio libro in una app MAUI MVVM.",
+      "expected_output": "Corregge i path in forma repository-relative coerente con la struttura del progetto e propone un set plausibile di file coinvolti sotto src/<ProjectName>/ e docs/.",
+      "assertions": [
+        "Corregge i path usando una struttura tipo `src/BookScout.Mobile/...` e `docs/...` invece dei path incompleti iniziali.",
+        "Cita almeno un file sotto `docs/iterations/` e almeno un file applicativo sotto `src/BookScout.Mobile/`.",
+        "Non lascia path ambigui come `src/ViewModels/...` o `plan.md` senza prefisso di cartella."
+      ],
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "Abbiamo appena completato una iterazione che ha introdotto SearchViewModel, SearchPage e BookService. I test manuali eseguiti sono: input vuoto gestito, timeout gestito, loading state visibile, lista vuota mostrata. Non sono cambiati i requisiti funzionali, ma abbiamo chiarito meglio gli stati UI e usato due prompt importanti per ottenere il service e correggere il ViewModel. Dimmi esattamente quali documenti aggiornare e perché, seguendo il workflow del repository.",
+      "expected_output": "Seleziona con precisione i documenti da aggiornare tra spec, plan, iterations, test-matrix e prompt-log, spiegando il motivo per ciascuno e senza aggiornare file non necessari.",
+      "assertions": [
+        "Include `docs/iterations/it-xx-nome-corto.md`, `docs/test-matrix.md` e `docs/prompt-log.md` tra gli aggiornamenti necessari.",
+        "Tratta `docs/spec.md` come opzionale o non necessario perché i requisiti funzionali non sono cambiati.",
+        "Spiega il motivo per ogni documento invece di dare solo un elenco."
+      ],
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "Scrivi un esempio completo di `docs/iterations/it-04-detail.md` a partire da queste note grezze: obiettivo = aggiungere la pagina dettaglio libro; file creati = BookDetailPage.xaml, BookDetailPage.xaml.cs, BookDetailViewModel.cs; file modificati = AppShell.xaml.cs per la route e MauiProgram.cs per DI; test eseguiti = apertura dettaglio OK, id non valido mostra errore, rete assente mostra errore, back navigation OK, landscape da rifinire; problemi = risposta API nulla non gestita inizialmente e immagine mancante senza placeholder; correzioni = controllo null nel service e placeholder image; esito = completato con riserva. Usa il formato di iterazione coerente con il workflow del repository.",
+      "expected_output": "Produce un file di iterazione completo e ben formattato, coerente con l'esempio e con le sezioni tipiche del workflow Man-in-the-Loop.",
+      "assertions": [
+        "Il risultato è strutturato come un file `docs/iterations/it-04-detail.md` con sezioni tipiche di iterazione.",
+        "Include file creati, file modificati, test eseguiti, problemi trovati, correzioni effettuate ed esito.",
+        "Non restituisce solo un riassunto breve: produce un esempio completo utilizzabile come base documentale."
+      ],
+      "files": []
+    }
+  ]
+}

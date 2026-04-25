@@ -1,0 +1,10 @@
+{
+  "eval_id": 1,
+  "eval_name": "book-search-prd-discovery",
+  "prompt": "Sono uno studente e voglio sviluppare una app .NET MAUI per cercare libri, vedere il dettaglio e salvare i preferiti. Mi serve il PRD del progetto in `docs/spec.md` per lavorare poi a iterazioni con un agente AI.",
+  "assertions": [
+    "Chiede domande chiarificatrici prima di completare un nuovo `docs/spec.md`, oppure esplicita con precisione le assunzioni mancanti se il contesto è già sufficiente.",
+    "Mantiene distinta la specifica di progetto dal piano di iterazioni e rimanda a `prd-to-plan` per `docs/plan.md`, `docs/architecture.md` e `docs/test-matrix.md`.",
+    "Rende espliciti MVP, non-obiettivi, criteri di accettazione e vincoli MAUI coerenti con il repository."
+  ]
+}

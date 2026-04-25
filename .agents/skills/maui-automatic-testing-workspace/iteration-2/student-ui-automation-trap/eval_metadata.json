@@ -1,0 +1,11 @@
+{
+  "eval_id": 5,
+  "eval_name": "student-ui-automation-trap",
+  "prompt": "Sono uno studente e a fine iterazione ho cambiato solo `SearchPage.xaml` e `AppShell.xaml.cs`. Nel repository non ci sono ancora test automatici. La mia idea era partire subito con UI automation per essere sicuro di testare tutto. È una buona idea? Dimmi quali controlli automatici farei davvero adesso, quali restano manuali e spiegami anche quali errori di ragionamento dovrei evitare.",
+  "assertions": [
+    "Sconsiglia esplicitamente di partire subito con UI automation in questo scenario.",
+    "Propone build verification come controllo automatico principale per modifiche a XAML e Shell.",
+    "Spiega in modo didattico almeno un errore di ragionamento, non solo la strategia finale.",
+    "Distingue chiaramente tra controlli automatici e verifiche ancora manuali."
+  ]
+}

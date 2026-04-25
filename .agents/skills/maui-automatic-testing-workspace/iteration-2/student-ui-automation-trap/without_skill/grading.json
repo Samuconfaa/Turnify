@@ -1,0 +1,24 @@
+{
+  "expectations": [
+    {
+      "text": "Sconsiglia esplicitamente di partire subito con UI automation in questo scenario.",
+      "passed": true,
+      "evidence": "Apre dicendo che è una cattiva idea partire subito dalla UI automation in questo scenario."
+    },
+    {
+      "text": "Propone build verification come controllo automatico principale per modifiche a XAML e Shell.",
+      "passed": true,
+      "evidence": "Propone smoke build automatico del progetto come primo controllo automatico reale."
+    },
+    {
+      "text": "Spiega in modo didattico almeno un errore di ragionamento, non solo la strategia finale.",
+      "passed": true,
+      "evidence": "Elenca sei errori di ragionamento, inclusi partire dal livello più costoso e introdurre UI automation troppo presto."
+    },
+    {
+      "text": "Distingue chiaramente tra controlli automatici e verifiche ancora manuali.",
+      "passed": true,
+      "evidence": "Ha una sezione sui controlli automatici e una sezione separata su ciò che resterebbe manuale."
+    }
+  ]
+}

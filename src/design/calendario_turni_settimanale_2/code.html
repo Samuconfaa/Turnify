@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Turnify - Weekly Schedule</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline": "#737686",
+                    "on-surface-variant": "#434655",
+                    "on-primary-container": "#eeefff",
+                    "on-primary-fixed": "#00174b",
+                    "surface-container-highest": "#e1e2ed",
+                    "on-surface": "#191b23",
+                    "primary": "#004ac6",
+                    "surface-container-high": "#e7e7f3",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed": "#ffdbcd",
+                    "surface-container-low": "#f3f3fe",
+                    "on-secondary": "#ffffff",
+                    "surface-bright": "#faf8ff",
+                    "on-error": "#ffffff",
+                    "error": "#ba1a1a",
+                    "tertiary": "#943700",
+                    "on-secondary-fixed-variant": "#38485d",
+                    "on-secondary-container": "#54647a",
+                    "on-tertiary-container": "#ffede6",
+                    "on-secondary-fixed": "#0b1c30",
+                    "on-tertiary-fixed": "#360f00",
+                    "surface-tint": "#0053db",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "surface-variant": "#e1e2ed",
+                    "secondary-fixed": "#d3e4fe",
+                    "on-background": "#191b23",
+                    "surface": "#faf8ff",
+                    "secondary-container": "#d0e1fb",
+                    "secondary": "#505f76",
+                    "background": "#faf8ff",
+                    "error-container": "#ffdad6",
+                    "inverse-on-surface": "#f0f0fb",
+                    "inverse-primary": "#b4c5ff",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "inverse-surface": "#2e3039",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-container": "#2563eb",
+                    "outline-variant": "#c3c6d7",
+                    "primary-fixed": "#dbe1ff",
+                    "tertiary-container": "#bc4800",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "on-tertiary": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "surface-dim": "#d9d9e5",
+                    "surface-container": "#ededf9",
+                    "secondary-fixed-dim": "#b7c8e1"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-desktop": "32px",
+                    "unit": "4px",
+                    "lg": "24px",
+                    "md": "16px",
+                    "xl": "32px",
+                    "sm": "8px",
+                    "margin-mobile": "16px",
+                    "gutter": "16px",
+                    "xs": "4px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "title-sm": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "title-sm": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background font-body-md text-on-surface antialiased">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full border-b bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 z-50">
+<div class="flex items-center justify-between px-4 h-16 w-full max-w-7xl mx-auto">
+<div class="flex items-center space-x-2">
+<button class="p-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors active:scale-95 duration-150 rounded-full">
+<span class="material-symbols-outlined text-blue-600">chevron_left</span>
+</button>
+<button class="flex items-center space-x-1 font-inter antialiased text-lg font-bold text-slate-900 dark:text-white">
+<span>21 – 27 Apr 2025</span>
+</button>
+<button class="p-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors active:scale-95 duration-150 rounded-full">
+<span class="material-symbols-outlined text-blue-600">chevron_right</span>
+</button>
+</div>
+<div class="flex items-center space-x-2">
+<button class="bg-secondary-container text-on-secondary-container px-3 py-1.5 rounded-full text-label-sm font-label-sm hover:opacity-90 transition-opacity">
+                    Oggi
+                </button>
+<button class="bg-primary-container text-white p-2 rounded-full shadow-sm active:scale-95 duration-150">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 600">add</span>
+</button>
+</div>
+</div>
+</header>
+<main class="pt-20 pb-24">
+<!-- Sub-header -->
+<section class="px-4 mb-4">
+<button class="flex items-center text-primary font-medium text-body-md py-1">
+<span class="material-symbols-outlined text-lg mr-1">content_copy</span>
+                Duplica settimana
+            </button>
+</section>
+<!-- Legend -->
+<section class="px-4 mb-6 flex space-x-4">
+<div class="flex items-center space-x-1.5">
+<div class="w-2.5 h-2.5 rounded-full bg-primary-container"></div>
+<span class="text-label-sm text-on-surface-variant uppercase tracking-wider">Turno</span>
+</div>
+<div class="flex items-center space-x-1.5">
+<div class="w-2.5 h-2.5 rounded-full bg-amber-500"></div>
+<span class="text-label-sm text-on-surface-variant uppercase tracking-wider">Ferie</span>
+</div>
+</section>
+<!-- Schedule Grid Container -->
+<div class="relative overflow-x-auto no-scrollbar bg-white rounded-xl mx-4 shadow-sm border border-slate-100">
+<table class="w-full border-collapse">
+<!-- Day Header Row -->
+<thead>
+<tr class="border-b border-slate-100">
+<th class="sticky left-0 bg-white z-20 min-w-[100px] border-r border-slate-100 py-3 text-center text-label-sm text-on-surface-variant">Staff</th>
+<th class="min-w-[70px] py-3 text-center">
+<span class="block text-[10px] text-on-surface-variant">LUN</span>
+<span class="text-title-sm font-title-sm">21</span>
+</th>
+<th class="min-w-[70px] py-3 text-center">
+<span class="block text-[10px] text-on-surface-variant">MAR</span>
+<span class="text-title-sm font-title-sm">22</span>
+</th>
+<th class="min-w-[70px] py-3 text-center">
+<span class="block text-[10px] text-on-surface-variant">MER</span>
+<span class="text-title-sm font-title-sm">23</span>
+</th>
+<th class="min-w-[70px] py-3 text-center bg-blue-50/30">
+<span class="block text-[10px] text-primary">GIO</span>
+<span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-primary text-white text-title-sm font-title-sm">24</span>
+</th>
+<th class="min-w-[70px] py-3 text-center">
+<span class="block text-[10px] text-on-surface-variant">VEN</span>
+<span class="text-title-sm font-title-sm">25</span>
+</th>
+<th class="min-w-[70px] py-3 text-center bg-red-50/30">
+<span class="block text-[10px] text-error">SAB</span>
+<span class="text-title-sm font-title-sm">26</span>
+</th>
+<th class="min-w-[70px] py-3 text-center bg-red-50/30">
+<span class="block text-[10px] text-error">DOM</span>
+<span class="text-title-sm font-title-sm">27</span>
+</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100">
+<!-- Mario G. -->
+<tr class="h-[64px]">
+<td class="sticky left-0 bg-white z-10 border-r border-slate-100 px-3">
+<div class="flex flex-col items-center">
+<img class="w-8 h-8 rounded-full mb-1 border border-slate-200" data-alt="professional portrait of a middle-aged man with a friendly expression and short brown hair, corporate headshot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbxFFh1vXNPB_5egqxcw9pHnBTpZf6Msld-V1fJZjYEcJVucD7n8zf76_L8qNGB6CTJZuPaPX1TO9-zrjIL0NDgvU5xsmC-DY5PRSWPICvffQwFqUa4pyrgX98uO1Fjcg8-bgLuiUQhFk8DRG4WB8F1Pm5ZyhwwiWxUl3gEpISMvioBS5utsPUjbWL5hhde_BByrDeCfZAUdXkujgwiONU2lMJR-CrpxOaYBZ2Fx4Szc1esMVolU5Bw_GQlr8lsYhenFOqFhNN-Q42"/>
+<span class="text-[10px] font-semibold text-on-surface truncate w-full text-center">Mario G.</span>
+</div>
+</td>
+<!-- Shifts -->
+<td class="p-1"><div class="bg-primary-container/10 border-l-4 border-primary-container h-full rounded-md flex flex-col items-center justify-center text-[9px] font-bold text-primary"><span>08:00</span><span>16:00</span></div></td>
+<td class="p-1"><div class="bg-primary-container/10 border-l-4 border-primary-container h-full rounded-md flex flex-col items-center justify-center text-[9px] font-bold text-primary"><span>08:00</span><span>16:00</span></div></td>
+<td class="p-1"><div class="bg-primary-container/10 border-l-4 border-primary-container h-full rounded-md flex flex-col items-center justify-center text-[9px] font-bold text-primary"><span>08:00</span><span>16:00</span></div></td>
+<td class="p-1 bg-blue-50/30"><div class="bg-primary-container/10 border-l-4 border-primary-container h-full rounded-md flex flex-col items-center justify-center text-[9px] font-bold text-primary"><span>08:00</span><span>16:00</span></div></td>
+<td class="p-1"><div class="bg-primary-container/10 border-l-4 border-primary-container h-full rounded-md flex flex-col items-center justify-center text-[9px] font-bold text-primary"><span>08:00</span><span>16:00</span></div></td>
+<td class="p-1 bg-red-50/30"></td>
+<td class="p-1 bg-red-50/30"></td>
+</tr>
+<!-- Alessia R. (Vacation) -->
+<tr class="h-[64px]">
+<td class="sticky left-0 bg-white z-10 border-r border-slate-100 px-3">
+<div class="flex flex-col items-center">
+<img class="w-8 h-8 rounded-full mb-1 border border-slate-200" data-alt="portrait of a professional woman with long dark hair, wearing a white blouse, clean office background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRpPXsoA0otvi90W9IIhO-nnlkOSN5WKtpJlugF8VbrFsHl_K--AjMMMBVgi3g-9wh-Ehj7rjpkZZRe0-OJ3k92XBa1jD9W18uRoy3X_tEx9afZ9sEQ2kGTNQ1RDyib_1GlmVSLEUmNr267p8wNwE0Z5HGsz0utj4-d9zQRDrdqAuRbyTdOriUcF9jEjlZSZh2v7tukpNSCTz5xJmrF0JAY-KUs2MGbh17yatgs1Cz4PQjSLjrGlfmcuBxwjK3olXGo8Z1XHLM1zq8"/>
+<span class="text-[10px] font-semibold text-on-surface truncate w-full text-center">Alessia R.</span>
+</div>
+</td>
+<td class="p-1" colspan="5">
+<div class="bg-amber-100/50 border-l-4 border-amber-500 h-full rounded-md flex items-center justify-center space-x-2 text-[11px] font-bold text-amber-700">
+<span>🏖️</span>
+<span>IN FERIE</span>
+</div>
+</td>
+<td class="p-1 bg-red-50/30"></td>
+<td class="p-1 bg-red-50/30"></td>
+</tr>
+<!-- Marco B. -->
+<tr class="h-[64px]">
+<td class="sticky left-0 bg-white z-10 border-r border-slate-100 px-3">
+<div class="flex flex-col items-center">
+<img class="w-8 h-8 rounded-full mb-1 border border-slate-200" data-alt="headshot of a smiling young man with dark curly hair and a beard, light gray background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtgun5dysMNXnHsOHav1yyYoGDY_FrJv_OuGL1RT_KnUxLcabKAvawirnAsAM59YSd6eMTM6OqQdYbQMAQkSdgfevqDWnLNhMV17JjFK_Mki3chm-hB2Q1MguQPyaT2Z3gZk2-AklTxuhdE1vHDN1ncPZUI-odUfs2T3gtIEcW8NSgXAe0qfVxcbnSB1jCHr6EGXuGoxlizxpl5e5ZJ617xmNbOsX42ehU9JjJD2Pcr3JMLj4c7CwcdoPSeb141vlIZlwqQjEW4k5d"/>
+<span class="text-[10px] font-semibold text-on-surface truncate w-full text-center">Marco B.</span>
+</div>
+</td>
+<td class="p-1"></td>
+<td class="p-1"><div class="bg-primary-container/10 border-l-4 border-primary-container h-full rounded-md flex flex-col items-center justify-center text-[9px] font-bold text-primary"><span>14:00</span><span>22:00</span></div></td>
+<td class="p-1"><div class="bg-primary-container/10 border-l-4 border-primary-container h-full rounded-md flex flex-col items-center justify-center text-[9px] font-bold text-primary"><span>14:00</span><span>22:00</span></div></td>
+<td class="p-1 bg-blue-50/30"><div class="bg-primary-container/10 border-l-4 border-primary-container h-full rounded-md flex flex-col items-center justify-center text-[9px] font-bold text-primary"><span>14:00</span><span>22:00</span></div></td>
+<td class="p-1"><div class="bg-primary-container/10 border-l-4 border-primary-container h-full rounded-md flex flex-col items-center justify-center text-[9px] font-bold text-primary"><span>14:00</span><span>22:00</span></div></td>
+<td class="p-1 bg-red-50/30"></td>
+<td class="p-1 bg-red-50/30"><div class="bg-primary-container/10 border-l-4 border-primary-container h-full rounded-md flex flex-col items-center justify-center text-[9px] font-bold text-primary"><span>08:00</span><span>16:00</span></div></td>
+</tr>
+<!-- Luca V. -->
+<tr class="h-[64px]">
+<td class="sticky left-0 bg-white z-10 border-r border-slate-100 px-3">
+<div class="flex flex-col items-center">
+<img class="w-8 h-8 rounded-full mb-1 border border-slate-200" data-alt="portrait of a man with glasses and short brown hair, wearing a blue collared shirt" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBztM66dt40LduCDbVYqISe6SBm1yobuhxnsAX0TuNGEU_QKqeDTxc2ne6rhA-4UOSdMASO_alTsRZSCJFgruThmk8Ud1FofPuIfVc921FyNW43bDN7CXY6ZU9Qt_abNY-hAcCDgiZbjNtRlQI3gyGNeZ5gGz-TWvQc25uwGMLZT90rxPlpg_o_mShMxaE-phKW62eeItuvnufUAM9Cibj-VCRdDz5VIwic-B_BRru-yJFt0Kz2HsH0wIJm8_HfEkUGCTNa5M3ipVEo"/>
+<span class="text-[10px] font-semibold text-on-surface truncate w-full text-center">Luca V.</span>
+</div>
+</td>
+<td class="p-1"><div class="bg-indigo-100/50 border-l-4 border-indigo-600 h-full rounded-md flex flex-col items-center justify-center text-[9px] font-bold text-indigo-700"><span>22:00</span><span>06:00</span></div></td>
+<td class="p-1"><div class="bg-indigo-100/50 border-l-4 border-indigo-600 h-full rounded-md flex flex-col items-center justify-center text-[9px] font-bold text-indigo-700"><span>22:00</span><span>06:00</span></div></td>
+<td class="p-1"><div class="bg-indigo-100/50 border-l-4 border-indigo-600 h-full rounded-md flex flex-col items-center justify-center text-[9px] font-bold text-indigo-700"><span>22:00</span><span>06:00</span></div></td>
+<td class="p-1 bg-blue-50/30"></td>
+<td class="p-1"></td>
+<td class="p-1 bg-red-50/30"></td>
+<td class="p-1 bg-red-50/30"><div class="bg-indigo-100/50 border-l-4 border-indigo-600 h-full rounded-md flex flex-col items-center justify-center text-[9px] font-bold text-indigo-700"><span>22:00</span><span>06:00</span></div></td>
+</tr>
+<!-- Elena F. -->
+<tr class="h-[64px]">
+<td class="sticky left-0 bg-white z-10 border-r border-slate-100 px-3">
+<div class="flex flex-col items-center">
+<img class="w-8 h-8 rounded-full mb-1 border border-slate-200" data-alt="close up headshot of a woman with blond hair, smiling warmly, minimalist white studio background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhXeIsEQtOWSmw3O3pioiNVkZsNqiZODAIDt5SMY72GbzARclMI6dSiAWhXgc6oOgW54Rqglr0N_XU3pbD9I7y2kPS05nBMPt_jSPcjy1HarPNiXaC4u7ecnfV3dGb_JFVAS3UXBbWGbvevfbY1l4Nz85HyNSanxBr4HMPgtfQf_qJ69pQTy8sv2Sa4xPuc3YqeF-f3NPHySQLC-tRqcXpDxbMlKGpeLAR3mb9IJJx4yCHZatECFJGSUajQCE_WMI08viHDmtgNZP3"/>
+<span class="text-[10px] font-semibold text-on-surface truncate w-full text-center">Elena F.</span>
+</div>
+</td>
+<td class="p-1"><div class="bg-primary-container/10 border-l-4 border-primary-container h-full rounded-md flex flex-col items-center justify-center text-[9px] font-bold text-primary"><span>08:00</span><span>16:00</span></div></td>
+<td class="p-1"><div class="bg-primary-container/10 border-l-4 border-primary-container h-full rounded-md flex flex-col items-center justify-center text-[9px] font-bold text-primary"><span>08:00</span><span>16:00</span></div></td>
+<td class="p-1"><div class="bg-primary-container/10 border-l-4 border-primary-container h-full rounded-md flex flex-col items-center justify-center text-[9px] font-bold text-primary"><span>08:00</span><span>16:00</span></div></td>
+<td class="p-1 bg-blue-50/30"></td>
+<td class="p-1"></td>
+<td class="p-1 bg-red-50/30"></td>
+<td class="p-1 bg-red-50/30"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</main>
+<!-- FAB -->
+<button class="fixed bottom-20 right-6 w-14 h-14 bg-primary-container text-white rounded-full shadow-lg flex items-center justify-center active:scale-90 transition-transform z-40">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'wght' 600">add</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 flex justify-around items-center h-16 pb-safe px-4 shadow-sm">
+<button class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 hover:text-slate-900 tap-highlight-none transition-all">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[11px] font-medium font-inter mt-0.5">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-blue-600 dark:text-blue-400 tap-highlight-none transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">event_note</span>
+<span class="text-[11px] font-medium font-inter mt-0.5">Turni</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 hover:text-slate-900 tap-highlight-none transition-all">
+<span class="material-symbols-outlined">groups</span>
+<span class="text-[11px] font-medium font-inter mt-0.5">Staff</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 hover:text-slate-900 tap-highlight-none transition-all">
+<span class="material-symbols-outlined text-badge relative">
+                notifications
+                <span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
+</span>
+<span class="text-[11px] font-medium font-inter mt-0.5">Richieste</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 hover:text-slate-900 tap-highlight-none transition-all">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[11px] font-medium font-inter mt-0.5">Profilo</span>
+</button>
+</nav>
+</body></html>

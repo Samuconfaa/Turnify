@@ -1,0 +1,19 @@
+{
+  "expectations": [
+    {
+      "text": "Il risultato è strutturato come un file `docs/iterations/it-04.md` con sezioni tipiche di iterazione.",
+      "passed": false,
+      "evidence": "Mancano diverse sezioni tipiche del workflow, come `Piano`, `Prompt principali utilizzati`, `Codice prodotto dall'AI e accettato` e `Correzioni effettuate` con naming coerente col template."
+    },
+    {
+      "text": "Include file creati, file modificati, test eseguiti, problemi trovati, correzioni effettuate ed esito.",
+      "passed": true,
+      "evidence": "Contiene file introdotti, file modificati, test, problemi, correzioni ed esito, seppure in forma più ridotta."
+    },
+    {
+      "text": "Non restituisce solo un riassunto breve: produce un esempio completo utilizzabile come base documentale.",
+      "passed": false,
+      "evidence": "Il risultato è più un riassunto sintetico che un file di iterazione completo e aderente al formato del repository."
+    }
+  ]
+}

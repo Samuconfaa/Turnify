@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+
+<html lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Turnify - Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary-fixed-dim": "#b7c8e1",
+                      "tertiary": "#943700",
+                      "secondary-fixed": "#d3e4fe",
+                      "surface-dim": "#d9d9e5",
+                      "surface-container": "#ededf9",
+                      "on-error": "#ffffff",
+                      "primary-fixed-dim": "#b4c5ff",
+                      "on-primary-container": "#eeefff",
+                      "on-primary-fixed-variant": "#003ea8",
+                      "on-background": "#191b23",
+                      "outline-variant": "#c3c6d7",
+                      "on-secondary": "#ffffff",
+                      "inverse-on-surface": "#f0f0fb",
+                      "on-error-container": "#93000a",
+                      "inverse-surface": "#2e3039",
+                      "error": "#ba1a1a",
+                      "on-surface": "#191b23",
+                      "on-primary-fixed": "#00174b",
+                      "tertiary-fixed-dim": "#ffb596",
+                      "tertiary-container": "#bc4800",
+                      "primary-container": "#2563eb",
+                      "primary-fixed": "#dbe1ff",
+                      "on-surface-variant": "#434655",
+                      "surface-tint": "#0053db",
+                      "on-tertiary-fixed-variant": "#7d2d00",
+                      "tertiary-fixed": "#ffdbcd",
+                      "on-tertiary-container": "#ffede6",
+                      "inverse-primary": "#b4c5ff",
+                      "on-secondary-fixed-variant": "#38485d",
+                      "surface": "#faf8ff",
+                      "surface-bright": "#faf8ff",
+                      "on-tertiary-fixed": "#360f00",
+                      "on-primary": "#ffffff",
+                      "surface-container-low": "#f3f3fe",
+                      "surface-container-highest": "#e1e2ed",
+                      "on-secondary-fixed": "#0b1c30",
+                      "secondary-container": "#d0e1fb",
+                      "error-container": "#ffdad6",
+                      "outline": "#737686",
+                      "background": "#faf8ff",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-high": "#e7e7f3",
+                      "on-tertiary": "#ffffff",
+                      "surface-variant": "#e1e2ed",
+                      "secondary": "#505f76",
+                      "on-secondary-container": "#54647a",
+                      "primary": "#004ac6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "sm": "8px",
+                      "margin-desktop": "32px",
+                      "xl": "32px",
+                      "margin-mobile": "16px",
+                      "md": "16px",
+                      "gutter": "16px",
+                      "xs": "4px",
+                      "unit": "4px",
+                      "lg": "24px"
+              },
+              "fontFamily": {
+                      "body-md": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "title-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "title-sm": ["16px", {"lineHeight": "24px", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .pattern-overlay {
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h40v40H0V0zm10 10h20v20H10V10z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body-md text-on-surface antialiased min-h-screen flex flex-col">
+<!-- Top 40%: Branding Area -->
+<section class="h-[353px] w-full bg-gradient-to-br from-[#1E40AF] to-[#2563EB] relative flex flex-col items-center justify-center overflow-hidden">
+<!-- Subtle Pattern Overlay -->
+<div class="absolute inset-0 pattern-overlay opacity-10" data-alt="Subtle geometric pattern of calendar grids and clock faces in white over a deep blue gradient background"></div>
+<!-- Logo and Branding -->
+<div class="relative z-10 flex flex-col items-center">
+<div class="mb-sm">
+<span class="material-symbols-outlined text-white text-[48px]" data-icon="calendar_today">calendar_today</span>
+</div>
+<h1 class="text-white font-black text-[32px] tracking-tight">Turnify</h1>
+<p class="text-white/70 font-title-sm text-[16px] mt-xs">Gestisci il tuo team</p>
+</div>
+</section>
+<!-- Bottom 60%: Login Sheet -->
+<main class="flex-grow bg-white dark:bg-surface-container rounded-t-[28px] -mt-8 relative z-20 shadow-2xl px-margin-mobile pt-lg pb-xl">
+<div class="max-w-md mx-auto">
+<h2 class="font-headline-md text-[22px] font-bold text-on-surface mb-lg">Accedi</h2>
+<form class="space-y-md">
+<!-- Email Field -->
+<div class="space-y-xs">
+<label class="font-label-sm text-on-surface-variant block ml-1">Email</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline" data-icon="mail">mail</span>
+<input class="w-full h-12 pl-12 pr-4 bg-surface-container-low border border-outline-variant rounded-xl focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline-variant" placeholder="nome@azienda.it" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="space-y-xs">
+<label class="font-label-sm text-on-surface-variant block ml-1">Password</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline" data-icon="lock">lock</span>
+<input class="w-full h-12 pl-12 pr-12 bg-surface-container-low border border-outline-variant rounded-xl focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline-variant" placeholder="••••••••" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface-variant" type="button">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+<!-- Forgot Password Link -->
+<div class="flex justify-end">
+<a class="text-primary font-label-sm text-[13px] font-semibold hover:underline" href="#">Password dimenticata?</a>
+</div>
+<!-- Error Banner -->
+<div class="flex items-center gap-sm p-md bg-error-container text-on-error-container rounded-xl border border-error/20">
+<span class="material-symbols-outlined text-[20px]" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+<p class="font-label-sm">Credenziali non valide. Riprova.</p>
+</div>
+<!-- Main Action Button -->
+<button class="w-full h-[52px] bg-primary-container text-white font-title-sm text-[16px] rounded-xl shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center gap-sm" type="submit">
+                    Accedi
+                </button>
+</form>
+<!-- Divider -->
+<div class="relative my-xl">
+<div class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-outline-variant"></div>
+</div>
+<div class="relative flex justify-center text-label-sm uppercase tracking-widest">
+<span class="bg-white px-md text-outline">oppure</span>
+</div>
+</div>
+<!-- Ghost Button (Registration) -->
+<button class="w-full h-[52px] bg-transparent border-2 border-outline-variant text-on-surface-variant font-title-sm text-[16px] rounded-xl hover:bg-surface-container-low active:scale-[0.98] transition-all flex items-center justify-center gap-sm mb-lg">
+<span class="material-symbols-outlined" data-icon="business">business</span>
+                Registra la tua azienda
+            </button>
+<!-- Footer Help Text -->
+<p class="text-center font-label-sm text-outline px-lg mt-md">
+                Accedendo, accetti i nostri <a class="text-primary hover:underline" href="#">Termini di Servizio</a> e la <a class="text-primary hover:underline" href="#">Privacy Policy</a>.
+            </p>
+</div>
+</main>
+<!-- Bottom Indicator for Mobile -->
+<div class="h-1.5 w-32 bg-outline-variant/30 rounded-full mx-auto my-4 shrink-0"></div>
+</body></html>

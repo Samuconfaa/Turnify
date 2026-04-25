@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#d3e4fe",
+                        "secondary": "#505f76",
+                        "surface-container": "#ededf9",
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#d9d9e5",
+                        "on-tertiary": "#ffffff",
+                        "background": "#0F172A",
+                        "surface-container-highest": "#e1e2ed",
+                        "secondary-container": "#d0e1fb",
+                        "on-primary-container": "#eeefff",
+                        "outline-variant": "#c3c6d7",
+                        "on-surface-variant": "#434655",
+                        "inverse-surface": "#2e3039",
+                        "primary": "#2563eb",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "tertiary-container": "#bc4800",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "inverse-primary": "#b4c5ff",
+                        "on-error": "#ffffff",
+                        "outline": "#737686",
+                        "primary-container": "#2563eb",
+                        "surface-container-low": "#1E293B",
+                        "on-primary-fixed": "#00174b",
+                        "on-tertiary-fixed": "#360f00",
+                        "on-surface": "#F8FAFC",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed": "#ffdbcd",
+                        "surface-container-high": "#e7e7f3",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-container": "#ffede6",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "surface-variant": "#1E293B",
+                        "surface-container-lowest": "#0F172A",
+                        "primary-fixed": "#dbe1ff",
+                        "inverse-on-surface": "#f0f0fb",
+                        "surface-tint": "#0053db",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#943700",
+                        "on-secondary-container": "#54647a",
+                        "on-error-container": "#93000a",
+                        "surface-bright": "#faf8ff",
+                        "on-background": "#F8FAFC",
+                        "surface": "#1E293B",
+                        "on-secondary-fixed": "#0b1c30"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "margin-mobile": "16px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "margin-desktop": "32px",
+                        "unit": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "title-sm": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "title-sm": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-4 h-16 bg-white dark:bg-slate-900 shadow-sm dark:shadow-none border-b border-slate-200 dark:border-slate-800">
+<div class="flex items-center gap-4">
+<button class="active:scale-95 transition-transform text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-title-sm text-slate-900 dark:text-slate-50">Notifiche</h1>
+</div>
+<button class="text-blue-600 dark:text-blue-400 font-inter text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-colors">
+            Segna tutte come lette
+        </button>
+</header>
+<!-- Main Content -->
+<main class="pt-20 pb-24 px-margin-mobile md:px-margin-desktop max-w-3xl mx-auto">
+<!-- Filter Tabs -->
+<div class="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
+<span class="bg-primary-container text-white px-4 py-1.5 rounded-full font-label-sm text-label-sm">Tutte</span>
+<span class="bg-surface-container-low text-on-surface-variant px-4 py-1.5 rounded-full font-label-sm text-label-sm border border-outline-variant/30">Turni</span>
+<span class="bg-surface-container-low text-on-surface-variant px-4 py-1.5 rounded-full font-label-sm text-label-sm border border-outline-variant/30">Messaggi</span>
+</div>
+<div class="space-y-4">
+<!-- New Notification Section Label -->
+<h2 class="text-label-sm font-label-sm text-outline uppercase tracking-wider mb-2">Recenti</h2>
+<!-- UNREAD CARD: PRIMARY FOCUS -->
+<div class="group relative bg-blue-600/10 dark:bg-blue-900/20 border border-blue-500/30 rounded-xl p-4 flex gap-4 transition-all hover:bg-blue-600/15 dark:hover:bg-blue-900/30">
+<div class="flex-shrink-0">
+<div class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center">
+<span class="material-symbols-outlined text-white" data-icon="calendar_today">calendar_today</span>
+</div>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h3 class="font-title-sm text-title-sm text-on-background mb-1">Nuovo turno assegnato</h3>
+<div class="flex items-center gap-2">
+<span class="text-label-sm font-label-sm text-blue-500">2 min fa</span>
+<div class="w-2.5 h-2.5 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.6)]"></div>
+</div>
+</div>
+<p class="text-body-md font-body-md text-slate-300">Hai un turno il 25 apr dalle 8:00 alle 16:00</p>
+<div class="mt-3 flex gap-2">
+<button class="bg-primary-container text-white font-label-sm text-label-sm px-4 py-2 rounded-lg active:scale-95 transition-transform shadow-lg shadow-blue-900/20">Visualizza Turno</button>
+</div>
+</div>
+</div>
+<!-- READ CARD -->
+<div class="bg-surface-container-low border border-slate-800 rounded-xl p-4 flex gap-4 opacity-80 hover:opacity-100 transition-opacity">
+<div class="flex-shrink-0">
+<div class="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-400" data-icon="groups">groups</span>
+</div>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h3 class="font-title-sm text-title-sm text-on-background mb-1">Staff Aggiornato</h3>
+<span class="text-label-sm font-label-sm text-slate-500">1 ora fa</span>
+</div>
+<p class="text-body-md font-body-md text-slate-400">Marco Rossi è stato aggiunto al tuo team di oggi.</p>
+</div>
+</div>
+<!-- Section Label -->
+<h2 class="text-label-sm font-label-sm text-outline uppercase tracking-wider mt-8 mb-2">Ieri</h2>
+<!-- READ CARD -->
+<div class="bg-surface-container-low border border-slate-800 rounded-xl p-4 flex gap-4 opacity-80">
+<div class="flex-shrink-0">
+<div class="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-400" data-icon="chat">chat</span>
+</div>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h3 class="font-title-sm text-title-sm text-on-background mb-1">Nuovo Messaggio</h3>
+<span class="text-label-sm font-label-sm text-slate-500">24h fa</span>
+</div>
+<p class="text-body-md font-body-md text-slate-400">Direzione: "Ricordarsi di firmare il registro presenze..."</p>
+</div>
+</div>
+<!-- Bento Styled Info Card -->
+<div class="mt-8 bg-slate-900 border border-slate-800 rounded-2xl p-6 overflow-hidden relative group">
+<div class="absolute -right-12 -top-12 w-48 h-48 bg-blue-600/10 rounded-full blur-3xl group-hover:bg-blue-600/20 transition-colors"></div>
+<div class="relative z-10">
+<h4 class="font-title-sm text-blue-400 mb-2">Suggerimento di Produttività</h4>
+<p class="text-body-md text-slate-400 max-w-sm">Hai completato tutti i tuoi turni di questa settimana. Ottimo lavoro!</p>
+</div>
+<div class="mt-4 flex items-center gap-4 relative z-10">
+<div class="flex -space-x-2">
+<img class="w-8 h-8 rounded-full border-2 border-slate-900" data-alt="portrait of a young professional woman smiling in an office environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7hPM58QlBpsx-ZMFQPXuTMk6t6-C_n-vnO_U0tG3VGtzQMfolFrkRES7z8hpC68h_SxrR6derSd5Kk37cUlBe9XfXfSlF3yEPp9942WHrsvWj1wkEFxFyGxsQPZSCiZJYwG95-gGB7vhEiqrkeaPHsMujDxg-9kVyT1VQHCL16CXFuQ8GaWOJFfh6oE-rnmOSUkwHPmCaJGkBg15QFl9j-JqS3kDk5aGhQxgR3Xlpej-m2wbdT2tkv7WivlyvP6SrP5Z6IIbd5Osg"/>
+<img class="w-8 h-8 rounded-full border-2 border-slate-900" data-alt="headshot of a smiling man with glasses in a professional studio setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJkUvg6OPUvDu5VuI3H4plGZBy3rk3v7RCVgQeuFvUWXnqBSFDNBlWvUIThOBhOjmJ-QF1i0Pr_60zD--2rD6cojsRYq7KcR_iiECwxLOWxfelFCapsYCmZHTpXw9SDOu9fHhzKIQTS5uGr6C6XkT2IVgtsWnfvMDU0GlbHzF_wh5FYMPELoIAJGl1kTCmCiAbKw8v2XEqOjGTdiNVGeU3okrlnNP5lkw4F-ODUBuHvGLp4RU2DF2ool29XcQPkXsXzxujklcVD_6g"/>
+</div>
+<span class="text-label-sm text-slate-500">Tu e altri 12 colleghi siete in regola.</span>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-2 py-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-t border-slate-200 dark:border-slate-800">
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-[10px] font-medium font-inter">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="text-[10px] font-medium font-inter">Turni</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="text-[10px] font-medium font-inter">Staff</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="chat">chat</span>
+<span class="text-[10px] font-medium font-inter">Chat</span>
+</a>
+<a class="flex flex-col items-center justify-center text-blue-600 dark:text-blue-400 font-semibold active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="person" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="text-[10px] font-medium font-inter">Profilo</span>
+</a>
+</nav>
+</body></html>

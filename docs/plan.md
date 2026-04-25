@@ -253,3 +253,26 @@ Turnify/
 
 ---
 
+### Iterazione 6 — Portale web admin (Next.js)
+**Data:** 2026-04-26
+
+**Lavoro svolto:**
+- Nuovo progetto `Turnify.Web` (Next.js 14, TypeScript, Tailwind CSS)
+- Pagine admin: `/dashboard`, `/dashboard/employees`, `/dashboard/businesses`, `/dashboard/shifts`, `/dashboard/vacations`, `/login`
+- `Sidebar.tsx` con navigazione tra sezioni
+- `lib/api.ts`: client HTTP verso il backend ASP.NET Core
+- `lib/auth.ts`: gestione autenticazione via cookie
+- `middleware.ts`: protezione route autenticate
+- `ecosystem.config.js`: configurazione PM2 per deploy VPS Node 20
+- Fix deploy: compatibilità con Node 20 su VPS
+
+**File principali:**
+- `src/Turnify.Web/app/**/*.tsx`
+- `src/Turnify.Web/components/Sidebar.tsx`
+- `src/Turnify.Web/lib/api.ts`, `auth.ts`, `middleware.ts`
+- `src/Turnify.Web/package.json`, `next.config.ts`, `tailwind.config.ts`
+
+**Risultato:** portale web admin completo e deployabile su VPS con PM2.
+
+---
+

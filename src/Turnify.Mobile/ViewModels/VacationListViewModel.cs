@@ -53,6 +53,17 @@ public class VacationRequestDto
         "Approved" => "#E6F4EA", "Rejected" => "#FCE8E6",
         "Pending"  => "#FEF3C7", _ => "#F3F4F6"
     };
+    public string StripColor => Status switch
+    {
+        "Approved" => "#16A34A", "Rejected" => "#BA1A1A",
+        "Pending"  => "#F59E0B", _ => "#94A3B8"
+    };
+    public string TypeEmoji => Type switch
+    {
+        "Holiday"   => "🏖️",
+        "SickLeave" => "🤒",
+        _           => "⏱️"
+    };
     public bool IsPending  => Status == "Pending";
     public bool IsApproved => Status == "Approved";
     public string Initials
@@ -179,6 +190,13 @@ public partial class VacationListViewModel : BaseViewModel
 
     [RelayCommand]
     private void HideForm() => IsFormVisible = false;
+
+    [RelayCommand]
+    private void SetFilterIndex(string indexStr)
+    {
+        if (int.TryParse(indexStr, out var i))
+            FilterIndex = i;
+    }
 
     [RelayCommand]
     private async Task SubmitRequestAsync()

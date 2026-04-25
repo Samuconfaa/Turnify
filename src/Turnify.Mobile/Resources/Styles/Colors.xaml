@@ -2,14 +2,7 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <!-- Colori principali forniti dal prompt -->
-    <Color x:Key="PrimaryColor">#2563EB</Color>
-    <Color x:Key="PrimaryDarkColor">#1D4ED8</Color>
-    <Color x:Key="SuccessColor">#16A34A</Color>
-    <Color x:Key="WarningColor">#D97706</Color>
-    <Color x:Key="DangerColor">#DC2626</Color>
-
-    <!-- Default MAUI Colors (necessari per Styles.xaml) -->
+    <!-- ── Base ─────────────────────────────────────────────────────── -->
     <Color x:Key="White">White</Color>
     <Color x:Key="Black">Black</Color>
     <Color x:Key="Magenta">#D600AA</Color>
@@ -23,40 +16,57 @@
     <Color x:Key="Gray600">#404040</Color>
     <Color x:Key="Gray900">#212121</Color>
     <Color x:Key="Gray950">#141414</Color>
-    <Color x:Key="PrimaryDarkText">#242424</Color>
-    <Color x:Key="PrimaryDark">#1D4ED8</Color>
-    <Color x:Key="Secondary">#10B981</Color>
-    <Color x:Key="SecondaryDarkText">#C8C8C8</Color>
     <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource White}"/>
     <SolidColorBrush x:Key="BlackBrush" Color="{StaticResource Black}"/>
 
-
-    <!-- Colori sfondo e superficie -->
-    <Color x:Key="Background">#F9FAFB</Color>
+    <!-- ── Turnify Design System (light) ────────────────────────────── -->
+    <!-- Background & Surfaces -->
+    <Color x:Key="Background">#FAF8FF</Color>
     <Color x:Key="Surface">#FFFFFF</Color>
-    <Color x:Key="Surface2">#F3F4F6</Color>
-    <Color x:Key="BorderColor">#E5E7EB</Color>
-
-    <!-- Colori testo -->
-    <Color x:Key="TextPrimary">#111827</Color>
-    <Color x:Key="TextSecondary">#6B7280</Color>
-
-    <!-- Mapping the keys to my previously used StaticResources for compatibility with the HTML converted ones, if necessary. 
-         But since the prompt gave the explicit file, I'll keep the ones from the prompt and map the ones I used earlier.
-         Actually, the user gave exactly what to paste, I will just paste it. But wait, I'll add aliases to match what I wrote in XAML.
-         The prompt says: "incolla questo contenuto completo", so I'll follow that exactly. -->
-    <Color x:Key="Primary">#2563EB</Color>
-    <Color x:Key="PrimaryContainer">#DBEAFE</Color>
-    <Color x:Key="OnPrimary">#FFFFFF</Color>
-    <Color x:Key="OnPrimaryContainer">#1E40AF</Color>
-    <Color x:Key="Error">#DC2626</Color>
-    <Color x:Key="Success">#16A34A</Color>
-    <Color x:Key="Tertiary">#D97706</Color>
+    <Color x:Key="SurfaceContainer">#EDEDF9</Color>
+    <Color x:Key="SurfaceContainerLow">#F3F3FE</Color>
+    <Color x:Key="SurfaceContainerHigh">#E7E7F3</Color>
+    <Color x:Key="SurfaceContainerHighest">#E1E2ED</Color>
     <Color x:Key="SurfaceContainerLowest">#FFFFFF</Color>
-    <Color x:Key="SurfaceContainer">#F3F4F6</Color>
-    <Color x:Key="SurfaceContainerHigh">#E5E7EB</Color>
-    <Color x:Key="Outline">#D1D5DB</Color>
-    <Color x:Key="OutlineVariant">#E5E7EB</Color>
-    <Color x:Key="OnBackground">#111827</Color>
-    <Color x:Key="OnSurfaceVariant">#6B7280</Color>
+
+    <!-- Primary -->
+    <Color x:Key="Primary">#2563EB</Color>
+    <Color x:Key="PrimaryDark">#1D4ED8</Color>
+    <Color x:Key="PrimaryContainer">#2563EB</Color>
+    <Color x:Key="OnPrimary">#FFFFFF</Color>
+    <Color x:Key="OnPrimaryContainer">#EEEFFF</Color>
+    <Color x:Key="PrimaryFixed">#DBE1FF</Color>
+    <Color x:Key="PrimaryFixedDim">#B4C5FF</Color>
+
+    <!-- Text -->
+    <Color x:Key="OnBackground">#191B23</Color>
+    <Color x:Key="OnSurface">#191B23</Color>
+    <Color x:Key="OnSurfaceVariant">#434655</Color>
+    <Color x:Key="Outline">#737686</Color>
+    <Color x:Key="OutlineVariant">#C3C6D7</Color>
+
+    <!-- Semantic -->
+    <Color x:Key="Error">#BA1A1A</Color>
+    <Color x:Key="ErrorContainer">#FFDAD6</Color>
+    <Color x:Key="OnErrorContainer">#93000A</Color>
+    <Color x:Key="Success">#16A34A</Color>
+    <Color x:Key="SuccessContainer">#DCFCE7</Color>
+    <Color x:Key="Warning">#D97706</Color>
+    <Color x:Key="Tertiary">#943700</Color>
+    <Color x:Key="TertiaryContainer">#BC4800</Color>
+    <Color x:Key="TertiaryFixedDim">#FFB596</Color>
+
+    <!-- Secondary -->
+    <Color x:Key="Secondary">#505F76</Color>
+    <Color x:Key="SecondaryContainer">#D0E1FB</Color>
+    <Color x:Key="OnSecondaryContainer">#54647A</Color>
+
+    <!-- Aliases (backward compat) -->
+    <Color x:Key="PrimaryDarkText">#242424</Color>
+    <Color x:Key="SecondaryDarkText">#C8C8C8</Color>
+    <Color x:Key="TextPrimary">#191B23</Color>
+    <Color x:Key="TextSecondary">#434655</Color>
+    <Color x:Key="BorderColor">#C3C6D7</Color>
+    <Color x:Key="Surface2">#F3F3FE</Color>
+
 </ResourceDictionary>

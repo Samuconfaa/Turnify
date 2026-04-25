@@ -9,142 +9,153 @@
     <RefreshView Command="{Binding LoadDataCommand}"
                  IsRefreshing="{Binding IsBusy}">
         <ScrollView>
-            <VerticalStackLayout Spacing="20" Padding="16,8,16,32">
+            <VerticalStackLayout Spacing="0" Padding="0,0,0,32">
 
-                <!-- ERROR STATE -->
-                <Border IsVisible="{Binding HasError}"
-                        BackgroundColor="#FEF2F2"
-                        Stroke="#FECACA"
-                        StrokeThickness="1"
-                        Padding="16">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="10"/>
-                    </Border.StrokeShape>
-                    <HorizontalStackLayout Spacing="12">
-                        <Label Text="⚠️" FontSize="20" VerticalOptions="Center"/>
-                        <Label Text="{Binding ErrorMessage}"
-                               FontSize="14"
-                               TextColor="#DC2626"
-                               VerticalOptions="Center"
-                               HorizontalOptions="Fill"/>
-                    </HorizontalStackLayout>
+                <!-- ── Top header ────────────────────────────────────── -->
+                <Border BackgroundColor="{StaticResource Surface}"
+                        Stroke="Transparent" StrokeThickness="0"
+                        Padding="16,16,16,12">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="0"/></Border.StrokeShape>
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" RowSpacing="10">
+                        <!-- Title row -->
+                        <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
+                            <Label Text="Dashboard"
+                                   FontSize="22" FontAttributes="Bold"
+                                   TextColor="{StaticResource OnBackground}"/>
+                        </VerticalStackLayout>
+
+                        <!-- Error -->
+                        <Border Grid.Row="1" Grid.ColumnSpan="2"
+                                BackgroundColor="#FEF2F2"
+                                Stroke="#FECACA" StrokeThickness="1" Padding="12,8"
+                                IsVisible="{Binding HasError}">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                            <HorizontalStackLayout Spacing="8">
+                                <Label Text="⚠️" FontSize="16" VerticalOptions="Center"/>
+                                <Label Text="{Binding ErrorMessage}"
+                                       FontSize="13" TextColor="#DC2626" VerticalOptions="Center"/>
+                            </HorizontalStackLayout>
+                        </Border>
+                    </Grid>
                 </Border>
 
-                <!-- HEADER -->
-                <VerticalStackLayout Margin="0,8,0,0" Spacing="4">
-                    <Label Text="Dashboard Admin"
-                           FontSize="26" FontAttributes="Bold"
-                           TextColor="{StaticResource OnBackground}"/>
-                </VerticalStackLayout>
-
-                <!-- KPI CARDS -->
+                <!-- ── KPI Grid 2×2 ──────────────────────────────────── -->
                 <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto"
-                      ColumnSpacing="12" RowSpacing="12">
+                      ColumnSpacing="12" RowSpacing="12"
+                      Padding="16,16,16,0">
 
+                    <!-- Dipendenti attivi -->
                     <Border Grid.Row="0" Grid.Column="0"
                             BackgroundColor="{StaticResource Surface}"
-                            Stroke="{StaticResource Outline}"
-                            StrokeThickness="1" Padding="16">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="12"/>
-                        </Border.StrokeShape>
-                        <VerticalStackLayout Spacing="6">
-                            <Label Text="👥" FontSize="22"/>
+                            Stroke="#E2E8F0" StrokeThickness="1" Padding="16">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                        <VerticalStackLayout Spacing="10">
+                            <Border BackgroundColor="#EFF6FF" Stroke="Transparent"
+                                    HeightRequest="40" WidthRequest="40">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                                <Label Text="👥" FontSize="20"
+                                       HorizontalOptions="Center" VerticalOptions="Center"/>
+                            </Border>
                             <Label Text="{Binding TotalEmployees}"
                                    FontSize="28" FontAttributes="Bold"
-                                   TextColor="{StaticResource Primary}"/>
+                                   TextColor="{StaticResource OnBackground}"/>
                             <Label Text="Dipendenti attivi"
-                                   FontSize="12"
-                                   TextColor="{StaticResource OnSurfaceVariant}"/>
+                                   FontSize="12" TextColor="{StaticResource OnSurfaceVariant}"/>
                         </VerticalStackLayout>
                     </Border>
 
+                    <!-- Turni settimana -->
                     <Border Grid.Row="0" Grid.Column="1"
                             BackgroundColor="{StaticResource Surface}"
-                            Stroke="{StaticResource Outline}"
-                            StrokeThickness="1" Padding="16">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="12"/>
-                        </Border.StrokeShape>
-                        <VerticalStackLayout Spacing="6">
-                            <Label Text="📅" FontSize="22"/>
+                            Stroke="#E2E8F0" StrokeThickness="1" Padding="16">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                        <VerticalStackLayout Spacing="10">
+                            <Border BackgroundColor="#ECFDF5" Stroke="Transparent"
+                                    HeightRequest="40" WidthRequest="40">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                                <Label Text="📅" FontSize="20"
+                                       HorizontalOptions="Center" VerticalOptions="Center"/>
+                            </Border>
                             <Label Text="{Binding ShiftsThisWeek}"
                                    FontSize="28" FontAttributes="Bold"
-                                   TextColor="{StaticResource Primary}"/>
+                                   TextColor="{StaticResource OnBackground}"/>
                             <Label Text="Turni settimana"
-                                   FontSize="12"
-                                   TextColor="{StaticResource OnSurfaceVariant}"/>
+                                   FontSize="12" TextColor="{StaticResource OnSurfaceVariant}"/>
                         </VerticalStackLayout>
                     </Border>
 
+                    <!-- Ferie in attesa -->
                     <Border Grid.Row="1" Grid.Column="0"
                             BackgroundColor="{StaticResource Surface}"
-                            Stroke="{StaticResource Outline}"
-                            StrokeThickness="1" Padding="16">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="12"/>
-                        </Border.StrokeShape>
-                        <VerticalStackLayout Spacing="6">
-                            <Label Text="🏖️" FontSize="22"/>
+                            Stroke="#E2E8F0" StrokeThickness="1" Padding="16">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                        <VerticalStackLayout Spacing="10">
+                            <Border BackgroundColor="#FFFBEB" Stroke="Transparent"
+                                    HeightRequest="40" WidthRequest="40">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                                <Label Text="🏖️" FontSize="20"
+                                       HorizontalOptions="Center" VerticalOptions="Center"/>
+                            </Border>
                             <Label Text="{Binding PendingVacations}"
                                    FontSize="28" FontAttributes="Bold"
-                                   TextColor="#D97706"/>
+                                   TextColor="{StaticResource OnBackground}"/>
                             <Label Text="Ferie in attesa"
-                                   FontSize="12"
-                                   TextColor="{StaticResource OnSurfaceVariant}"/>
+                                   FontSize="12" TextColor="{StaticResource OnSurfaceVariant}"/>
                         </VerticalStackLayout>
                     </Border>
 
+                    <!-- Ore programmate -->
                     <Border Grid.Row="1" Grid.Column="1"
                             BackgroundColor="{StaticResource Surface}"
-                            Stroke="{StaticResource Outline}"
-                            StrokeThickness="1" Padding="16">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="12"/>
-                        </Border.StrokeShape>
-                        <VerticalStackLayout Spacing="6">
-                            <Label Text="⏱️" FontSize="22"/>
+                            Stroke="#E2E8F0" StrokeThickness="1" Padding="16">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                        <VerticalStackLayout Spacing="10">
+                            <Border BackgroundColor="#F5F3FF" Stroke="Transparent"
+                                    HeightRequest="40" WidthRequest="40">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                                <Label Text="⏱️" FontSize="20"
+                                       HorizontalOptions="Center" VerticalOptions="Center"/>
+                            </Border>
                             <Label Text="{Binding TotalHoursScheduled, StringFormat='{0:0}h'}"
                                    FontSize="28" FontAttributes="Bold"
-                                   TextColor="{StaticResource Success}"/>
+                                   TextColor="{StaticResource OnBackground}"/>
                             <Label Text="Ore settimana"
-                                   FontSize="12"
-                                   TextColor="{StaticResource OnSurfaceVariant}"/>
+                                   FontSize="12" TextColor="{StaticResource OnSurfaceVariant}"/>
                         </VerticalStackLayout>
                     </Border>
                 </Grid>
 
-                <!-- EMPTY STATE -->
+                <!-- ── Empty state ───────────────────────────────────── -->
                 <VerticalStackLayout IsVisible="{Binding IsEmpty}"
                                      HorizontalOptions="Center"
-                                     Margin="0,24,0,0" Spacing="12">
-                    <Label Text="🏪" FontSize="48" HorizontalOptions="Center"/>
+                                     Margin="32,40,32,0" Spacing="12">
+                    <Label Text="🏪" FontSize="52" HorizontalOptions="Center"/>
                     <Label Text="Nessun dato ancora"
                            FontSize="18" FontAttributes="Bold"
                            TextColor="{StaticResource OnBackground}"
                            HorizontalOptions="Center"/>
                     <Label Text="Aggiungi dipendenti e crea turni dal menu Team e Turni."
-                           FontSize="14"
-                           TextColor="{StaticResource OnSurfaceVariant}"
-                           HorizontalOptions="Center"
-                           HorizontalTextAlignment="Center"/>
+                           FontSize="14" TextColor="{StaticResource OnSurfaceVariant}"
+                           HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
                 </VerticalStackLayout>
 
-                <!-- TURNI OGGI -->
-                <VerticalStackLayout Spacing="12"
+                <!-- ── Turni oggi ────────────────────────────────────── -->
+                <VerticalStackLayout Spacing="12" Padding="16,24,16,0"
                                      IsVisible="{Binding IsEmpty, Converter={StaticResource InverseBoolConverter}}">
-                    <Label Text="TURNI OGGI"
-                           FontSize="13" FontAttributes="Bold"
-                           TextColor="{StaticResource OnSurfaceVariant}"/>
+
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0"
+                               Text="TURNI OGGI"
+                               FontSize="12" FontAttributes="Bold"
+                               TextColor="{StaticResource OnSurfaceVariant}"
+                               VerticalOptions="Center"/>
+                    </Grid>
 
                     <CollectionView ItemsSource="{Binding ShiftsToday}">
                         <CollectionView.EmptyView>
                             <Border BackgroundColor="{StaticResource Surface}"
-                                    Stroke="{StaticResource Outline}"
-                                    StrokeThickness="1" Padding="16">
-                                <Border.StrokeShape>
-                                    <RoundRectangle CornerRadius="10"/>
-                                </Border.StrokeShape>
+                                    Stroke="#E2E8F0" StrokeThickness="1" Padding="16">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
                                 <Label Text="Nessun turno programmato per oggi."
                                        TextColor="{StaticResource OnSurfaceVariant}"
                                        HorizontalOptions="Center"/>
@@ -153,19 +164,16 @@
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="vm:DashboardShiftDto">
                                 <Border BackgroundColor="{StaticResource Surface}"
-                                        Stroke="{StaticResource Outline}"
-                                        StrokeThickness="1"
+                                        Stroke="#E2E8F0" StrokeThickness="1"
                                         Padding="0" Margin="0,0,0,8">
-                                    <Border.StrokeShape>
-                                        <RoundRectangle CornerRadius="10"/>
-                                    </Border.StrokeShape>
-                                    <Grid ColumnDefinitions="4,*">
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                                    <Grid ColumnDefinitions="6,*">
                                         <BoxView Grid.Column="0"
                                                  BackgroundColor="{StaticResource Success}"
                                                  VerticalOptions="Fill"/>
                                         <Grid Grid.Column="1"
                                               ColumnDefinitions="*,Auto"
-                                              Padding="14,12">
+                                              Padding="14,14">
                                             <VerticalStackLayout Grid.Column="0" Spacing="3">
                                                 <Label Text="{Binding EmployeeName}"
                                                        FontSize="15" FontAttributes="Bold"
@@ -175,17 +183,13 @@
                                                        TextColor="{StaticResource OnSurfaceVariant}"/>
                                             </VerticalStackLayout>
                                             <Border Grid.Column="1"
-                                                    BackgroundColor="#E6F4EA"
-                                                    Stroke="#CEEAD6"
-                                                    StrokeThickness="1"
-                                                    Padding="10,4"
+                                                    BackgroundColor="{StaticResource SecondaryContainer}"
+                                                    Stroke="Transparent" Padding="10,5"
                                                     VerticalOptions="Center">
-                                                <Border.StrokeShape>
-                                                    <RoundRectangle CornerRadius="16"/>
-                                                </Border.StrokeShape>
+                                                <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
                                                 <Label Text="{Binding Status}"
-                                                       FontSize="11"
-                                                       TextColor="{StaticResource Success}"/>
+                                                       FontSize="11" FontAttributes="Bold"
+                                                       TextColor="{StaticResource OnSecondaryContainer}"/>
                                             </Border>
                                         </Grid>
                                     </Grid>
@@ -195,21 +199,30 @@
                     </CollectionView>
                 </VerticalStackLayout>
 
-                <!-- RICHIESTE FERIE PENDENTI -->
-                <VerticalStackLayout Spacing="12"
+                <!-- ── Ferie in attesa ───────────────────────────────── -->
+                <VerticalStackLayout Spacing="12" Padding="16,24,16,0"
                                      IsVisible="{Binding IsEmpty, Converter={StaticResource InverseBoolConverter}}">
-                    <Label Text="RICHIESTE FERIE IN ATTESA"
-                           FontSize="13" FontAttributes="Bold"
-                           TextColor="{StaticResource OnSurfaceVariant}"/>
+
+                    <HorizontalStackLayout Spacing="8">
+                        <Label Text="FERIE IN ATTESA"
+                               FontSize="12" FontAttributes="Bold"
+                               TextColor="{StaticResource OnSurfaceVariant}"
+                               VerticalOptions="Center"/>
+                        <Border BackgroundColor="#FEF3C7" Stroke="Transparent"
+                                Padding="8,2"
+                                IsVisible="{Binding PendingVacations, Converter={StaticResource IntIsZeroConverter}, ConverterParameter=invert}">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                            <Label Text="{Binding PendingVacations}"
+                                   FontSize="11" FontAttributes="Bold"
+                                   TextColor="#92400E"/>
+                        </Border>
+                    </HorizontalStackLayout>
 
                     <CollectionView ItemsSource="{Binding PendingRequests}">
                         <CollectionView.EmptyView>
                             <Border BackgroundColor="{StaticResource Surface}"
-                                    Stroke="{StaticResource Outline}"
-                                    StrokeThickness="1" Padding="16">
-                                <Border.StrokeShape>
-                                    <RoundRectangle CornerRadius="10"/>
-                                </Border.StrokeShape>
+                                    Stroke="#E2E8F0" StrokeThickness="1" Padding="16">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
                                 <Label Text="Nessuna richiesta in attesa."
                                        TextColor="{StaticResource OnSurfaceVariant}"
                                        HorizontalOptions="Center"/>
@@ -218,29 +231,24 @@
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="vm:DashboardPendingVacationDto">
                                 <Border BackgroundColor="{StaticResource Surface}"
-                                        Stroke="{StaticResource Outline}"
-                                        StrokeThickness="1"
+                                        Stroke="#E2E8F0" StrokeThickness="1"
                                         Padding="16" Margin="0,0,0,10">
-                                    <Border.StrokeShape>
-                                        <RoundRectangle CornerRadius="10"/>
-                                    </Border.StrokeShape>
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
                                     <VerticalStackLayout Spacing="14">
                                         <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
                                             <Border Grid.Column="0"
-                                                    BackgroundColor="{StaticResource PrimaryContainer}"
-                                                    HeightRequest="44" WidthRequest="44">
-                                                <Border.StrokeShape>
-                                                    <RoundRectangle CornerRadius="22"/>
-                                                </Border.StrokeShape>
+                                                    BackgroundColor="{StaticResource PrimaryFixed}"
+                                                    HeightRequest="48" WidthRequest="48"
+                                                    Stroke="Transparent">
+                                                <Border.StrokeShape><RoundRectangle CornerRadius="24"/></Border.StrokeShape>
                                                 <Label Text="{Binding Initials}"
-                                                       FontSize="16" FontAttributes="Bold"
+                                                       FontSize="17" FontAttributes="Bold"
                                                        TextColor="{StaticResource Primary}"
                                                        HorizontalOptions="Center"
                                                        VerticalOptions="Center"/>
                                             </Border>
                                             <VerticalStackLayout Grid.Column="1"
-                                                                 VerticalOptions="Center"
-                                                                 Spacing="2">
+                                                                 VerticalOptions="Center" Spacing="3">
                                                 <Label Text="{Binding EmployeeName}"
                                                        FontSize="15" FontAttributes="Bold"
                                                        TextColor="{StaticResource OnBackground}"/>
@@ -257,18 +265,15 @@
                                                     BackgroundColor="Transparent"
                                                     TextColor="{StaticResource Error}"
                                                     BorderColor="{StaticResource Error}"
-                                                    BorderWidth="1"
-                                                    CornerRadius="8"
-                                                    HeightRequest="40"
-                                                    FontSize="14"/>
+                                                    BorderWidth="1" CornerRadius="10"
+                                                    HeightRequest="44" FontSize="14"/>
                                             <Button Grid.Column="1"
                                                     Text="✓  Approva"
                                                     Command="{Binding Source={RelativeSource AncestorType={x:Type vm:DashboardViewModel}}, Path=ApproveVacationCommand}"
                                                     CommandParameter="{Binding .}"
                                                     BackgroundColor="{StaticResource Success}"
                                                     TextColor="White"
-                                                    CornerRadius="8"
-                                                    HeightRequest="40"
+                                                    CornerRadius="10" HeightRequest="44"
                                                     FontSize="14"/>
                                         </Grid>
                                     </VerticalStackLayout>

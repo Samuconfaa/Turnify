@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
 
 namespace Turnify.Mobile.ViewModels;
@@ -82,12 +83,27 @@ public partial class VacationListViewModel : BaseViewModel
     [ObservableProperty] private string _filterStatus = "All";
 
     // Form fields
-    [ObservableProperty] private DateTime _newStartDate = DateTime.Today;
-    [ObservableProperty] private DateTime _newEndDate   = DateTime.Today.AddDays(1);
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(NewDaysPreview))]
+    private DateTime _newStartDate = DateTime.Today;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(NewDaysPreview))]
+    private DateTime _newEndDate = DateTime.Today.AddDays(1);
     [ObservableProperty] private string   _newReason    = string.Empty;
     [ObservableProperty] private string   _newType      = "Holiday";
     [ObservableProperty] private int      _newTypeIndex;
     [ObservableProperty] private int      _filterIndex;
+
+    public string NewDaysPreview
+    {
+        get
+        {
+            if (NewEndDate < NewStartDate) return "⚠️ La data fine è precedente all'inizio";
+            var days = CountBusinessDays(NewStartDate, NewEndDate);
+            return days == 1 ? "1 giorno lavorativo" : $"{days} giorni lavorativi";
+        }
+    }
 
     public string[] VacationTypes        { get; } = { "Holiday", "PaidLeave", "SickLeave", "UnpaidLeave" };
     public string[] VacationTypesDisplay { get; } = { "Ferie", "Permesso Pagato", "Malattia", "Permesso Non Pagato" };

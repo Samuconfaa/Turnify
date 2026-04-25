@@ -18,6 +18,7 @@ public partial class ShiftCalendarViewModel : BaseViewModel
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(WeekLabel))]
+    [NotifyPropertyChangedFor(nameof(IsCurrentWeek))]
     private DateTime _currentWeekStart;
 
     [ObservableProperty] private bool _isAdmin;
@@ -26,12 +27,51 @@ public partial class ShiftCalendarViewModel : BaseViewModel
     [ObservableProperty] private bool _hasError;
     [ObservableProperty] private string _errorMessage = string.Empty;
 
+    // Feature 7 – timbratura (employee only)
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(AttendanceStatusText))]
+    [NotifyPropertyChangedFor(nameof(CanCheckIn))]
+    [NotifyPropertyChangedFor(nameof(CanCheckOut))]
+    private bool _hasCheckedIn;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(AttendanceStatusText))]
+    [NotifyPropertyChangedFor(nameof(CanCheckOut))]
+    private bool _hasCheckedOut;
+
+    [ObservableProperty] private string _checkInTimeDisplay  = string.Empty;
+    [ObservableProperty] private string _checkOutTimeDisplay = string.Empty;
+
+    public bool CanCheckIn  => !HasCheckedIn && !HasCheckedOut;
+    public bool CanCheckOut => HasCheckedIn && !HasCheckedOut;
+    public bool ShowAttendance => !IsAdmin;
+
+    public string AttendanceStatusText
+    {
+        get
+        {
+            if (!HasCheckedIn) return "Non hai ancora timbrato oggi";
+            if (!HasCheckedOut) return $"Entrato alle {CheckInTimeDisplay}";
+            return $"Entrato {CheckInTimeDisplay} → Uscito {CheckOutTimeDisplay}";
+        }
+    }
+
     public string WeekLabel
     {
         get
         {
             var end = CurrentWeekStart.AddDays(6);
             return $"{CurrentWeekStart:dd MMM} – {end:dd MMM yyyy}";
+        }
+    }
+
+    public bool IsCurrentWeek
+    {
+        get
+        {
+            var today = DateTime.Today;
+            int diff = (7 + (today.DayOfWeek - DayOfWeek.Monday)) % 7;
+            return CurrentWeekStart == today.AddDays(-diff);
         }
     }
 
@@ -48,6 +88,8 @@ public partial class ShiftCalendarViewModel : BaseViewModel
     {
         await LoadRoleAsync();
         await LoadShiftsAsync();
+        if (!IsAdmin)
+            await LoadAttendanceAsync();
     }
 
     private async Task LoadRoleAsync()
@@ -56,8 +98,54 @@ public partial class ShiftCalendarViewModel : BaseViewModel
         {
             var stored = await SecureStorage.Default.GetAsync("user_role");
             IsAdmin = stored == "Admin";
+            OnPropertyChanged(nameof(ShowAttendance));
         }
         catch { IsAdmin = false; }
+    }
+
+    // Feature 7 – carica stato timbratura odierna
+    private async Task LoadAttendanceAsync()
+    {
+        try
+        {
+            var dto = await _httpClient.GetFromJsonAsync<AttendanceTodayDto>("api/attendance/today");
+            if (dto == null) { HasCheckedIn = false; HasCheckedOut = false; return; }
+            HasCheckedIn  = dto.IsCheckedIn || dto.CheckOutTime.HasValue;
+            HasCheckedOut = dto.CheckOutTime.HasValue;
+            CheckInTimeDisplay  = dto.CheckInTime.HasValue
+                ? dto.CheckInTime.Value.ToLocalTime().ToString("HH:mm") : string.Empty;
+            CheckOutTimeDisplay = dto.CheckOutTime.HasValue
+                ? dto.CheckOutTime.Value.ToLocalTime().ToString("HH:mm") : string.Empty;
+        }
+        catch { /* non critico */ }
+    }
+
+    [RelayCommand]
+    private async Task CheckInAsync()
+    {
+        try
+        {
+            var todayShift = Shifts.FirstOrDefault(s => s.StartTime.ToLocalTime().Date == DateTime.Today);
+            var body = new { shiftId = (int?)todayShift?.Id };
+            var response = await _httpClient.PostAsJsonAsync("api/attendance/checkin", body);
+            if (response.IsSuccessStatusCode)
+                await LoadAttendanceAsync();
+            else if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
+                await Shell.Current.DisplayAlertAsync("Info", "Sei già entrato oggi.", "OK");
+        }
+        catch { await Shell.Current.DisplayAlertAsync("Errore", "Errore durante la timbratura.", "OK"); }
+    }
+
+    [RelayCommand]
+    private async Task CheckOutAsync()
+    {
+        try
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/attendance/checkout", new { });
+            if (response.IsSuccessStatusCode)
+                await LoadAttendanceAsync();
+        }
+        catch { await Shell.Current.DisplayAlertAsync("Errore", "Errore durante la timbratura.", "OK"); }
     }
 
     [RelayCommand]
@@ -74,7 +162,6 @@ public partial class ShiftCalendarViewModel : BaseViewModel
             var fromStr = Uri.EscapeDataString(from.ToString("yyyy-MM-ddTHH:mm:ssZ"));
             var toStr   = Uri.EscapeDataString(to.ToString("yyyy-MM-ddTHH:mm:ssZ"));
 
-            // Load shifts
             var shiftResult = await _httpClient.GetFromJsonAsync<ShiftListResponse>(
                 $"api/shifts?from={fromStr}&to={toStr}&pageSize=200");
             var shiftList = shiftResult?.Data ?? new List<ShiftDto>();
@@ -82,11 +169,9 @@ public partial class ShiftCalendarViewModel : BaseViewModel
 
             if (IsAdmin)
             {
-                // Also load approved vacations for the week
                 var vacations = await _httpClient.GetFromJsonAsync<List<ApprovedVacationDto>>(
                     $"api/vacation-requests/approved?from={fromStr}&to={toStr}")
                     ?? new List<ApprovedVacationDto>();
-
                 BuildEmployeeRows(shiftList, vacations);
             }
         }
@@ -107,7 +192,6 @@ public partial class ShiftCalendarViewModel : BaseViewModel
         List<ShiftDto> shifts,
         List<ApprovedVacationDto> vacations)
     {
-        // Collect all employee IDs from both shifts and vacations
         var employeeIds = shifts.Select(s => s.EmployeeId)
             .Union(vacations.Select(v => v.EmployeeId))
             .Distinct()
@@ -115,7 +199,6 @@ public partial class ShiftCalendarViewModel : BaseViewModel
 
         var rows = employeeIds.Select(empId =>
         {
-            // Name from shifts first, then vacations
             var name = shifts.FirstOrDefault(s => s.EmployeeId == empId)?.EmployeeName
                     ?? vacations.FirstOrDefault(v => v.EmployeeId == empId)?.EmployeeName
                     ?? $"Dipendente {empId}";
@@ -132,20 +215,13 @@ public partial class ShiftCalendarViewModel : BaseViewModel
                     s.EmployeeId == empId &&
                     s.StartTime.ToLocalTime().Date == day.Date);
 
-                // Check if employee is on approved vacation this day
                 var onVacation = vacations.Any(v =>
                     v.EmployeeId == empId &&
                     day.Date >= v.StartDate.Date &&
                     day.Date <= v.EndDate.Date);
 
                 if (onVacation && shift == null)
-                    return new DayCell
-                    {
-                        HasShift    = false,
-                        IsVacation  = true,
-                        Label       = "🏖️",
-                        ShiftId     = 0
-                    };
+                    return new DayCell { HasShift = false, IsVacation = true, Label = "🏖️", ShiftId = 0 };
 
                 return new DayCell
                 {
@@ -184,11 +260,92 @@ public partial class ShiftCalendarViewModel : BaseViewModel
         await LoadShiftsAsync();
     }
 
+    // Feature 1 – torna alla settimana corrente
+    [RelayCommand]
+    private async Task GoToTodayAsync()
+    {
+        var today = DateTime.Today;
+        int diff = (7 + (today.DayOfWeek - DayOfWeek.Monday)) % 7;
+        var weekStart = today.AddDays(-diff);
+        if (CurrentWeekStart == weekStart) return;
+        CurrentWeekStart = weekStart;
+        await LoadShiftsAsync();
+    }
+
     [RelayCommand]
     private async Task AddShiftAsync()
     {
         if (!IsAdmin) return;
         await Shell.Current.GoToAsync(nameof(Views.ShiftDetailPage));
+    }
+
+    // Feature 5 – copia turni della settimana precedente
+    [RelayCommand]
+    private async Task CopyPreviousWeekAsync()
+    {
+        if (!IsAdmin) return;
+
+        var prevStart   = CurrentWeekStart.AddDays(-7);
+        var prevEnd     = CurrentWeekStart;
+        var fromStr     = Uri.EscapeDataString(prevStart.ToString("yyyy-MM-ddTHH:mm:ssZ"));
+        var toStr       = Uri.EscapeDataString(prevEnd.ToString("yyyy-MM-ddTHH:mm:ssZ"));
+
+        ShiftListResponse? result;
+        try
+        {
+            result = await _httpClient.GetFromJsonAsync<ShiftListResponse>(
+                $"api/shifts?from={fromStr}&to={toStr}&pageSize=200");
+        }
+        catch
+        {
+            await Shell.Current.DisplayAlertAsync("Errore", "Impossibile caricare i turni precedenti.", "OK");
+            return;
+        }
+
+        var prevShifts = result?.Data ?? new List<ShiftDto>();
+        if (prevShifts.Count == 0)
+        {
+            await Shell.Current.DisplayAlertAsync("Info", "Nessun turno nella settimana precedente da copiare.", "OK");
+            return;
+        }
+
+        bool confirm = await Shell.Current.DisplayAlertAsync(
+            "Duplica settimana",
+            $"Copiare {prevShifts.Count} turni dalla settimana precedente in questa settimana?",
+            "Sì, copia", "Annulla");
+        if (!confirm) return;
+
+        IsBusy = true;
+        int copied = 0, skipped = 0;
+        foreach (var shift in prevShifts)
+        {
+            try
+            {
+                var dto = new
+                {
+                    employeeId  = shift.EmployeeId,
+                    startTime   = shift.StartTime.ToLocalTime().AddDays(7).ToUniversalTime(),
+                    endTime     = shift.EndTime.ToLocalTime().AddDays(7).ToUniversalTime(),
+                    label       = shift.Label,
+                    note        = string.Empty,
+                    status      = 0,
+                    isRecurring = false
+                };
+                var resp = await _httpClient.PostAsJsonAsync("api/shifts", dto);
+                if (resp.IsSuccessStatusCode) copied++; else skipped++;
+            }
+            catch { skipped++; }
+        }
+        IsBusy = false;
+
+        await Shell.Current.DisplayAlertAsync(
+            "Completato",
+            skipped == 0
+                ? $"Copiati {copied} turni."
+                : $"Copiati {copied} turni. {skipped} saltati (conflitti).",
+            "OK");
+
+        await LoadShiftsAsync();
     }
 
     [RelayCommand]
@@ -205,7 +362,7 @@ public partial class ShiftCalendarViewModel : BaseViewModel
     }
 }
 
-// ── DTOs ────────────────────────────────────────────────────────────
+// ── DTOs ─────────────────────────────────────────────────────────────
 public class ShiftDto
 {
     public int Id { get; set; }
@@ -227,16 +384,18 @@ public class ShiftListResponse
 
 public class ApprovedVacationDto
 {
-    [JsonPropertyName("employeeId")]
-    public int EmployeeId { get; set; }
-    [JsonPropertyName("employeeName")]
-    public string EmployeeName { get; set; } = string.Empty;
-    [JsonPropertyName("startDate")]
-    public DateTime StartDate { get; set; }
-    [JsonPropertyName("endDate")]
-    public DateTime EndDate { get; set; }
-    [JsonPropertyName("type")]
-    public string Type { get; set; } = string.Empty;
+    [JsonPropertyName("employeeId")]   public int EmployeeId { get; set; }
+    [JsonPropertyName("employeeName")] public string EmployeeName { get; set; } = string.Empty;
+    [JsonPropertyName("startDate")]    public DateTime StartDate { get; set; }
+    [JsonPropertyName("endDate")]      public DateTime EndDate { get; set; }
+    [JsonPropertyName("type")]         public string Type { get; set; } = string.Empty;
+}
+
+public class AttendanceTodayDto
+{
+    [JsonPropertyName("isCheckedIn")]  public bool IsCheckedIn { get; set; }
+    [JsonPropertyName("checkInTime")]  public DateTime? CheckInTime { get; set; }
+    [JsonPropertyName("checkOutTime")] public DateTime? CheckOutTime { get; set; }
 }
 
 public class EmployeeWeekRow
@@ -253,7 +412,6 @@ public class DayCell
     public bool IsVacation { get; set; }
     public string Label { get; set; } = string.Empty;
     public int ShiftId { get; set; }
-    // Color: blue for shift, orange for vacation, grey for empty
-    public string CellColor => IsVacation ? "#D97706" : HasShift ? "#2563EB" : "#E5E7EB";
+    public string CellColor  => IsVacation ? "#D97706" : HasShift ? "#2563EB" : "#E5E7EB";
     public string LabelColor => (HasShift || IsVacation) ? "White" : "Transparent";
 }

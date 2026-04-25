@@ -66,8 +66,9 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(nameof(Views.BusinessOpeningHoursPage), typeof(Views.BusinessOpeningHoursPage));
 
         // Profile extras
-        Routing.RegisterRoute(nameof(Views.EmojiPickerPage), typeof(Views.EmojiPickerPage));
-        Routing.RegisterRoute(nameof(Views.ManageDataPage),  typeof(Views.ManageDataPage));
+        Routing.RegisterRoute(nameof(Views.EmojiPickerPage),   typeof(Views.EmojiPickerPage));
+        Routing.RegisterRoute(nameof(Views.ManageDataPage),    typeof(Views.ManageDataPage));
+        Routing.RegisterRoute(nameof(Views.AvailabilityPage),  typeof(Views.AvailabilityPage));
     }
 
     public void ConfigureForRole(bool isAdmin)

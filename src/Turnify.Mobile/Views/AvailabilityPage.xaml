@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
+             x:Class="Turnify.Mobile.Views.AvailabilityPage"
+             x:DataType="vm:AvailabilityViewModel"
+             Title="{Binding Title}"
+             BackgroundColor="{StaticResource Background}">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="12" Padding="20">
+
+            <Label Text="Giorni disponibili al lavoro"
+                   FontSize="15" FontAttributes="Bold"
+                   TextColor="{StaticResource OnBackground}" Margin="0,0,0,4"/>
+            <Label Text="Seleziona i giorni in cui sei disponibile a ricevere turni."
+                   FontSize="13" TextColor="{StaticResource OnSurfaceVariant}" Margin="0,0,0,8"/>
+
+            <!-- Lunedì -->
+            <Border BackgroundColor="{StaticResource Surface}"
+                    Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="16,12">
+                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Grid.Column="0" Text="Lunedì"
+                           FontSize="15" TextColor="{StaticResource OnBackground}"
+                           VerticalOptions="Center"/>
+                    <Switch Grid.Column="1" IsToggled="{Binding Monday}"
+                            OnColor="{StaticResource Primary}"/>
+                </Grid>
+            </Border>
+
+            <!-- Martedì -->
+            <Border BackgroundColor="{StaticResource Surface}"
+                    Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="16,12">
+                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Grid.Column="0" Text="Martedì"
+                           FontSize="15" TextColor="{StaticResource OnBackground}"
+                           VerticalOptions="Center"/>
+                    <Switch Grid.Column="1" IsToggled="{Binding Tuesday}"
+                            OnColor="{StaticResource Primary}"/>
+                </Grid>
+            </Border>
+
+            <!-- Mercoledì -->
+            <Border BackgroundColor="{StaticResource Surface}"
+                    Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="16,12">
+                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Grid.Column="0" Text="Mercoledì"
+                           FontSize="15" TextColor="{StaticResource OnBackground}"
+                           VerticalOptions="Center"/>
+                    <Switch Grid.Column="1" IsToggled="{Binding Wednesday}"
+                            OnColor="{StaticResource Primary}"/>
+                </Grid>
+            </Border>
+
+            <!-- Giovedì -->
+            <Border BackgroundColor="{StaticResource Surface}"
+                    Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="16,12">
+                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Grid.Column="0" Text="Giovedì"
+                           FontSize="15" TextColor="{StaticResource OnBackground}"
+                           VerticalOptions="Center"/>
+                    <Switch Grid.Column="1" IsToggled="{Binding Thursday}"
+                            OnColor="{StaticResource Primary}"/>
+                </Grid>
+            </Border>
+
+            <!-- Venerdì -->
+            <Border BackgroundColor="{StaticResource Surface}"
+                    Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="16,12">
+                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Grid.Column="0" Text="Venerdì"
+                           FontSize="15" TextColor="{StaticResource OnBackground}"
+                           VerticalOptions="Center"/>
+                    <Switch Grid.Column="1" IsToggled="{Binding Friday}"
+                            OnColor="{StaticResource Primary}"/>
+                </Grid>
+            </Border>
+
+            <!-- Sabato -->
+            <Border BackgroundColor="{StaticResource Surface}"
+                    Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="16,12">
+                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Grid.Column="0" Text="Sabato"
+                           FontSize="15" TextColor="{StaticResource OnBackground}"
+                           VerticalOptions="Center"/>
+                    <Switch Grid.Column="1" IsToggled="{Binding Saturday}"
+                            OnColor="{StaticResource Primary}"/>
+                </Grid>
+            </Border>
+
+            <!-- Domenica -->
+            <Border BackgroundColor="{StaticResource Surface}"
+                    Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="16,12">
+                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Grid.Column="0" Text="Domenica"
+                           FontSize="15" TextColor="{StaticResource OnBackground}"
+                           VerticalOptions="Center"/>
+                    <Switch Grid.Column="1" IsToggled="{Binding Sunday}"
+                            OnColor="{StaticResource Primary}"/>
+                </Grid>
+            </Border>
+
+            <Button Text="Salva"
+                    Command="{Binding SaveCommand}"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="White" CornerRadius="10" HeightRequest="50"
+                    FontAttributes="Bold" Margin="0,12,0,0"/>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                               HorizontalOptions="Center" Color="{StaticResource Primary}"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

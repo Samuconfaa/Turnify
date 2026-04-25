@@ -175,10 +175,11 @@ public partial class ShiftCalendarViewModel : BaseViewModel
                 BuildEmployeeRows(shiftList, vacations);
             }
         }
-        catch (HttpRequestException)
+        catch (HttpRequestException ex)
         {
             HasError = true;
-            ErrorMessage = "Impossibile connettersi al server.";
+            var code = ex.StatusCode.HasValue ? $" (HTTP {(int)ex.StatusCode})" : string.Empty;
+            ErrorMessage = $"Impossibile connettersi al server{code}.";
         }
         catch (Exception ex)
         {

@@ -102,9 +102,14 @@ public partial class EmployeeListViewModel : BaseViewModel
             _allEmployees = emps?.ToList() ?? new List<EmployeeListDto>();
             ApplyFilter();
         }
-        catch (Exception)
+        catch (HttpRequestException ex)
         {
-            await Shell.Current.DisplayAlertAsync("Errore", "Impossibile caricare i dipendenti.", "OK");
+            var code = ex.StatusCode.HasValue ? $" (HTTP {(int)ex.StatusCode})" : string.Empty;
+            await Shell.Current.DisplayAlertAsync("Errore", $"Impossibile caricare i dipendenti{code}.", "OK");
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlertAsync("Errore", ex.Message, "OK");
         }
         finally
         {

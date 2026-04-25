@@ -54,6 +54,14 @@
                                 HeightRequest="70" Margin="8,4"/>
                     </Border>
                 </VerticalStackLayout>
+                <Border BackgroundColor="#EFF6FF" Stroke="#BFDBFE" StrokeThickness="1" Padding="10,6">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
+                    <Label Text="{Binding NewDaysPreview}"
+                           FontSize="13" FontAttributes="Bold"
+                           TextColor="#1D4ED8"
+                           HorizontalOptions="Center"/>
+                </Border>
+
                 <Button Text="Invia Richiesta"
                         Command="{Binding SubmitRequestCommand}"
                         BackgroundColor="{StaticResource Primary}"

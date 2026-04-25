@@ -31,6 +31,13 @@ public partial class ShiftDetailViewModel : BaseViewModel
     [ObservableProperty] private TimeSpan _endTime   = new(16, 0, 0);
     [ObservableProperty] private string _label = string.Empty;
     [ObservableProperty] private string _note = string.Empty;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(RepeatLabel))]
+    private int _repeatWeeks = 0;
+
+    public string RepeatLabel => RepeatWeeks == 0
+        ? "Non ripetere"
+        : $"Ripeti per {RepeatWeeks} settiman{(RepeatWeeks == 1 ? "a" : "e")} ({RepeatWeeks} copie)";
 
     public ObservableCollection<ShiftEmployeeDto> Employees { get; } = new();
 
@@ -48,6 +55,7 @@ public partial class ShiftDetailViewModel : BaseViewModel
         Title = IsEditMode ? "Modifica Turno" : "Nuovo Turno";
         OnPropertyChanged(nameof(IsEditMode));
         OnPropertyChanged(nameof(IsCreateMode));
+        if (IsEditMode) RepeatWeeks = 0; // non ha senso ripetere in modifica
         await LoadDataAsync();
     }
 
@@ -139,6 +147,28 @@ public partial class ShiftDetailViewModel : BaseViewModel
 
             if (response.IsSuccessStatusCode)
             {
+                // Crea copie ricorrenti nelle settimane successive
+                if (IsCreateMode && RepeatWeeks > 0)
+                {
+                    for (int w = 1; w <= RepeatWeeks; w++)
+                    {
+                        try
+                        {
+                            var recurringDto = new
+                            {
+                                employeeId  = SelectedEmployee!.Id,
+                                startTime   = startDateTime.AddDays(7 * w).ToUniversalTime(),
+                                endTime     = endDateTime.AddDays(7 * w).ToUniversalTime(),
+                                label       = Label,
+                                note        = Note,
+                                status      = 0,
+                                isRecurring = true
+                            };
+                            await _httpClient.PostAsJsonAsync("api/shifts", recurringDto);
+                        }
+                        catch { /* salta in caso di conflitto */ }
+                    }
+                }
                 await Shell.Current.GoToAsync("..");
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.Conflict)

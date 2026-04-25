@@ -6,28 +6,31 @@
              x:DataType="vm:EmployeeListViewModel"
              Title="{Binding Title}">
 
-    <Grid RowDefinitions="Auto, *">
+    <Grid RowDefinitions="Auto,*">
         
         <!-- Toolbar & Filters -->
-        <Border Grid.Row="0" BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Outline}" Padding="16" Margin="16,16,16,8">
-            <Border.StrokeShape>
-                <RoundRectangle CornerRadius="12" />
-            </Border.StrokeShape>
+        <VerticalStackLayout Grid.Row="0" Spacing="8" Margin="16,12,16,4">
             <Grid ColumnDefinitions="*, Auto">
-                <Picker Grid.Column="0" 
-                        ItemsSource="{Binding Businesses}" 
-                        ItemDisplayBinding="{Binding Name}" 
-                        SelectedItem="{Binding SelectedBusiness}" 
-                        Title="Filtra per attività..." />
-                
-                <Button Grid.Column="1" 
-                        Text="+" 
+                <SearchBar Grid.Column="0"
+                           Text="{Binding SearchQuery}"
+                           Placeholder="Cerca per nome, email, ruolo..."
+                           BackgroundColor="{StaticResource Surface}"
+                           CancelButtonColor="{StaticResource Primary}" />
+                <Button Grid.Column="1"
+                        Text="+"
                         Command="{Binding AddEmployeeCommand}"
-                        WidthRequest="40" HeightRequest="40"
-                        CornerRadius="20" Padding="0"
-                        VerticalOptions="Center" />
+                        WidthRequest="44" HeightRequest="44"
+                        CornerRadius="22" Padding="0"
+                        VerticalOptions="Center" Margin="8,0,0,0" />
             </Grid>
-        </Border>
+            <Border BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Outline}" Padding="4,0">
+                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                <Picker ItemsSource="{Binding Businesses}"
+                        ItemDisplayBinding="{Binding Name}"
+                        SelectedItem="{Binding SelectedBusiness}"
+                        Title="Filtra per attività..." />
+            </Border>
+        </VerticalStackLayout>
 
         <!-- Employee List -->
         <RefreshView Grid.Row="1" Command="{Binding LoadDataCommand}" IsRefreshing="{Binding IsBusy}">

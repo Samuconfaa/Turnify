@@ -255,3 +255,153 @@ Nessuna correzione successiva documentata direttamente collegato a questo modell
 
 ---
 
+## Prompt 11
+
+### Data
+2026-04-22
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Aggiungere avatar emoji, ristrutturare il profilo e le pagine di gestione dipendenti e notifiche
+
+### Prompt
+> "Aggiungi un sistema di avatar emoji al profilo utente: crea `EmojiPickerPage.xaml` con una griglia di emoji selezionabili, `EmojiPickerViewModel` che salva la selezione e torna al profilo. Aggiorna `ProfilePage.xaml` e `ProfileViewModel` per mostrare l'emoji avatar e permettere la modifica. Riscrivi `NotificationsPage.xaml` e `NotificationsViewModel` con dati reali dall'API. Espandi `EmployeeDetailPage.xaml` e `EmployeeDetailViewModel` con form completo per la modifica dati dipendente. Aggiungi `GlobalExceptionMiddleware` nel backend per gestire tutte le eccezioni non catturate e restituire JSON con status code."
+
+### Output utile
+`EmojiPickerPage.xaml` (55 righe), `GlobalExceptionMiddleware.cs` (55 righe), `ProfileViewModel.cs` riscritto (+164 righe), `NotificationsViewModel.cs` (+133 righe), `ShiftDetailViewModel.cs` (187 righe), `BusinessListPage.xaml` + `BusinessDetailPage.xaml` creati. Totale: 2.336 righe modificate in 32 file.
+
+### Decisione presa
+Accettato, con fix minori sequenziali
+
+### Motivazione
+I tre aggiornamento prima (, , ) correggevano endpoint API errati (slash mancanti, path sbagliati, visualizzazione turni) trovati durante il test dell'integrazione mobile dopo questa generazione. Il fix Frame→Border per `RegisterPage.xaml` è un caso specifico Android non coperto dall'output AI.
+
+---
+
+## Prompt 12
+
+### Data
+2026-04-23
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Implementare il sistema ferie completo con form di creazione e modifica
+
+### Prompt
+> "Riscrivi il sistema ferie mobile. Espandi `VacationRequestsController` con endpoint per tutti i tipi (Holiday, PaidLeave, UnpaidLeave, SickLeave) e filtro per stato. Crea `VacationEditPage.xaml` con form: date picker inizio/fine, picker tipo ferie, campo note, pulsanti Salva e Annulla. Crea `VacationEditViewModel` con `[RelayCommand] SaveAsync` che chiama POST o PUT in base a se è una nuova richiesta o modifica. Riscrivi `VacationListViewModel` con caricamento reale dall'API e filtro per stato. Aggiorna `ShiftCalendarViewModel` per mostrare le ferie approvate nel calendario."
+
+### Output utile
+`VacationEditPage.xaml` (80 righe), `VacationEditPage.xaml.cs` (35 righe — poi pulito a zero), `VacationEditViewModel.cs` (118 righe), `VacationListViewModel.cs` riscritto (148 righe modificate), `VacationRequestsController.cs` espanso (245 righe, +86 nette), `ShiftCalendarPage.xaml` ridisegnato (251 righe modificate). 953 righe in 15 file.
+
+### Decisione presa
+Accettato con cleanup MVVM posticipato
+
+### Motivazione
+Il aggiornamento di allineamento MVVM rimuove 35 righe da `VacationEditPage.xaml.cs` e 19 da `VacationListPage.xaml.cs`: la generazione aveva inserito logica nel code-behind (navigazione, gestione risultati) che doveva stare nel ViewModel.
+
+---
+
+## Prompt 13
+
+### Data
+2026-04-24
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Aggiungere consenso GDPR, onboarding multi-step e push notification via FCM
+
+### Prompt
+> "Aggiungi tre funzionalità al progetto. 1) GDPR: crea `GdprConsentPage.xaml` (con testo legale, checkbox, pulsante accetta), `GdprConsentViewModel` che salva il consenso in `Preferences` e naviga al login. Aggiungi `UsersController.GdprPartial.cs` con endpoint per export e cancellazione dati. 2) Onboarding: crea `OnboardingPage.xaml` multi-step con `CarouselView`, `OnboardingViewModel` con navigazione step e completamento. 3) Push notification: `DeviceToken` model + migrazione, `DeviceTokensController`, `FcmPushNotificationService` in Infrastructure che chiama FCM HTTP v1 API, `MobilePushService` nel progetto MAUI. Integra l'invio push in `ShiftService` e `VacationService` dopo ogni operazione."
+
+### Output utile
+`GdprConsentPage.xaml` (197 righe), `OnboardingPage.xaml` (418 righe), `FcmPushNotificationService.cs` (292 righe — il file più lungo del progetto), `MobilePushService.cs` (109 righe), `DeviceTokensController.cs` (69 righe), migrazione `AddDeviceTokens`. Totale: 2.215 righe in 29 file.
+
+### Decisione presa
+Accettato con refactor LoginViewModel
+
+### Motivazione
+`LoginViewModel.cs` viene modificato di -47 righe nette nello stesso aggiornamento: la logica di routing post-login era diventata troppo complessa dopo l'aggiunta delle route GDPR/Onboarding e il prompt probabilmente richiedeva una semplificazione contestuale.
+
+---
+
+## Prompt 14
+
+### Data
+2026-04-25
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Ridisegnare completamente l'interfaccia mobile con il nuovo design system
+
+### Prompt
+> "Ridisegna tutte le pagine principali dell'app MAUI basandoti sul nuovo design system. Prima aggiorna `Colors.xaml` con la palette completa (primary #..., secondary #..., background, surface, error, success). Poi riscrivi da zero: `DashboardPage.xaml`, `EmployeeListPage.xaml` (con SearchBar e card dipendente), `LoginPage.xaml` (con form centrato, logo, link registrazione), `NotificationsPage.xaml`, `ProfilePage.xaml` (con avatar, sezioni dati, logout), `ShiftCalendarPage.xaml` (con vista settimanale), `VacationListPage.xaml` (con chip filtro stato). Aggiorna anche `Styles.xaml` con gli stili globali."
+
+### Output utile
+7 View XAML riscritte per ~2.000 righe totali di markup. `Colors.xaml` sostituito (84 righe nette modificate). `Styles.xaml` aggiornato (+16 righe). `VacationListViewModel` aggiornato con filtro per chip stato (+18 righe).
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Nessuna correzione successiva documentata sulle XAML riscritte in questa sessione. Il redesign è stato accettato direttamente come base definitiva dell'UI.
+
+---
+
+## Prompt 15
+
+### Data
+2026-04-25
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Aggiungere timbratura presenze, ricorrenza turni e pagina disponibilità dipendente
+
+### Prompt
+> "Aggiungi tre funzionalità collegate. 1) Timbratura: crea `AttendanceController` con `POST /api/attendance/checkin` e `POST /api/attendance/checkout`, `AttendanceRepository`, migrazione `AddEmployeeAvailableDays` che aggiunge `AvailableDays string` (CSV dei giorni 1-7) a `Employee`. 2) Ricorrenza turni: espandi `ShiftCalendarViewModel` con `CreateRecurringCommand` che genera turni per N settimane da un template (giorno della settimana + orario). 3) Disponibilità: crea `AvailabilityPage.xaml` con toggle per ogni giorno della settimana e `AvailabilityViewModel` che legge/scrive `AvailableDays` via API. Aggiungi anche `ShiftDetailPage.xaml` con dettaglio completo del turno selezionato."
+
+### Output utile
+`AttendanceController.cs` (102 righe), `AttendanceRepository.cs` (40 righe), migrazione `20260425000000_AddEmployeeAvailableDays`, `AvailabilityPage.xaml` (121 righe), `AvailabilityViewModel.cs` (96 righe), `ShiftDetailPage.xaml` (+32 righe), `ShiftCalendarViewModel.cs` espanso (+210 righe nette). 905 righe in 21 file.
+
+### Decisione presa
+Accettato, con fix migrazione posticipato
+
+### Motivazione
+Il aggiornamento documentato aggiunge il file `Designer.cs` mancante alla migrazione: la migrazione era stata scritta manualmente senza generare il file companion richiesto da EF Core CLI per il discovery. Fix banale ma necessario per far funzionare `dotnet ef`.
+
+---
+
+## Prompt 16
+
+### Data
+2026-04-25
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Allineare tutti i ViewModel alle regole MVVM: zero code-behind, x:DataType, gestione errori uniforme
+
+### Prompt
+> "Rifatta il codice mobile per rispettare le regole MVVM rigorose. Per ogni ViewModel: 1) usa solo `[ObservableProperty]` e `[RelayCommand]` senza proprietà manuali, 2) aggiungi `HasError`, `ErrorMessage`, `IsEmpty` come ObservableProperty standardizzati, 3) nei blocchi catch usa `ErrorMessage = $\"Errore {(int)response.StatusCode}\"` con il codice HTTP esplicito. Per ogni View XAML: aggiungi `x:DataType` se mancante, sposta nel ViewModel qualsiasi logica rimasta nel `.xaml.cs`. Aggiungi anche `VacationServiceTests.cs` con copertura completa."
+
+### Output utile
+Tutti i ViewModel modificati con state props standardizzate. 4 file `.xaml.cs` svuotati dalla logica (totale -76 righe rimosse da code-behind). `VacationServiceTests.cs` aggiunto (475 righe). Build zero warning raggiunta.
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Nota di lavoro: "refactor: allineamento architetturale MVVM, fix bug 401, zero warning build, nuovi test". I -76 righe dai code-behind confermano la rimozione sistematica della logica. `VacationServiceTests.cs` a 475 righe in un unico blocco di lavoro indica generazione AI.
+
+---
+

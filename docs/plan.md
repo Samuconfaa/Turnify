@@ -225,3 +225,31 @@ Turnify/
 
 ---
 
+### Iterazione 5 — Redesign UI, timbratura presenze e allineamento MVVM
+**Data:** 2026-04-25
+
+**Lavoro svolto:**
+- Redesign completo del design system (`Colors.xaml`, `Styles.xaml`) con nuova palette
+- Riscrittura XAML di tutte le pagine principali: `DashboardPage`, `EmployeeListPage`, `LoginPage`, `NotificationsPage`, `ProfilePage`, `ShiftCalendarPage`, `VacationListPage`
+- `AttendanceController.cs` (check-in / check-out)
+- `AttendanceRepository.cs`, migrazione `AddEmployeeAvailableDays` (campo `AvailableDays` su `Employee`)
+- `ShiftCalendarViewModel` espanso: ricorrenza turni (+210 righe)
+- `AvailabilityPage.xaml` + `AvailabilityViewModel.cs`: impostazione giorni disponibili dipendente
+- `ShiftDetailPage.xaml` + `ShiftDetailViewModel.cs`: dettaglio turno
+- Ricerca testuale dipendenti in `EmployeeListPage`
+- Refactor MVVM: zero logica nel code-behind (rimossi metodi da `VacationEditPage.xaml.cs`, `VacationListPage.xaml.cs`, `EmployeeDetailPage.xaml.cs`), `x:DataType` aggiunto su tutte le View, gestione errori HTTP uniforme con codice di stato in tutti i ViewModel
+- `VacationServiceTests.cs`: 475 righe di test aggiunti
+
+**File principali:**
+- `Turnify.Mobile/Resources/Styles/Colors.xaml`, `Styles.xaml`
+- `Turnify.Mobile/Views/DashboardPage.xaml`, `ShiftCalendarPage.xaml`, `ProfilePage.xaml` (e altri)
+- `Turnify.Api/Controllers/AttendanceController.cs`
+- `Turnify.Infrastructure/Repositories/AttendanceRepository.cs`
+- `Turnify.Mobile/ViewModels/ShiftCalendarViewModel.cs`
+- `Turnify.Mobile/Views/AvailabilityPage.xaml`, `ShiftDetailPage.xaml`
+- `Turnify.Tests/Services/VacationServiceTests.cs`
+
+**Risultato:** UI completamente ridisegnata, timbratura operativa, ricorrenza turni, allineamento architetturale MVVM completato.
+
+---
+

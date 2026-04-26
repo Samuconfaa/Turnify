@@ -163,7 +163,7 @@ export default function EmployeesPage() {
                     {CONTRACT_TYPES.map(c => <option key={c}>{c}</option>)}
                   </select>
                 </div>
-                <Field label="Ore/settimana" type="number" value={String(form.weeklyHours)} onChange={v => set('weeklyHours', Number(v) as unknown as string)} />
+                <Field label="Ore/settimana" type="number" value={String(form.weeklyHours)} onChange={v => set('weeklyHours', Number(v))} />
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">Attività</label>
@@ -178,7 +178,7 @@ export default function EmployeesPage() {
               )}
               {modal === 'edit' && (
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" checked={form.isActive} onChange={e => set('isActive', e.target.checked as unknown as string)} className="rounded" />
+                  <input type="checkbox" checked={form.isActive} onChange={e => set('isActive', e.target.checked)} className="rounded" />
                   <span className="text-sm text-gray-700">Dipendente attivo</span>
                 </label>
               )}

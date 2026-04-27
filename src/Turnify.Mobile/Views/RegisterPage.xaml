@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
+             x:Class="Turnify.Mobile.Views.RegisterPage"
+             x:DataType="vm:RegisterViewModel"
+             Title="{Binding Title}"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{StaticResource Background}">
+    <ScrollView>
+        <VerticalStackLayout Spacing="24" Padding="24" VerticalOptions="Center" HorizontalOptions="Fill" MaximumWidthRequest="400">
+            <!-- Header -->
+            <VerticalStackLayout Spacing="8" HorizontalOptions="Center" Margin="0,0,0,16">
+                <Label Text="Turnify" FontSize="30" FontAttributes="Bold" TextColor="{StaticResource Primary}" HorizontalOptions="Center" />
+                <Label Text="Registra la tua azienda" FontSize="16" TextColor="{StaticResource OnSurfaceVariant}" HorizontalOptions="Center" />
+            </VerticalStackLayout>
+
+            <!-- Form -->
+            <Border BackgroundColor="{StaticResource SurfaceContainerLowest}" Stroke="{StaticResource OutlineVariant}" Padding="16">
+                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                <VerticalStackLayout Spacing="16">
+                    
+                    <Label Text="Dati Azienda" FontAttributes="Bold" TextColor="{StaticResource Primary}" />
+                    
+                    <Border Padding="0" Stroke="{StaticResource OutlineVariant}" BackgroundColor="{StaticResource SurfaceContainer}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8" />
+                        </Border.StrokeShape>
+                        <Entry Text="{Binding CompanyName}" Placeholder="Nome Azienda" HeightRequest="52" Margin="16,0" TextColor="{StaticResource OnBackground}" BackgroundColor="Transparent" />
+                    </Border>
+
+                    <Border Padding="0" Stroke="{StaticResource OutlineVariant}" BackgroundColor="{StaticResource SurfaceContainer}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8" />
+                        </Border.StrokeShape>
+                        <Entry Text="{Binding CompanySlug}" Placeholder="Slug (es. la-mia-azienda)" HeightRequest="52" Margin="16,0" TextColor="{StaticResource OnBackground}" BackgroundColor="Transparent" />
+                    </Border>
+
+                    <Border Padding="0" Stroke="{StaticResource OutlineVariant}" BackgroundColor="{StaticResource SurfaceContainer}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8" />
+                        </Border.StrokeShape>
+                        <Entry Text="{Binding CompanyEmail}" Placeholder="Email Aziendale" Keyboard="Email" HeightRequest="52" Margin="16,0" TextColor="{StaticResource OnBackground}" BackgroundColor="Transparent" />
+                    </Border>
+
+                    <Label Text="Account Amministratore" FontAttributes="Bold" TextColor="{StaticResource Primary}" Margin="0,8,0,0" />
+
+                    <Border Padding="0" Stroke="{StaticResource OutlineVariant}" BackgroundColor="{StaticResource SurfaceContainer}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8" />
+                        </Border.StrokeShape>
+                        <Entry Text="{Binding AdminEmail}" Placeholder="Email Admin" Keyboard="Email" HeightRequest="52" Margin="16,0" TextColor="{StaticResource OnBackground}" BackgroundColor="Transparent" />
+                    </Border>
+
+                    <Border Padding="0" Stroke="{StaticResource OutlineVariant}" BackgroundColor="{StaticResource SurfaceContainer}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8" />
+                        </Border.StrokeShape>
+                        <Entry Text="{Binding AdminPassword}" Placeholder="Password Admin" IsPassword="True" HeightRequest="52" Margin="16,0" TextColor="{StaticResource OnBackground}" BackgroundColor="Transparent" />
+                    </Border>
+
+                    <Border Padding="0" Stroke="{StaticResource OutlineVariant}" BackgroundColor="{StaticResource SurfaceContainer}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8" />
+                        </Border.StrokeShape>
+                        <Entry Text="{Binding ConfirmPassword}" Placeholder="Conferma Password" IsPassword="True" HeightRequest="52" Margin="16,0" TextColor="{StaticResource OnBackground}" BackgroundColor="Transparent" />
+                    </Border>
+
+                    <Button Text="Registrati" Command="{Binding RegisterCommand}" BackgroundColor="{StaticResource Primary}" TextColor="{StaticResource OnPrimary}" HeightRequest="52" CornerRadius="8" FontAttributes="Bold" Margin="0,8,0,0" />
+                </VerticalStackLayout>
+            </Border>
+            
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" HorizontalOptions="Center" Color="{StaticResource Primary}" />
+
+            <!-- Footer -->
+            <HorizontalStackLayout HorizontalOptions="Center" Margin="0,16,0,0" Spacing="4">
+                <Label Text="Hai già un account?" FontSize="14" TextColor="{StaticResource OnSurfaceVariant}" VerticalOptions="Center" />
+                <Label Text="Accedi" FontSize="14" TextColor="{StaticResource Primary}" TextDecorations="Underline" FontAttributes="Bold" VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoBackCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

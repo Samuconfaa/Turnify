@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
+             x:Class="Turnify.Mobile.Views.LoginPage"
+             Title="{Binding Title}"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#1E40AF">
+
+    <Grid RowDefinitions="340,*">
+
+        <!-- ── Top: Hero blu ─────────────────────────────────────────── -->
+        <Grid Grid.Row="0"
+              BackgroundColor="Transparent"
+              VerticalOptions="Fill">
+            <VerticalStackLayout VerticalOptions="Center"
+                                 HorizontalOptions="Center"
+                                 Spacing="8">
+                <Label Text="📅"
+                       FontSize="48"
+                       HorizontalOptions="Center"/>
+                <Label Text="Turnify"
+                       FontSize="34" FontAttributes="Bold"
+                       TextColor="White"
+                       HorizontalOptions="Center"/>
+                <Label Text="Gestisci il tuo team"
+                       FontSize="16"
+                       TextColor="#B3FFFFFF"
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+        </Grid>
+
+        <!-- ── Bottom: Login Sheet ────────────────────────────────────── -->
+        <Border Grid.Row="1"
+                BackgroundColor="{StaticResource Surface}"
+                Padding="24,32,24,32"
+                Margin="0,-28,0,0">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="28,28,0,0"/>
+            </Border.StrokeShape>
+            <Border.Stroke>Transparent</Border.Stroke>
+
+            <ScrollView>
+                <VerticalStackLayout Spacing="0">
+
+                    <Label Text="Accedi"
+                           FontSize="22" FontAttributes="Bold"
+                           TextColor="{StaticResource OnBackground}"
+                           Margin="0,0,0,24"/>
+
+                    <!-- Error banner -->
+                    <Border BackgroundColor="{StaticResource ErrorContainer}"
+                            Stroke="{StaticResource Error}"
+                            StrokeThickness="1" Padding="14,10"
+                            IsVisible="{Binding HasError}"
+                            Margin="0,0,0,16">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                        <HorizontalStackLayout Spacing="10">
+                            <Label Text="⚠️" FontSize="16" VerticalOptions="Center"/>
+                            <Label Text="{Binding ErrorMessage}"
+                                   FontSize="13" FontAttributes="Bold"
+                                   TextColor="{StaticResource OnErrorContainer}"
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+                    </Border>
+
+                    <!-- Email -->
+                    <Label Text="Email"
+                           FontSize="12" FontAttributes="Bold"
+                           TextColor="{StaticResource OnSurfaceVariant}"
+                           Margin="4,0,0,6"/>
+                    <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
+                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                            Margin="0,0,0,16">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                        <Entry Text="{Binding Email}"
+                               Placeholder="nome@azienda.it"
+                               Keyboard="Email"
+                               HeightRequest="52"
+                               Margin="16,0"
+                               TextColor="{StaticResource OnBackground}"
+                               PlaceholderColor="{StaticResource Outline}"
+                               BackgroundColor="Transparent"/>
+                    </Border>
+
+                    <!-- Password -->
+                    <Label Text="Password"
+                           FontSize="12" FontAttributes="Bold"
+                           TextColor="{StaticResource OnSurfaceVariant}"
+                           Margin="4,0,0,6"/>
+                    <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
+                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                            Margin="0,0,0,8">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                        <Entry Text="{Binding Password}"
+                               Placeholder="••••••••"
+                               IsPassword="True"
+                               HeightRequest="52"
+                               Margin="16,0"
+                               TextColor="{StaticResource OnBackground}"
+                               PlaceholderColor="{StaticResource Outline}"
+                               BackgroundColor="Transparent"/>
+                    </Border>
+
+                    <!-- Forgot password -->
+                    <Label Text="Password dimenticata?"
+                           FontSize="13" FontAttributes="Bold"
+                           TextColor="{StaticResource Primary}"
+                           HorizontalOptions="End"
+                           Margin="0,0,0,24"/>
+
+                    <!-- Login button -->
+                    <Button Text="Accedi"
+                            Command="{Binding LoginCommand}"
+                            BackgroundColor="{StaticResource Primary}"
+                            TextColor="White"
+                            HeightRequest="52" CornerRadius="12"
+                            FontSize="16" FontAttributes="Bold"
+                            Margin="0,0,0,24"/>
+
+                    <!-- Divider -->
+                    <Grid ColumnDefinitions="*,Auto,*" ColumnSpacing="12"
+                          Margin="0,0,0,24">
+                        <BoxView Grid.Column="0" HeightRequest="1"
+                                 BackgroundColor="{StaticResource OutlineVariant}"
+                                 VerticalOptions="Center"/>
+                        <Label Grid.Column="1" Text="oppure"
+                               FontSize="12" TextColor="{StaticResource Outline}"/>
+                        <BoxView Grid.Column="2" HeightRequest="1"
+                                 BackgroundColor="{StaticResource OutlineVariant}"
+                                 VerticalOptions="Center"/>
+                    </Grid>
+
+                    <!-- Register button -->
+                    <Button Text="Registra la tua azienda"
+                            Command="{Binding GoToRegisterCommand}"
+                            BackgroundColor="Transparent"
+                            TextColor="{StaticResource OnSurfaceVariant}"
+                            BorderColor="{StaticResource OutlineVariant}"
+                            BorderWidth="1.5"
+                            HeightRequest="52" CornerRadius="12"
+                            FontSize="16" Margin="0,0,0,20"/>
+
+                    <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                       IsVisible="{Binding IsBusy}"
+                                       HorizontalOptions="Center"
+                                       Color="{StaticResource Primary}"/>
+
+                    <!-- Footer legal -->
+                    <Label FontSize="11"
+                           TextColor="{StaticResource Outline}"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           Margin="0,8,0,0">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Accedendo, accetti i nostri "/>
+                                <Span Text="Termini di Servizio" TextColor="{StaticResource Primary}"/>
+                                <Span Text=" e la "/>
+                                <Span Text="Privacy Policy" TextColor="{StaticResource Primary}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+
+                </VerticalStackLayout>
+            </ScrollView>
+        </Border>
+
+    </Grid>
+</ContentPage>

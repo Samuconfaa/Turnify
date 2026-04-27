@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet build *)",
+      "Bash(curl *)",
+      "Bash(openssl s_client -connect samuconfa.it:443 -servername samuconfa.it)",
+      "Bash(dotnet test *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(python3 -c \"import sys,json; lines=[l.strip\\(\\) for l in sys.stdin if l.strip\\(\\)]; [print\\(json.loads\\(l\\).get\\('role','?'\\),':',str\\(json.loads\\(l\\).get\\('content',''\\)\\)[:300]\\) for l in lines[-5:]]\")",
+      "Bash(dotnet restore *)"
+    ]
+  }
+}

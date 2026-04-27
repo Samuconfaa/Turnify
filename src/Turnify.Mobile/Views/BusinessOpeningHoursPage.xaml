@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:Turnify.Mobile.ViewModels"
+             x:Class="Turnify.Mobile.Views.BusinessOpeningHoursPage"
+             x:DataType="viewmodels:BusinessOpeningHoursViewModel"
+             Title="{Binding Title}">
+
+    <Grid RowDefinitions="*, Auto" Padding="20">
+        
+        <!-- Loading Indicator -->
+        <ActivityIndicator Grid.Row="0" Grid.RowSpan="2" 
+                           IsRunning="{Binding IsBusy}" 
+                           IsVisible="{Binding IsBusy}" 
+                           HorizontalOptions="Center" 
+                           VerticalOptions="Center" 
+                           ZIndex="10" />
+
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Spacing="15">
+                <Label Text="Imposta gli orari per questa attività" FontSize="16" FontAttributes="Bold" Margin="0,0,0,10"/>
+                
+                <CollectionView ItemsSource="{Binding Days}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="viewmodels:DayScheduleItemViewModel">
+                            <Border Padding="15" Margin="0,5" Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#333333}">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
+                                <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto" RowSpacing="10">
+                                    
+                                    <!-- Day Name and Toggle -->
+                                    <Label Grid.Row="0" Grid.Column="0" Text="{Binding DayName}" FontSize="16" VerticalOptions="Center"/>
+                                    <Switch Grid.Row="0" Grid.Column="1" IsToggled="{Binding IsOpen}" />
+
+                                    <!-- Time Pickers (Visible only when IsOpen is true) -->
+                                    <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
+                                                         Spacing="10" 
+                                                         IsVisible="{Binding IsOpen}">
+                                        <Label Text="Da" VerticalOptions="Center" />
+                                        <TimePicker Time="{Binding OpenTime}" Format="HH:mm" />
+                                        
+                                        <Label Text="a" VerticalOptions="Center" Margin="10,0,0,0" />
+                                        <TimePicker Time="{Binding CloseTime}" Format="HH:mm" />
+                                    </HorizontalStackLayout>
+                                    
+                                    <!-- Closed Text (Visible when IsOpen is false) -->
+                                    <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
+                                           Text="Chiuso" TextColor="Gray" FontAttributes="Italic" 
+                                           IsVisible="False">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding IsOpen}" Value="False">
+                                                <Setter Property="IsVisible" Value="True" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Save Button -->
+        <Button Grid.Row="1" 
+                Text="Salva Orari" 
+                Command="{Binding SaveCommand}" 
+                Margin="0,20,0,0" 
+                HeightRequest="50" 
+                CornerRadius="25">
+            <Button.Triggers>
+                <DataTrigger TargetType="Button" Binding="{Binding IsBusy}" Value="True">
+                    <Setter Property="IsEnabled" Value="False" />
+                </DataTrigger>
+            </Button.Triggers>
+        </Button>
+    </Grid>
+</ContentPage>

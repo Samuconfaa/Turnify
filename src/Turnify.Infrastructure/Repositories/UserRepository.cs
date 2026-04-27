@@ -54,4 +54,11 @@ public class UserRepository : IUserRepository
             .Where(u => u.IsActive && u.RefreshTokenExpiryTime > System.DateTime.UtcNow)
             .ToListAsync(ct);
     }
+
+    public async Task<System.Collections.Generic.IReadOnlyList<User>> GetUsersWithValidResetTokenAsync(CancellationToken ct = default)
+    {
+        return await _context.Users
+            .Where(u => u.PasswordResetToken != null && u.PasswordResetTokenExpiryTime > System.DateTime.UtcNow)
+            .ToListAsync(ct);
+    }
 }

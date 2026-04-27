@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
+             x:Class="Turnify.Mobile.Views.EmployeeDashboardPage"
+             x:DataType="vm:EmployeeDashboardViewModel"
+             Title="{Binding Title}"
+             BackgroundColor="{StaticResource Background}">
+
+    <RefreshView Command="{Binding LoadDataCommand}"
+                 IsRefreshing="{Binding IsBusy}">
+        <ScrollView>
+            <VerticalStackLayout Spacing="0" Padding="16,12,16,32">
+
+                <!-- Error -->
+                <Border BackgroundColor="{StaticResource ErrorContainer}"
+                        Stroke="{StaticResource Error}" StrokeThickness="1"
+                        Padding="14,10" Margin="0,0,0,12"
+                        IsVisible="{Binding HasError}">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                    <Label Text="{Binding ErrorMessage}"
+                           FontSize="13" TextColor="{StaticResource OnErrorContainer}"/>
+                </Border>
+
+                <!-- Prossimo turno -->
+                <Label Text="Prossimo turno"
+                       FontSize="13" FontAttributes="Bold"
+                       TextColor="{StaticResource OnSurfaceVariant}"
+                       Margin="4,0,0,8"/>
+
+                <!-- Nessun turno -->
+                <Border IsVisible="{Binding NoNextShift}"
+                        BackgroundColor="{StaticResource Surface}"
+                        Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                        Padding="20" Margin="0,0,0,20">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                    <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
+                        <Label Text="📭" FontSize="36" HorizontalOptions="Center"/>
+                        <Label Text="Nessun turno in programma"
+                               FontSize="15" TextColor="{StaticResource OnSurfaceVariant}"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Prossimo turno card -->
+                <Border IsVisible="{Binding HasNextShift}"
+                        Margin="0,0,0,20">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#1E40AF" Offset="0"/>
+                            <GradientStop Color="#2563EB" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Border.Stroke>Transparent</Border.Stroke>
+                    <Grid Padding="20,18" RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto">
+                        <Label Grid.Row="0" Grid.Column="0"
+                               Text="{Binding NextShift.WhenText}"
+                               FontSize="12" FontAttributes="Bold"
+                               TextColor="#93C5FD"/>
+                        <Label Grid.Row="1" Grid.Column="0"
+                               Text="{Binding NextShift.DisplayTime}"
+                               FontSize="28" FontAttributes="Bold"
+                               TextColor="White"/>
+                        <Label Grid.Row="2" Grid.Column="0"
+                               Text="{Binding NextShift.DisplayLabel}"
+                               FontSize="14" TextColor="#BFDBFE"/>
+                        <Border Grid.Row="0" Grid.Column="1" Grid.RowSpan="3"
+                                BackgroundColor="#FFFFFF1A"
+                                HeightRequest="56" WidthRequest="56"
+                                VerticalOptions="Center">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="28"/></Border.StrokeShape>
+                            <Label Text="🗓️" FontSize="26"
+                                   HorizontalOptions="Center" VerticalOptions="Center"/>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- Timbratura oggi -->
+                <Label Text="Oggi"
+                       FontSize="13" FontAttributes="Bold"
+                       TextColor="{StaticResource OnSurfaceVariant}"
+                       Margin="4,0,0,8"/>
+                <Border BackgroundColor="{StaticResource Surface}"
+                        Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                        Padding="16" Margin="0,0,0,20">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <!-- Check-in -->
+                        <Border Grid.Column="0"
+                                BackgroundColor="#F0FDF4"
+                                Stroke="#BBF7D0" StrokeThickness="1"
+                                Padding="12,10">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="Entrata" FontSize="11"
+                                       TextColor="#166534" FontAttributes="Bold"/>
+                                <Label Text="{Binding CheckInDisplay, TargetNullValue='--:--'}"
+                                       FontSize="22" FontAttributes="Bold" TextColor="#15803D"/>
+                            </VerticalStackLayout>
+                        </Border>
+                        <!-- Check-out -->
+                        <Border Grid.Column="1"
+                                BackgroundColor="#FFF7ED"
+                                Stroke="#FED7AA" StrokeThickness="1"
+                                Padding="12,10">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="Uscita" FontSize="11"
+                                       TextColor="#92400E" FontAttributes="Bold"/>
+                                <Label Text="{Binding CheckOutDisplay, TargetNullValue='--:--'}"
+                                       FontSize="22" FontAttributes="Bold" TextColor="#C2410C"/>
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- KPI Stats -->
+                <Label Text="Riepilogo"
+                       FontSize="13" FontAttributes="Bold"
+                       TextColor="{StaticResource OnSurfaceVariant}"
+                       Margin="4,0,0,8"/>
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,0,0,20">
+                    <!-- Ore settimana -->
+                    <Border Grid.Column="0"
+                            BackgroundColor="{StaticResource Surface}"
+                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                            Padding="16,14">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="⏰" FontSize="22"/>
+                            <Label Text="{Binding HoursThisWeek, StringFormat='{0:F1} h'}"
+                                   FontSize="22" FontAttributes="Bold"
+                                   TextColor="{StaticResource OnBackground}"/>
+                            <Label Text="Questa settimana" FontSize="11"
+                                   TextColor="{StaticResource OnSurfaceVariant}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <!-- Ore mese -->
+                    <Border Grid.Column="1"
+                            BackgroundColor="{StaticResource Surface}"
+                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                            Padding="16,14">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="📊" FontSize="22"/>
+                            <Label Text="{Binding HoursThisMonth, StringFormat='{0:F1} h'}"
+                                   FontSize="22" FontAttributes="Bold"
+                                   TextColor="{StaticResource OnBackground}"/>
+                            <Label Text="Questo mese" FontSize="11"
+                                   TextColor="{StaticResource OnSurfaceVariant}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+
+                <!-- Ferie -->
+                <Label Text="Ferie"
+                       FontSize="13" FontAttributes="Bold"
+                       TextColor="{StaticResource OnSurfaceVariant}"
+                       Margin="4,0,0,8"/>
+                <Border BackgroundColor="{StaticResource Surface}"
+                        Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                        Padding="16" Margin="0,0,0,20">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Spacing="2">
+                            <Label Text="{Binding VacationDaysUsed, StringFormat='{0} giorni usati quest\'anno'}"
+                                   FontSize="15" FontAttributes="Bold"
+                                   TextColor="{StaticResource OnBackground}"/>
+                            <Label Text="{Binding PendingVacations, StringFormat='{0} richieste in attesa'}"
+                                   FontSize="13" TextColor="{StaticResource OnSurfaceVariant}"/>
+                        </VerticalStackLayout>
+                        <Button Grid.Column="1"
+                                Text="Vedi →"
+                                Command="{Binding GoToVacationsCommand}"
+                                BackgroundColor="{StaticResource Primary}"
+                                TextColor="White"
+                                CornerRadius="10"
+                                HeightRequest="36" Padding="12,0"
+                                FontSize="13"/>
+                    </Grid>
+                </Border>
+
+                <!-- Link storico presenze -->
+                <Border BackgroundColor="{StaticResource Surface}"
+                        Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                        Padding="16">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToHistoryCommand}"/>
+                    </Border.GestureRecognizers>
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <Label Grid.Column="0" Text="📋" FontSize="22" VerticalOptions="Center" Margin="0,0,12,0"/>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                            <Label Text="Storico presenze" FontSize="15" FontAttributes="Bold"
+                                   TextColor="{StaticResource OnBackground}"/>
+                            <Label Text="Visualizza tutti i check-in e le ore lavorate"
+                                   FontSize="12" TextColor="{StaticResource OnSurfaceVariant}"/>
+                        </VerticalStackLayout>
+                        <Label Grid.Column="2" Text="›" FontSize="22"
+                               TextColor="{StaticResource OnSurfaceVariant}"
+                               VerticalOptions="Center"/>
+                    </Grid>
+                </Border>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
+</ContentPage>

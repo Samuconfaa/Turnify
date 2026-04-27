@@ -17,11 +17,17 @@ public class CreateEmployeeRequest
     public string LastName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string Phone { get; set; } = string.Empty;
-    public string Role { get; set; } = string.Empty;
+    public string Role { get; set; } = string.Empty;           // titolo lavorativo (es. "Chef")
+    public string AccountRole { get; set; } = "Employee";     // "Employee" | "Manager"
     public string ContractType { get; set; } = string.Empty;
     public decimal WeeklyHours { get; set; }
     public int? BusinessId { get; set; }
     public string Password { get; set; } = string.Empty;
+}
+
+public class ResetEmployeePasswordRequest
+{
+    public string NewPassword { get; set; } = string.Empty;
 }
 
 public class UpdateAvailabilityRequest
@@ -36,6 +42,7 @@ public class UpdateEmployeeRequest
     public string Email { get; set; } = string.Empty;
     public string Phone { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
+    public string? AccountRole { get; set; }               // opzionale: "Employee" | "Manager"
     public string ContractType { get; set; } = string.Empty;
     public decimal WeeklyHours { get; set; }
     public int? BusinessId { get; set; }
@@ -91,7 +98,7 @@ public class EmployeesController : ControllerBase
 
         var employees = await _employeeRepository.GetAllByCompanyIdAsync(companyId, businessId, ct);
 
-        var dtos = employees.Select(MapToDto).ToList();
+        var dtos = employees.Select(e => MapToDto(e)).ToList();
         return Ok(dtos);
     }
 
@@ -110,11 +117,17 @@ public class EmployeesController : ControllerBase
         if (string.IsNullOrWhiteSpace(request.Password))
             return BadRequest(new { message = "La password è obbligatoria." });
 
+        // Accetta solo Employee o Manager — non si può creare un Admin via API
+        var accountRole = Enum.TryParse<UserRole>(request.AccountRole, true, out var parsedRole)
+                          && parsedRole != UserRole.Admin
+            ? parsedRole
+            : UserRole.Employee;
+
         var user = new User
         {
             Email        = request.Email,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
-            Role         = UserRole.Employee,
+            Role         = accountRole,
             CompanyId    = companyId,
             IsActive     = true,
             CreatedAt    = DateTime.UtcNow,
@@ -159,7 +172,11 @@ public class EmployeesController : ControllerBase
         if (!IsAdmin() && employee.UserId != GetUserId())
             return Forbid();
 
-        return Ok(MapToDto(employee));
+        User? user = employee.UserId.HasValue
+            ? await _userRepository.GetByIdAsync(employee.UserId.Value, ct)
+            : null;
+
+        return Ok(MapToDto(employee, user));
     }
 
     [HttpPut("{id}")]
@@ -189,14 +206,50 @@ public class EmployeesController : ControllerBase
         if (employee.UserId.HasValue)
         {
             var user = await _userRepository.GetByIdAsync(employee.UserId.Value, ct);
-            if (user != null && user.Email != request.Email)
+            if (user != null)
             {
-                user.Email = request.Email;
+                if (user.Email != request.Email)
+                    user.Email = request.Email;
+
+                // Aggiorna il ruolo account se specificato (solo Employee o Manager)
+                if (!string.IsNullOrEmpty(request.AccountRole) &&
+                    Enum.TryParse<UserRole>(request.AccountRole, true, out var newRole) &&
+                    newRole != UserRole.Admin)
+                {
+                    user.Role = newRole;
+                }
+
                 await _userRepository.UpdateAsync(user, ct);
             }
         }
 
         return Ok(MapToDto(employee));
+    }
+
+    [HttpPut("{id}/password")]
+    public async Task<IActionResult> ResetEmployeePassword(
+        int id, [FromBody] ResetEmployeePasswordRequest request, CancellationToken ct)
+    {
+        if (!IsAdmin()) return Forbid();
+
+        var employee = await _employeeRepository.GetByIdAsync(id, ct);
+        if (employee == null) return NotFound();
+        if (employee.CompanyId != GetCompanyId()) return Forbid();
+
+        if (string.IsNullOrWhiteSpace(request.NewPassword) || request.NewPassword.Length < 6)
+            return BadRequest(new { message = "La password deve essere di almeno 6 caratteri." });
+
+        if (!employee.UserId.HasValue) return NotFound(new { message = "Nessun account associato a questo dipendente." });
+
+        var user = await _userRepository.GetByIdAsync(employee.UserId.Value, ct);
+        if (user == null) return NotFound();
+
+        user.PasswordHash             = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+        user.RefreshTokenHash         = null;
+        user.RefreshTokenExpiryTime   = null;
+        await _userRepository.UpdateAsync(user, ct);
+
+        return NoContent();
     }
 
     [HttpGet("me/availability")]
@@ -243,7 +296,7 @@ public class EmployeesController : ControllerBase
         return NoContent();
     }
 
-    private static EmployeeDto MapToDto(Employee e) => new()
+    private static EmployeeDto MapToDto(Employee e, User? user = null) => new()
     {
         Id           = e.Id,
         CompanyId    = e.CompanyId,
@@ -253,6 +306,7 @@ public class EmployeesController : ControllerBase
         Email        = e.Email,
         Phone        = e.Phone,
         Role         = e.Role,
+        AccountRole  = user?.Role.ToString() ?? "Employee",
         ContractType = e.ContractType.ToString(),
         WeeklyHours  = e.WeeklyHours,
         IsActive     = e.IsActive,

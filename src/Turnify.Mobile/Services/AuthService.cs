@@ -20,10 +20,11 @@ public class AuthService : IAuthService
     public async Task<(string AccessToken, string RefreshToken)?> LoginAsync(string email, string password, CancellationToken ct = default)
     {
         var response = await _httpClient.PostAsJsonAsync("api/auth/login", new { email, password }, ct);
+        if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+            throw new HttpRequestException("Troppi tentativi. Riprova tra qualche minuto.",
+                null, System.Net.HttpStatusCode.TooManyRequests);
         if (!response.IsSuccessStatusCode)
-        {
             return null;
-        }
 
         var result = await response.Content.ReadFromJsonAsync<TokenResponse>(cancellationToken: ct);
         if (result == null || string.IsNullOrEmpty(result.AccessToken))
@@ -46,8 +47,20 @@ public class AuthService : IAuthService
     }
 
     public Task<bool> LogoutAsync(int userId, CancellationToken ct = default)
+        => throw new System.NotImplementedException();
+
+    public async Task<bool> ForgotPasswordAsync(string email, CancellationToken ct = default)
     {
-        throw new System.NotImplementedException();
+        var response = await _httpClient.PostAsJsonAsync(
+            "api/auth/forgot-password", new { email }, ct);
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> ResetPasswordAsync(string token, string newPassword, CancellationToken ct = default)
+    {
+        var response = await _httpClient.PostAsJsonAsync(
+            "api/auth/reset-password", new { token, newPassword }, ct);
+        return response.IsSuccessStatusCode;
     }
 
     private class TokenResponse

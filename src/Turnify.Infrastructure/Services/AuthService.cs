@@ -19,12 +19,18 @@ public class AuthService : IAuthService
     private readonly IUserRepository _userRepository;
     private readonly ICompanyRepository _companyRepository;
     private readonly IConfiguration _config;
+    private readonly IEmailService _emailService;
 
-    public AuthService(IUserRepository userRepository, ICompanyRepository companyRepository, IConfiguration config)
+    public AuthService(
+        IUserRepository userRepository,
+        ICompanyRepository companyRepository,
+        IConfiguration config,
+        IEmailService emailService)
     {
-        _userRepository = userRepository;
+        _userRepository    = userRepository;
         _companyRepository = companyRepository;
-        _config = config;
+        _config            = config;
+        _emailService      = emailService;
     }
 
     public async Task<(string AccessToken, string RefreshToken)?> LoginAsync(string email, string password, CancellationToken ct = default)
@@ -70,7 +76,7 @@ public class AuthService : IAuthService
         if (existingCompany) return false;
 
         var existingUser = await _userRepository.ExistsByEmailAsync(adminUser.Email, ct);
-        if (existingUser) throw new InvalidOperationException("Email già in uso.");
+        if (existingUser) return false;
 
         company.CreatedAt = DateTime.UtcNow;
         company.UpdatedAt = DateTime.UtcNow;
@@ -130,6 +136,58 @@ public class AuthService : IAuthService
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    public async Task<bool> ForgotPasswordAsync(string email, CancellationToken ct = default)
+    {
+        var user = await _userRepository.GetByEmailAsync(email, ct);
+        if (user == null || !user.IsActive) return true; // non rivelare se l'email esiste
+
+        var rawToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+        user.PasswordResetToken = BCrypt.Net.BCrypt.HashPassword(rawToken);
+        user.PasswordResetTokenExpiryTime = DateTime.UtcNow.AddHours(2);
+        await _userRepository.UpdateAsync(user, ct);
+
+        var appUrl   = _config["App:BaseUrl"] ?? "https://samuconfa.it/turnify";
+        var resetLink = $"{appUrl}/reset-password?token={Uri.EscapeDataString(rawToken)}&email={Uri.EscapeDataString(email)}";
+
+        var html = $"""
+            <div style="font-family:sans-serif;max-width:480px;margin:auto">
+              <h2 style="color:#1E40AF">Reimposta la tua password</h2>
+              <p>Hai richiesto di reimpostare la password per il tuo account Turnify.</p>
+              <p>Clicca il pulsante qui sotto. Il link scade tra <strong>2 ore</strong>.</p>
+              <a href="{resetLink}"
+                 style="display:inline-block;background:#2563EB;color:white;padding:12px 24px;
+                        border-radius:8px;text-decoration:none;font-weight:bold;margin:16px 0">
+                Reimposta password
+              </a>
+              <p style="color:#9CA3AF;font-size:12px">
+                Se non hai richiesto il reset, ignora questa email.
+              </p>
+            </div>
+            """;
+
+        await _emailService.SendAsync(email, "Reimposta la tua password — Turnify", html, ct);
+        return true;
+    }
+
+    public async Task<bool> ResetPasswordAsync(string token, string newPassword, CancellationToken ct = default)
+    {
+        var users = await _userRepository.GetUsersWithValidResetTokenAsync(ct);
+        var user  = users.FirstOrDefault(u =>
+            u.PasswordResetToken != null &&
+            u.PasswordResetTokenExpiryTime > DateTime.UtcNow &&
+            BCrypt.Net.BCrypt.Verify(token, u.PasswordResetToken));
+
+        if (user == null) return false;
+
+        user.PasswordHash                 = BCrypt.Net.BCrypt.HashPassword(newPassword);
+        user.PasswordResetToken           = null;
+        user.PasswordResetTokenExpiryTime = null;
+        user.RefreshTokenHash             = null;
+        user.RefreshTokenExpiryTime       = null;
+        await _userRepository.UpdateAsync(user, ct);
+        return true;
     }
 
     private string GenerateRefreshToken()

@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -23,6 +24,10 @@ public partial class ShiftDetailViewModel : BaseViewModel
     private readonly HttpClient _httpClient;
 
     [ObservableProperty] private int _shiftId;
+    [ObservableProperty] private bool _hasError;
+    [ObservableProperty] private string _errorMessage = string.Empty;
+    [ObservableProperty] private bool _hasData;
+    [ObservableProperty] private bool _isEmptyState;
 
     // Form fields
     [ObservableProperty] private ShiftEmployeeDto? _selectedEmployee;
@@ -63,6 +68,8 @@ public partial class ShiftDetailViewModel : BaseViewModel
     public async Task LoadDataAsync()
     {
         if (IsBusy) return;
+        HasError = false;
+        ErrorMessage = string.Empty;
         try
         {
             IsBusy = true;
@@ -78,10 +85,30 @@ public partial class ShiftDetailViewModel : BaseViewModel
 
             if (IsEditMode)
                 await LoadShiftAsync();
+
+            HasData = Employees.Count > 0;
+            IsEmptyState = Employees.Count == 0;
         }
-        catch (Exception ex)
+        catch (HttpRequestException)
         {
-            await Shell.Current.DisplayAlertAsync("Errore", ex.Message, "OK");
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Errore di connessione al server.";
+        }
+        catch (JsonException)
+        {
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Risposta del server non valida.";
+        }
+        catch (TaskCanceledException)
+        {
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Richiesta scaduta. Riprova.";
         }
         finally { IsBusy = false; }
     }
@@ -99,7 +126,9 @@ public partial class ShiftDetailViewModel : BaseViewModel
             Note       = shift.Note;
             SelectedEmployee = Employees.FirstOrDefault(e => e.Id == shift.EmployeeId);
         }
-        catch { }
+        catch (HttpRequestException) { }
+        catch (JsonException) { }
+        catch (TaskCanceledException) { }
     }
 
     [RelayCommand]
@@ -166,7 +195,8 @@ public partial class ShiftDetailViewModel : BaseViewModel
                             };
                             await _httpClient.PostAsJsonAsync("api/shifts", recurringDto);
                         }
-                        catch { /* salta in caso di conflitto */ }
+                        catch (HttpRequestException) { /* salta in caso di conflitto */ }
+                        catch (TaskCanceledException) { /* salta in caso di conflitto */ }
                     }
                 }
                 await Shell.Current.GoToAsync("..");
@@ -181,12 +211,26 @@ public partial class ShiftDetailViewModel : BaseViewModel
                 await Shell.Current.DisplayAlertAsync("Errore", "Impossibile salvare il turno.", "OK");
             }
         }
-        catch (Exception ex)
+        catch (HttpRequestException)
         {
-            await Shell.Current.DisplayAlertAsync("Errore", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK");
+        }
+        catch (JsonException)
+        {
+            await Shell.Current.DisplayAlertAsync("Errore", "Risposta del server non valida.", "OK");
+        }
+        catch (TaskCanceledException)
+        {
+            await Shell.Current.DisplayAlertAsync("Errore", "Richiesta scaduta. Riprova.", "OK");
         }
         finally { IsBusy = false; }
     }
+
+    [RelayCommand]
+    private void IncrementRepeatWeeks() { if (RepeatWeeks < 12) RepeatWeeks++; }
+
+    [RelayCommand]
+    private void DecrementRepeatWeeks() { if (RepeatWeeks > 0) RepeatWeeks--; }
 
     [RelayCommand]
     private async Task DeleteAsync()
@@ -201,7 +245,8 @@ public partial class ShiftDetailViewModel : BaseViewModel
             await _httpClient.DeleteAsync($"api/shifts/{ShiftId}");
             await Shell.Current.GoToAsync("..");
         }
-        catch { }
+        catch (HttpRequestException) { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK"); }
+        catch (TaskCanceledException) { await Shell.Current.DisplayAlertAsync("Errore", "Richiesta scaduta. Riprova.", "OK"); }
         finally { IsBusy = false; }
     }
 

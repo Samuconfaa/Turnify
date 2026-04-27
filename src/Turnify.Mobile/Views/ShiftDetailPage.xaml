@@ -97,7 +97,7 @@
                                FontSize="14" TextColor="{StaticResource OnBackground}"
                                VerticalOptions="Center"/>
                         <Button Grid.Column="1" Text="−"
-                                Clicked="OnRepeatDecrement"
+                                Command="{Binding DecrementRepeatWeeksCommand}"
                                 BackgroundColor="{StaticResource SurfaceContainer}"
                                 TextColor="{StaticResource OnBackground}"
                                 WidthRequest="40" HeightRequest="40"
@@ -109,7 +109,7 @@
                                HorizontalOptions="Center"
                                MinimumWidthRequest="28"/>
                         <Button Grid.Column="3" Text="+"
-                                Clicked="OnRepeatIncrement"
+                                Command="{Binding IncrementRepeatWeeksCommand}"
                                 BackgroundColor="{StaticResource Primary}"
                                 TextColor="White"
                                 WidthRequest="40" HeightRequest="40"

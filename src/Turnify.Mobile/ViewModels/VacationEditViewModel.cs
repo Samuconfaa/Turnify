@@ -15,6 +15,10 @@ public partial class VacationEditViewModel : BaseViewModel
     private readonly HttpClient _httpClient;
 
     [ObservableProperty] private int _requestId;
+    [ObservableProperty] private bool _hasError;
+    [ObservableProperty] private string _errorMessage = string.Empty;
+    [ObservableProperty] private bool _hasData;
+    [ObservableProperty] private bool _isEmptyState;
     [ObservableProperty] private string _employeeName = string.Empty;
     [ObservableProperty] private string _selectedType = "Holiday";
     [ObservableProperty] private int _selectedTypeIndex;
@@ -49,13 +53,20 @@ public partial class VacationEditViewModel : BaseViewModel
 
     private async Task LoadAsync()
     {
+        HasError = false;
+        ErrorMessage = string.Empty;
         try
         {
             IsBusy = true;
             var list = await _httpClient.GetFromJsonAsync<VacationRequestDto[]>(
                 "api/vacation-requests?pageSize=200");
             var item = list?.FirstOrDefault(r => r.Id == RequestId);
-            if (item == null) return;
+            if (item == null)
+            {
+                HasData = false;
+                IsEmptyState = true;
+                return;
+            }
 
             EmployeeName   = item.EmployeeName;
             var typeIdx = Array.IndexOf(VacationTypes, item.Type);
@@ -66,8 +77,30 @@ public partial class VacationEditViewModel : BaseViewModel
             var statusIdx = Array.IndexOf(StatusOptions, item.Status);
             SelectedStatusIndex = statusIdx >= 0 ? statusIdx : 0;
             ReviewNote     = item.ReviewNote ?? string.Empty;
+            HasData = true;
+            IsEmptyState = false;
         }
-        catch { }
+        catch (HttpRequestException)
+        {
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Errore di connessione al server.";
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Risposta del server non valida.";
+        }
+        catch (TaskCanceledException)
+        {
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Richiesta scaduta. Riprova.";
+        }
         finally { IsBusy = false; }
     }
 
@@ -102,7 +135,9 @@ public partial class VacationEditViewModel : BaseViewModel
                 await Shell.Current.DisplayAlertAsync("Errore", "Impossibile salvare.", "OK");
             }
         }
-        catch (Exception ex) { await Shell.Current.DisplayAlertAsync("Errore", ex.Message, "OK"); }
+        catch (HttpRequestException) { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK"); }
+        catch (System.Text.Json.JsonException) { await Shell.Current.DisplayAlertAsync("Errore", "Risposta del server non valida.", "OK"); }
+        catch (TaskCanceledException) { await Shell.Current.DisplayAlertAsync("Errore", "Richiesta scaduta. Riprova.", "OK"); }
         finally { IsBusy = false; }
     }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -67,7 +68,18 @@ public partial class BusinessDetailViewModel : BaseViewModel
                 IsActive = b.IsActive;
             }
         }
-        catch { }
+        catch (HttpRequestException)
+        {
+            await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK");
+        }
+        catch (JsonException)
+        {
+            await Shell.Current.DisplayAlertAsync("Errore", "Risposta del server non valida.", "OK");
+        }
+        catch (TaskCanceledException)
+        {
+            await Shell.Current.DisplayAlertAsync("Errore", "Richiesta scaduta. Riprova.", "OK");
+        }
         finally { IsBusy = false; }
     }
 
@@ -106,7 +118,18 @@ public partial class BusinessDetailViewModel : BaseViewModel
                 await Shell.Current.DisplayAlertAsync("Errore", "Impossibile salvare l'attività.", "OK");
             }
         }
-        catch { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione.", "OK"); }
+        catch (HttpRequestException)
+        {
+            await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK");
+        }
+        catch (JsonException)
+        {
+            await Shell.Current.DisplayAlertAsync("Errore", "Risposta del server non valida.", "OK");
+        }
+        catch (TaskCanceledException)
+        {
+            await Shell.Current.DisplayAlertAsync("Errore", "Richiesta scaduta. Riprova.", "OK");
+        }
         finally { IsBusy = false; }
     }
 
@@ -123,7 +146,14 @@ public partial class BusinessDetailViewModel : BaseViewModel
             await _httpClient.DeleteAsync($"api/businesses/{BusinessId}");
             await Shell.Current.GoToAsync("..");
         }
-        catch { }
+        catch (HttpRequestException)
+        {
+            await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK");
+        }
+        catch (TaskCanceledException)
+        {
+            await Shell.Current.DisplayAlertAsync("Errore", "Richiesta scaduta. Riprova.", "OK");
+        }
         finally { IsBusy = false; }
     }
 }

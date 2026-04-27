@@ -13,6 +13,8 @@ using Turnify.Infrastructure.Repositories;
 using Turnify.Api.Middleware;
 using DotNetEnv;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 
 Env.TraversePath().Load();
 
@@ -61,10 +63,25 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
+// ── Rate limiting: max 5 tentativi/min su endpoint auth ──────────
+builder.Services.AddRateLimiter(opts =>
+{
+    opts.AddSlidingWindowLimiter("auth", o =>
+    {
+        o.PermitLimit         = 5;
+        o.Window              = TimeSpan.FromMinutes(1);
+        o.SegmentsPerWindow   = 6;
+        o.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        o.QueueLimit          = 0;
+    });
+    opts.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+});
+
 // HttpClient per FcmPushNotificationService
 builder.Services.AddHttpClient<FcmPushNotificationService>();
 
 // ── Services ─────────────────────────────────────────────────────
+builder.Services.AddScoped<IEmailService,             SmtpEmailService>();
 builder.Services.AddScoped<IAuthService,              AuthService>();
 builder.Services.AddScoped<IShiftService,             ShiftService>();
 builder.Services.AddScoped<IVacationService,          VacationService>();
@@ -99,6 +116,7 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/turnify/swagger/v1/swagger.json", "Turnify API v1"));
 }
 
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 

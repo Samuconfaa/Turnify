@@ -46,8 +46,20 @@ public class AuthService : IAuthService
     }
 
     public Task<bool> LogoutAsync(int userId, CancellationToken ct = default)
+        => throw new System.NotImplementedException();
+
+    public async Task<bool> ForgotPasswordAsync(string email, CancellationToken ct = default)
     {
-        throw new System.NotImplementedException();
+        var response = await _httpClient.PostAsJsonAsync(
+            "api/auth/forgot-password", new { email }, ct);
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> ResetPasswordAsync(string token, string newPassword, CancellationToken ct = default)
+    {
+        var response = await _httpClient.PostAsJsonAsync(
+            "api/auth/reset-password", new { token, newPassword }, ct);
+        return response.IsSuccessStatusCode;
     }
 
     private class TokenResponse

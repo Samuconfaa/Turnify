@@ -17,6 +17,7 @@ public class EmployeeDetailDto
     public string Email { get; set; } = string.Empty;
     public string Phone { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
+    public string AccountRole { get; set; } = "Employee";
     public string ContractType { get; set; } = "FullTime";
     public decimal WeeklyHours { get; set; } = 40;
     public bool IsActive { get; set; } = true;
@@ -47,12 +48,18 @@ public partial class EmployeeDetailViewModel : BaseViewModel
     [ObservableProperty] private NullableBusinessItem? _selectedBusiness;
     [ObservableProperty] private string _selectedContractType = "FullTime";
     [ObservableProperty] private int _selectedContractTypeIndex;
+    [ObservableProperty] private int _selectedAccountRoleIndex; // 0=Employee, 1=Manager
 
     public ObservableCollection<NullableBusinessItem> Businesses { get; } = new();
     public ObservableCollection<string> ContractTypes { get; } = new()
         { "FullTime", "PartTime", "Apprenticeship", "FixedTerm", "OnCall" };
     public ObservableCollection<string> ContractTypesDisplay { get; } = new()
         { "Tempo pieno", "Part-time", "Apprendistato", "Tempo determinato", "A chiamata" };
+    public string[] AccountRoles        { get; } = { "Employee", "Manager" };
+    public string[] AccountRolesDisplay { get; } = { "Dipendente", "Manager" };
+
+    private string SelectedAccountRole =>
+        AccountRoles.ElementAtOrDefault(SelectedAccountRoleIndex) ?? "Employee";
 
     partial void OnSelectedContractTypeIndexChanged(int value) =>
         SelectedContractType = ContractTypes.ElementAtOrDefault(value) ?? "FullTime";
@@ -110,6 +117,7 @@ public partial class EmployeeDetailViewModel : BaseViewModel
                     SelectedBusiness = emp.BusinessId.HasValue
                         ? Businesses.FirstOrDefault(b => b.Id == emp.BusinessId) ?? Businesses[0]
                         : Businesses[0];
+                    SelectedAccountRoleIndex = emp.AccountRole == "Manager" ? 1 : 0;
                 }
             }
         }
@@ -154,6 +162,7 @@ public partial class EmployeeDetailViewModel : BaseViewModel
                 email        = Email,
                 phone        = Phone,
                 role         = JobRole,
+                accountRole  = SelectedAccountRole,
                 contractType = SelectedContractType,
                 weeklyHours  = WeeklyHours,
                 businessId   = SelectedBusiness?.Id,
@@ -194,6 +203,36 @@ public partial class EmployeeDetailViewModel : BaseViewModel
         {
             await Shell.Current.DisplayAlertAsync("Errore", ex.Message, "OK");
         }
+        finally { IsBusy = false; }
+    }
+
+    [RelayCommand]
+    private async Task ResetPasswordAsync()
+    {
+        if (!IsEditMode) return;
+        string? newPassword = await Shell.Current.DisplayPromptAsync(
+            "Reimposta password",
+            $"Inserisci la nuova password per {FirstName} {LastName}:",
+            placeholder: "Minimo 6 caratteri",
+            maxLength: 100);
+        if (string.IsNullOrWhiteSpace(newPassword)) return;
+        if (newPassword.Length < 6)
+        {
+            await Shell.Current.DisplayAlertAsync("Errore", "La password deve essere di almeno 6 caratteri.", "OK");
+            return;
+        }
+        try
+        {
+            IsBusy = true;
+            var r = await _httpClient.PutAsJsonAsync(
+                $"api/employees/{EmployeeId}/password", new { newPassword });
+            if (r.IsSuccessStatusCode)
+                await Shell.Current.DisplayAlertAsync("Password reimpostata",
+                    $"Comunica la nuova password al dipendente:\n\n{newPassword}", "OK");
+            else
+                await Shell.Current.DisplayAlertAsync("Errore", "Impossibile reimpostare la password.", "OK");
+        }
+        catch { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione.", "OK"); }
         finally { IsBusy = false; }
     }
 

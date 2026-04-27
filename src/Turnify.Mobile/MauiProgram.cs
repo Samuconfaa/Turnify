@@ -64,6 +64,9 @@ public static class MauiProgram
         builder.Services.AddTransient<OnboardingViewModel>();
         builder.Services.AddTransient<GdprConsentViewModel>();
         builder.Services.AddTransient<AvailabilityViewModel>();
+        builder.Services.AddTransient<ForgotPasswordViewModel>();
+        builder.Services.AddTransient<EmployeeDashboardViewModel>();
+        builder.Services.AddTransient<AttendanceHistoryViewModel>();
 
         // ── Views ───────────────────────────────────────────────────
         builder.Services.AddTransient<LoginPage>();
@@ -84,6 +87,9 @@ public static class MauiProgram
         builder.Services.AddTransient<OnboardingPage>();
         builder.Services.AddTransient<GdprConsentPage>();
         builder.Services.AddTransient<AvailabilityPage>();
+        builder.Services.AddTransient<ForgotPasswordPage>();
+        builder.Services.AddTransient<EmployeeDashboardPage>();
+        builder.Services.AddTransient<AttendanceHistoryPage>();
 
         return builder.Build();
     }

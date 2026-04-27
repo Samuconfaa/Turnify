@@ -14,4 +14,5 @@ public interface IShiftService
     Task<Shift> CreateShiftAsync(Shift shift, CancellationToken ct = default);
     Task<Shift> UpdateShiftAsync(Shift shift, CancellationToken ct = default);
     Task<bool> DeleteShiftAsync(int shiftId, CancellationToken ct = default);
+    Task<IReadOnlyList<Shift>> CreateRecurringShiftsAsync(Shift baseShift, int weeks, CancellationToken ct = default);
 }

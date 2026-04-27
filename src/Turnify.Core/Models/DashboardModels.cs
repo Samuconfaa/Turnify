@@ -40,3 +40,15 @@ public class EmployeeHours
     public decimal ScheduledHours { get; set; }
     public int ShiftsCount { get; set; }
 }
+
+public class EmployeeDashboardSummary
+{
+    public Shift? NextShift { get; set; }
+    public int VacationDaysUsedThisYear { get; set; }
+    public int PendingVacationRequests { get; set; }
+    public bool IsCheckedInToday { get; set; }
+    public DateTime? TodayCheckIn { get; set; }
+    public DateTime? TodayCheckOut { get; set; }
+    public decimal HoursWorkedThisMonth { get; set; }
+    public decimal HoursScheduledThisWeek { get; set; }
+}

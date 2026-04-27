@@ -38,8 +38,9 @@ public partial class AppShell : Shell
     private void RegisterAllRoutes()
     {
         // Auth
-        Routing.RegisterRoute(nameof(Views.LoginPage),    typeof(Views.LoginPage));
-        Routing.RegisterRoute(nameof(Views.RegisterPage), typeof(Views.RegisterPage));
+        Routing.RegisterRoute(nameof(Views.LoginPage),           typeof(Views.LoginPage));
+        Routing.RegisterRoute(nameof(Views.RegisterPage),        typeof(Views.RegisterPage));
+        Routing.RegisterRoute(nameof(Views.ForgotPasswordPage),  typeof(Views.ForgotPasswordPage));
 
         // GDPR e Onboarding
         Routing.RegisterRoute(nameof(Views.GdprConsentPage), typeof(Views.GdprConsentPage));
@@ -66,9 +67,11 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(nameof(Views.BusinessOpeningHoursPage), typeof(Views.BusinessOpeningHoursPage));
 
         // Profile extras
-        Routing.RegisterRoute(nameof(Views.EmojiPickerPage),   typeof(Views.EmojiPickerPage));
-        Routing.RegisterRoute(nameof(Views.ManageDataPage),    typeof(Views.ManageDataPage));
-        Routing.RegisterRoute(nameof(Views.AvailabilityPage),  typeof(Views.AvailabilityPage));
+        Routing.RegisterRoute(nameof(Views.EmojiPickerPage),        typeof(Views.EmojiPickerPage));
+        Routing.RegisterRoute(nameof(Views.ManageDataPage),         typeof(Views.ManageDataPage));
+        Routing.RegisterRoute(nameof(Views.AvailabilityPage),       typeof(Views.AvailabilityPage));
+        Routing.RegisterRoute(nameof(Views.EmployeeDashboardPage),  typeof(Views.EmployeeDashboardPage));
+        Routing.RegisterRoute(nameof(Views.AttendanceHistoryPage),  typeof(Views.AttendanceHistoryPage));
     }
 
     public void ConfigureForRole(bool isAdmin)

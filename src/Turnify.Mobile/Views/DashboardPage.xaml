@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
              x:Class="Turnify.Mobile.Views.DashboardPage"
+             x:DataType="vm:DashboardViewModel"
              Title="Dashboard"
              BackgroundColor="{StaticResource Background}">
 
@@ -126,7 +127,7 @@
                 </Grid>
 
                 <!-- ── Empty state ───────────────────────────────────── -->
-                <VerticalStackLayout IsVisible="{Binding IsEmpty}"
+                <VerticalStackLayout IsVisible="{Binding IsEmptyState}"
                                      HorizontalOptions="Center"
                                      Margin="32,40,32,0" Spacing="12">
                     <Label Text="🏪" FontSize="52" HorizontalOptions="Center"/>
@@ -141,7 +142,7 @@
 
                 <!-- ── Turni oggi ────────────────────────────────────── -->
                 <VerticalStackLayout Spacing="12" Padding="16,24,16,0"
-                                     IsVisible="{Binding IsEmpty, Converter={StaticResource InverseBoolConverter}}">
+                                     IsVisible="{Binding IsEmptyState, Converter={StaticResource InverseBoolConverter}}">
 
                     <Grid ColumnDefinitions="*,Auto">
                         <Label Grid.Column="0"
@@ -201,7 +202,7 @@
 
                 <!-- ── Ferie in attesa ───────────────────────────────── -->
                 <VerticalStackLayout Spacing="12" Padding="16,24,16,0"
-                                     IsVisible="{Binding IsEmpty, Converter={StaticResource InverseBoolConverter}}">
+                                     IsVisible="{Binding IsEmptyState, Converter={StaticResource InverseBoolConverter}}">
 
                     <HorizontalStackLayout Spacing="8">
                         <Label Text="FERIE IN ATTESA"

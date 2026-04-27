@@ -63,17 +63,20 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
-// ── Rate limiting: max 5 tentativi/min su endpoint auth ──────────
+// ── Rate limiting: max 10 tentativi/min per IP su endpoint auth ──
 builder.Services.AddRateLimiter(opts =>
 {
-    opts.AddSlidingWindowLimiter("auth", o =>
-    {
-        o.PermitLimit         = 5;
-        o.Window              = TimeSpan.FromMinutes(1);
-        o.SegmentsPerWindow   = 6;
-        o.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-        o.QueueLimit          = 0;
-    });
+    opts.AddPolicy("auth", httpContext =>
+        RateLimitPartition.GetSlidingWindowLimiter(
+            httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new System.Threading.RateLimiting.SlidingWindowRateLimiterOptions
+            {
+                PermitLimit          = 10,
+                Window               = TimeSpan.FromMinutes(1),
+                SegmentsPerWindow    = 6,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit           = 0
+            }));
     opts.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 });
 

@@ -20,10 +20,11 @@ public class AuthService : IAuthService
     public async Task<(string AccessToken, string RefreshToken)?> LoginAsync(string email, string password, CancellationToken ct = default)
     {
         var response = await _httpClient.PostAsJsonAsync("api/auth/login", new { email, password }, ct);
+        if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+            throw new HttpRequestException("Troppi tentativi. Riprova tra qualche minuto.",
+                null, System.Net.HttpStatusCode.TooManyRequests);
         if (!response.IsSuccessStatusCode)
-        {
             return null;
-        }
 
         var result = await response.Content.ReadFromJsonAsync<TokenResponse>(cancellationToken: ct);
         if (result == null || string.IsNullOrEmpty(result.AccessToken))

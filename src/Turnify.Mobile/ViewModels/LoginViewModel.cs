@@ -75,6 +75,10 @@ public partial class LoginViewModel : BaseViewModel
             else
                 await Shell.Current.GoToAsync(nameof(Views.EmployeeDashboardPage));
         }
+        catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+        {
+            ErrorMessage = "Troppi tentativi. Riprova tra qualche minuto.";
+        }
         catch (HttpRequestException)
         {
             ErrorMessage = "Errore di connessione al server.";

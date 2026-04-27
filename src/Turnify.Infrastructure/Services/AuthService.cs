@@ -76,7 +76,7 @@ public class AuthService : IAuthService
         if (existingCompany) return false;
 
         var existingUser = await _userRepository.ExistsByEmailAsync(adminUser.Email, ct);
-        if (existingUser) throw new InvalidOperationException("Email già in uso.");
+        if (existingUser) return false;
 
         company.CreatedAt = DateTime.UtcNow;
         company.UpdatedAt = DateTime.UtcNow;

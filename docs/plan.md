@@ -276,3 +276,34 @@ Turnify/
 
 ---
 
+### Iterazione 7 — Production-readiness: reportistica, ruolo dipendente, email, rate limit
+**Data:** 2026-04-27
+
+**Lavoro svolto:**
+- `ReportsController.cs`: endpoint `GET /api/reports/hours` e `GET /api/reports/attendance` → risposta CSV
+- `AttendanceController` espanso con nuove query
+- `AuthController` espanso: flusso reset password (generazione token + invio email)
+- `DashboardController` espanso: nuove aggregazioni
+- `ShiftsController`: endpoint per turni ricorrenti (`CreateRecurringShiftsRequest` DTO)
+- Migrazione `AddPasswordResetToUser` (campi `PasswordResetToken`, `PasswordResetTokenExpiryTime`)
+- `SmtpEmailService.cs`: invio email via SMTP configurabile
+- `EmployeeDashboardPage.xaml` + `EmployeeDashboardViewModel.cs`: dashboard personale dipendente
+- `AttendanceHistoryPage.xaml` + `AttendanceHistoryViewModel.cs`: storico presenze
+- `ForgotPasswordPage.xaml` + `ForgotPasswordViewModel.cs`: reset password da mobile
+- `LoginViewModel` aggiornato: routing post-login differenziato per ruolo (admin → `//Dashboard`, dipendente → `//EmployeeDashboard`)
+- Rate limiter sliding window per-IP: 10 req/min su `/auth`, 20 req/min su `/errorlogs`, 120 req/min globale; risposta 429 con messaggio leggibile
+- Fix registrazione: 409 Conflict invece di 500 se email admin già esistente
+- Secondo passaggio allineamento MAUI rules (state props, error handling, x:DataType)
+
+**File principali:**
+- `Turnify.Api/Controllers/ReportsController.cs`
+- `Turnify.Infrastructure/Services/SmtpEmailService.cs`
+- `Turnify.Infrastructure/Migrations/20260427000000_AddPasswordResetToUser.cs`
+- `Turnify.Mobile/Views/EmployeeDashboardPage.xaml`, `AttendanceHistoryPage.xaml`, `ForgotPasswordPage.xaml`
+- `Turnify.Mobile/ViewModels/EmployeeDashboardViewModel.cs`, `AttendanceHistoryViewModel.cs`, `ForgotPasswordViewModel.cs`
+- `Turnify.Api/Program.cs` (rate limiter)
+
+**Risultato:** app utilizzabile da dipendenti con dashboard, storico presenze e report; backend pronto per produzione con rate limiting e email.
+
+---
+

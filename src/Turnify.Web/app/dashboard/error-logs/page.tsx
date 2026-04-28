@@ -83,7 +83,7 @@ export default function ErrorLogsPage() {
     (!filterType     || l.errorType.toLowerCase().includes(filterType.toLowerCase()))
   );
 
-  const platforms = [...new Set(logs.map(l => l.platform))];
+  const platforms = Array.from(new Set(logs.map(l => l.platform)));
   const totalPages = Math.ceil(total / pageSize);
 
   return (

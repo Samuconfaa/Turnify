@@ -83,8 +83,8 @@ public partial class AttendanceHistoryViewModel : BaseViewModel
                 TotalHours = summary.TotalHours;
             }
 
-            var from = new DateTime(_year, _month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
-            var to   = new DateTime(_year, _month, 1).AddMonths(1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+            var from = new DateTime(_year, _month, 1, 0, 0, 0, DateTimeKind.Utc).ToString("o");
+            var to   = new DateTime(_year, _month, 1, 0, 0, 0, DateTimeKind.Utc).AddMonths(1).ToString("o");
 
             var result = await _httpClient.GetFromJsonAsync<AttendanceHistoryResponse>(
                 $"api/attendance/history?from={Uri.EscapeDataString(from)}&to={Uri.EscapeDataString(to)}&pageSize=100");

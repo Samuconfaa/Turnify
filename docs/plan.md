@@ -307,3 +307,37 @@ Turnify/
 
 ---
 
+### Iterazione 8 — Sicurezza, validazione, error reporting e test suite completa
+**Data:** 2026-04-28
+
+**Lavoro svolto:**
+- FluentValidation: 7 validator lato API (`LoginRequestValidator`, `RegisterRequestValidator`, `CreateShiftRequestValidator`, `UpdateShiftRequestValidator`, `CreateVacationRequestValidator`, `CreateRecurringShiftsRequestValidator`, `ReportErrorRequestValidator`), registrati via `AddValidatorsFromAssemblyContaining`
+- `ErrorLogsController.cs`: raccolta e consultazione log errori client
+- `AppErrorLog.cs` (modello), migrazione `AddAppErrorLogs`
+- `ErrorReporterService.cs` (mobile): cattura eccezioni non gestite e le invia all'API
+- `CertificatePinningHandler.cs` (mobile): certificate pinning su Android
+- `Resources/xml/network_security_config.xml`: network security config Android
+- `FcmPushNotificationService.cs`: invio push notification via Firebase FCM
+- `DeviceTokenRepository.cs` + `DeviceTokensController.cs` + migrazione `AddDeviceTokens`
+- `ChangePasswordPage.xaml` + `ChangePasswordViewModel.cs`: cambio password mobile
+- `ReportsPage.xaml` + `ReportsViewModel.cs`: download CSV (ore e presenze) con scelta intervallo date e condivisione via `Share.RequestAsync`
+- Integration test: `AuthControllerIntegrationTests.cs`, `ShiftsControllerIntegrationTests.cs`, `TurnifyWebFactory.cs`, `IntegrationTestBase.cs` (totale dichiarato: 122 test)
+- Portale web: `/admin/login` riservato ai datori di lavoro; `/dashboard/error-logs` dashboard log errori
+- Fix bug UTC nei timestamp presenze mobile
+- Fix form ferie mobile (validazione date)
+- Fix `Array.from` su `Set` in pagina error-logs web (compatibilità browser)
+
+**File principali:**
+- `Turnify.Api/Validators/*.cs` (7 file)
+- `Turnify.Api/Controllers/ErrorLogsController.cs`
+- `Turnify.Core/Models/AppErrorLog.cs`
+- `Turnify.Mobile/Services/CertificatePinningHandler.cs`, `ErrorReporterService.cs`
+- `Turnify.Infrastructure/Services/FcmPushNotificationService.cs`
+- `Turnify.Mobile/Views/ChangePasswordPage.xaml`, `ReportsPage.xaml`
+- `Turnify.Tests/Integration/AuthControllerIntegrationTests.cs`, `ShiftsControllerIntegrationTests.cs`
+- `Turnify.Web/app/admin/login/page.tsx`, `app/dashboard/error-logs/page.tsx`
+
+**Risultato:** validazione input completa, telemetria errori client→server, certificate pinning Android, push notification, 122 test (unit + integrazione), portale web hardened.
+
+---
+

@@ -87,12 +87,13 @@ public partial class VacationEditViewModel : BaseViewModel
             HasError = true;
             ErrorMessage = "Errore di connessione al server.";
         }
-        catch (System.Text.Json.JsonException)
+        catch (System.Text.Json.JsonException ex)
         {
             HasData = false;
             IsEmptyState = false;
             HasError = true;
             ErrorMessage = "Risposta del server non valida.";
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(VacationEditViewModel));
         }
         catch (TaskCanceledException)
         {
@@ -136,7 +137,7 @@ public partial class VacationEditViewModel : BaseViewModel
             }
         }
         catch (HttpRequestException) { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK"); }
-        catch (System.Text.Json.JsonException) { await Shell.Current.DisplayAlertAsync("Errore", "Risposta del server non valida.", "OK"); }
+        catch (System.Text.Json.JsonException ex) { await Shell.Current.DisplayAlertAsync("Errore", "Risposta del server non valida.", "OK"); _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(VacationEditViewModel)); }
         catch (TaskCanceledException) { await Shell.Current.DisplayAlertAsync("Errore", "Richiesta scaduta. Riprova.", "OK"); }
         finally { IsBusy = false; }
     }

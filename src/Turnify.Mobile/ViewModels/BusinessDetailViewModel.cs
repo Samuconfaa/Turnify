@@ -72,9 +72,10 @@ public partial class BusinessDetailViewModel : BaseViewModel
         {
             await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK");
         }
-        catch (JsonException)
+        catch (JsonException ex)
         {
             await Shell.Current.DisplayAlertAsync("Errore", "Risposta del server non valida.", "OK");
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(BusinessDetailViewModel));
         }
         catch (TaskCanceledException)
         {
@@ -122,9 +123,10 @@ public partial class BusinessDetailViewModel : BaseViewModel
         {
             await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK");
         }
-        catch (JsonException)
+        catch (JsonException ex)
         {
             await Shell.Current.DisplayAlertAsync("Errore", "Risposta del server non valida.", "OK");
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(BusinessDetailViewModel));
         }
         catch (TaskCanceledException)
         {

@@ -147,12 +147,13 @@ public partial class EmployeeDetailViewModel : BaseViewModel
             HasError = true;
             ErrorMessage = "Errore di connessione al server.";
         }
-        catch (JsonException)
+        catch (JsonException ex)
         {
             HasData = false;
             IsEmptyState = false;
             HasError = true;
             ErrorMessage = "Risposta del server non valida.";
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(EmployeeDetailViewModel));
         }
         catch (TaskCanceledException)
         {
@@ -239,9 +240,10 @@ public partial class EmployeeDetailViewModel : BaseViewModel
         {
             await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK");
         }
-        catch (JsonException)
+        catch (JsonException ex)
         {
             await Shell.Current.DisplayAlertAsync("Errore", "Risposta del server non valida.", "OK");
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(EmployeeDetailViewModel));
         }
         catch (TaskCanceledException)
         {
@@ -276,7 +278,7 @@ public partial class EmployeeDetailViewModel : BaseViewModel
             else
                 await Shell.Current.DisplayAlertAsync("Errore", "Impossibile reimpostare la password.", "OK");
         }
-        catch { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione.", "OK"); }
+        catch (Exception ex) { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione.", "OK"); _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(EmployeeDetailViewModel)); }
         finally { IsBusy = false; }
     }
 

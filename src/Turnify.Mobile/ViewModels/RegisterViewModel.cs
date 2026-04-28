@@ -89,9 +89,10 @@ public partial class RegisterViewModel : BaseViewModel
                 await Shell.Current.DisplayAlertAsync("Errore", "Registrazione fallita. Potrebbe esistere già un'azienda con lo stesso Slug o Email.", "OK");
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             await Shell.Current.DisplayAlertAsync("Errore", "Impossibile contattare il server.", "OK");
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(RegisterViewModel));
         }
         finally
         {

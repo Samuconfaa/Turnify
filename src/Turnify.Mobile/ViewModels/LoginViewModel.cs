@@ -83,9 +83,10 @@ public partial class LoginViewModel : BaseViewModel
         {
             ErrorMessage = "Errore di connessione al server.";
         }
-        catch
+        catch (Exception ex)
         {
             ErrorMessage = "Si è verificato un errore. Riprova.";
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(LoginViewModel));
         }
         finally
         {

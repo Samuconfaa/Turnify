@@ -100,6 +100,7 @@ public partial class EmployeeDashboardViewModel : BaseViewModel
         {
             HasError     = true;
             ErrorMessage = ex.Message;
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(EmployeeDashboardViewModel));
         }
         finally { IsBusy = false; }
     }

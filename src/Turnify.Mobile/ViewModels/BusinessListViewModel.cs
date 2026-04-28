@@ -60,12 +60,13 @@ public partial class BusinessListViewModel : BaseViewModel
             HasError = true;
             ErrorMessage = "Errore di connessione al server.";
         }
-        catch (System.Text.Json.JsonException)
+        catch (System.Text.Json.JsonException ex)
         {
             HasData = false;
             IsEmptyState = false;
             HasError = true;
             ErrorMessage = "Risposta del server non valida.";
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(BusinessListViewModel));
         }
         catch (TaskCanceledException)
         {

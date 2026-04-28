@@ -152,12 +152,13 @@ public partial class ProfileViewModel : BaseViewModel
                 RoleDisplay = IsAdmin ? "Amministratore" : "Dipendente";
             }
         }
-        catch (JsonException)
+        catch (JsonException ex)
         {
             HasData = false;
             IsEmptyState = false;
             HasError = true;
             ErrorMessage = "Risposta del server non valida.";
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(ProfileViewModel));
         }
         catch (TaskCanceledException)
         {

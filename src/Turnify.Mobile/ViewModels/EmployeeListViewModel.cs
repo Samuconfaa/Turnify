@@ -119,12 +119,13 @@ public partial class EmployeeListViewModel : BaseViewModel
             HasError = true;
             ErrorMessage = "Errore di connessione al server.";
         }
-        catch (JsonException)
+        catch (JsonException ex)
         {
             HasData = false;
             IsEmptyState = false;
             HasError = true;
             ErrorMessage = "Risposta del server non valida.";
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(EmployeeListViewModel));
         }
         catch (TaskCanceledException)
         {

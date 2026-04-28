@@ -60,12 +60,13 @@ public partial class AvailabilityViewModel : BaseViewModel
             HasError = true;
             ErrorMessage = "Errore di connessione al server.";
         }
-        catch (System.Text.Json.JsonException)
+        catch (System.Text.Json.JsonException ex)
         {
             HasData = false;
             IsEmptyState = false;
             HasError = true;
             ErrorMessage = "Risposta del server non valida.";
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(AvailabilityViewModel));
         }
         catch (TaskCanceledException)
         {
@@ -95,9 +96,10 @@ public partial class AvailabilityViewModel : BaseViewModel
         {
             await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK");
         }
-        catch (System.Text.Json.JsonException)
+        catch (System.Text.Json.JsonException ex)
         {
             await Shell.Current.DisplayAlertAsync("Errore", "Risposta del server non valida.", "OK");
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(AvailabilityViewModel));
         }
         catch (TaskCanceledException)
         {

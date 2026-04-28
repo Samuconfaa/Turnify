@@ -4,17 +4,21 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { logout, getEmail } from '@/lib/auth';
 
+const OWNER_EMAIL = 'samuconfa08@gmail.com';
+
 const NAV = [
-  { href: '/dashboard',            label: 'Dashboard',  icon: '📊' },
-  { href: '/dashboard/employees',  label: 'Dipendenti', icon: '👥' },
-  { href: '/dashboard/businesses', label: 'Attività',   icon: '🏢' },
-  { href: '/dashboard/shifts',     label: 'Turni',      icon: '📅' },
-  { href: '/dashboard/vacations',  label: 'Ferie',      icon: '🌴' },
+  { href: '/dashboard',             label: 'Dashboard',   icon: '📊', ownerOnly: false },
+  { href: '/dashboard/employees',   label: 'Dipendenti',  icon: '👥', ownerOnly: false },
+  { href: '/dashboard/businesses',  label: 'Attività',    icon: '🏢', ownerOnly: false },
+  { href: '/dashboard/shifts',      label: 'Turni',       icon: '📅', ownerOnly: false },
+  { href: '/dashboard/vacations',   label: 'Ferie',       icon: '🌴', ownerOnly: false },
+  { href: '/dashboard/error-logs',  label: 'Log Errori',  icon: '🔴', ownerOnly: true  },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const email = getEmail();
+  const email    = getEmail();
+  const isOwner  = email.toLowerCase() === OWNER_EMAIL.toLowerCase();
 
   return (
     <aside className="w-60 h-screen bg-white border-r border-gray-200 flex flex-col fixed left-0 top-0 z-10">
@@ -25,7 +29,7 @@ export default function Sidebar() {
       </div>
 
       <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
-        {NAV.map(item => {
+        {NAV.filter(item => !item.ownerOnly || isOwner).map(item => {
           const active =
             item.href === '/dashboard'
               ? pathname === '/dashboard'
@@ -49,7 +53,10 @@ export default function Sidebar() {
 
       <div className="p-3 border-t border-gray-100 space-y-0.5">
         {email && (
-          <p className="px-3 py-1.5 text-xs text-gray-400 truncate">{email}</p>
+          <p className="px-3 py-1.5 text-xs text-gray-400 truncate">
+            {email}
+            {isOwner && <span className="ml-1 text-orange-400 font-medium">· owner</span>}
+          </p>
         )}
         <button
           onClick={logout}

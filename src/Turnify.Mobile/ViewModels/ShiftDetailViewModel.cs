@@ -96,12 +96,13 @@ public partial class ShiftDetailViewModel : BaseViewModel
             HasError = true;
             ErrorMessage = "Errore di connessione al server.";
         }
-        catch (JsonException)
+        catch (JsonException ex)
         {
             HasData = false;
             IsEmptyState = false;
             HasError = true;
             ErrorMessage = "Risposta del server non valida.";
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(ShiftDetailViewModel));
         }
         catch (TaskCanceledException)
         {
@@ -215,9 +216,10 @@ public partial class ShiftDetailViewModel : BaseViewModel
         {
             await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK");
         }
-        catch (JsonException)
+        catch (JsonException ex)
         {
             await Shell.Current.DisplayAlertAsync("Errore", "Risposta del server non valida.", "OK");
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(ShiftDetailViewModel));
         }
         catch (TaskCanceledException)
         {

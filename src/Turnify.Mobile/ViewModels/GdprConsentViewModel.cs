@@ -82,10 +82,11 @@ public partial class GdprConsentViewModel : BaseViewModel
                 new Uri("https://samuconfa.it/turnify/api/users/me/export-data"),
                 BrowserLaunchMode.SystemPreferred);
         }
-        catch
+        catch (Exception ex)
         {
             await Shell.Current.DisplayAlertAsync("Errore",
                 "Impossibile avviare l'esportazione dati.", "OK");
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(GdprConsentViewModel));
         }
         finally { IsBusy = false; }
     }
@@ -135,9 +136,10 @@ public partial class GdprConsentViewModel : BaseViewModel
                     "Impossibile completare la richiesta. Contatta privacy@turnify.it", "OK");
             }
         }
-        catch
+        catch (Exception ex)
         {
             await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione.", "OK");
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(GdprConsentViewModel));
         }
         finally { IsBusy = false; }
     }

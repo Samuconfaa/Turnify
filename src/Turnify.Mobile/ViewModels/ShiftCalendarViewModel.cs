@@ -192,12 +192,13 @@ public partial class ShiftCalendarViewModel : BaseViewModel
             HasError = true;
             ErrorMessage = "Errore di connessione al server.";
         }
-        catch (System.Text.Json.JsonException)
+        catch (System.Text.Json.JsonException ex)
         {
             HasData = false;
             IsEmptyState = false;
             HasError = true;
             ErrorMessage = "Risposta del server non valida.";
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(ShiftCalendarViewModel));
         }
         catch (TaskCanceledException)
         {
@@ -205,6 +206,14 @@ public partial class ShiftCalendarViewModel : BaseViewModel
             IsEmptyState = false;
             HasError = true;
             ErrorMessage = "Richiesta scaduta. Riprova.";
+        }
+        catch (Exception ex)
+        {
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Errore imprevisto. Riprova.";
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(ShiftCalendarViewModel));
         }
         finally { IsBusy = false; }
     }

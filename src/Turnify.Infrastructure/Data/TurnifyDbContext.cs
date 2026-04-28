@@ -19,7 +19,8 @@ public class TurnifyDbContext : DbContext
     public DbSet<VacationRequest> VacationRequests => Set<VacationRequest>();
     public DbSet<Notification> Notifications => Set<Notification>();
     public DbSet<AttendanceLog> AttendanceLogs => Set<AttendanceLog>();
-    public DbSet<DeviceToken> DeviceTokens => Set<DeviceToken>(); // nuovo — push notifications
+    public DbSet<DeviceToken> DeviceTokens => Set<DeviceToken>();
+    public DbSet<AppErrorLog> AppErrorLogs => Set<AppErrorLog>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -86,6 +87,14 @@ public class TurnifyDbContext : DbContext
             .HasIndex(t => t.Token).IsUnique();
         modelBuilder.Entity<DeviceToken>()
             .Property(t => t.Platform).HasConversion<string>();
+
+        // AppErrorLogs
+        modelBuilder.Entity<AppErrorLog>()
+            .HasIndex(e => new { e.CompanyId, e.OccurredAt });
+        modelBuilder.Entity<AppErrorLog>()
+            .HasIndex(e => e.UserId);
+        modelBuilder.Entity<AppErrorLog>()
+            .HasIndex(e => e.OccurredAt);
 
         // Converte tutti i DateTime in UTC
         var dateTimeConverter = new ValueConverter<DateTime, DateTime>(

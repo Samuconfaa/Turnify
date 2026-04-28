@@ -37,8 +37,8 @@ public class VacationRequestDto
     public string TypeDisplay => Type switch
     {
         "Holiday"     => "Ferie",
-        "PaidLeave"   => "Permesso pagato",
-        "UnpaidLeave" => "Permesso non pagato",
+        "PaidLeave"   => "Permesso retribuito",
+        "UnpaidLeave" => "Permesso non retribuito",
         "SickLeave"   => "Malattia",
         _             => Type
     };
@@ -117,7 +117,7 @@ public partial class VacationListViewModel : BaseViewModel
     }
 
     public string[] VacationTypes        { get; } = { "Holiday", "PaidLeave", "SickLeave", "UnpaidLeave" };
-    public string[] VacationTypesDisplay { get; } = { "Ferie", "Permesso Pagato", "Malattia", "Permesso Non Pagato" };
+    public string[] VacationTypesDisplay { get; } = { "Ferie", "Permesso retribuito", "Malattia", "Permesso non retribuito" };
     public string[] FilterOptions        { get; } = { "Tutte", "In Attesa", "Approvate", "Rifiutate" };
     public string[] FilterValues         { get; } = { "All", "Pending", "Approved", "Rejected" };
 

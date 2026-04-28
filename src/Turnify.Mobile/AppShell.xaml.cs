@@ -26,7 +26,7 @@ public partial class AppShell : Shell
                     await Shell.Current.GoToAsync(nameof(Views.OnboardingPage));
                     break;
                 case "Main":
-                    await Shell.Current.GoToAsync(isAdmin ? "//Dashboard" : "//Shifts");
+                    await Shell.Current.GoToAsync(isAdmin ? "//Dashboard" : "//EmployeeDashboard");
                     break;
                 default: // "Login"
                     // La LoginPage è già la prima tab/route dello shell
@@ -78,6 +78,7 @@ public partial class AppShell : Shell
     {
         if (!isAdmin)
         {
+            // Rimuovi tab admin
             if (MainTabBar.Items.Contains(DashboardTab))
                 MainTabBar.Items.Remove(DashboardTab);
             if (MainTabBar.Items.Contains(TeamTab))
@@ -85,10 +86,15 @@ public partial class AppShell : Shell
         }
         else
         {
+            // Ripristina tab admin
             if (!MainTabBar.Items.Contains(DashboardTab))
                 MainTabBar.Items.Insert(0, DashboardTab);
             if (!MainTabBar.Items.Contains(TeamTab))
                 MainTabBar.Items.Insert(1, TeamTab);
+
+            // Rimuovi tab employee-only
+            if (MainTabBar.Items.Contains(EmployeeDashboardTab))
+                MainTabBar.Items.Remove(EmployeeDashboardTab);
         }
     }
 }

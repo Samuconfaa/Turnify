@@ -405,3 +405,153 @@ Nota di lavoro: "refactor: allineamento architetturale MVVM, fix bug 401, zero w
 
 ---
 
+## Prompt 17
+
+### Data
+2026-04-26
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Creare il portale web admin completo in Next.js 14
+
+### Prompt
+> "Crea un portale web admin in Next.js 14 con TypeScript e Tailwind CSS nella cartella `src/Turnify.Web/`. Struttura: App Router con le pagine `/login`, `/dashboard` (overview), `/dashboard/employees` (tabella dipendenti), `/dashboard/businesses` (tabella attività), `/dashboard/shifts` (tabella turni con filtri), `/dashboard/vacations` (tabella ferie con approvazione). Crea `lib/api.ts` con wrapper `fetch` verso il backend Turnify all'URL configurabile da env. Crea `lib/auth.ts` per gestione autenticazione via cookie. Aggiungi `middleware.ts` che protegge tutte le route `/dashboard/*`. Crea `components/Sidebar.tsx` con navigazione. Configura `ecosystem.config.js` per PM2."
+
+### Output utile
+Progetto Next.js completo: 21 file creati, 1.153 righe. Tutte le pagine dashboard con tabelle dati, chiamata API all'avvio (`useEffect`), stati loading/error. `middleware.ts` (26 righe) con redirect `/login` se cookie assente. `Sidebar.tsx` (64 righe) con link attivi. `ecosystem.config.js` per PM2 Node 20.
+
+### Decisione presa
+Accettato con fix deploy immediato
+
+### Motivazione
+Il aggiornamento documentato il giorno dopo ("fix: corretto deploy Next.js su VPS con Node 20") indica incompatibilità rilevata solo al deploy su VPS: il portale funzionava in locale ma non su Node 20 in produzione, richiesto un aggiustamento alla configurazione.
+
+---
+
+## Prompt 18
+
+### Data
+2026-04-27
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Aggiungere reportistica CSV, reset password email, dashboard dipendente e rate limiter
+
+### Prompt
+> "Aggiungi le funzionalità mancanti per la produzione. 1) Reports: `ReportsController` con `GET /api/reports/hours?from=&to=` e `GET /api/reports/attendance?from=&to=` che restituiscono CSV generato con `StringBuilder`. 2) Reset password: endpoint `POST /api/auth/request-password-reset` (genera token, invia email SMTP) e `POST /api/auth/reset-password` (verifica token, aggiorna password). Migrazione `AddPasswordResetToUser`. `SmtpEmailService`. 3) Mobile: `EmployeeDashboardPage` + VM per il dipendente, `AttendanceHistoryPage` + VM con lista presenze, `ForgotPasswordPage` + VM. 4) Rate limiter sliding window per-IP in `Program.cs`: 10 req/min su `/auth`, 120 req/min globale."
+
+### Output utile
+`ReportsController.cs` (109 righe), `SmtpEmailService.cs` (37 righe), migrazione `AddPasswordResetToUser`, `EmployeeDashboardViewModel.cs` (118 righe), `AttendanceHistoryViewModel.cs` (135 righe), `ForgotPasswordViewModel.cs` (57 righe) + View XAML corrispondenti. Rate limiter con `SlidingWindowRateLimiter` in `Program.cs`. 1.662 righe nette aggiunte.
+
+### Decisione presa
+Modificato — rate limiter corretto manualmente
+
+### Motivazione
+Il aggiornamento documentato ("fix: rate limiter per-IP") modifica immediatamente il rate limiter: la prima versione generata usava un limite globale condiviso tra tutti gli IP invece di partizionare per `RemoteIpAddress`. Fix necessario per rendere il rate limiting efficace come protezione.
+
+---
+
+## Prompt 19
+
+### Data
+2026-04-28
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Aggiungere FluentValidation su tutti gli endpoint critici dell'API
+
+### Prompt
+> "Aggiungi FluentValidation al progetto API. Installa `FluentValidation.AspNetCore`, registra con `AddFluentValidationAutoValidation` e `AddValidatorsFromAssemblyContaining<LoginRequestValidator>`. Crea validator in `Turnify.Api/Validators/` per: `LoginRequest` (email required + formato, password minLength 6), `RegisterRequest` (email, password, companyName required + lunghezze), `CreateShiftRequest` (StartTime < EndTime, EmployeeId > 0), `UpdateShiftRequest`, `CreateVacationRequest` (StartDate <= EndDate, tipo valido), `CreateRecurringShiftsRequest` (weekCount > 0), `ReportErrorRequest` (message required, maxLength 2000)."
+
+### Output utile
+7 file validator creati (161–207 righe totali), `Program.cs` aggiornato con registrazione FluentValidation. Da questo momento tutti gli endpoint con input invalido restituiscono automaticamente 400 con `ValidationProblemDetails` che elenca i campi errati.
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+I 7 validator hanno naming e struttura uniforme (`AbstractValidator<T>`, `RuleFor(x => x.Field).NotEmpty.MaximumLength`), tipica output AI. Nessuna correzione successiva documentata sulle regole di validazione.
+
+---
+
+## Prompt 20
+
+### Data
+2026-04-28
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Raccolta errori client mobile con ErrorLogsController e ErrorReporterService
+
+### Prompt
+> "Implementa un sistema di error reporting client→server. Backend: modello `AppErrorLog` con campi `Message`, `StackTrace`, `ScreenName`, `AppVersion`, `Platform`, `OccurredAt`. Migrazione `AddAppErrorLogs`. `IAppErrorLogRepository` e `AppErrorLogRepository`. `ErrorLogsController` con `POST /api/errorlogs` (pubblico, rate-limited a 20 req/min per IP) per ricevere errori e `GET /api/errorlogs` (solo admin). Mobile: `ErrorReporterService` singleton con `static Current` e metodo `ReportAsync(Exception ex, string screenName)` che serializza e invia in background senza bloccare l'UI. Aggiungi la chiamata a `ErrorReporterService.Current?.ReportAsync(ex)` in ogni catch generico dei ViewModel."
+
+### Output utile
+`ErrorLogsController.cs` (97 righe), `AppErrorLog.cs` (19 righe), `AppErrorLogRepository.cs` (54 righe), migrazione `AddAppErrorLogs` (62 righe), `ErrorReporterService.cs` (68 righe). Ogni ViewModel esistente aggiornato con `ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(XxxViewModel))`.
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Il pattern `ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(ViewModel))` è identico in tutti i ViewModel, tipico di una generazione sistematica AI su tutti i file in una singola sessione.
+
+---
+
+## Prompt 21
+
+### Data
+2026-04-28
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Aggiungere certificate pinning Android e configurazione network security
+
+### Prompt
+> "Aggiungi certificate pinning per Android nel progetto MAUI. Crea `CertificatePinningHandler : DelegatingHandler` che intercetta ogni richiesta HTTPS, verifica il thumbprint SHA-256 del certificato del server contro un valore atteso in configurazione, e lancia eccezione se non corrisponde. Crea `Platforms/Android/Resources/xml/network_security_config.xml` con la configurazione di rete Android (clear text disabilitato, pin del certificato). Aggiorna `AndroidManifest.xml` con `android:networkSecurityConfig`. Registra il handler nella pipeline HTTP in `MauiProgram.cs` dopo `AuthDelegatingHandler`."
+
+### Output utile
+`CertificatePinningHandler.cs` (57 righe), `network_security_config.xml` (20 righe), `AndroidManifest.xml` aggiornato (+2 righe), `MauiProgram.cs` aggiornato per la pipeline HTTP.
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+I file sono stati aggiunti in unico blocco nell'aggiornamento documentato senza fix successivi. La struttura `DelegatingHandler` è coerente con `AuthDelegatingHandler` già presente.
+
+---
+
+## Prompt 22
+
+### Data
+2026-04-28
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Scrivere integration test con WebApplicationFactory per AuthController e ShiftsController
+
+### Prompt
+> "Scrivi integration test con `WebApplicationFactory<Program>` in `Turnify.Tests/Integration/`. Crea `TurnifyWebFactory` che sovrascrive il DbContext con un database di test isolato. Crea `IntegrationTestBase` con metodi helper per autenticazione (registra + login, ottieni JWT). Scrivi `AuthControllerIntegrationTests` (test: registrazione valida → 201, email duplicata → 409, login credenziali corrette → 200 + JWT, login password errata → 401, accesso endpoint protetto con token valido → 200, senza token → 401). Scrivi `ShiftsControllerIntegrationTests` (test: CRUD turni autenticato, input non valido → 400 con ValidationProblemDetails, accesso senza autorizzazione → 403)."
+
+### Output utile
+`TurnifyWebFactory.cs` (53 righe), `IntegrationTestBase.cs` (74 righe), `AuthControllerIntegrationTests.cs` (203 righe), `ShiftsControllerIntegrationTests.cs` (288 righe). Aggiunto `Microsoft.AspNetCore.Mvc.Testing` al `.csproj`. Dichiarato `public partial class Program { }` in `Program.cs` per esporre il punto di entry alla factory.
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Il blocco `public partial class Program { }` aggiunto in fondo a `Program.cs` è il pattern standard richiesto da `WebApplicationFactory` — la sua presenza conferma che il prompt specificava esplicitamente l'uso di `WebApplicationFactory` e il generatore ha aggiunto il markup necessario.
+
+---
+

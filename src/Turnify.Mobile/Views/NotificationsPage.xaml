@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
              x:Class="Turnify.Mobile.Views.NotificationsPage"
+             x:DataType="vm:NotificationsViewModel"
              Title="Notifiche"
              BackgroundColor="{StaticResource Background}">
 

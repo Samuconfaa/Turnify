@@ -1,0 +1,10 @@
+{
+  "eval_id": 2,
+  "eval_name": "review-findings",
+  "prompt": "Ho appena modificato un service REST e il relativo ViewModel. Fai una review seguendo il modello Man-in-the-Loop: indicami problemi di architettura, naming, nullability, error handling e i test che dovrei eseguire. Non riscrivere ancora il codice.",
+  "assertions": [
+    "Presenta findings o un blocker onesto prima di proporre soluzioni o riscritture.",
+    "Non inventa una review puntuale se i file richiesti non sono presenti nel workspace.",
+    "Suggerisce comunque controlli o test rilevanti per architettura, nullability ed error handling."
+  ]
+}

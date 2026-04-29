@@ -17,7 +17,24 @@ public partial class LoginViewModel : BaseViewModel
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
+    [NotifyPropertyChangedFor(nameof(IsAdminMode))]
+    private bool _isEmployeeMode;
+
+    public bool IsAdminMode => !IsEmployeeMode;
+
+    // Campi admin
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
     private string _email = string.Empty;
+
+    // Campi dipendente
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
+    private string _companySlug = string.Empty;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
+    private string _username = string.Empty;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
@@ -35,8 +52,14 @@ public partial class LoginViewModel : BaseViewModel
         Title        = "Login";
     }
 
-    private bool CanLogin() =>
-        !string.IsNullOrWhiteSpace(Email) && !string.IsNullOrWhiteSpace(Password);
+    private bool CanLogin()
+    {
+        if (IsEmployeeMode)
+            return !string.IsNullOrWhiteSpace(CompanySlug)
+                && !string.IsNullOrWhiteSpace(Username)
+                && !string.IsNullOrWhiteSpace(Password);
+        return !string.IsNullOrWhiteSpace(Email) && !string.IsNullOrWhiteSpace(Password);
+    }
 
     [RelayCommand(CanExecute = nameof(CanLogin))]
     private async Task LoginAsync()
@@ -46,11 +69,25 @@ public partial class LoginViewModel : BaseViewModel
 
         try
         {
-            var result = await _authService.LoginAsync(Email, Password);
-            if (result == null)
+            (string AccessToken, string RefreshToken)? result;
+
+            if (IsEmployeeMode)
             {
-                ErrorMessage = "Credenziali non valide. Verifica email e password.";
-                return;
+                result = await _authService.EmployeeLoginAsync(CompanySlug.Trim(), Username.Trim(), Password);
+                if (result == null)
+                {
+                    ErrorMessage = "Credenziali non valide. Verifica azienda, nome utente e password.";
+                    return;
+                }
+            }
+            else
+            {
+                result = await _authService.LoginAsync(Email, Password);
+                if (result == null)
+                {
+                    ErrorMessage = "Credenziali non valide. Verifica email e password.";
+                    return;
+                }
             }
 
             bool isAdmin = ExtractIsAdminFromToken(result.Value.AccessToken);
@@ -83,9 +120,10 @@ public partial class LoginViewModel : BaseViewModel
         {
             ErrorMessage = "Errore di connessione al server.";
         }
-        catch
+        catch (Exception ex)
         {
             ErrorMessage = "Si è verificato un errore. Riprova.";
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(LoginViewModel));
         }
         finally
         {

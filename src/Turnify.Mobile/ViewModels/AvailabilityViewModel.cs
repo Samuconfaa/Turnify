@@ -12,6 +12,11 @@ public partial class AvailabilityViewModel : BaseViewModel
 {
     private readonly HttpClient _httpClient;
 
+    [ObservableProperty] private bool _hasError;
+    [ObservableProperty] private string _errorMessage = string.Empty;
+    [ObservableProperty] private bool _hasData;
+    [ObservableProperty] private bool _isEmptyState;
+
     [ObservableProperty] private bool _monday    = true;
     [ObservableProperty] private bool _tuesday   = true;
     [ObservableProperty] private bool _wednesday = true;
@@ -30,14 +35,46 @@ public partial class AvailabilityViewModel : BaseViewModel
     public async Task LoadAsync()
     {
         if (IsBusy) return;
+        HasError = false;
+        ErrorMessage = string.Empty;
         try
         {
             IsBusy = true;
             var dto = await _httpClient.GetFromJsonAsync<AvailabilityDto>("api/employees/me/availability");
             if (dto?.AvailableDays != null)
+            {
                 ApplyDays(dto.AvailableDays);
+                HasData = true;
+                IsEmptyState = false;
+            }
+            else
+            {
+                HasData = false;
+                IsEmptyState = true;
+            }
         }
-        catch { /* non critico */ }
+        catch (HttpRequestException)
+        {
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Errore di connessione al server.";
+        }
+        catch (System.Text.Json.JsonException ex)
+        {
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Risposta del server non valida.";
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(AvailabilityViewModel));
+        }
+        catch (TaskCanceledException)
+        {
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Richiesta scaduta. Riprova.";
+        }
         finally { IsBusy = false; }
     }
 
@@ -55,9 +92,18 @@ public partial class AvailabilityViewModel : BaseViewModel
             else
                 await Shell.Current.DisplayAlertAsync("Errore", "Impossibile salvare la disponibilità.", "OK");
         }
-        catch (Exception ex)
+        catch (HttpRequestException)
         {
-            await Shell.Current.DisplayAlertAsync("Errore", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK");
+        }
+        catch (System.Text.Json.JsonException ex)
+        {
+            await Shell.Current.DisplayAlertAsync("Errore", "Risposta del server non valida.", "OK");
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(AvailabilityViewModel));
+        }
+        catch (TaskCanceledException)
+        {
+            await Shell.Current.DisplayAlertAsync("Errore", "Richiesta scaduta. Riprova.", "OK");
         }
         finally { IsBusy = false; }
     }

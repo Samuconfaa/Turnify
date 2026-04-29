@@ -15,10 +15,32 @@ using DotNetEnv;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Turnify.Api.Validators;
 
 Env.TraversePath().Load();
 
 var builder = WebApplication.CreateBuilder(args);
+
+const string CorsPolicy = "TurnifyCors";
+
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(CorsPolicy, policy =>
+    {
+        policy.WithOrigins(
+                "https://samuconfa.it",
+                "https://www.samuconfa.it",
+                "http://localhost:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -100,6 +122,7 @@ builder.Services.AddScoped<IEmployeeRepository,    EmployeeRepository>();
 builder.Services.AddScoped<IBusinessRepository,    BusinessRepository>();
 builder.Services.AddScoped<IDeviceTokenRepository,  DeviceTokenRepository>();
 builder.Services.AddScoped<IAttendanceRepository,   AttendanceRepository>();
+builder.Services.AddScoped<IAppErrorLogRepository,  AppErrorLogRepository>();
 
 var app = builder.Build();
 
@@ -109,6 +132,8 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 });
 
 app.UsePathBase("/turnify");
+
+app.UseCors(CorsPolicy);
 
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
@@ -140,3 +165,6 @@ app.MapHealthChecks("/health", new HealthCheckOptions
 });
 
 app.Run();
+
+// Punto di entry esposto per WebApplicationFactory nei test di integrazione
+public partial class Program { }

@@ -103,6 +103,7 @@ public partial class AttendanceHistoryViewModel : BaseViewModel
         {
             HasError     = true;
             ErrorMessage = ex.Message;
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(AttendanceHistoryViewModel));
         }
         finally { IsBusy = false; }
     }

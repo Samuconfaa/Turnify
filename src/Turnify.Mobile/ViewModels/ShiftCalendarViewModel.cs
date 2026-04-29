@@ -26,6 +26,8 @@ public partial class ShiftCalendarViewModel : BaseViewModel
     [ObservableProperty] private ObservableCollection<EmployeeWeekRow> _employeeRows = new();
     [ObservableProperty] private bool _hasError;
     [ObservableProperty] private string _errorMessage = string.Empty;
+    [ObservableProperty] private bool _hasData;
+    [ObservableProperty] private bool _isEmptyState;
 
     // Feature 7 – timbratura (employee only)
     [ObservableProperty]
@@ -100,7 +102,7 @@ public partial class ShiftCalendarViewModel : BaseViewModel
             IsAdmin = stored == "Admin";
             OnPropertyChanged(nameof(ShowAttendance));
         }
-        catch { IsAdmin = false; }
+        catch (Exception) { IsAdmin = false; }
     }
 
     // Feature 7 – carica stato timbratura odierna
@@ -117,7 +119,9 @@ public partial class ShiftCalendarViewModel : BaseViewModel
             CheckOutTimeDisplay = dto.CheckOutTime.HasValue
                 ? dto.CheckOutTime.Value.ToLocalTime().ToString("HH:mm") : string.Empty;
         }
-        catch { /* non critico */ }
+        catch (HttpRequestException) { /* non critico */ }
+        catch (System.Text.Json.JsonException) { /* non critico */ }
+        catch (TaskCanceledException) { /* non critico */ }
     }
 
     [RelayCommand]
@@ -133,7 +137,8 @@ public partial class ShiftCalendarViewModel : BaseViewModel
             else if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
                 await Shell.Current.DisplayAlertAsync("Info", "Sei già entrato oggi.", "OK");
         }
-        catch { await Shell.Current.DisplayAlertAsync("Errore", "Errore durante la timbratura.", "OK"); }
+        catch (HttpRequestException) { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK"); }
+        catch (TaskCanceledException) { await Shell.Current.DisplayAlertAsync("Errore", "Richiesta scaduta. Riprova.", "OK"); }
     }
 
     [RelayCommand]
@@ -145,7 +150,8 @@ public partial class ShiftCalendarViewModel : BaseViewModel
             if (response.IsSuccessStatusCode)
                 await LoadAttendanceAsync();
         }
-        catch { await Shell.Current.DisplayAlertAsync("Errore", "Errore durante la timbratura.", "OK"); }
+        catch (HttpRequestException) { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK"); }
+        catch (TaskCanceledException) { await Shell.Current.DisplayAlertAsync("Errore", "Richiesta scaduta. Riprova.", "OK"); }
     }
 
     [RelayCommand]
@@ -153,6 +159,7 @@ public partial class ShiftCalendarViewModel : BaseViewModel
     {
         if (IsBusy) return;
         HasError = false;
+        ErrorMessage = string.Empty;
         try
         {
             IsBusy = true;
@@ -174,17 +181,39 @@ public partial class ShiftCalendarViewModel : BaseViewModel
                     ?? new List<ApprovedVacationDto>();
                 BuildEmployeeRows(shiftList, vacations);
             }
+
+            HasData      = shiftList.Count > 0;
+            IsEmptyState = shiftList.Count == 0;
         }
-        catch (HttpRequestException ex)
+        catch (HttpRequestException)
         {
+            HasData = false;
+            IsEmptyState = false;
             HasError = true;
-            var code = ex.StatusCode.HasValue ? $" (HTTP {(int)ex.StatusCode})" : string.Empty;
-            ErrorMessage = $"Impossibile connettersi al server{code}.";
+            ErrorMessage = "Errore di connessione al server.";
+        }
+        catch (System.Text.Json.JsonException ex)
+        {
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Risposta del server non valida.";
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(ShiftCalendarViewModel));
+        }
+        catch (TaskCanceledException)
+        {
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Richiesta scaduta. Riprova.";
         }
         catch (Exception ex)
         {
+            HasData = false;
+            IsEmptyState = false;
             HasError = true;
-            ErrorMessage = ex.Message;
+            ErrorMessage = "Errore imprevisto. Riprova.";
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(ShiftCalendarViewModel));
         }
         finally { IsBusy = false; }
     }
@@ -297,9 +326,19 @@ public partial class ShiftCalendarViewModel : BaseViewModel
             result = await _httpClient.GetFromJsonAsync<ShiftListResponse>(
                 $"api/shifts?from={fromStr}&to={toStr}&pageSize=200");
         }
-        catch
+        catch (HttpRequestException)
         {
-            await Shell.Current.DisplayAlertAsync("Errore", "Impossibile caricare i turni precedenti.", "OK");
+            await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK");
+            return;
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            await Shell.Current.DisplayAlertAsync("Errore", "Risposta del server non valida.", "OK");
+            return;
+        }
+        catch (TaskCanceledException)
+        {
+            await Shell.Current.DisplayAlertAsync("Errore", "Richiesta scaduta. Riprova.", "OK");
             return;
         }
 
@@ -335,7 +374,8 @@ public partial class ShiftCalendarViewModel : BaseViewModel
                 var resp = await _httpClient.PostAsJsonAsync("api/shifts", dto);
                 if (resp.IsSuccessStatusCode) copied++; else skipped++;
             }
-            catch { skipped++; }
+            catch (HttpRequestException) { skipped++; }
+            catch (TaskCanceledException) { skipped++; }
         }
         IsBusy = false;
 

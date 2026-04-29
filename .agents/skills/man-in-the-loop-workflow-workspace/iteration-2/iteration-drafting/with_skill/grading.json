@@ -1,0 +1,19 @@
+{
+  "expectations": [
+    {
+      "text": "Il risultato è strutturato come un file `docs/iterations/it-04.md` con sezioni tipiche di iterazione.",
+      "passed": true,
+      "evidence": "Il file usa un formato da iterazione completo con `Obiettivo`, `Piano`, `File coinvolti nella specifica`, `Prompt principali`, `File creati`, `File modificati`, `Test eseguiti`, `Problemi trovati`, `Correzioni effettuate` ed `Esito`."
+    },
+    {
+      "text": "Include file creati, file modificati, test eseguiti, problemi trovati, correzioni effettuate ed esito.",
+      "passed": true,
+      "evidence": "Tutte le sezioni richieste sono presenti e popolate con i dati delle note grezze."
+    },
+    {
+      "text": "Non restituisce solo un riassunto breve: produce un esempio completo utilizzabile come base documentale.",
+      "passed": true,
+      "evidence": "Il risultato è un esempio completo e direttamente riutilizzabile come base di `docs/iterations/it-04.md`."
+    }
+  ]
+}

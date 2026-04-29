@@ -1,251 +1,183 @@
-# Architettura di Sistema — Turnify
+# Architettura
 
-**Versione:** 1.0  
-**Stato:** Approvata per sviluppo  
+## 1. Obiettivo architetturale
 
----
+Costruire una app `.NET MAUI` Android-first che resti semplice da spiegare, estendere e testare, separando chiaramente:
 
-## 1. Panoramica
+- UI XAML e navigazione;
+- logica di stato nei ViewModels;
+- integrazione remota con Google Books;
+- persistenza locale di favoriti e cronologia.
 
-Turnify è un sistema client-server a 3 livelli: un'app mobile cross-platform, un backend REST API e un database relazionale. I tre componenti comunicano esclusivamente via HTTPS/JSON.
+L'architettura deve supportare il MVP approvato senza anticipare le funzionalità post-MVP, ma lasciando abbastanza isolamento per introdurle in seguito senza rifattorizzazioni invasive.
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                    CLIENT LAYER                         │
-│  ┌──────────────────────────────────────────────────┐   │
-│  │       App Mobile .NET MAUI (iOS + Android)       │   │
-│  │              Pattern: MVVM                       │   │
-│  └─────────────────────┬────────────────────────────┘   │
-└────────────────────────│────────────────────────────────┘
-                         │ HTTPS / REST JSON
-                         │ JWT Authorization Header
-┌────────────────────────▼────────────────────────────────┐
-│                   SERVER LAYER                          │
-│  ┌──────────────────────────────────────────────────┐   │
-│  │          Nginx (Reverse Proxy + SSL)             │   │
-│  └─────────────────────┬────────────────────────────┘   │
-│  ┌─────────────────────▼────────────────────────────┐   │
-│  │       ASP.NET Core Web API (.NET 8)              │   │
-│  │   Controllers → Services → Repositories         │   │
-│  └─────────────────────┬────────────────────────────┘   │
-└────────────────────────│────────────────────────────────┘
-                         │ EF Core / TCP
-┌────────────────────────▼────────────────────────────────┐
-│                    DATA LAYER                           │
-│  ┌──────────────────────────────────────────────────┐   │
-│  │              PostgreSQL 15                       │   │
-│  └──────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────┘
-```
+## 2. Struttura del repository e del progetto
 
----
+### Cartelle principali
 
-## 2. App Mobile — .NET MAUI con MVVM
+- `docs/`: specifica, piano, architettura, matrice test, iterazioni.
+- `src/`: conterrà il progetto applicativo MAUI reale.
+- `src/BookScout.Mobile/`: root proposta del progetto MAUI da creare in IT-01.
 
-### Tecnologie
-- **.NET MAUI** (.NET 8): framework cross-platform per iOS e Android
-- **CommunityToolkit.Mvvm**: gestione MVVM, comandi, proprietà osservabili
-- **Shell Navigation**: navigazione dichiarativa con route
-- **HttpClient + Refit**: chiamate API tipizzate
-- **SecureStorage**: salvataggio sicuro token JWT
+### Responsabilità per area
 
-### Pattern MVVM
+- `src/BookScout.Mobile/Views/`: pagine XAML, layout, binding e componenti visuali senza business logic.
+- `src/BookScout.Mobile/ViewModels/`: stato della UI, comandi, orchestrazione di servizi e navigazione.
+- `src/BookScout.Mobile/Services/`: accesso API, persistenza locale, eventuale verifica connettività, nessuna logica di presentazione.
+- `src/BookScout.Mobile/Models/`: modelli di dominio e DTO di integrazione; i DTO possono essere separati in sottocartelle se il volume cresce.
+- `src/BookScout.Mobile/Resources/`: stili, placeholder, immagini statiche, temi.
+- `src/BookScout.Mobile/Platforms/Android/`: configurazioni specifiche Android.
 
-```
-┌──────────────────────────────────────────────────────┐
-│  View Layer  (Pages + Controls in XAML/C#)           │
-│  - Binding a ViewModel                               │
-│  - Nessuna logica business                           │
-├──────────────────────────────────────────────────────┤
-│  ViewModel Layer                                     │
-│  - ObservableProperty per stato UI                   │
-│  - RelayCommand per azioni utente                    │
-│  - Chiama AppServices                                │
-├──────────────────────────────────────────────────────┤
-│  Service Layer (App)                                 │
-│  - AuthService: login, token refresh                 │
-│  - ShiftService: CRUD turni                          │
-│  - VacationService: richieste ferie                  │
-│  - NotificationService: gestione notifiche           │
-├──────────────────────────────────────────────────────┤
-│  Infrastructure                                      │
-│  - ApiClient (Refit): chiamate HTTP                  │
-│  - LocalStorage: cache e preferenze                  │
-│  - SecureStorage: token JWT                          │
-└──────────────────────────────────────────────────────┘
-```
+Poiché oggi `src/` è vuota, questa struttura è proposta ma coerente con il workflow del repository e con la futura implementazione del progetto.
 
-### Schermate Principali
-- `LoginPage` — autenticazione
-- `DashboardPage` — home admin con panoramica
-- `ShiftCalendarPage` — calendario turni
-- `ShiftDetailPage` — dettaglio/modifica turno
-- `VacationListPage` — lista richieste ferie
-- `VacationRequestPage` — form nuova richiesta
-- `EmployeeListPage` — gestione dipendenti (admin)
-- `ProfilePage` — profilo utente e impostazioni
+## 3. Pattern applicativi
 
----
+- `.NET MAUI` single-project come base applicativa.
+- MVVM con `CommunityToolkit.Mvvm` per proprietà osservabili e comandi.
+- Shell navigation per rotte top-level e dettaglio.
+- XAML con compiled bindings dove possibile.
+- `HttpClient` asincrono per il provider remoto.
+- `System.Text.Json` per parsing e mapping difensivo delle risposte.
+- Nessuna business logic nei code-behind.
 
-## 3. Backend — ASP.NET Core Web API
+## 4. Componenti principali
 
-### Tecnologie
-- **ASP.NET Core 8** con minimal hosting model
-- **Entity Framework Core 8** con provider Npgsql (PostgreSQL)
-- **AutoMapper**: mapping tra entità e DTO
-- **FluentValidation**: validazione input
-- **Serilog**: logging strutturato
-- **Swashbuckle**: documentazione OpenAPI/Swagger
-- **BCrypt.Net**: hashing password
-- **System.IdentityModel.Tokens.Jwt**: generazione/validazione JWT
+### Views
 
-### Struttura Layer Backend
+- `SearchPage`: ricerca e risultati nella stessa pagina con `SearchBar` e `CollectionView`.
+- `BookDetailPage`: dettaglio esteso del libro e azione sui favoriti.
+- `FavoritesPage`: elenco dei libri salvati localmente.
+- `HistoryPage`: elenco delle query recenti con replay e pulizia.
 
-```
-Presentation Layer  (Controllers, Middleware, DTOs)
-       │
-Business Layer  (Services, Validators, Business Rules)
-       │
-Data Layer  (Repositories, EF DbContext, Migrations)
-       │
-Database  (PostgreSQL)
-```
+### ViewModels
 
-### Controller Principali
-- `AuthController` — login, registrazione, refresh token
-- `CompaniesController` — gestione aziende
-- `EmployeesController` — gestione dipendenti
-- `ShiftsController` — CRUD turni
-- `VacationRequestsController` — ferie e permessi
-- `DashboardController` — statistiche aggregate
-- `NotificationsController` — notifiche
+- `SearchViewModel`: gestisce query testuale, risultati, retry e stati `loading/error/empty/success`.
+- `BookDetailViewModel`: carica il dettaglio, gestisce add/remove favoriti e il refresh remoto in background quando il libro viene aperto dai favoriti.
+- `FavoritesViewModel`: carica la lista locale dei favoriti, rimuove elementi e apre il dettaglio da sorgente locale.
+- `HistoryViewModel`: legge la cronologia, esegue delete singolo o totale e richiede il replay della query verso `Search`.
 
----
+Ogni ViewModel dovrà esporre proprietà di stato esplicite come `IsBusy`, `ErrorMessage`, `HasData`, `IsEmpty` o equivalenti più specifici per la schermata.
 
-## 4. Database — PostgreSQL
+### Services
 
-- **PostgreSQL 15** su VPS Linux
-- ORM: **Entity Framework Core** con code-first migrations
-- Connection pooling: **Npgsql** built-in pooling
-- Backup: dump giornaliero automatico via cron
+- servizio remoto catalogo libri: ricerca per query e dettaglio per `bookId` tramite Google Books API;
+- servizio di mapping DTO -> modelli di dominio, con gestione centralizzata dei campi mancanti;
+- servizio database locale basato su `sqlite-net-pcl`, responsabile di creare e condividere una singola `SQLiteAsyncConnection` per il progetto;
+- repository locale favoriti sopra la connessione condivisa SQLite, con snapshot completa dei dati principali del dettaglio;
+- repository locale cronologia sopra la stessa connessione SQLite, con deduplica e ordinamento per recenza;
+- utilizzo di `IConnectivity` nativo di .NET MAUI, iniettato via DI solo nel servizio che decide se tentare il refresh remoto in background dai favoriti.
 
-Per lo schema dettagliato → `docs/database.md`
+### Models e DTO
 
----
+- modelli di dominio per lista risultati, dettaglio libro, snapshot favorito e voce cronologia;
+- DTO specifici di Google Books separati dai modelli usati dalla UI;
+- mapping responsabile della conversione di `null`, campi assenti e placeholder visuali coerenti.
 
-## 5. Flusso Autenticazione JWT
+## 5. Navigazione
 
-```
-App Mobile                     Backend API
-    │                               │
-    │ POST /auth/login              │
-    │ {email, password}             │
-    │─────────────────────────────→ │
-    │                               │ Verifica credenziali
-    │                               │ Genera AccessToken (15min)
-    │                               │ Genera RefreshToken (7gg)
-    │                               │ Salva RefreshToken nel DB
-    │ 200 OK                        │
-    │ {accessToken, refreshToken}   │
-    │ ←──────────────────────────── │
-    │                               │
-    │ Salva token in SecureStorage  │
-    │                               │
-    │ GET /shifts (con JWT header)  │
-    │─────────────────────────────→ │
-    │                               │ Valida JWT
-    │                               │ Controlla ruolo/permessi
-    │ 200 OK {dati turni}           │
-    │ ←──────────────────────────── │
-    │                               │
-    │ [Token scaduto - 401]         │
-    │ POST /auth/refresh            │
-    │ {refreshToken}                │
-    │─────────────────────────────→ │
-    │                               │ Valida refreshToken nel DB
-    │                               │ Genera nuovo accessToken
-    │ 200 OK {newAccessToken}       │
-    │ ←──────────────────────────── │
-```
+### Route Shell
 
----
+- `Search`, `Favorites` e `History` come sezioni principali Shell;
+- `BookDetailPage` come route dedicata fuori dal livello root, aperta da Search e Favorites.
 
-## 6. Notifiche Push (Architettura Futura v1.1)
+### Parametri di navigazione
 
-```
-Backend API
-    │
-    │ Evento: nuovo turno creato
-    ▼
-NotificationService
-    │
-    ├──→ Firebase Cloud Messaging (FCM) → Android devices
-    │
-    └──→ Apple Push Notification service (APNs) → iOS devices
-                                                        │
-                                                        ▼
-                                              App riceve notifica
-                                              (anche in background)
-```
+- verso il dettaglio: `bookId` obbligatorio;
+- verso il dettaglio da Favorites: `bookId` e `source=favorite`, così il ViewModel può caricare prima la snapshot locale e poi tentare refresh remoto;
+- verso Search da History: `queryText` o parametro equivalente per rieseguire la ricerca nella pagina unificata.
 
-**Per il v1.0** le notifiche saranno implementate come in-app polling o notifiche locali. FCM/APNs verrà integrato nello sprint M7.
+Il dettaglio aperto da Search carica direttamente il contenuto remoto. Il dettaglio aperto da Favorites mostra prima il contenuto locale disponibile e, se la rete è accessibile, prova ad aggiornare silenziosamente i dati in background.
 
----
+## 6. Stato della UI
 
-## 7. Infrastruttura VPS
+### Loading
 
-```
-Internet
-    │
-    │ HTTPS :443
-    ▼
-Nginx (reverse proxy)
-    │ Let's Encrypt SSL
-    │ Termina SSL
-    │ Passa traffico su HTTP interno
-    ▼
-ASP.NET Core API (porta 5000, systemd service)
-    │
-    ▼
-PostgreSQL (porta 5432, solo localhost)
-```
+- `SearchPage`: loading esplicito durante una richiesta remota;
+- `BookDetailPage`: loading bloccante all'apertura da Search, non bloccante per refresh da Favorites;
+- `FavoritesPage` e `HistoryPage`: loading leggero durante lettura iniziale dei dati locali.
 
-Per la configurazione dettagliata → `docs/deployment.md`
+### Error
 
----
+- errori remoti di Search e Detail mostrati come stati pagina o messaggi con retry;
+- fallimento del refresh remoto da Favorites mostrato con feedback visibile ma non invasivo;
+- nessun errore tecnico grezzo o stack trace in UI.
 
-## 8. Multi-Tenancy
+### Empty
 
-Turnify è un'applicazione **multi-tenant** con isolamento per dati.
+- Search senza risultati remoti;
+- Favorites senza libri salvati;
+- History senza ricerche registrate.
 
-- Ogni azienda (`Company`) ha un `CompanyId` univoco
-- Tutte le entità del dominio (Shifts, Employees, ecc.) hanno una FK verso `Companies`
-- Il backend filtra **automaticamente** i dati per `CompanyId` estratto dal JWT
-- Nessun dato di un'azienda è visibile a un'altra
+### Success
 
-Questo approccio è detto **"shared database, separate schemas by tenant ID"** ed è sufficiente per la fase MVP.
+- risultati presenti su Search;
+- dettaglio caricato e leggibile anche con campi parziali;
+- elenco favoriti o cronologia disponibile;
+- refresh riuscito da Favorites gestito in modo silenzioso, senza messaggio di successo obbligatorio.
 
----
+## 7. Dati e integrazioni
 
-## 9. Separazione dei Livelli — Regole Chiave
+### Chiamate remote
 
-| Livello | Conosce | NON conosce |
-|---|---|---|
-| Controller | DTO, Service | Entità DB, Repository |
-| Service | Entità, Repository, DTO | HttpContext, Controller |
-| Repository | EF Core, entità DB | DTO, logica business |
-| ViewModel (mobile) | Service app, DTO | API HTTP diretta, DB |
-| View (mobile) | ViewModel | Service, DTO |
+- provider base: Google Books API;
+- endpoint previsti per il MVP:
+  - `GET /volumes?q={query}` per ricerca;
+  - `GET /volumes/{id}` per dettaglio.
 
----
+Il progetto deve avere un solo boundary di servizio verso il catalogo libri, così da poter introdurre in futuro Open Library senza riscrivere i ViewModels.
 
-## 10. Decisioni Architetturali
+### Parsing JSON
 
-| Decisione | Scelta | Motivazione |
-|---|---|---|
-| Framework mobile | .NET MAUI | Una codebase per iOS + Android, ecosistema .NET coerente |
-| ORM | Entity Framework Core | Migrazioni code-first, LINQ tipizzato, produttività alta |
-| Database | PostgreSQL | Affidabilità, performance, open source, ottimo con EF Core |
-| Auth | JWT stateless | Scalabile, standard, nessuna sessione server-side |
-| Hosting | VPS Linux | Controllo totale, costo contenuto per MVP |
-| API style | REST | Standard, comprensibile, ben supportato da tutti i client |
+- uso di `System.Text.Json` con DTO dedicati;
+- mapping difensivo centralizzato per evitare null-handling disperso nei ViewModels;
+- trasformazione dei dati API in modelli adatti alla UI prima di arrivare alle Views.
+
+### Persistenza locale
+
+- SQLite come storage locale per favoriti e cronologia;
+- wrapper previsto: `sqlite-net-pcl`, coerente con le preferenze tecniche del repository;
+- un unico database locale con tabelle distinte e sufficiente per il MVP;
+- una sola `SQLiteAsyncConnection` condivisa, inizializzata da un servizio database registrato come singleton in `MauiProgram`;
+- favoriti: memorizzano identificatore remoto e snapshot locale completa dei campi principali del dettaglio;
+- cronologia: memorizza query normalizzata, testo originale e timestamp o ordinamento per recenza;
+- delete singolo e clear totale esposti dal layer locale senza duplicare logica in UI.
+
+Non è previsto un repository generico: il layer locale resta esplicito e limitato ai due casi d'uso del MVP, così da mantenere il codice leggibile e didattico.
+
+Per le immagini remote, nel MVP è preferibile affidarsi al comportamento standard di `Image` e alla cache HTTP di base della piattaforma, usando placeholder visuali senza introdurre librerie dedicate se non motivate da problemi reali.
+
+## 8. Dependency injection e composition root
+
+`MauiProgram.cs` è il punto di composizione del progetto. Qui dovranno essere registrati:
+
+- servizio remoto catalogo libri;
+- servizio database SQLite condiviso;
+- servizi o repository locali per favoriti e cronologia;
+- `IConnectivity` nativo di .NET MAUI, senza wrapper custom aggiuntivo;
+- logging standard MAUI, se necessario;
+- ViewModels e pagine.
+
+Linee guida iniziali:
+
+- servizi remoti e locali con lifetime applicativo;
+- ViewModels e Views con lifetime leggero, coerente con la navigazione MAUI;
+- nessuna istanziazione manuale di servizi nelle pagine.
+
+## 9. Error handling e logging
+
+- Le eccezioni di rete, parsing e persistenza devono essere intercettate dal layer di servizio o dal ViewModel, non propagate direttamente alla UI.
+- I ViewModels traducono i guasti in messaggi comprensibili e stati coerenti.
+- I log diagnostici possono usare il logging standard disponibile in MAUI, senza introdurre telemetria o analytics nel MVP.
+- Il refresh remoto dei favoriti non deve mai compromettere la disponibilità del contenuto locale già salvato.
+
+## 10. Decisioni confermate
+
+- SQLite resta la tecnologia di storage locale del MVP ed è previsto l'uso di `sqlite-net-pcl` come wrapper pratico sopra SQLite.
+- Il progetto userà una sola `SQLiteAsyncConnection` condivisa, creata e inizializzata da un servizio database singleton registrato in `MauiProgram`.
+- Sopra questa connessione vivranno due repository dedicati e separati: uno per `Favorites`, uno per `History`.
+- Non verrà introdotto un repository generico o un ulteriore strato ORM: per questo progetto didattico la soluzione più leggibile è avere un layer locale piccolo e specifico.
+- Non verrà introdotto un wrapper custom della connettività nel MVP.
+- Il controllo della rete per il refresh da `Favorites` userà direttamente `IConnectivity` di .NET MAUI tramite dependency injection, confinato al servizio che orchestra il refresh remoto non bloccante.
+- Questa scelta è considerata abbastanza testabile e abbastanza poco dipendente dalla piattaforma per il perimetro del MVP; verrà rivalutata solo se, durante l'implementazione, emergerà un limite concreto.
+
+Non risultano al momento ulteriori `TBD` architetturali bloccanti per l'avvio del MVP.

@@ -57,7 +57,8 @@ public partial class NotificationsViewModel : BaseViewModel
 
     [ObservableProperty] private bool _hasError;
     [ObservableProperty] private string _errorMessage = string.Empty;
-    [ObservableProperty] private bool _isEmpty;
+    [ObservableProperty] private bool _isEmptyState;
+    [ObservableProperty] private bool _hasData;
     [ObservableProperty] private int _unreadCount;
 
     public NotificationsViewModel(IHttpClientFactory httpClientFactory)
@@ -73,6 +74,7 @@ public partial class NotificationsViewModel : BaseViewModel
     {
         if (IsBusy) return;
         HasError = false;
+        ErrorMessage = string.Empty;
         try
         {
             IsBusy = true;
@@ -83,18 +85,31 @@ public partial class NotificationsViewModel : BaseViewModel
             if (result?.Data != null)
                 foreach (var n in result.Data) Notifications.Add(n);
 
-            UnreadCount = result?.UnreadCount ?? 0;
-            IsEmpty     = Notifications.Count == 0;
+            UnreadCount  = result?.UnreadCount ?? 0;
+            HasData      = Notifications.Count > 0;
+            IsEmptyState = Notifications.Count == 0;
         }
         catch (HttpRequestException)
         {
+            HasData = false;
+            IsEmptyState = false;
             HasError = true;
-            ErrorMessage = "Impossibile connettersi al server.";
+            ErrorMessage = "Errore di connessione al server.";
         }
-        catch (Exception ex)
+        catch (System.Text.Json.JsonException ex)
         {
+            HasData = false;
+            IsEmptyState = false;
             HasError = true;
-            ErrorMessage = ex.Message;
+            ErrorMessage = "Risposta del server non valida.";
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(NotificationsViewModel));
+        }
+        catch (TaskCanceledException)
+        {
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Richiesta scaduta. Riprova.";
         }
         finally { IsBusy = false; }
     }
@@ -116,7 +131,8 @@ public partial class NotificationsViewModel : BaseViewModel
                 Notifications.Insert(idx, notification);
             }
         }
-        catch { }
+        catch (HttpRequestException) { }
+        catch (TaskCanceledException) { }
     }
 
     [RelayCommand]
@@ -127,7 +143,8 @@ public partial class NotificationsViewModel : BaseViewModel
             await _httpClient.PutAsync("api/notifications/read-all", null);
             await LoadAsync();
         }
-        catch { }
+        catch (HttpRequestException) { }
+        catch (TaskCanceledException) { }
     }
 
     private class NotificationsResponse

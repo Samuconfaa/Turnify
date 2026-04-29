@@ -15,7 +15,8 @@ public class CreateEmployeeRequest
 {
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
+    public string Username { get; set; } = string.Empty;      // login username (unico per company)
+    public string? Email { get; set; }                        // opzionale, solo informativo
     public string Phone { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;           // titolo lavorativo (es. "Chef")
     public string AccountRole { get; set; } = "Employee";     // "Employee" | "Manager"
@@ -39,7 +40,8 @@ public class UpdateEmployeeRequest
 {
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
+    public string? Username { get; set; }                  // opzionale: se specificato, aggiorna username
+    public string? Email { get; set; }                     // opzionale, solo informativo
     public string Phone { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
     public string? AccountRole { get; set; }               // opzionale: "Employee" | "Manager"
@@ -111,7 +113,14 @@ public class EmployeesController : ControllerBase
         if (companyId == 0)
             return Unauthorized(new { message = "CompanyId non trovato nel token." });
 
-        if (await _userRepository.ExistsByEmailAsync(request.Email, ct))
+        if (string.IsNullOrWhiteSpace(request.Username))
+            return BadRequest(new { message = "Il nome utente è obbligatorio." });
+
+        if (await _userRepository.ExistsByUsernameInCompanyAsync(request.Username, companyId, ct))
+            return BadRequest(new { message = "Nome utente già in uso in questa azienda." });
+
+        if (!string.IsNullOrWhiteSpace(request.Email) &&
+            await _userRepository.ExistsByEmailAsync(request.Email, ct))
             return BadRequest(new { message = "Email già in uso." });
 
         if (string.IsNullOrWhiteSpace(request.Password))
@@ -125,7 +134,8 @@ public class EmployeesController : ControllerBase
 
         var user = new User
         {
-            Email        = request.Email,
+            Username     = request.Username,
+            Email        = string.IsNullOrWhiteSpace(request.Email) ? null : request.Email,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
             Role         = accountRole,
             CompanyId    = companyId,
@@ -144,7 +154,7 @@ public class EmployeesController : ControllerBase
             UserId       = createdUser.Id,
             FirstName    = request.FirstName,
             LastName     = request.LastName,
-            Email        = request.Email,
+            Email        = request.Email ?? string.Empty,
             Phone        = request.Phone ?? string.Empty,
             Role         = request.Role ?? string.Empty,
             ContractType = contractType,
@@ -208,8 +218,17 @@ public class EmployeesController : ControllerBase
             var user = await _userRepository.GetByIdAsync(employee.UserId.Value, ct);
             if (user != null)
             {
-                if (user.Email != request.Email)
-                    user.Email = request.Email;
+                // Aggiorna username se specificato e diverso da quello attuale
+                if (!string.IsNullOrWhiteSpace(request.Username) && user.Username != request.Username)
+                {
+                    if (await _userRepository.ExistsByUsernameInCompanyAsync(request.Username, employee.CompanyId, ct))
+                        return BadRequest(new { message = "Nome utente già in uso in questa azienda." });
+                    user.Username = request.Username;
+                }
+
+                var newEmail = string.IsNullOrWhiteSpace(request.Email) ? null : request.Email;
+                if (user.Email != newEmail)
+                    user.Email = newEmail;
 
                 // Aggiorna il ruolo account se specificato (solo Employee o Manager)
                 if (!string.IsNullOrEmpty(request.AccountRole) &&
@@ -303,7 +322,8 @@ public class EmployeesController : ControllerBase
         UserId       = e.UserId,
         FirstName    = e.FirstName,
         LastName     = e.LastName,
-        Email        = e.Email,
+        Username     = user?.Username,
+        Email        = string.IsNullOrEmpty(e.Email) ? null : e.Email,
         Phone        = e.Phone,
         Role         = e.Role,
         AccountRole  = user?.Role.ToString() ?? "Employee",

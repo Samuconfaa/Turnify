@@ -1,0 +1,19 @@
+{
+  "expectations": [
+    {
+      "text": "Propone unit test o service test prima della UI automation.",
+      "passed": true,
+      "evidence": "Propone subito un singolo test project unitario focalizzato su `SearchViewModel` e `BookService` e lascia fuori la UI automation."
+    },
+    {
+      "text": "Include build verification per XAML o Shell tra i controlli automatici.",
+      "passed": true,
+      "evidence": "Tratta `dotnet build` come check automatico obbligatorio perché sono stati toccati `SearchPage.xaml` e `AppShell.xaml.cs`."
+    },
+    {
+      "text": "Esplicita che alcune verifiche restano manuali in assenza di infrastruttura UI automation o device testing.",
+      "passed": true,
+      "evidence": "Dedica una sezione alle parti da lasciare manuali: rendering MAUI reale, navigazione Shell runtime, device behavior e layout."
+    }
+  ]
+}

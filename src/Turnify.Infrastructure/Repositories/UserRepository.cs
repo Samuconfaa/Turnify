@@ -26,6 +26,12 @@ public class UserRepository : IUserRepository
         return _context.Users.FirstOrDefaultAsync(u => u.Email == email, ct);
     }
 
+    public Task<User?> GetByUsernameInCompanyAsync(string username, int companyId, CancellationToken ct = default)
+    {
+        return _context.Users.FirstOrDefaultAsync(
+            u => u.Username == username && u.CompanyId == companyId && u.IsActive, ct);
+    }
+
     public async Task<User> AddAsync(User user, CancellationToken ct = default)
     {
         user.CreatedAt = System.DateTime.UtcNow;
@@ -46,6 +52,11 @@ public class UserRepository : IUserRepository
     public Task<bool> ExistsByEmailAsync(string email, CancellationToken ct = default)
     {
         return _context.Users.AnyAsync(u => u.Email == email, ct);
+    }
+
+    public Task<bool> ExistsByUsernameInCompanyAsync(string username, int companyId, CancellationToken ct = default)
+    {
+        return _context.Users.AnyAsync(u => u.Username == username && u.CompanyId == companyId, ct);
     }
 
     public async Task<System.Collections.Generic.IReadOnlyList<User>> GetActiveUsersWithValidRefreshTokenAsync(CancellationToken ct = default)

@@ -98,9 +98,10 @@ public partial class OnboardingViewModel : BaseViewModel
                 await Shell.Current.DisplayAlertAsync("Errore",
                     "Impossibile salvare l'attività. Riprova.", "OK");
         }
-        catch
+        catch (Exception ex)
         {
             await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione.", "OK");
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(OnboardingViewModel));
         }
         finally { IsBusy = false; }
     }
@@ -138,9 +139,10 @@ public partial class OnboardingViewModel : BaseViewModel
                 await Shell.Current.DisplayAlertAsync("Errore",
                     "Impossibile creare il dipendente. Riprova.", "OK");
         }
-        catch
+        catch (Exception ex)
         {
             await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione.", "OK");
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(OnboardingViewModel));
         }
         finally { IsBusy = false; }
     }

@@ -17,16 +17,4 @@ public partial class ShiftDetailPage : ContentPage
         if (BindingContext is ShiftDetailViewModel vm)
             vm.LoadDataCommand.Execute(null);
     }
-
-    private void OnRepeatIncrement(object? sender, EventArgs e)
-    {
-        if (BindingContext is ShiftDetailViewModel vm && vm.RepeatWeeks < 12)
-            vm.RepeatWeeks++;
-    }
-
-    private void OnRepeatDecrement(object? sender, EventArgs e)
-    {
-        if (BindingContext is ShiftDetailViewModel vm && vm.RepeatWeeks > 0)
-            vm.RepeatWeeks--;
-    }
 }

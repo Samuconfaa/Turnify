@@ -8,6 +8,7 @@ namespace Turnify.Core.Interfaces.Services;
 public interface IAuthService
 {
     Task<(string AccessToken, string RefreshToken)?> LoginAsync(string email, string password, CancellationToken ct = default);
+    Task<(string AccessToken, string RefreshToken)?> EmployeeLoginAsync(string companySlug, string username, string password, CancellationToken ct = default);
     Task<bool> RegisterCompanyAsync(Company company, User adminUser, CancellationToken ct = default);
     Task<(string AccessToken, string RefreshToken)?> RefreshTokenAsync(string refreshToken, CancellationToken ct = default);
     Task<bool> LogoutAsync(int userId, CancellationToken ct = default);

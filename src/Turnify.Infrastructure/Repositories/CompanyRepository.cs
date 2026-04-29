@@ -21,6 +21,11 @@ public class CompanyRepository : ICompanyRepository
         return _context.Companies.FirstOrDefaultAsync(c => c.Id == id, ct);
     }
 
+    public Task<Company?> GetBySlugAsync(string slug, CancellationToken ct = default)
+    {
+        return _context.Companies.FirstOrDefaultAsync(c => c.Slug == slug && c.IsActive, ct);
+    }
+
     public Task<bool> ExistsBySlugAsync(string slug, CancellationToken ct = default)
     {
         return _context.Companies.AnyAsync(c => c.Slug == slug, ct);

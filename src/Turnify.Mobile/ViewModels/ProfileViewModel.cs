@@ -5,6 +5,7 @@ using Microsoft.Maui.Storage;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Turnify.Mobile.ViewModels;
@@ -27,6 +28,10 @@ public partial class ProfileViewModel : BaseViewModel
     [ObservableProperty] private string _role = string.Empty;
     [ObservableProperty] private string _roleDisplay = string.Empty;
     [ObservableProperty] private bool _isAdmin;
+    [ObservableProperty] private bool _hasData;
+    [ObservableProperty] private bool _isEmptyState;
+    [ObservableProperty] private bool _hasError;
+    [ObservableProperty] private string _errorMessage = string.Empty;
 
     // Avatar state
     [ObservableProperty]
@@ -110,11 +115,18 @@ public partial class ProfileViewModel : BaseViewModel
 
     private async Task LoadProfileAsync()
     {
+        HasError = false;
+        ErrorMessage = string.Empty;
         IsBusy = true;
         try
         {
             var user = await _httpClient.GetFromJsonAsync<UserMeResponse>("api/users/me");
-            if (user == null) return;
+            if (user == null)
+            {
+                HasData = false;
+                IsEmptyState = true;
+                return;
+            }
             Email     = user.Email     ?? string.Empty;
             FirstName = user.FirstName ?? string.Empty;
             LastName  = user.LastName  ?? string.Empty;
@@ -123,9 +135,15 @@ public partial class ProfileViewModel : BaseViewModel
             RoleDisplay = IsAdmin ? "Amministratore" : "Dipendente";
             OnPropertyChanged(nameof(FullName));
             OnPropertyChanged(nameof(ComputedInitials));
+            HasData = true;
+            IsEmptyState = false;
         }
-        catch
+        catch (HttpRequestException)
         {
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Errore di connessione al server.";
             var storedRole = await SecureStorage.Default.GetAsync("user_role");
             if (!string.IsNullOrEmpty(storedRole))
             {
@@ -133,6 +151,21 @@ public partial class ProfileViewModel : BaseViewModel
                 IsAdmin = storedRole == "Admin";
                 RoleDisplay = IsAdmin ? "Amministratore" : "Dipendente";
             }
+        }
+        catch (JsonException ex)
+        {
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Risposta del server non valida.";
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(ProfileViewModel));
+        }
+        catch (TaskCanceledException)
+        {
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Richiesta scaduta. Riprova.";
         }
         finally { IsBusy = false; }
     }
@@ -217,7 +250,9 @@ public partial class ProfileViewModel : BaseViewModel
             else
                 await Shell.Current.DisplayAlertAsync("Errore", "Password attuale non corretta.", "OK");
         }
-        catch { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione.", "OK"); }
+        catch (HttpRequestException) { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK"); }
+        catch (JsonException) { await Shell.Current.DisplayAlertAsync("Errore", "Risposta del server non valida.", "OK"); }
+        catch (TaskCanceledException) { await Shell.Current.DisplayAlertAsync("Errore", "Richiesta scaduta. Riprova.", "OK"); }
     }
 
     [RelayCommand]
@@ -253,7 +288,9 @@ public partial class ProfileViewModel : BaseViewModel
                         $"{nameof(Views.BusinessOpeningHoursPage)}?businessId={biz.Id}");
             }
         }
-        catch { await Shell.Current.DisplayAlertAsync("Errore", "Impossibile caricare le attività.", "OK"); }
+        catch (HttpRequestException) { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK"); }
+        catch (JsonException) { await Shell.Current.DisplayAlertAsync("Errore", "Risposta del server non valida.", "OK"); }
+        catch (TaskCanceledException) { await Shell.Current.DisplayAlertAsync("Errore", "Richiesta scaduta. Riprova.", "OK"); }
     }
 
     [RelayCommand]
@@ -275,7 +312,9 @@ public partial class ProfileViewModel : BaseViewModel
     {
         bool confirm = await Shell.Current.DisplayAlertAsync("Logout", "Sei sicuro?", "Esci", "Annulla");
         if (!confirm) return;
-        try { await _httpClient.PostAsync("api/auth/logout", null); } catch { }
+        try { await _httpClient.PostAsync("api/auth/logout", null); }
+        catch (HttpRequestException) { }
+        catch (TaskCanceledException) { }
         finally
         {
             SecureStorage.Default.Remove("jwt_token");

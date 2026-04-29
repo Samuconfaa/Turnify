@@ -1,0 +1,19 @@
+{
+  "expectations": [
+    {
+      "text": "Propone unit test o service test prima della UI automation.",
+      "passed": true,
+      "evidence": "Propone prima `SearchViewModelTests` e `BookServiceTests` e rimanda la UI automation."
+    },
+    {
+      "text": "Include build verification per XAML o Shell tra i controlli automatici.",
+      "passed": true,
+      "evidence": "Propone esplicitamente build del progetto MAUI come smoke check per XAML e wiring Shell."
+    },
+    {
+      "text": "Esplicita che alcune verifiche restano manuali in assenza di infrastruttura UI automation o device testing.",
+      "passed": true,
+      "evidence": "Elenca chiaramente cosa resta manuale: resa visiva, binding runtime, navigazione end-to-end, comportamento su device."
+    }
+  ]
+}

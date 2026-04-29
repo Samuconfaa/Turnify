@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
+             x:Class="Turnify.Mobile.Views.ReportsPage"
+             x:DataType="vm:ReportsViewModel"
+             Title="Report"
+             BackgroundColor="{StaticResource Background}">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="0" Padding="16,16,16,40">
+
+            <!-- Error banner -->
+            <Border BackgroundColor="{StaticResource ErrorContainer}"
+                    Stroke="{StaticResource Error}" StrokeThickness="1"
+                    Padding="14,10" Margin="0,0,0,12"
+                    IsVisible="{Binding HasError}">
+                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                <Label Text="{Binding ErrorMessage}" FontSize="13"
+                       TextColor="{StaticResource OnErrorContainer}"/>
+            </Border>
+
+            <!-- Success banner -->
+            <Border BackgroundColor="{StaticResource SuccessContainer}"
+                    Stroke="{StaticResource Success}" StrokeThickness="1"
+                    Padding="14,10" Margin="0,0,0,12"
+                    IsVisible="{Binding HasSuccess}">
+                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                <Label Text="{Binding SuccessMessage}" FontSize="13"
+                       TextColor="{StaticResource Success}"/>
+            </Border>
+
+            <!-- Periodo -->
+            <Label Text="PERIODO" FontSize="11" FontAttributes="Bold"
+                   TextColor="{StaticResource Outline}" Margin="4,0,0,10"/>
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,0,0,24">
+                <VerticalStackLayout Grid.Column="0" Spacing="6">
+                    <Label Text="INIZIO" FontSize="10" FontAttributes="Bold"
+                           TextColor="{StaticResource OnSurfaceVariant}"/>
+                    <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
+                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                        <DatePicker Date="{Binding FromDate}" Margin="12,0"/>
+                    </Border>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1" Spacing="6">
+                    <Label Text="FINE" FontSize="10" FontAttributes="Bold"
+                           TextColor="{StaticResource OnSurfaceVariant}"/>
+                    <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
+                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                        <DatePicker Date="{Binding ToDate}" Margin="12,0"/>
+                    </Border>
+                </VerticalStackLayout>
+            </Grid>
+
+            <!-- Report Ore Pianificate -->
+            <Label Text="ESPORTA" FontSize="11" FontAttributes="Bold"
+                   TextColor="{StaticResource Outline}" Margin="4,0,0,10"/>
+
+            <Border BackgroundColor="{StaticResource Surface}"
+                    Stroke="#E2E8F0" StrokeThickness="1"
+                    Padding="0" Margin="0,0,0,12">
+                <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+
+                <VerticalStackLayout>
+                    <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,16">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding DownloadHoursCommand}"/>
+                        </Grid.GestureRecognizers>
+                        <Border Grid.Column="0"
+                                BackgroundColor="{StaticResource SecondaryContainer}"
+                                HeightRequest="44" WidthRequest="44"
+                                Stroke="Transparent" Margin="0,0,14,0">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                            <Label Text="⏰" FontSize="22"
+                                   HorizontalOptions="Center" VerticalOptions="Center"/>
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                            <Label Text="Ore pianificate" FontSize="15" FontAttributes="Bold"
+                                   TextColor="{StaticResource OnBackground}"/>
+                            <Label Text="Turni programmati per dipendente (CSV)"
+                                   FontSize="12" TextColor="{StaticResource Outline}"/>
+                        </VerticalStackLayout>
+                        <Label Grid.Column="2" Text="↓" FontSize="20" FontAttributes="Bold"
+                               TextColor="{StaticResource Primary}"
+                               VerticalOptions="Center"/>
+                    </Grid>
+
+                    <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="16,0"/>
+
+                    <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,16">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding DownloadAttendanceCommand}"/>
+                        </Grid.GestureRecognizers>
+                        <Border Grid.Column="0"
+                                BackgroundColor="{StaticResource SuccessContainer}"
+                                HeightRequest="44" WidthRequest="44"
+                                Stroke="Transparent" Margin="0,0,14,0">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                            <Label Text="📋" FontSize="22"
+                                   HorizontalOptions="Center" VerticalOptions="Center"/>
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                            <Label Text="Presenze effettive" FontSize="15" FontAttributes="Bold"
+                                   TextColor="{StaticResource OnBackground}"/>
+                            <Label Text="Timbrature reali: giorni e ore lavorate (CSV)"
+                                   FontSize="12" TextColor="{StaticResource Outline}"/>
+                        </VerticalStackLayout>
+                        <Label Grid.Column="2" Text="↓" FontSize="20" FontAttributes="Bold"
+                               TextColor="{StaticResource Primary}"
+                               VerticalOptions="Center"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                               Color="{StaticResource Primary}"
+                               HorizontalOptions="Center" Margin="0,12,0,0"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

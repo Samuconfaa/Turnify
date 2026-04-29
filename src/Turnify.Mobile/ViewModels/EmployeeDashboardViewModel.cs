@@ -13,6 +13,7 @@ public class EmployeeSummaryDto
 {
     [JsonPropertyName("nextShift")]                 public NextShiftDto? NextShift { get; set; }
     [JsonPropertyName("vacationDaysUsedThisYear")]  public int VacationDaysUsedThisYear { get; set; }
+    [JsonPropertyName("vacationDaysAllowed")]       public int VacationDaysAllowed { get; set; }
     [JsonPropertyName("pendingVacationRequests")]   public int PendingVacationRequests { get; set; }
     [JsonPropertyName("isCheckedInToday")]          public bool IsCheckedInToday { get; set; }
     [JsonPropertyName("todayCheckIn")]              public DateTime? TodayCheckIn { get; set; }
@@ -43,6 +44,8 @@ public partial class EmployeeDashboardViewModel : BaseViewModel
 
     [ObservableProperty] private NextShiftDto? _nextShift;
     [ObservableProperty] private int     _vacationDaysUsed;
+    [ObservableProperty] private int     _vacationDaysAllowed;
+    [ObservableProperty] private int     _vacationDaysRemaining;
     [ObservableProperty] private int     _pendingVacations;
     [ObservableProperty] private bool    _isCheckedInToday;
     [ObservableProperty] private string  _checkInDisplay  = string.Empty;
@@ -76,9 +79,11 @@ public partial class EmployeeDashboardViewModel : BaseViewModel
 
             if (summary == null) return;
 
-            NextShift         = summary.NextShift;
-            VacationDaysUsed  = summary.VacationDaysUsedThisYear;
-            PendingVacations  = summary.PendingVacationRequests;
+            NextShift             = summary.NextShift;
+            VacationDaysUsed      = summary.VacationDaysUsedThisYear;
+            VacationDaysAllowed   = summary.VacationDaysAllowed > 0 ? summary.VacationDaysAllowed : 25;
+            VacationDaysRemaining = System.Math.Max(0, VacationDaysAllowed - VacationDaysUsed);
+            PendingVacations      = summary.PendingVacationRequests;
             IsCheckedInToday  = summary.IsCheckedInToday;
             HoursThisMonth    = summary.HoursWorkedThisMonth;
             HoursThisWeek     = summary.HoursScheduledThisWeek;

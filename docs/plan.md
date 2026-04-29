@@ -341,3 +341,79 @@ Turnify/
 
 ---
 
+### Iterazione 9 — Login dipendente con username
+**Data:** 2026-04-29
+
+**Lavoro svolto:**
+- Migrazione `AddUsernameToUser`: colonna `Username` (nullable) su tabella `Users`
+- Indice univoco filtrato `(CompanyId, Username) WHERE Username IS NOT NULL`
+- `User.cs`: aggiunto campo `Username`
+- `TurnifyDbContext`: configurazione indice con `.HasFilter("`Username` IS NOT NULL")`
+- `AuthController` e `UsersController` aggiornati per gestire login con username (dipendenti) vs email (admin)
+- `LoginViewModel` mobile aggiornato
+
+**File principali:**
+- `Turnify.Infrastructure/Migrations/20260429000000_AddUsernameToUser.cs`
+- `Turnify.Core/Models/User.cs`
+- `Turnify.Infrastructure/Data/TurnifyDbContext.cs`
+- `Turnify.Api/Controllers/AuthController.cs`, `UsersController.cs`
+- `Turnify.Mobile/ViewModels/LoginViewModel.cs`
+
+**Risultato:** autenticazione differenziata per ruolo — dipendenti accedono con username (univoco per azienda), admin con email.
+
+---
+
+## Rischi tecnici
+
+Derivati da problemi tecnici reali osservati durante lo sviluppo e la verifica:
+
+| Rischio | Evidenza tecnica | Impatto |
+|---|---|---|
+| Compatibilità MAUI `Frame` vs `Border` | aggiornamento documentato fix `RegisterPage.xaml` — Frame bloccava l'input | Input utente non funzionante su alcuni controlli |
+| Bug UTC nei timestamp presenze | aggiornamento documentato fix esplicito per bug UTC in `AttendanceHistoryViewModel` | Orari presenze scorretti a runtime |
+| AppShell non aggiornata al cambio ruolo | aggiornamento documentato re-inizializzazione forzata AppShell al login | Tab admin visibili ai dipendenti o viceversa |
+| Deploy Next.js su Node 20 VPS | aggiornamento documentato fix specifico per compatibilità Node 20 | Portale web non avviabile in produzione |
+| Migrazione manuale senza designer file | aggiornamento documentato aggiunti designer file mancanti per EF Core discovery | Migrazione non scoperta dal CLI, errori `dotnet ef` |
+| Rate limiter non per-IP | aggiornamento documentato fix rate limiter — era globale, non per-IP | Limite condiviso tra tutti gli IP, facilmente aggirabile |
+| Registrazione restituiva 500 invece di 409 | aggiornamento documentato | UX degradata, client non poteva distinguere conflitto da errore server |
+| `Array.from` vs spread su `Set` | aggiornamento documentato fix compatibilità browser in pagina error-logs | Pagina crashava su alcuni browser |
+| FCM senza test automatici | `FcmPushNotificationService` non coperto da integration test | Failure silenziosa se chiave FCM errata o rete non disponibile |
+
+---
+
+## Strategia di testing
+
+Derivata dal codice reale in `Turnify.Tests/`:
+
+**Unit test (xUnit):**
+- `Services/AuthServiceTests.cs` — registrazione, login, generazione JWT
+- `Services/ShiftServiceTests.cs` — creazione turno, validazioni
+- `Services/ShiftRecurringTests.cs` — logica ricorrenza turni
+- `Services/VacationServiceTests.cs` — flusso richiesta/approvazione/rifiuto ferie (475 righe)
+- `Services/DashboardServiceTests.cs` — aggregazioni dashboard
+- `Repositories/ShiftRepositoryTests.cs`, `UserRepositoryTests.cs`, `VacationRepositoryTests.cs`, `AttendanceRepositoryTests.cs`, `DeviceTokenRepositoryTests.cs`
+- `Middleware/GlobalExceptionMiddlewareTests.cs`
+
+**Integration test (WebApplicationFactory):**
+- `Integration/TurnifyWebFactory.cs` — factory con DB in-memory o test DB
+- `Integration/IntegrationTestBase.cs` — setup comuni
+- `Integration/AuthControllerIntegrationTests.cs` — register, login, token, conflitti
+- `Integration/ShiftsControllerIntegrationTests.cs` — CRUD turni end-to-end
+
+**Totale documentato nella suite di test:** 122 test.
+
+**Non testato automaticamente:** `FcmPushNotificationService`, `SmtpEmailService`, portale web Next.js, `CertificatePinningHandler`.
+
+---
+
+## Definition of Done
+
+Derivata dallo stato attuale del repository e dalle verifiche documentate:
+
+- Il codice compila senza warning (`zero warning build` esplicitamente raggiunto nell'aggiornamento documentato)
+- Ogni ViewModel non contiene logica nel code-behind corrispondente (zero metodi significativi in `.xaml.cs`)
+- Ogni View XAML ha `x:DataType` impostato al ViewModel corretto
+- Ogni endpoint API critico ha un validator FluentValidation registrato
+- Ogni nuovo modello di dominio ha la migrazione EF Core corrispondente
+- I test esistenti rimangono verdi dopo ogni modifica
+- Le credenziali non sono hardcodate nel codice sorgente (in `.env` o `appsettings.json` non tracciato)

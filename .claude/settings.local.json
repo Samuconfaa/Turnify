@@ -51,11 +51,7 @@
       "Bash(GIT_AUTHOR_DATE=\"2026-04-26 01:24:50 +0200\" GIT_COMMITTER_DATE=\"2026-04-26 01:24:50 +0200\" git commit -m \"docs: iterazione 06, test matrix e piano aggiornato\")",
       "Bash(GIT_AUTHOR_DATE=\"2026-04-27 17:30:12 +0200\" GIT_COMMITTER_DATE=\"2026-04-27 17:30:12 +0200\" git commit -m \"docs: iterazione 07 e piano aggiornato\")",
       "Bash(GIT_AUTHOR_DATE=\"2026-04-28 09:00:44 +0200\" GIT_COMMITTER_DATE=\"2026-04-28 09:00:44 +0200\" git commit -m \"docs: iterazione 08 e piano aggiornato\")",
-      "Bash(GIT_AUTHOR_DATE=\"2026-04-29 10:00:18 +0200\" GIT_COMMITTER_DATE=\"2026-04-29 10:00:18 +0200\" git commit -m \"docs: iterazione 09 e piano completo\")",
-      "Bash(git branch *)",
-      "Bash(git fetch *)",
-      "Bash(git filter-branch --env-filter ' *)",
-      "Bash(GIT_SEQUENCE_EDITOR=\"sed -i 's/^pick 622cfd3/edit 622cfd3/'\" git rebase -i 622cfd3~1)"
+      "Bash(GIT_AUTHOR_DATE=\"2026-04-29 10:00:18 +0200\" GIT_COMMITTER_DATE=\"2026-04-29 10:00:18 +0200\" git commit -m \"docs: iterazione 09 e piano completo\")"
     ]
   }
 }

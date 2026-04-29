@@ -181,9 +181,31 @@
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="vm:VacationRequestDto">
+                        <SwipeView Margin="16,0,16,10">
+                            <!-- Swipe right → Approva (admin + pending only) -->
+                            <SwipeView.LeftItems>
+                                <SwipeItems Mode="Execute">
+                                    <SwipeItem Text="✓ Approva"
+                                               BackgroundColor="{StaticResource Success}"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type vm:VacationListViewModel}}, Path=ApproveCommand}"
+                                               CommandParameter="{Binding .}"
+                                               IsVisible="{Binding IsPending}"/>
+                                </SwipeItems>
+                            </SwipeView.LeftItems>
+                            <!-- Swipe left → Rifiuta (admin + pending only) -->
+                            <SwipeView.RightItems>
+                                <SwipeItems Mode="Execute">
+                                    <SwipeItem Text="✕ Rifiuta"
+                                               BackgroundColor="{StaticResource Error}"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type vm:VacationListViewModel}}, Path=RejectCommand}"
+                                               CommandParameter="{Binding .}"
+                                               IsVisible="{Binding IsPending}"/>
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+
                         <Border BackgroundColor="{StaticResource Surface}"
                                 Stroke="#E2E8F0" StrokeThickness="1"
-                                Padding="0" Margin="16,0,16,10">
+                                Padding="0">
                             <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
 
                             <Grid ColumnDefinitions="5,*">
@@ -323,6 +345,7 @@
                                 </VerticalStackLayout>
                             </Grid>
                         </Border>
+                        </SwipeView>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>

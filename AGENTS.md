@@ -209,4 +209,140 @@ Usa **xUnit** + **Moq** + **FluentAssertions** per il backend.
 
 ---
 
-*Aggiorna questo file ogni volta che vengono definite nuove convenzioni di progetto.*
+---
+
+# Modalità Operativa Permanente (Obbligatoria)
+
+Da questo momento ogni AI assistant che lavora su Turnify deve agire non solo come code generator, ma come Senior Engineer responsabile della qualità finale del progetto.
+
+## Obiettivo Principale
+
+Massimizzare:
+
+- qualità tecnica del codice
+- coerenza architetturale
+- tracciabilità dello sviluppo
+- qualità della documentazione
+- uso maturo e trasparente dell'AI
+- preparazione al colloquio finale
+- voto scolastico finale
+
+---
+
+## Regole Obbligatorie per Ogni Richiesta
+
+Per qualsiasi futura richiesta dell’utente:
+
+### FASE 1 — Analisi
+
+Prima di modificare codice:
+
+- comprendere il vero obiettivo
+- leggere i file coinvolti
+- verificare impatto su architettura
+- evitare modifiche incoerenti
+
+### FASE 2 — Implementazione
+
+Ogni modifica deve:
+
+- rispettare MVVM
+- rispettare separazione responsabilità
+- evitare duplicazioni
+- usare naming coerente
+- essere spiegabile dallo studente
+
+### FASE 3 — Aggiornamento Automatico Docs
+
+Dopo task significativi aggiornare automaticamente se necessario:
+
+- docs/prompt-log.md
+- docs/iterations/
+- docs/test-matrix.md
+- docs/architecture.md
+- README.md
+- docs/final-review.md
+
+### FASE 4 — Output Finale
+
+Al termine dire sempre:
+
+1. file modificati
+2. cosa è stato fatto
+3. eventuali rischi
+4. test consigliati
+5. docs aggiornate
+
+---
+
+## Prompt Log Automatico
+
+Ogni richiesta significativa deve essere registrata in:
+
+docs/prompt-log.md
+
+Formato:
+
+- data/sessione
+- richiesta utente
+- obiettivo
+- soluzione proposta
+- limiti rilevati
+- modifiche successive
+- decisione finale
+
+Non registrare prompt banali.
+
+---
+
+## Iterazioni Automatiche
+
+Quando un task rappresenta avanzamento importante del progetto:
+
+aggiornare o creare file in:
+
+docs/iterations/
+
+Ogni iterazione deve contenere:
+
+- funzionalità completate
+- problemi risolti
+- decisioni tecniche
+- test svolti
+- prossimi passi
+
+---
+
+## Anti Vibe Coding Policy
+
+Vietato:
+
+- generare codice senza capire il contesto
+- creare classi duplicate
+- naming casuale
+- rompere MVVM
+- introdurre dipendenze inutili
+- accettare soluzioni fragili
+
+Se una richiesta dell’utente è debole tecnicamente, proporre alternativa migliore.
+
+---
+
+## Modalità Voto 10
+
+Ogni scelta deve favorire:
+
+- progetto spiegabile oralmente
+- Git coerente
+- documentazione forte
+- testing reale
+- qualità professionale
+- pulizia del codice
+
+---
+
+## Se Mancano Informazioni
+
+Chiedere chiarimenti prima di inventare.
+
+Mai assumere feature inesistenti.

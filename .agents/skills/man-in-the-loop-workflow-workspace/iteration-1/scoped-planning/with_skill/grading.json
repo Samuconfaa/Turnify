@@ -1,0 +1,19 @@
+{
+  "expectations": [
+    {
+      "text": "Include le sezioni Piano breve, File da creare o modificare, Implementazione richiesta, Rischi o punti da controllare e Test manuali suggeriti.",
+      "passed": true,
+      "evidence": "Il file contiene esattamente le cinque sezioni richieste come header principali."
+    },
+    {
+      "text": "Mantiene fuori scope la generazione di XAML o altre parti non richieste.",
+      "passed": true,
+      "evidence": "Dichiara esplicitamente fuori scope `Views/BookDetailPage.xaml`, code-behind, Shell e DI aggiuntiva."
+    },
+    {
+      "text": "Esplicita criteri di accettazione o condizioni verificabili per la chiusura della singola iterazione.",
+      "passed": true,
+      "evidence": "La sezione Implementazione richiesta elenca criteri di accettazione verificabili per il ViewModel."
+    }
+  ]
+}

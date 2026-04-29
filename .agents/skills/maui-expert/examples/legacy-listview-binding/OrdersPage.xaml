@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ExampleApp.Views.OrdersPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewmodels="clr-namespace:ExampleApp.ViewModels"
+    x:DataType="viewmodels:OrdersPageViewModel"
+    Title="Orders">
+
+    <Grid RowDefinitions="Auto,Auto,*" Padding="16">
+        <ActivityIndicator
+            Grid.RowSpan="3"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}" />
+
+        <Label
+            Grid.Row="0"
+            Text="{Binding ErrorMessage}"
+            TextColor="Red"
+            IsVisible="{Binding HasError}" />
+
+        <VerticalStackLayout
+            Grid.Row="1"
+            Margin="0,12,0,12"
+            Spacing="8"
+            IsVisible="{Binding IsEmptyState}">
+            <Label FontAttributes="Bold" Text="No orders found." />
+            <Button Command="{Binding LoadCommand}" Text="Retry" />
+        </VerticalStackLayout>
+
+        <ListView
+            Grid.Row="2"
+            HasUnevenRows="True"
+            ItemsSource="{Binding Orders}"
+            IsPullToRefreshEnabled="True"
+            IsRefreshing="{Binding IsBusy}"
+            RefreshCommand="{Binding RefreshCommand}"
+            IsVisible="{Binding HasData}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="viewmodels:OrderListItem">
+                    <ViewCell>
+                        <Grid Padding="12" ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                            <Label FontAttributes="Bold" Text="{Binding Number}" />
+                            <Label
+                                Grid.Column="1"
+                                Text="{Binding Total, StringFormat='{}{0:C}'}"
+                                HorizontalTextAlignment="End" />
+                            <Label
+                                Grid.Row="1"
+                                Grid.ColumnSpan="2"
+                                Margin="0,4,0,0"
+                                Text="{Binding Status}" />
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</ContentPage>

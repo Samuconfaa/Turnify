@@ -1,0 +1,10 @@
+{
+  "eval_id": 5,
+  "eval_name": "provisional-draft-from-credible-prd-summary",
+  "prompt": "Non ho ancora salvato `docs/spec.md`, ma il PRD è già definito così: app .NET MAUI per trovare alloggi Erasmus, vedere dettagli alloggio, salvare preferiti locali, Android primario, niente login nell'MVP, dati remoti da API esterna. Voglio una bozza provvisoria di `docs/plan.md`, `docs/architecture.md` e `docs/test-matrix.md`, chiarendo bene cosa andrà validato quando salverò lo spec definitivo.",
+  "assertions": [
+    "Consente una bozza provvisoria quando il riassunto del PRD nel prompt è sufficientemente credibile e completo.",
+    "Etichetta chiaramente il risultato come draft da validare contro `docs/spec.md` definitivo.",
+    "Non usa l'assenza del file come scusa per fermarsi del tutto quando goal, MVP e vincoli principali sono già noti."
+  ]
+}

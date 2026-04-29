@@ -40,9 +40,13 @@ export function logout(): void {
   deleteCookie('access_token');
   deleteCookie('refresh_token');
   try { localStorage.clear(); } catch { /* ignore */ }
-  window.location.href = '/login';
+  window.location.href = '/admin/login';
 }
 
 export function getEmail(): string {
   try { return localStorage.getItem('user_email') ?? ''; } catch { return ''; }
+}
+
+export function getRole(): string {
+  try { return localStorage.getItem('user_role') ?? ''; } catch { return ''; }
 }

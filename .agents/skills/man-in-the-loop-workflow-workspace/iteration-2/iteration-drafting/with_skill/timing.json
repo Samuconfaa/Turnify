@@ -1,0 +1,6 @@
+{
+  "total_tokens": 850,
+  "duration_ms": 180000,
+  "total_duration_seconds": 180.0,
+  "notes": "Both token count and duration were reported approximately by subagent."
+}

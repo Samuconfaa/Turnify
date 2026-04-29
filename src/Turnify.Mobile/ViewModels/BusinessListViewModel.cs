@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -27,6 +28,8 @@ public partial class BusinessListViewModel : BaseViewModel
 
     [ObservableProperty] private bool _hasError;
     [ObservableProperty] private string _errorMessage = string.Empty;
+    [ObservableProperty] private bool _hasData;
+    [ObservableProperty] private bool _isEmptyState;
 
     public BusinessListViewModel(IHttpClientFactory httpClientFactory)
     {
@@ -39,6 +42,7 @@ public partial class BusinessListViewModel : BaseViewModel
     {
         if (IsBusy) return;
         HasError = false;
+        ErrorMessage = string.Empty;
         try
         {
             IsBusy = true;
@@ -46,11 +50,30 @@ public partial class BusinessListViewModel : BaseViewModel
             Businesses.Clear();
             if (list != null)
                 foreach (var b in list) Businesses.Add(b);
+            HasData      = Businesses.Count > 0;
+            IsEmptyState = Businesses.Count == 0;
         }
-        catch (Exception ex)
+        catch (HttpRequestException)
         {
+            HasData = false;
+            IsEmptyState = false;
             HasError = true;
-            ErrorMessage = ex.Message;
+            ErrorMessage = "Errore di connessione al server.";
+        }
+        catch (System.Text.Json.JsonException ex)
+        {
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Risposta del server non valida.";
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(BusinessListViewModel));
+        }
+        catch (TaskCanceledException)
+        {
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Richiesta scaduta. Riprova.";
         }
         finally { IsBusy = false; }
     }

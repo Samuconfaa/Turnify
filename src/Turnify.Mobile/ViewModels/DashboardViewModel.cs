@@ -68,7 +68,8 @@ public partial class DashboardViewModel : BaseViewModel
     [ObservableProperty] private decimal _totalHoursScheduled;
     [ObservableProperty] private bool _hasError;
     [ObservableProperty] private string _errorMessage = string.Empty;
-    [ObservableProperty] private bool _isEmpty;
+    [ObservableProperty] private bool _isEmptyState;
+    [ObservableProperty] private bool _hasData;
 
     public ObservableCollection<DashboardShiftDto> ShiftsToday { get; } = new();
     public ObservableCollection<DashboardPendingVacationDto> PendingRequests { get; } = new();
@@ -108,18 +109,44 @@ public partial class DashboardViewModel : BaseViewModel
                 foreach (var r in summary.PendingRequests)
                     PendingRequests.Add(r);
 
-                IsEmpty = TotalEmployees == 0 && ShiftsThisWeek == 0;
+                bool empty = TotalEmployees == 0 && ShiftsThisWeek == 0;
+                HasData = !empty;
+                IsEmptyState = empty;
             }
+            else
+            {
+                HasData = false;
+                IsEmptyState = true;
+            }
+        }
+        catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+        {
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Troppi tentativi. Riprova tra qualche minuto.";
         }
         catch (HttpRequestException)
         {
+            HasData = false;
+            IsEmptyState = false;
             HasError = true;
-            ErrorMessage = "Impossibile connettersi al server. Verifica la connessione.";
+            ErrorMessage = "Errore di connessione al server.";
         }
-        catch (Exception ex)
+        catch (System.Text.Json.JsonException ex)
         {
+            HasData = false;
+            IsEmptyState = false;
             HasError = true;
-            ErrorMessage = $"Errore nel caricamento dei dati: {ex.Message}";
+            ErrorMessage = "Risposta del server non valida.";
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(DashboardViewModel));
+        }
+        catch (TaskCanceledException)
+        {
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Richiesta scaduta. Riprova.";
         }
         finally
         {
@@ -149,9 +176,13 @@ public partial class DashboardViewModel : BaseViewModel
                 await Shell.Current.DisplayAlertAsync("Errore", "Impossibile approvare la richiesta.", "OK");
             }
         }
-        catch
+        catch (HttpRequestException)
         {
-            await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione.", "OK");
+            await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK");
+        }
+        catch (TaskCanceledException)
+        {
+            await Shell.Current.DisplayAlertAsync("Errore", "Richiesta scaduta. Riprova.", "OK");
         }
     }
 
@@ -182,9 +213,13 @@ public partial class DashboardViewModel : BaseViewModel
                 await Shell.Current.DisplayAlertAsync("Errore", "Impossibile rifiutare la richiesta.", "OK");
             }
         }
-        catch
+        catch (HttpRequestException)
         {
-            await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione.", "OK");
+            await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK");
+        }
+        catch (TaskCanceledException)
+        {
+            await Shell.Current.DisplayAlertAsync("Errore", "Richiesta scaduta. Riprova.", "OK");
         }
     }
 }

@@ -40,6 +40,26 @@ public class AuthService : IAuthService
 
         if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHash)) return null;
 
+        return await IssueTokensAsync(user, ct);
+    }
+
+    public async Task<(string AccessToken, string RefreshToken)?> EmployeeLoginAsync(string companySlug, string username, string password, CancellationToken ct = default)
+    {
+        var company = await _companyRepository.GetBySlugAsync(companySlug, ct);
+        if (company == null) return null;
+
+        var user = await _userRepository.GetByUsernameInCompanyAsync(username, company.Id, ct);
+        if (user == null || !user.IsActive) return null;
+
+        if (user.Role == UserRole.Admin) return null;
+
+        if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHash)) return null;
+
+        return await IssueTokensAsync(user, ct);
+    }
+
+    private async Task<(string AccessToken, string RefreshToken)> IssueTokensAsync(User user, CancellationToken ct)
+    {
         user.LastLoginAt = DateTime.UtcNow;
         var token = GenerateJwtToken(user);
         var refreshToken = GenerateRefreshToken();
@@ -122,9 +142,10 @@ public class AuthService : IAuthService
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email),
+            new Claim(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
             new Claim("companyId", user.CompanyId.ToString()),
-            new Claim(ClaimTypes.Role, user.Role.ToString())
+            new Claim(ClaimTypes.Role, user.Role.ToString()),
+            new Claim("username", user.Username ?? string.Empty)
         };
 
         var token = new JwtSecurityToken(

@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -14,7 +15,8 @@ public class EmployeeDetailDto
     public int Id { get; set; }
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
+    public string? Username { get; set; }
+    public string? Email { get; set; }
     public string Phone { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
     public string AccountRole { get; set; } = "Employee";
@@ -37,8 +39,13 @@ public partial class EmployeeDetailViewModel : BaseViewModel
     private readonly HttpClient _httpClient;
 
     [ObservableProperty] private int _employeeId;
+    [ObservableProperty] private bool _hasError;
+    [ObservableProperty] private string _errorMessage = string.Empty;
+    [ObservableProperty] private bool _hasData;
+    [ObservableProperty] private bool _isEmptyState;
     [ObservableProperty] private string _firstName = string.Empty;
     [ObservableProperty] private string _lastName = string.Empty;
+    [ObservableProperty] private string _username = string.Empty;
     [ObservableProperty] private string _email = string.Empty;
     [ObservableProperty] private string _phone = string.Empty;
     [ObservableProperty] private string _jobRole = string.Empty;
@@ -85,6 +92,8 @@ public partial class EmployeeDetailViewModel : BaseViewModel
     public async Task LoadDataAsync()
     {
         if (IsBusy) return;
+        HasError = false;
+        ErrorMessage = string.Empty;
         try
         {
             IsBusy = true;
@@ -107,7 +116,8 @@ public partial class EmployeeDetailViewModel : BaseViewModel
                 {
                     FirstName  = emp.FirstName;
                     LastName   = emp.LastName;
-                    Email      = emp.Email;
+                    Username   = emp.Username ?? string.Empty;
+                    Email      = emp.Email ?? string.Empty;
                     Phone      = emp.Phone;
                     JobRole    = emp.Role;
                     WeeklyHours = emp.WeeklyHours;
@@ -118,12 +128,42 @@ public partial class EmployeeDetailViewModel : BaseViewModel
                         ? Businesses.FirstOrDefault(b => b.Id == emp.BusinessId) ?? Businesses[0]
                         : Businesses[0];
                     SelectedAccountRoleIndex = emp.AccountRole == "Manager" ? 1 : 0;
+                    HasData = true;
+                    IsEmptyState = false;
+                }
+                else
+                {
+                    HasData = false;
+                    IsEmptyState = true;
                 }
             }
+            else
+            {
+                HasData = true;
+                IsEmptyState = false;
+            }
         }
-        catch (Exception ex)
+        catch (HttpRequestException)
         {
-            await Shell.Current.DisplayAlertAsync("Errore", $"Impossibile caricare i dati: {ex.Message}", "OK");
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Errore di connessione al server.";
+        }
+        catch (JsonException ex)
+        {
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Risposta del server non valida.";
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(EmployeeDetailViewModel));
+        }
+        catch (TaskCanceledException)
+        {
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Richiesta scaduta. Riprova.";
         }
         finally { IsBusy = false; }
     }
@@ -139,10 +179,15 @@ public partial class EmployeeDetailViewModel : BaseViewModel
     {
         if (IsBusy) return;
 
-        if (string.IsNullOrWhiteSpace(FirstName) || string.IsNullOrWhiteSpace(LastName) ||
-            string.IsNullOrWhiteSpace(Email))
+        if (string.IsNullOrWhiteSpace(FirstName) || string.IsNullOrWhiteSpace(LastName))
         {
-            await Shell.Current.DisplayAlertAsync("Campi mancanti", "Nome, cognome ed email sono obbligatori.", "OK");
+            await Shell.Current.DisplayAlertAsync("Campi mancanti", "Nome e cognome sono obbligatori.", "OK");
+            return;
+        }
+        if (string.IsNullOrWhiteSpace(Username))
+        {
+            await Shell.Current.DisplayAlertAsync("Nome utente mancante",
+                "Inserisci un nome utente per il dipendente (verrà usato per accedere all'app).", "OK");
             return;
         }
         if (IsCreateMode && string.IsNullOrWhiteSpace(Password))
@@ -159,7 +204,8 @@ public partial class EmployeeDetailViewModel : BaseViewModel
             {
                 firstName    = FirstName,
                 lastName     = LastName,
-                email        = Email,
+                username     = Username.Trim(),
+                email        = string.IsNullOrWhiteSpace(Email) ? null : Email,
                 phone        = Phone,
                 role         = JobRole,
                 accountRole  = SelectedAccountRole,
@@ -183,25 +229,34 @@ public partial class EmployeeDetailViewModel : BaseViewModel
                     await Shell.Current.DisplayAlertAsync(
                         "✅ Dipendente creato!",
                         $"Comunica queste credenziali al dipendente:\n\n" +
-                        $"📧 Email: {Email}\n" +
+                        $"👤 Nome utente: {Username.Trim()}\n" +
                         $"🔑 Password: {Password}\n\n" +
-                        "Il dipendente potrà cambiarla dal suo profilo.",
+                        "Il dipendente accede con: nome azienda + nome utente + password.",
                         "Ho capito");
                 }
                 await Shell.Current.GoToAsync("..");
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
             {
-                await Shell.Current.DisplayAlertAsync("Errore", "Email già in uso. Usa un'altra email.", "OK");
+                await Shell.Current.DisplayAlertAsync("Errore", "Nome utente già in uso. Scegline un altro.", "OK");
             }
             else
             {
                 await Shell.Current.DisplayAlertAsync("Errore", "Impossibile salvare il dipendente.", "OK");
             }
         }
-        catch (Exception ex)
+        catch (HttpRequestException)
         {
-            await Shell.Current.DisplayAlertAsync("Errore", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK");
+        }
+        catch (JsonException ex)
+        {
+            await Shell.Current.DisplayAlertAsync("Errore", "Risposta del server non valida.", "OK");
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(EmployeeDetailViewModel));
+        }
+        catch (TaskCanceledException)
+        {
+            await Shell.Current.DisplayAlertAsync("Errore", "Richiesta scaduta. Riprova.", "OK");
         }
         finally { IsBusy = false; }
     }
@@ -232,7 +287,7 @@ public partial class EmployeeDetailViewModel : BaseViewModel
             else
                 await Shell.Current.DisplayAlertAsync("Errore", "Impossibile reimpostare la password.", "OK");
         }
-        catch { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione.", "OK"); }
+        catch (Exception ex) { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione.", "OK"); _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(EmployeeDetailViewModel)); }
         finally { IsBusy = false; }
     }
 
@@ -254,7 +309,8 @@ public partial class EmployeeDetailViewModel : BaseViewModel
             else
                 await Shell.Current.DisplayAlertAsync("Errore", "Impossibile disattivare il dipendente.", "OK");
         }
-        catch { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione.", "OK"); }
+        catch (HttpRequestException) { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK"); }
+        catch (TaskCanceledException) { await Shell.Current.DisplayAlertAsync("Errore", "Richiesta scaduta. Riprova.", "OK"); }
         finally { IsBusy = false; }
     }
 

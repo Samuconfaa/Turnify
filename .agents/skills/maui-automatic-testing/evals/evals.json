@@ -1,0 +1,35 @@
+{
+  "skill_name": "maui-automatic-testing",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Abbiamo appena aggiunto SearchViewModel e BookService in una app .NET MAUI. Voglio test automatici per chiudere la slice: dimmi quali test creare per primi, quali file toccheresti e quali comandi eseguiresti se nel repository non esiste ancora un progetto di test.",
+      "expected_output": "Propone una strategia minima e realistica: test di ViewModel e service prima di UI automation, eventuale creazione di un singolo progetto di test, build verification e comandi pertinenti.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Ho modificato BookDetailPage.xaml, BookDetailViewModel.cs e AppShell.xaml.cs. A fine iterazione voglio una copertura automatica sensata: quali parti testeresti con unit test, quali con build verification e quali non automatizzeresti subito?",
+      "expected_output": "Separa chiaramente unit test, build validation e limiti dell'automazione, senza saltare direttamente ai test UI end-to-end.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Il service REST ora gestisce timeout, JSON malformato e risposta vuota. Scrivi il piano di test automatico migliore per questa slice MAUI, includendo edge case e il tipo di doppio/fake necessario per HttpClient.",
+      "expected_output": "Propone test mirati sul service e sul parsing, coprendo timeout, JSON malformato, risposta vuota, successo e gestione degli errori con fake handler o equivalente.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "A fine iterazione ho modificato `SearchViewModel.cs`, `BookService.cs`, `SearchPage.xaml` e `AppShell.xaml.cs` in una app .NET MAUI. Nel repository non esistono ancora test project né UI automation. Voglio una strategia di test automatico davvero sensata per chiudere la slice: quali test aggiungeresti subito, quali comandi eseguiresti e quali parti lasceresti ancora a verifica manuale?",
+      "expected_output": "Seleziona unit test su ViewModel e service, build verification per XAML e Shell, evita di introdurre subito UI automation, indica comandi eseguibili e chiarisce i limiti ancora manuali.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "Sono uno studente e a fine iterazione ho cambiato solo `SearchPage.xaml` e `AppShell.xaml.cs`. Nel repository non ci sono ancora test automatici. La mia idea era partire subito con UI automation per essere sicuro di testare tutto. È una buona idea? Dimmi quali controlli automatici farei davvero adesso, quali restano manuali e spiegami anche quali errori di ragionamento dovrei evitare.",
+      "expected_output": "Scoraggia una partenza immediata con UI automation, propone build verification come controllo automatico principale, distingue chiaramente ciò che resta manuale e spiega gli errori concettuali da evitare in modo didattico.",
+      "files": []
+    }
+  ]
+}

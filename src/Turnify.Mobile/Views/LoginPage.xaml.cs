@@ -10,4 +10,14 @@ public partial class LoginPage : ContentPage
         InitializeComponent();
         BindingContext = viewModel;
     }
+
+    private void OnAdminTabTapped(object? sender, EventArgs e)
+    {
+        if (BindingContext is LoginViewModel vm) vm.IsEmployeeMode = false;
+    }
+
+    private void OnEmployeeTabTapped(object? sender, EventArgs e)
+    {
+        if (BindingContext is LoginViewModel vm) vm.IsEmployeeMode = true;
+    }
 }

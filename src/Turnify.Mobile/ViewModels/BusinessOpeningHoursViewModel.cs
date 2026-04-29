@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -48,6 +49,11 @@ public partial class BusinessOpeningHoursViewModel : BaseViewModel
     [ObservableProperty]
     private int _businessId;
 
+    [ObservableProperty] private bool _hasError;
+    [ObservableProperty] private string _errorMessage = string.Empty;
+    [ObservableProperty] private bool _hasData;
+    [ObservableProperty] private bool _isEmptyState;
+
     public ObservableCollection<DayScheduleItemViewModel> Days { get; } = new();
 
     public BusinessOpeningHoursViewModel(IHttpClientFactory httpClientFactory)
@@ -74,12 +80,14 @@ public partial class BusinessOpeningHoursViewModel : BaseViewModel
     {
         if (IsBusy || BusinessId == 0) return;
 
+        HasError = false;
+        ErrorMessage = string.Empty;
         try
         {
             IsBusy = true;
-            
+
             var response = await _httpClient.GetAsync($"api/businesses/{BusinessId}/opening-hours");
-            
+
             if (response.IsSuccessStatusCode)
             {
                 var dict = await response.Content.ReadFromJsonAsync<Dictionary<string, DayScheduleDto>>();
@@ -96,12 +104,44 @@ public partial class BusinessOpeningHoursViewModel : BaseViewModel
                                 day.CloseTime = closeTime;
                         }
                     }
+                    HasData = true;
+                    IsEmptyState = false;
+                }
+                else
+                {
+                    HasData = false;
+                    IsEmptyState = true;
                 }
             }
+            else
+            {
+                HasData = false;
+                IsEmptyState = false;
+                HasError = true;
+                ErrorMessage = "Impossibile caricare gli orari.";
+            }
         }
-        catch (Exception)
+        catch (HttpRequestException)
         {
-            await Shell.Current.DisplayAlertAsync("Errore", "Impossibile caricare gli orari", "OK");
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Errore di connessione al server.";
+        }
+        catch (JsonException ex)
+        {
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Risposta del server non valida.";
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(BusinessOpeningHoursViewModel));
+        }
+        catch (TaskCanceledException)
+        {
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Richiesta scaduta. Riprova.";
         }
         finally
         {
@@ -136,9 +176,18 @@ public partial class BusinessOpeningHoursViewModel : BaseViewModel
             else
                 await Shell.Current.DisplayAlertAsync("Errore", "Salvataggio fallito.", "OK");
         }
-        catch (Exception)
+        catch (HttpRequestException)
         {
-            await Shell.Current.DisplayAlertAsync("Errore", "Si è verificato un errore durante il salvataggio.", "OK");
+            await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK");
+        }
+        catch (JsonException ex)
+        {
+            await Shell.Current.DisplayAlertAsync("Errore", "Risposta del server non valida.", "OK");
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(BusinessOpeningHoursViewModel));
+        }
+        catch (TaskCanceledException)
+        {
+            await Shell.Current.DisplayAlertAsync("Errore", "Richiesta scaduta. Riprova.", "OK");
         }
         finally
         {

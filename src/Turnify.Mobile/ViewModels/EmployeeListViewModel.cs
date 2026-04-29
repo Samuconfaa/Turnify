@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -48,6 +49,11 @@ public partial class EmployeeListViewModel : BaseViewModel
     [NotifyPropertyChangedFor(nameof(HasEmployees))]
     private string _searchQuery = string.Empty;
 
+    [ObservableProperty] private bool _hasData;
+    [ObservableProperty] private bool _isEmptyState;
+    [ObservableProperty] private bool _hasError;
+    [ObservableProperty] private string _errorMessage = string.Empty;
+
     public bool HasEmployees => Employees.Count > 0;
 
     public EmployeeListViewModel(IHttpClientFactory httpClientFactory)
@@ -78,6 +84,8 @@ public partial class EmployeeListViewModel : BaseViewModel
     {
         if (IsBusy) return;
 
+        HasError = false;
+        ErrorMessage = string.Empty;
         try
         {
             IsBusy = true;
@@ -101,15 +109,30 @@ public partial class EmployeeListViewModel : BaseViewModel
             var emps = await _httpClient.GetFromJsonAsync<EmployeeListDto[]>(url);
             _allEmployees = emps?.ToList() ?? new List<EmployeeListDto>();
             ApplyFilter();
+            HasData      = _allEmployees.Count > 0;
+            IsEmptyState = _allEmployees.Count == 0;
         }
-        catch (HttpRequestException ex)
+        catch (HttpRequestException)
         {
-            var code = ex.StatusCode.HasValue ? $" (HTTP {(int)ex.StatusCode})" : string.Empty;
-            await Shell.Current.DisplayAlertAsync("Errore", $"Impossibile caricare i dipendenti{code}.", "OK");
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Errore di connessione al server.";
         }
-        catch (Exception ex)
+        catch (JsonException ex)
         {
-            await Shell.Current.DisplayAlertAsync("Errore", ex.Message, "OK");
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Risposta del server non valida.";
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(EmployeeListViewModel));
+        }
+        catch (TaskCanceledException)
+        {
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Richiesta scaduta. Riprova.";
         }
         finally
         {

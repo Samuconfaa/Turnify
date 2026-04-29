@@ -89,7 +89,8 @@ public partial class VacationListViewModel : BaseViewModel
     [ObservableProperty] private bool _isAdmin;
     [ObservableProperty] private bool _hasError;
     [ObservableProperty] private string _errorMessage = string.Empty;
-    [ObservableProperty] private bool _isEmpty;
+    [ObservableProperty] private bool _isEmptyState;
+    [ObservableProperty] private bool _hasData;
     [ObservableProperty] private bool _isFormVisible;
     [ObservableProperty] private string _filterStatus = "All";
 
@@ -148,6 +149,7 @@ public partial class VacationListViewModel : BaseViewModel
     {
         if (IsBusy) return;
         HasError = false;
+        ErrorMessage = string.Empty;
         try
         {
             IsBusy = true;
@@ -163,17 +165,30 @@ public partial class VacationListViewModel : BaseViewModel
             if (list != null)
                 foreach (var r in list) Requests.Add(r);
 
-            IsEmpty = Requests.Count == 0;
+            HasData      = Requests.Count > 0;
+            IsEmptyState = Requests.Count == 0;
         }
         catch (HttpRequestException)
         {
+            HasData = false;
+            IsEmptyState = false;
             HasError = true;
-            ErrorMessage = "Impossibile connettersi al server.";
+            ErrorMessage = "Errore di connessione al server.";
         }
-        catch (Exception ex)
+        catch (System.Text.Json.JsonException ex)
         {
+            HasData = false;
+            IsEmptyState = false;
             HasError = true;
-            ErrorMessage = ex.Message;
+            ErrorMessage = "Risposta del server non valida.";
+            _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(VacationListViewModel));
+        }
+        catch (TaskCanceledException)
+        {
+            HasData = false;
+            IsEmptyState = false;
+            HasError = true;
+            ErrorMessage = "Richiesta scaduta. Riprova.";
         }
         finally { IsBusy = false; }
     }
@@ -213,7 +228,9 @@ public partial class VacationListViewModel : BaseViewModel
                 var me = await _httpClient.GetFromJsonAsync<UserMeDto>("api/users/me");
                 if (me != null) _myEmployeeId = me.EmployeeId;
             }
-            catch { }
+            catch (HttpRequestException) { }
+            catch (System.Text.Json.JsonException) { }
+            catch (TaskCanceledException) { }
         }
         if (_myEmployeeId == 0)
         {
@@ -244,7 +261,9 @@ public partial class VacationListViewModel : BaseViewModel
                 await Shell.Current.DisplayAlertAsync("Errore", $"Errore {(int)response.StatusCode}.", "OK");
             }
         }
-        catch (Exception ex) { await Shell.Current.DisplayAlertAsync("Errore", ex.Message, "OK"); }
+        catch (HttpRequestException) { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK"); }
+        catch (System.Text.Json.JsonException) { await Shell.Current.DisplayAlertAsync("Errore", "Risposta del server non valida.", "OK"); }
+        catch (TaskCanceledException) { await Shell.Current.DisplayAlertAsync("Errore", "Richiesta scaduta. Riprova.", "OK"); }
         finally { IsBusy = false; }
     }
 
@@ -274,7 +293,8 @@ public partial class VacationListViewModel : BaseViewModel
             else
                 await Shell.Current.DisplayAlertAsync("Errore", "Impossibile eliminare la richiesta.", "OK");
         }
-        catch { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione.", "OK"); }
+        catch (HttpRequestException) { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK"); }
+        catch (TaskCanceledException) { await Shell.Current.DisplayAlertAsync("Errore", "Richiesta scaduta. Riprova.", "OK"); }
     }
 
     [RelayCommand]
@@ -287,7 +307,8 @@ public partial class VacationListViewModel : BaseViewModel
                 $"api/vacation-requests/{request.Id}/approve", new { note = string.Empty });
             if (r.IsSuccessStatusCode) await LoadRequestsAsync();
         }
-        catch { }
+        catch (HttpRequestException) { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK"); }
+        catch (TaskCanceledException) { await Shell.Current.DisplayAlertAsync("Errore", "Richiesta scaduta. Riprova.", "OK"); }
     }
 
     [RelayCommand]
@@ -302,7 +323,8 @@ public partial class VacationListViewModel : BaseViewModel
                 $"api/vacation-requests/{request.Id}/reject", new { note = note ?? string.Empty });
             if (r.IsSuccessStatusCode) await LoadRequestsAsync();
         }
-        catch { }
+        catch (HttpRequestException) { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK"); }
+        catch (TaskCanceledException) { await Shell.Current.DisplayAlertAsync("Errore", "Richiesta scaduta. Riprova.", "OK"); }
     }
 
     // Employee: cancel pending
@@ -317,7 +339,8 @@ public partial class VacationListViewModel : BaseViewModel
             var r = await _httpClient.DeleteAsync($"api/vacation-requests/{request.Id}");
             if (r.IsSuccessStatusCode) await LoadRequestsAsync();
         }
-        catch { }
+        catch (HttpRequestException) { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK"); }
+        catch (TaskCanceledException) { await Shell.Current.DisplayAlertAsync("Errore", "Richiesta scaduta. Riprova.", "OK"); }
     }
 
     public void SetFilterByIndex(int index)

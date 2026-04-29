@@ -87,6 +87,18 @@ public class AuthController : ControllerBase
         return Ok(new { message = "Password reimpostata con successo." });
     }
 
+    [HttpPost("employee-login")]
+    [AllowAnonymous]
+    [EnableRateLimiting("auth")]
+    public async Task<IActionResult> EmployeeLogin([FromBody] EmployeeLoginRequest request, CancellationToken ct)
+    {
+        var result = await _authService.EmployeeLoginAsync(request.CompanySlug, request.Username, request.Password, ct);
+        if (result == null)
+            return Unauthorized();
+
+        return Ok(new TokenResponse { AccessToken = result.Value.AccessToken, RefreshToken = result.Value.RefreshToken });
+    }
+
     [HttpPost("logout")]
     [Authorize]
     public async Task<IActionResult> Logout(CancellationToken ct)
@@ -106,6 +118,13 @@ public class AuthController : ControllerBase
 public class LoginRequest
 {
     public string Email { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
+}
+
+public class EmployeeLoginRequest
+{
+    public string CompanySlug { get; set; } = string.Empty;
+    public string Username { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
 }
 

@@ -1,0 +1,10 @@
+{
+  "eval_id": 2,
+  "eval_name": "recipe-organizer-structured-spec",
+  "prompt": "Voglio una app MAUI per organizzare ricette personali con categorie, foto, ricerca locale e piano pasti settimanale. Android è il target principale, iOS è opzionale. Niente login nella prima versione. Scrivi `docs/spec.md` in modo che sia utile a studenti che lavorano con MVVM, Shell e documentazione strutturata.",
+  "assertions": [
+    "La specifica distingue chiaramente funzionalità MVP, funzionalità future e non-obiettivi.",
+    "Tiene Android come target principale e non promette supporto iOS completo se non richiesto.",
+    "Cita stati UI rilevanti come loading, empty ed error quando il flusso lo richiede."
+  ]
+}

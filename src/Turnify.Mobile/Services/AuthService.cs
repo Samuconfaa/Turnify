@@ -26,6 +26,24 @@ public class AuthService : IAuthService
         if (!response.IsSuccessStatusCode)
             return null;
 
+        return await ParseAndStoreTokenAsync(response, ct);
+    }
+
+    public async Task<(string AccessToken, string RefreshToken)?> EmployeeLoginAsync(string companySlug, string username, string password, CancellationToken ct = default)
+    {
+        var response = await _httpClient.PostAsJsonAsync("api/auth/employee-login", new { companySlug, username, password }, ct);
+        if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+            throw new HttpRequestException("Troppi tentativi. Riprova tra qualche minuto.",
+                null, System.Net.HttpStatusCode.TooManyRequests);
+        if (!response.IsSuccessStatusCode)
+            return null;
+
+        return await ParseAndStoreTokenAsync(response, ct);
+    }
+
+    private async Task<(string AccessToken, string RefreshToken)?> ParseAndStoreTokenAsync(
+        System.Net.Http.HttpResponseMessage response, CancellationToken ct)
+    {
         var result = await response.Content.ReadFromJsonAsync<TokenResponse>(cancellationToken: ct);
         if (result == null || string.IsNullOrEmpty(result.AccessToken))
             return null;

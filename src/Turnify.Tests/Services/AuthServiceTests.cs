@@ -5,6 +5,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using Turnify.Core.Interfaces.Repositories;
+using Turnify.Core.Interfaces.Services;
 using Turnify.Core.Models;
 using Turnify.Infrastructure.Services;
 using Xunit;
@@ -16,19 +17,21 @@ public class AuthServiceTests
     private readonly Mock<IUserRepository> _userRepositoryMock;
     private readonly Mock<ICompanyRepository> _companyRepositoryMock;
     private readonly Mock<IConfiguration> _configMock;
+    private readonly Mock<IEmailService> _emailServiceMock;
     private readonly AuthService _sut; // System Under Test
 
     public AuthServiceTests()
     {
-        _userRepositoryMock = new Mock<IUserRepository>();
+        _userRepositoryMock    = new Mock<IUserRepository>();
         _companyRepositoryMock = new Mock<ICompanyRepository>();
-        _configMock = new Mock<IConfiguration>();
+        _configMock            = new Mock<IConfiguration>();
+        _emailServiceMock      = new Mock<IEmailService>();
 
         // Setup mock config for JWT
         _configMock.Setup(c => c["Jwt:Secret"]).Returns("SuperSecretKeyForTestingPurposeOnly123!");
         _configMock.Setup(c => c["Jwt:Issuer"]).Returns("TurnifyTest");
         _configMock.Setup(c => c["Jwt:Audience"]).Returns("TurnifyTestUsers");
-        
+
         var configSectionMock1 = new Mock<IConfigurationSection>();
         configSectionMock1.Setup(c => c.Value).Returns("15");
         _configMock.Setup(c => c.GetSection("Jwt:AccessTokenExpiryMinutes")).Returns(configSectionMock1.Object);
@@ -37,7 +40,11 @@ public class AuthServiceTests
         configSectionMock2.Setup(c => c.Value).Returns("7");
         _configMock.Setup(c => c.GetSection("Jwt:RefreshTokenExpiryDays")).Returns(configSectionMock2.Object);
 
-        _sut = new AuthService(_userRepositoryMock.Object, _companyRepositoryMock.Object, _configMock.Object);
+        _sut = new AuthService(
+            _userRepositoryMock.Object,
+            _companyRepositoryMock.Object,
+            _configMock.Object,
+            _emailServiceMock.Object);
     }
 
     [Fact]
@@ -148,7 +155,7 @@ public class AuthServiceTests
     }
 
     [Fact]
-    public async Task RegisterCompanyAsync_DuplicateEmail_ThrowsException()
+    public async Task RegisterCompanyAsync_DuplicateEmail_ReturnsFalse()
     {
         // Arrange
         var company = new Company { Slug = "new-company" };
@@ -163,12 +170,10 @@ public class AuthServiceTests
             .ReturnsAsync(true);
 
         // Act
-        Func<Task> act = async () => await _sut.RegisterCompanyAsync(company, adminUser);
+        var result = await _sut.RegisterCompanyAsync(company, adminUser);
 
         // Assert
-        await act.Should().ThrowAsync<InvalidOperationException>()
-            .WithMessage("Email già in uso.");
-            
+        result.Should().BeFalse();
         _companyRepositoryMock.Verify(repo => repo.AddAsync(It.IsAny<Company>(), It.IsAny<CancellationToken>()), Times.Never);
         _userRepositoryMock.Verify(repo => repo.AddAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()), Times.Never);
     }

@@ -65,26 +65,124 @@
                         </HorizontalStackLayout>
                     </Border>
 
-                    <!-- Email -->
-                    <Label Text="Email"
-                           FontSize="12" FontAttributes="Bold"
-                           TextColor="{StaticResource OnSurfaceVariant}"
-                           Margin="4,0,0,5"/>
-                    <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
-                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
-                            Margin="0,0,0,12">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                        <Entry Text="{Binding Email}"
-                               Placeholder="nome@azienda.it"
-                               Keyboard="Email"
-                               HeightRequest="48"
-                               Margin="16,0"
-                               TextColor="{StaticResource OnBackground}"
-                               PlaceholderColor="{StaticResource Outline}"
-                               BackgroundColor="Transparent"/>
-                    </Border>
+                    <!-- Toggle admin / dipendente -->
+                    <Grid ColumnDefinitions="*,*" Margin="0,0,0,20"
+                          BackgroundColor="{StaticResource SurfaceContainerLow}">
+                        <Grid.StrokeShape><RoundRectangle CornerRadius="12"/></Grid.StrokeShape>
+                        <Border Grid.Column="0"
+                                Stroke="Transparent" Padding="0,10">
+                            <Border.Triggers>
+                                <DataTrigger TargetType="Border" Binding="{Binding IsAdminMode}" Value="True">
+                                    <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
+                                </DataTrigger>
+                                <DataTrigger TargetType="Border" Binding="{Binding IsAdminMode}" Value="False">
+                                    <Setter Property="BackgroundColor" Value="Transparent"/>
+                                </DataTrigger>
+                            </Border.Triggers>
+                            <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnAdminTabTapped"/>
+                            </Border.GestureRecognizers>
+                            <Label Text="Admin / Manager"
+                                   FontSize="13" FontAttributes="Bold"
+                                   HorizontalOptions="Center">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding IsAdminMode}" Value="True">
+                                        <Setter Property="TextColor" Value="White"/>
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Label" Binding="{Binding IsAdminMode}" Value="False">
+                                        <Setter Property="TextColor" Value="{StaticResource OnSurfaceVariant}"/>
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                        </Border>
+                        <Border Grid.Column="1"
+                                Stroke="Transparent" Padding="0,10">
+                            <Border.Triggers>
+                                <DataTrigger TargetType="Border" Binding="{Binding IsEmployeeMode}" Value="True">
+                                    <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
+                                </DataTrigger>
+                                <DataTrigger TargetType="Border" Binding="{Binding IsEmployeeMode}" Value="False">
+                                    <Setter Property="BackgroundColor" Value="Transparent"/>
+                                </DataTrigger>
+                            </Border.Triggers>
+                            <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnEmployeeTabTapped"/>
+                            </Border.GestureRecognizers>
+                            <Label Text="Dipendente"
+                                   FontSize="13" FontAttributes="Bold"
+                                   HorizontalOptions="Center">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding IsEmployeeMode}" Value="True">
+                                        <Setter Property="TextColor" Value="White"/>
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Label" Binding="{Binding IsEmployeeMode}" Value="False">
+                                        <Setter Property="TextColor" Value="{StaticResource OnSurfaceVariant}"/>
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                        </Border>
+                    </Grid>
 
-                    <!-- Password -->
+                    <!-- ── Campi Admin / Manager ── -->
+                    <VerticalStackLayout IsVisible="{Binding IsAdminMode}" Spacing="0">
+                        <Label Text="Email"
+                               FontSize="12" FontAttributes="Bold"
+                               TextColor="{StaticResource OnSurfaceVariant}"
+                               Margin="4,0,0,5"/>
+                        <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
+                                Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                                Margin="0,0,0,12">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                            <Entry Text="{Binding Email}"
+                                   Placeholder="nome@azienda.it"
+                                   Keyboard="Email"
+                                   HeightRequest="48"
+                                   Margin="16,0"
+                                   TextColor="{StaticResource OnBackground}"
+                                   PlaceholderColor="{StaticResource Outline}"
+                                   BackgroundColor="Transparent"/>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- ── Campi Dipendente ── -->
+                    <VerticalStackLayout IsVisible="{Binding IsEmployeeMode}" Spacing="0">
+                        <Label Text="Nome azienda"
+                               FontSize="12" FontAttributes="Bold"
+                               TextColor="{StaticResource OnSurfaceVariant}"
+                               Margin="4,0,0,5"/>
+                        <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
+                                Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                                Margin="0,0,0,12">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                            <Entry Text="{Binding CompanySlug}"
+                                   Placeholder="es. pizzeria-mario"
+                                   HeightRequest="48"
+                                   Margin="16,0"
+                                   TextColor="{StaticResource OnBackground}"
+                                   PlaceholderColor="{StaticResource Outline}"
+                                   BackgroundColor="Transparent"/>
+                        </Border>
+                        <Label Text="Nome utente"
+                               FontSize="12" FontAttributes="Bold"
+                               TextColor="{StaticResource OnSurfaceVariant}"
+                               Margin="4,0,0,5"/>
+                        <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
+                                Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                                Margin="0,0,0,12">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                            <Entry Text="{Binding Username}"
+                                   Placeholder="mario.rossi"
+                                   HeightRequest="48"
+                                   Margin="16,0"
+                                   TextColor="{StaticResource OnBackground}"
+                                   PlaceholderColor="{StaticResource Outline}"
+                                   BackgroundColor="Transparent"/>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Password (comune a entrambe le modalità) -->
                     <Label Text="Password"
                            FontSize="12" FontAttributes="Bold"
                            TextColor="{StaticResource OnSurfaceVariant}"
@@ -103,16 +201,19 @@
                                BackgroundColor="Transparent"/>
                     </Border>
 
-                    <!-- Forgot password -->
+                    <!-- Forgot password (solo admin) -->
                     <Label Text="Password dimenticata?"
                            FontSize="13" FontAttributes="Bold"
                            TextColor="{StaticResource Primary}"
                            HorizontalOptions="End"
+                           IsVisible="{Binding IsAdminMode}"
                            Margin="0,0,0,24">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding GoToForgotPasswordCommand}"/>
                         </Label.GestureRecognizers>
                     </Label>
+                    <BoxView HeightRequest="24" BackgroundColor="Transparent"
+                             IsVisible="{Binding IsEmployeeMode}"/>
 
                     <!-- Login button -->
                     <Button Text="Accedi"

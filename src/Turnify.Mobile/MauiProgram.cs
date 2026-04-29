@@ -1,5 +1,6 @@
 using System;
 using System.Net.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Turnify.Core.Interfaces.Services;
 using Turnify.Mobile.Services;
@@ -28,22 +29,22 @@ public static class MauiProgram
 #endif
 
         builder.Services.AddTransient<AuthDelegatingHandler>();
+        builder.Services.AddTransient<CertificatePinningHandler>();
+        builder.Services.AddSingleton<IErrorReporterService, ErrorReporterService>();
 
-        // Fix 1: SSL handler rimosso — non bypassare più la validazione certificato.
-        // Se il certificato del VPS ha problemi, rinnovarlo con: sudo certbot renew
-        // In DEBUG su emulatore Android può essere necessario aggiungere il certificato
-        // di sviluppo alla catena di fiducia del device, non disabilitare la validazione.
         builder.Services.AddHttpClient<IAuthService, AuthService>(client =>
         {
             client.BaseAddress = new Uri(API_BASE);
             client.Timeout = TimeSpan.FromSeconds(30);
-        });
+        })
+        .ConfigurePrimaryHttpMessageHandler<CertificatePinningHandler>();
 
         builder.Services.AddHttpClient("TurnifyApi", client =>
         {
             client.BaseAddress = new Uri(API_BASE);
             client.Timeout = TimeSpan.FromSeconds(30);
         })
+        .ConfigurePrimaryHttpMessageHandler<CertificatePinningHandler>()
         .AddHttpMessageHandler<AuthDelegatingHandler>();
 
         // ── ViewModels ──────────────────────────────────────────────
@@ -91,6 +92,24 @@ public static class MauiProgram
         builder.Services.AddTransient<EmployeeDashboardPage>();
         builder.Services.AddTransient<AttendanceHistoryPage>();
 
-        return builder.Build();
+        var app = builder.Build();
+
+        // Inizializza l'accessor statico e registra i gestori globali di eccezioni
+        var reporter = app.Services.GetRequiredService<IErrorReporterService>();
+        ErrorReporterService.Current = reporter;
+
+        AppDomain.CurrentDomain.UnhandledException += (_, args) =>
+        {
+            if (args.ExceptionObject is Exception ex)
+                _ = reporter.ReportAsync(ex, screenName: "UnhandledException");
+        };
+
+        TaskScheduler.UnobservedTaskException += (_, args) =>
+        {
+            _ = reporter.ReportAsync(args.Exception, screenName: "UnobservedTask");
+            args.SetObserved();
+        };
+
+        return app;
     }
 }

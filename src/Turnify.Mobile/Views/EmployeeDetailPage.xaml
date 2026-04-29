@@ -28,12 +28,24 @@
                        HeightRequest="50" Margin="14,0" BackgroundColor="Transparent"/>
             </Border>
 
-            <!-- Email -->
-            <Label Text="Email *" FontSize="13"
+            <!-- Nome utente (login) -->
+            <Label Text="Nome utente *" FontSize="13"
                    TextColor="{StaticResource OnSurfaceVariant}" Margin="2,0,0,0"/>
+            <Border Stroke="{StaticResource Primary}" StrokeThickness="1.5" Padding="0">
+                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                <Entry Text="{Binding Username}" Placeholder="es. mario.rossi"
+                       HeightRequest="50" Margin="14,0" BackgroundColor="Transparent"/>
+            </Border>
+            <Label Text="Il dipendente userà questo nome per accedere all'app."
+                   FontSize="12" TextColor="{StaticResource OnSurfaceVariant}"
+                   Margin="2,0,0,0"/>
+
+            <!-- Email (opzionale) -->
+            <Label Text="Email" FontSize="13"
+                   TextColor="{StaticResource OnSurfaceVariant}" Margin="2,6,0,0"/>
             <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="0">
                 <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                <Entry Text="{Binding Email}" Placeholder="mario.rossi@example.com"
+                <Entry Text="{Binding Email}" Placeholder="mario.rossi@example.com (opzionale)"
                        Keyboard="Email"
                        HeightRequest="50" Margin="14,0" BackgroundColor="Transparent"/>
             </Border>

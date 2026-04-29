@@ -1,251 +1,296 @@
-# Architettura di Sistema — Turnify
+# Architettura del progetto
 
-**Versione:** 1.0  
-**Stato:** Approvata per sviluppo  
+## Obiettivo
 
----
-
-## 1. Panoramica
-
-Turnify è un sistema client-server a 3 livelli: un'app mobile cross-platform, un backend REST API e un database relazionale. I tre componenti comunicano esclusivamente via HTTPS/JSON.
-
-```
-┌─────────────────────────────────────────────────────────┐
-│                    CLIENT LAYER                         │
-│  ┌──────────────────────────────────────────────────┐   │
-│  │       App Mobile .NET MAUI (iOS + Android)       │   │
-│  │              Pattern: MVVM                       │   │
-│  └─────────────────────┬────────────────────────────┘   │
-└────────────────────────│────────────────────────────────┘
-                         │ HTTPS / REST JSON
-                         │ JWT Authorization Header
-┌────────────────────────▼────────────────────────────────┐
-│                   SERVER LAYER                          │
-│  ┌──────────────────────────────────────────────────┐   │
-│  │          Nginx (Reverse Proxy + SSL)             │   │
-│  └─────────────────────┬────────────────────────────┘   │
-│  ┌─────────────────────▼────────────────────────────┐   │
-│  │       ASP.NET Core Web API (.NET 8)              │   │
-│  │   Controllers → Services → Repositories         │   │
-│  └─────────────────────┬────────────────────────────┘   │
-└────────────────────────│────────────────────────────────┘
-                         │ EF Core / TCP
-┌────────────────────────▼────────────────────────────────┐
-│                    DATA LAYER                           │
-│  ┌──────────────────────────────────────────────────┐   │
-│  │              PostgreSQL 15                       │   │
-│  └──────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────┘
-```
+App mobile .NET MAUI per la gestione turni di piccole imprese italiane. Il progetto è strutturato in soluzione multi-progetto: un layer Core condiviso, un backend ASP.NET Core 10, un'app mobile MAUI, un portale web Next.js 14 e un progetto test xUnit. I target ufficiali del build MAUI sono `net10.0-android` (sempre), `net10.0-ios` e `net10.0-maccatalyst` (se build non su Linux), `net10.0-windows10.0.19041.0` (se build su Windows).
 
 ---
 
-## 2. App Mobile — .NET MAUI con MVVM
+## Pattern architetturale
 
-### Tecnologie
-- **.NET MAUI** (.NET 8): framework cross-platform per iOS e Android
-- **CommunityToolkit.Mvvm**: gestione MVVM, comandi, proprietà osservabili
-- **Shell Navigation**: navigazione dichiarativa con route
-- **HttpClient + Refit**: chiamate API tipizzate
-- **SecureStorage**: salvataggio sicuro token JWT
+**MVVM** implementato via `CommunityToolkit.Mvvm 8.4.2`. Tutti i ViewModel ereditano da `BaseViewModel : ObservableObject` e usano i source generator `[ObservableProperty]` e `[RelayCommand]`. I code-behind delle View contengono solo il costruttore con dependency injection; zero logica applicativa nel `.xaml.cs`.
 
-### Pattern MVVM
-
-```
-┌──────────────────────────────────────────────────────┐
-│  View Layer  (Pages + Controls in XAML/C#)           │
-│  - Binding a ViewModel                               │
-│  - Nessuna logica business                           │
-├──────────────────────────────────────────────────────┤
-│  ViewModel Layer                                     │
-│  - ObservableProperty per stato UI                   │
-│  - RelayCommand per azioni utente                    │
-│  - Chiama AppServices                                │
-├──────────────────────────────────────────────────────┤
-│  Service Layer (App)                                 │
-│  - AuthService: login, token refresh                 │
-│  - ShiftService: CRUD turni                          │
-│  - VacationService: richieste ferie                  │
-│  - NotificationService: gestione notifiche           │
-├──────────────────────────────────────────────────────┤
-│  Infrastructure                                      │
-│  - ApiClient (Refit): chiamate HTTP                  │
-│  - LocalStorage: cache e preferenze                  │
-│  - SecureStorage: token JWT                          │
-└──────────────────────────────────────────────────────┘
-```
-
-### Schermate Principali
-- `LoginPage` — autenticazione
-- `DashboardPage` — home admin con panoramica
-- `ShiftCalendarPage` — calendario turni
-- `ShiftDetailPage` — dettaglio/modifica turno
-- `VacationListPage` — lista richieste ferie
-- `VacationRequestPage` — form nuova richiesta
-- `EmployeeListPage` — gestione dipendenti (admin)
-- `ProfilePage` — profilo utente e impostazioni
+Il layer mobile dipende direttamente da `Turnify.Core` (modelli e interfacce); non dipende da `Turnify.Infrastructure`.
 
 ---
 
-## 3. Backend — ASP.NET Core Web API
+## Componenti principali
 
-### Tecnologie
-- **ASP.NET Core 8** con minimal hosting model
-- **Entity Framework Core 8** con provider Npgsql (PostgreSQL)
-- **AutoMapper**: mapping tra entità e DTO
-- **FluentValidation**: validazione input
-- **Serilog**: logging strutturato
-- **Swashbuckle**: documentazione OpenAPI/Swagger
-- **BCrypt.Net**: hashing password
-- **System.IdentityModel.Tokens.Jwt**: generazione/validazione JWT
+### Views (23 file XAML in `Turnify.Mobile/Views/`)
 
-### Struttura Layer Backend
+| View | Scopo |
+|---|---|
+| `LoginPage` | Form login — admin con email, dipendente con companySlug + username |
+| `RegisterPage` | Registrazione nuova azienda con account admin |
+| `ForgotPasswordPage` | Richiesta reset password via email |
+| `GdprConsentPage` | Consenso GDPR al primo avvio (obbligatorio) |
+| `OnboardingPage` | Guida multi-step per admin al primo accesso post-consenso |
+| `DashboardPage` | Dashboard admin: turni del giorno, ferie pendenti, contatori |
+| `ShiftCalendarPage` | Calendario settimanale turni; include sezione timbratura per dipendenti |
+| `VacationListPage` | Lista richieste ferie con filtro per stato |
+| `VacationEditPage` | Form creazione/modifica richiesta ferie |
+| `NotificationsPage` | Lista notifiche utente |
+| `ProfilePage` | Profilo: email, avatar emoji, cambio password, logout |
+| `EmojiPickerPage` | Griglia emoji per selezione avatar |
+| `EmployeeListPage` | Lista dipendenti con SearchBar testuale |
+| `EmployeeDetailPage` | Dettaglio e modifica dati dipendente |
+| `ShiftDetailPage` | Dettaglio singolo turno |
+| `BusinessListPage` | Lista sedi/attività azienda |
+| `BusinessDetailPage` | Dettaglio e modifica sede |
+| `BusinessOpeningHoursPage` | Modifica orari apertura/chiusura sede |
+| `AvailabilityPage` | Impostazione giorni disponibili dipendente |
+| `EmployeeDashboardPage` | Dashboard personale dipendente |
+| `AttendanceHistoryPage` | Storico check-in/check-out del dipendente |
+| `ChangePasswordPage` | Cambio password |
+| `ReportsPage` | Download CSV ore turni e presenze con selezione intervallo date |
 
-```
-Presentation Layer  (Controllers, Middleware, DTOs)
-       │
-Business Layer  (Services, Validators, Business Rules)
-       │
-Data Layer  (Repositories, EF DbContext, Migrations)
-       │
-Database  (PostgreSQL)
-```
+> `ManageDataPage` è registrata in `AppShell.RegisterAllRoutes` ma il file `.xaml` non esiste nel repository.
 
-### Controller Principali
-- `AuthController` — login, registrazione, refresh token
-- `CompaniesController` — gestione aziende
-- `EmployeesController` — gestione dipendenti
-- `ShiftsController` — CRUD turni
-- `VacationRequestsController` — ferie e permessi
-- `DashboardController` — statistiche aggregate
-- `NotificationsController` — notifiche
+### ViewModels (23 file in `Turnify.Mobile/ViewModels/`)
 
----
+| ViewModel | View abbinata |
+|---|---|
+| `BaseViewModel` | — (classe base: `IsBusy`, `Title`) |
+| `LoginViewModel` | `LoginPage` |
+| `RegisterViewModel` | `RegisterPage` |
+| `ForgotPasswordViewModel` | `ForgotPasswordPage` |
+| `GdprConsentViewModel` | `GdprConsentPage` |
+| `OnboardingViewModel` | `OnboardingPage` |
+| `DashboardViewModel` | `DashboardPage` |
+| `ShiftCalendarViewModel` | `ShiftCalendarPage` |
+| `ShiftDetailViewModel` | `ShiftDetailPage` |
+| `VacationListViewModel` | `VacationListPage` |
+| `VacationEditViewModel` | `VacationEditPage` |
+| `NotificationsViewModel` | `NotificationsPage` |
+| `ProfileViewModel` | `ProfilePage` |
+| `EmployeeListViewModel` | `EmployeeListPage` |
+| `EmployeeDetailViewModel` | `EmployeeDetailPage` |
+| `BusinessListViewModel` | `BusinessListPage` |
+| `BusinessDetailViewModel` | `BusinessDetailPage` |
+| `BusinessOpeningHoursViewModel` | `BusinessOpeningHoursPage` |
+| `AvailabilityViewModel` | `AvailabilityPage` |
+| `EmployeeDashboardViewModel` | `EmployeeDashboardPage` |
+| `AttendanceHistoryViewModel` | `AttendanceHistoryPage` |
+| `ChangePasswordViewModel` | `ChangePasswordPage` |
+| `ReportsViewModel` | `ReportsPage` |
 
-## 4. Database — PostgreSQL
+> `EmojiPickerPage.xaml` esiste ma non ha un ViewModel dedicato nel Glob dei file `.cs`.
 
-- **PostgreSQL 15** su VPS Linux
-- ORM: **Entity Framework Core** con code-first migrations
-- Connection pooling: **Npgsql** built-in pooling
-- Backup: dump giornaliero automatico via cron
+### Services (5 file in `Turnify.Mobile/Services/`)
 
-Per lo schema dettagliato → `docs/database.md`
+| Service | Responsabilità |
+|---|---|
+| `AuthService` | `LoginAsync` (email+password → JWT), `EmployeeLoginAsync` (companySlug+username+password → JWT), `ForgotPasswordAsync`, `ResetPasswordAsync`. Salva JWT e refresh token in `SecureStorage`. Metodi `RegisterCompanyAsync`, `RefreshTokenAsync`, `LogoutAsync` non implementati (`throw NotImplementedException`). |
+| `AuthDelegatingHandler` | Inietta `Authorization: Bearer <jwt>` da `SecureStorage` su ogni richiesta HTTP "TurnifyApi". Su risposta 401: cancella sessione (`SecureStorage` + `Preferences`) e sostituisce `Window.Page` con nuovo `AppShell` in Login. Non esegue refresh token automatico. |
+| `CertificatePinningHandler` | Verifica thumbprint certificato SSL del server prima di inviare la richiesta; usato come `PrimaryHttpMessageHandler` su entrambi i named clients. |
+| `ErrorReporterService` | Implementa `IErrorReporterService` (interfaccia definita nello stesso file). Singleton; espone `static Current` per i ViewModel che non ricevono DI. Fire-and-forget verso `POST /api/errorlogs`. Genera `device_id` persistente via `Preferences`. Fallisce silenziosamente su qualsiasi errore. |
+| `MobilePushService` | Registra il device token FCM al login via `POST /api/device-tokens`. |
 
----
+### Modelli Core (`Turnify.Core/Models/`, 12 file)
 
-## 5. Flusso Autenticazione JWT
+| File | Contenuto |
+|---|---|
+| `User.cs` | Account: `Email`, `Username` (nullable), `PasswordHash`, `RefreshTokenHash`, `AvatarEmoji`, `UserRole`, `CompanyId`, `PasswordResetToken`, `PasswordResetTokenExpiryTime` |
+| `Company.cs` | Azienda tenant: `Name`, `Slug` (univoco) |
+| `Employee.cs` | Anagrafica dipendente: `ContractType`, `WeeklyHours`, `AvailableDays` (CSV string) |
+| `Business.cs` | Sede/attività: `Name`, `Address`, `OpeningTime`, `ClosingTime`, `IsActive` |
+| `Shift.cs` | Turno: `StartTime`, `EndTime`, `Status` (ShiftStatus), `EmployeeId`, `Label`, `Note` |
+| `VacationRequest.cs` | Richiesta ferie: `Type` (VacationRequestType), `Status` (VacationRequestStatus), `StartDate`, `EndDate`, `TotalDays`, `Reason` |
+| `AttendanceLog.cs` | Timbratura: `CheckInTime` (UTC), `CheckOutTime` (nullable), `Method` (CheckInMethod) |
+| `Notification.cs` | Notifica: `Type`, `IsRead`, `UserId` |
+| `DeviceToken.cs` | Token FCM: `UserId`, `Token`, `Platform` |
+| `AppErrorLog.cs` | Log errore client: `DeviceId`, `Platform`, `AppVersion`, `ErrorType`, `Message`, `StackTrace`, `ScreenName`, `OccurredAt` |
+| `DashboardModels.cs` | DTOs server: `DashboardSummaryDto`, `EmployeeHoursDto` |
+| `Enums.cs` | `UserRole` (Admin/Employee/Manager), `ContractType`, `ShiftStatus`, `VacationRequestType`, `VacationRequestStatus`, `CheckInMethod` |
 
-```
-App Mobile                     Backend API
-    │                               │
-    │ POST /auth/login              │
-    │ {email, password}             │
-    │─────────────────────────────→ │
-    │                               │ Verifica credenziali
-    │                               │ Genera AccessToken (15min)
-    │                               │ Genera RefreshToken (7gg)
-    │                               │ Salva RefreshToken nel DB
-    │ 200 OK                        │
-    │ {accessToken, refreshToken}   │
-    │ ←──────────────────────────── │
-    │                               │
-    │ Salva token in SecureStorage  │
-    │                               │
-    │ GET /shifts (con JWT header)  │
-    │─────────────────────────────→ │
-    │                               │ Valida JWT
-    │                               │ Controlla ruolo/permessi
-    │ 200 OK {dati turni}           │
-    │ ←──────────────────────────── │
-    │                               │
-    │ [Token scaduto - 401]         │
-    │ POST /auth/refresh            │
-    │ {refreshToken}                │
-    │─────────────────────────────→ │
-    │                               │ Valida refreshToken nel DB
-    │                               │ Genera nuovo accessToken
-    │ 200 OK {newAccessToken}       │
-    │ ←──────────────────────────── │
-```
+### DTOs locali ai ViewModel
 
----
+I ViewModel che necessitano di strutture per il binding definiscono i propri DTO nello stesso file `.cs`. Esempio: `DashboardViewModel.cs` contiene `DashboardShiftDto`, `DashboardPendingVacationDto`, `DashboardSummaryDto` con proprietà calcolate (`DisplayTime`, `Initials`, `TypeDisplay`) utili al binding XAML.
 
-## 6. Notifiche Push (Architettura Futura v1.1)
+### Controller API (`Turnify.Api/Controllers/`, 13 file)
 
-```
-Backend API
-    │
-    │ Evento: nuovo turno creato
-    ▼
-NotificationService
-    │
-    ├──→ Firebase Cloud Messaging (FCM) → Android devices
-    │
-    └──→ Apple Push Notification service (APNs) → iOS devices
-                                                        │
-                                                        ▼
-                                              App riceve notifica
-                                              (anche in background)
-```
-
-**Per il v1.0** le notifiche saranno implementate come in-app polling o notifiche locali. FCM/APNs verrà integrato nello sprint M7.
-
----
-
-## 7. Infrastruttura VPS
-
-```
-Internet
-    │
-    │ HTTPS :443
-    ▼
-Nginx (reverse proxy)
-    │ Let's Encrypt SSL
-    │ Termina SSL
-    │ Passa traffico su HTTP interno
-    ▼
-ASP.NET Core API (porta 5000, systemd service)
-    │
-    ▼
-PostgreSQL (porta 5432, solo localhost)
-```
-
-Per la configurazione dettagliata → `docs/deployment.md`
+| Controller | Endpoint principali |
+|---|---|
+| `AuthController` | `POST /api/auth/register`, `/login`, `/employee-login`, `/forgot-password`, `/reset-password` |
+| `ShiftsController` | CRUD `/api/shifts`, `POST /api/shifts/recurring` |
+| `VacationRequestsController` | CRUD `/api/vacation-requests`, `/approve`, `/reject` |
+| `AttendanceController` | `POST /api/attendance/checkin`, `/checkout`, `GET /today`, `/history` |
+| `DashboardController` | `GET /api/dashboard/summary`, `/hours-by-employee` |
+| `ReportsController` | `GET /api/reports/hours`, `/attendance` (risposta CSV) |
+| `EmployeesController` | CRUD `/api/employees` |
+| `BusinessesController` | CRUD `/api/businesses`, `PUT /opening-hours` |
+| `UsersController` + `UsersController.GdprPartial.cs` | `GET /api/users/me`, `PUT /change-password`, GDPR export/delete |
+| `NotificationsController` | `GET /api/notifications` |
+| `DeviceTokensController` | `POST /api/device-tokens` |
+| `ErrorLogsController` | `POST /api/errorlogs` (pubblico, rate-limited), `GET` (admin-only) |
 
 ---
 
-## 8. Multi-Tenancy
+## Navigazione
 
-Turnify è un'applicazione **multi-tenant** con isolamento per dati.
+L'app usa `Shell` come root. La navigazione è gestita interamente da `AppShell.xaml.cs`; non esiste NavigationPage o altre strutture.
 
-- Ogni azienda (`Company`) ha un `CompanyId` univoco
-- Tutte le entità del dominio (Shifts, Employees, ecc.) hanno una FK verso `Companies`
-- Il backend filtra **automaticamente** i dati per `CompanyId` estratto dal JWT
-- Nessun dato di un'azienda è visibile a un'altra
+### Costruttore AppShell
 
-Questo approccio è detto **"shared database, separate schemas by tenant ID"** ed è sufficiente per la fase MVP.
+```csharp
+public AppShell(bool isAdmin = false, string startRoute = "Login")
+```
 
----
+Il costruttore accetta `isAdmin` e `startRoute`. Le route accettate per `startRoute`:
+- `"GdprFirst"` → naviga a `GdprConsentPage`
+- `"Onboarding"` → naviga a `OnboardingPage`
+- `"Main"` → naviga a `//Dashboard` (admin) o `EmployeeDashboardPage` (dipendente)
+- `"Login"` (default) → nessuna navigazione; la LoginPage è la prima tab
 
-## 9. Separazione dei Livelli — Regole Chiave
+### Registrazione route
 
-| Livello | Conosce | NON conosce |
+`RegisterAllRoutes` registra tutte le 27 route con `Routing.RegisterRoute`. Le tab principali sono dichiarate nello XAML dell'AppShell e non nelle route programmatiche.
+
+### Tab per ruolo
+
+`ConfigureForRole(bool isAdmin)` rimuove o ripristina tab dalla `TabBar` a runtime:
+
+| Tab | Admin | Dipendente |
 |---|---|---|
-| Controller | DTO, Service | Entità DB, Repository |
-| Service | Entità, Repository, DTO | HttpContext, Controller |
-| Repository | EF Core, entità DB | DTO, logica business |
-| ViewModel (mobile) | Service app, DTO | API HTTP diretta, DB |
-| View (mobile) | ViewModel | Service, DTO |
+| DashboardTab | ✓ | ✗ rimossa |
+| TeamTab (EmployeeList) | ✓ | ✗ rimossa |
+| ShiftCalendarTab | ✓ | ✓ |
+| VacationListTab | ✓ | ✓ |
+| NotificationsTab | ✓ | ✓ |
+| ProfileTab | ✓ | ✓ |
+| EmployeeDashboardTab | ✗ rimossa | ✓ |
+
+### Flusso startup (App.xaml.cs)
+
+```
+App.GetStartPage
+  ├── GdprConsentViewModel.NeedsConsent == true
+  │     → AppShell(isAdmin: false, startRoute: "GdprFirst")
+  ├── Preferences["has_valid_session"] == true && role salvato
+  │     ├── isAdmin && OnboardingViewModel.NeedsOnboarding
+  │     │     → AppShell(isAdmin: true, startRoute: "Onboarding")
+  │     └── altrimenti
+  │           → AppShell(isAdmin, startRoute: "Main")
+  └── altrimenti
+        → AppShell(isAdmin: false, startRoute: "Login")
+```
+
+### Cambio sessione a runtime
+
+Al login riuscito: `LoginViewModel` sostituisce `Window.Page` con un nuovo `AppShell` configurato per il ruolo. Su 401: `AuthDelegatingHandler` esegue la stessa operazione rimpiazzando con `AppShell` in Login.
 
 ---
 
-## 10. Decisioni Architetturali
+## Flusso dati tipico
 
-| Decisione | Scelta | Motivazione |
+```
+View (XAML binding)
+  → [RelayCommand] su ViewModel
+    → IsBusy = true
+    → HttpClient.GetFromJsonAsync<TDto>(endpoint)  // named client "TurnifyApi"
+      → AuthDelegatingHandler aggiunge header JWT
+        → CertificatePinningHandler verifica certificato
+          → API backend ASP.NET Core
+            → Controller → Service → Repository → MySQL
+          ← risposta JSON
+        ← risposta
+      ← risposta
+    → deserializzazione → aggiornamento ObservableCollection / proprietà
+    ← PropertyChanged notifica binding XAML
+  → IsBusy = false
+```
+
+I ViewModel che richiedono autenticazione usano il named client `"TurnifyApi"` ottenuto via `IHttpClientFactory`. Il client auth (`IAuthService`) usa un named client separato senza `AuthDelegatingHandler` (le chiamate di login non portano JWT).
+
+---
+
+## Gestione stato UI
+
+Ogni ViewModel eredita da `BaseViewModel`:
+
+```csharp
+public partial class BaseViewModel : ObservableObject
+{
+    [ObservableProperty] private bool _isBusy;
+    [ObservableProperty] private string _title = string.Empty;
+}
+```
+
+I ViewModel che caricano dati aggiungono tipicamente:
+
+```csharp
+[ObservableProperty] private bool _hasError;
+[ObservableProperty] private string _errorMessage = string.Empty;
+[ObservableProperty] private bool _isEmptyState;
+[ObservableProperty] private bool _hasData;
+```
+
+Le collection sono `ObservableCollection<T>` come proprietà get-only inizializzate a `new`:
+
+```csharp
+public ObservableCollection<DashboardShiftDto> ShiftsToday { get; } = new;
+```
+
+`ShiftCalendarViewModel` aggiunge stato specifico per la timbratura:
+
+```csharp
+[ObservableProperty] private bool _hasCheckedIn;
+[ObservableProperty] private bool _hasCheckedOut;
+public bool CanCheckIn  => !HasCheckedIn && !HasCheckedOut;
+public bool CanCheckOut => HasCheckedIn && !HasCheckedOut;
+```
+
+Il badge tab Notifiche è aggiornato tramite `WeakReferenceMessenger.Default` con `ValueChangedMessage<int>`, ascoltato direttamente in `AppShell`.
+
+---
+
+## Gestione errori
+
+Pattern catch uniforme nei ViewModel:
+
+```csharp
+catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.TooManyRequests)
+    → ErrorMessage = "Troppi tentativi. Riprova tra qualche minuto."
+catch (HttpRequestException)
+    → ErrorMessage = "Errore di connessione al server."
+catch (TaskCanceledException)
+    → ErrorMessage = "Richiesta scaduta. Riprova."
+catch (Exception ex)
+    → ErrorMessage = "Si è verificato un errore. Riprova."
+    → ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(ViewModel))
+```
+
+Alcuni ViewModel aggiungono `catch (JsonException)` per errori di deserializzazione.
+
+Il 401 non è gestito a livello di ViewModel ma da `AuthDelegatingHandler`, che sostituisce la pagina corrente con il Login.
+
+Eccezioni non gestite a livello di processo sono intercettate in `MauiProgram.cs`:
+
+```csharp
+AppDomain.CurrentDomain.UnhandledException += (_, args) => reporter.ReportAsync(ex, "UnhandledException");
+TaskScheduler.UnobservedTaskException     += (_, args) => reporter.ReportAsync(ex, "UnobservedTask");
+```
+
+---
+
+## Persistenza locale
+
+| Storage | Chiavi usate | Gestita da |
 |---|---|---|
-| Framework mobile | .NET MAUI | Una codebase per iOS + Android, ecosistema .NET coerente |
-| ORM | Entity Framework Core | Migrazioni code-first, LINQ tipizzato, produttività alta |
-| Database | PostgreSQL | Affidabilità, performance, open source, ottimo con EF Core |
-| Auth | JWT stateless | Scalabile, standard, nessuna sessione server-side |
-| Hosting | VPS Linux | Controllo totale, costo contenuto per MVP |
-| API style | REST | Standard, comprensibile, ben supportato da tutti i client |
+| `SecureStorage.Default` | `jwt_token`, `refresh_token`, `user_role` | `AuthService`, `AuthDelegatingHandler`, `LoginViewModel` |
+| `Preferences.Default` | `user_role_cached`, `has_valid_session` | `LoginViewModel`, `AuthDelegatingHandler`, `App.xaml.cs` |
+| `Preferences.Default` | `gdpr_consent_given`, `gdpr_consent_version` | `GdprConsentViewModel` |
+| `Preferences.Default` | `device_id` | `ErrorReporterService` |
+| `FileSystem.CacheDirectory` | File CSV temporaneo | `ReportsViewModel` (prima di `Share.RequestAsync`) |
+
+Non è presente SQLite.
+
+---
+
+## Estendibilità
+
+La struttura DI registra tutti i ViewModel e View come `AddTransient`; aggiungere una nuova pagina richiede: creare il file `.xaml` + `.xaml.cs`, creare il ViewModel, registrare entrambi in `MauiProgram.cs`, aggiungere la route in `AppShell.RegisterAllRoutes`.
+
+Il named client `"TurnifyApi"` è il punto di integrazione verso il backend; cambiare base URL richiede di modificare la sola costante `API_BASE` in `MauiProgram.cs`.
+
+Il `ConfigureForRole` su `AppShell` consente di aggiungere tab specifiche per ruolo aggiungendo l'elemento XAML nel `TabBar` e una condizione nel metodo.

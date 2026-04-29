@@ -19,6 +19,7 @@ public partial class ShiftCalendarViewModel : BaseViewModel
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(WeekLabel))]
     [NotifyPropertyChangedFor(nameof(IsCurrentWeek))]
+    [NotifyPropertyChangedFor(nameof(TodayColumnIndex))]
     private DateTime _currentWeekStart;
 
     [ObservableProperty] private bool _isAdmin;
@@ -43,6 +44,11 @@ public partial class ShiftCalendarViewModel : BaseViewModel
 
     [ObservableProperty] private string _checkInTimeDisplay  = string.Empty;
     [ObservableProperty] private string _checkOutTimeDisplay = string.Empty;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasCheckInFeedback))]
+    private string _checkInFeedback = string.Empty;
+    public bool HasCheckInFeedback => !string.IsNullOrEmpty(CheckInFeedback);
 
     public bool CanCheckIn  => !HasCheckedIn && !HasCheckedOut;
     public bool CanCheckOut => HasCheckedIn && !HasCheckedOut;
@@ -74,6 +80,15 @@ public partial class ShiftCalendarViewModel : BaseViewModel
             var today = DateTime.Today;
             int diff = (7 + (today.DayOfWeek - DayOfWeek.Monday)) % 7;
             return CurrentWeekStart == today.AddDays(-diff);
+        }
+    }
+
+    public int TodayColumnIndex
+    {
+        get
+        {
+            if (!IsCurrentWeek) return -1;
+            return (7 + (DateTime.Today.DayOfWeek - DayOfWeek.Monday)) % 7;
         }
     }
 
@@ -133,7 +148,12 @@ public partial class ShiftCalendarViewModel : BaseViewModel
             var body = new { shiftId = (int?)todayShift?.Id };
             var response = await _httpClient.PostAsJsonAsync("api/attendance/checkin", body);
             if (response.IsSuccessStatusCode)
+            {
                 await LoadAttendanceAsync();
+                CheckInFeedback = "Entrata registrata ✓";
+                _ = Task.Delay(3000).ContinueWith(_ =>
+                    MainThread.BeginInvokeOnMainThread(() => CheckInFeedback = string.Empty));
+            }
             else if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
                 await Shell.Current.DisplayAlertAsync("Info", "Sei già entrato oggi.", "OK");
         }
@@ -148,7 +168,12 @@ public partial class ShiftCalendarViewModel : BaseViewModel
         {
             var response = await _httpClient.PostAsJsonAsync("api/attendance/checkout", new { });
             if (response.IsSuccessStatusCode)
+            {
                 await LoadAttendanceAsync();
+                CheckInFeedback = "Uscita registrata ✓";
+                _ = Task.Delay(3000).ContinueWith(_ =>
+                    MainThread.BeginInvokeOnMainThread(() => CheckInFeedback = string.Empty));
+            }
         }
         catch (HttpRequestException) { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK"); }
         catch (TaskCanceledException) { await Shell.Current.DisplayAlertAsync("Errore", "Richiesta scaduta. Riprova.", "OK"); }
@@ -413,6 +438,9 @@ public class ShiftDto
     public DateTime EndTime { get; set; }
     public string Label { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
+
+    public bool IsToday => StartTime.ToLocalTime().Date == DateTime.Today;
+    public string AccentColor => IsToday ? "#16A34A" : "#2563EB";
 }
 
 public class ShiftListResponse

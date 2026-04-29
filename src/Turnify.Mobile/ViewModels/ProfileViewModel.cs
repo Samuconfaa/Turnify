@@ -107,11 +107,14 @@ public partial class ProfileViewModel : BaseViewModel
 
     private void LoadSavedAvatar()
     {
-        // Load previously chosen emoji from Preferences
         var savedEmoji = Preferences.Default.Get("avatar_emoji", string.Empty);
         if (!string.IsNullOrEmpty(savedEmoji))
             AvatarEmoji = savedEmoji;
     }
+
+    [RelayCommand]
+    private async Task GoToReportsAsync()
+        => await Shell.Current.GoToAsync(nameof(Views.ReportsPage));
 
     private async Task LoadProfileAsync()
     {
@@ -131,12 +134,19 @@ public partial class ProfileViewModel : BaseViewModel
             FirstName = user.FirstName ?? string.Empty;
             LastName  = user.LastName  ?? string.Empty;
             Role      = user.Role      ?? string.Empty;
-            IsAdmin   = Role == "Admin";
+            IsAdmin     = Role == "Admin";
             RoleDisplay = IsAdmin ? "Amministratore" : "Dipendente";
             OnPropertyChanged(nameof(FullName));
             OnPropertyChanged(nameof(ComputedInitials));
-            HasData = true;
+            HasData      = true;
             IsEmptyState = false;
+
+            // Sync emoji from server (server wins over local Preferences)
+            if (!string.IsNullOrEmpty(user.AvatarEmoji))
+            {
+                AvatarEmoji = user.AvatarEmoji;
+                Preferences.Default.Set("avatar_emoji", user.AvatarEmoji);
+            }
         }
         catch (HttpRequestException)
         {
@@ -198,6 +208,17 @@ public partial class ProfileViewModel : BaseViewModel
         AvatarPhoto = null;
         Preferences.Default.Set("avatar_emoji", emoji);
         Preferences.Default.Set("avatar_photo_path", string.Empty);
+        _ = SyncAvatarEmojiToServerAsync(emoji);
+    }
+
+    private async Task SyncAvatarEmojiToServerAsync(string emoji)
+    {
+        try
+        {
+            await _httpClient.PutAsJsonAsync("api/users/me/avatar-emoji", new { avatarEmoji = emoji });
+        }
+        catch (HttpRequestException) { }
+        catch (TaskCanceledException) { }
     }
 
     private async Task PickPhotoAsync()
@@ -229,31 +250,7 @@ public partial class ProfileViewModel : BaseViewModel
 
     [RelayCommand]
     private async Task ChangePasswordAsync()
-    {
-        var current = await Shell.Current.DisplayPromptAsync(
-            "Cambia Password", "Password attuale:", "Avanti", "Annulla");
-        if (current == null) return;
-
-        var newPwd = await Shell.Current.DisplayPromptAsync(
-            "Cambia Password", "Nuova password (min. 8 caratteri):", "Conferma", "Annulla");
-        if (string.IsNullOrEmpty(newPwd) || newPwd.Length < 8)
-        {
-            await Shell.Current.DisplayAlertAsync("Errore", "La password deve avere almeno 8 caratteri.", "OK");
-            return;
-        }
-        try
-        {
-            var response = await _httpClient.PutAsJsonAsync("api/users/me/password",
-                new { currentPassword = current, newPassword = newPwd });
-            if (response.IsSuccessStatusCode)
-                await Shell.Current.DisplayAlertAsync("Successo", "Password aggiornata.", "OK");
-            else
-                await Shell.Current.DisplayAlertAsync("Errore", "Password attuale non corretta.", "OK");
-        }
-        catch (HttpRequestException) { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK"); }
-        catch (JsonException) { await Shell.Current.DisplayAlertAsync("Errore", "Risposta del server non valida.", "OK"); }
-        catch (TaskCanceledException) { await Shell.Current.DisplayAlertAsync("Errore", "Richiesta scaduta. Riprova.", "OK"); }
-    }
+        => await Shell.Current.GoToAsync(nameof(Views.ChangePasswordPage));
 
     [RelayCommand]
     private async Task ManageOpeningHoursAsync()
@@ -330,6 +327,7 @@ public partial class ProfileViewModel : BaseViewModel
         public string? Role { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
+        public string? AvatarEmoji { get; set; }
     }
 
     private class BusinessItemDto

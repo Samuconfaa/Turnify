@@ -32,6 +32,9 @@ public class TurnifyDbContext : DbContext
         modelBuilder.Entity<User>()
             .HasIndex(u => u.CompanyId);
         modelBuilder.Entity<User>()
+            .HasIndex(u => new { u.CompanyId, u.Username }).IsUnique()
+            .HasFilter("`Username` IS NOT NULL");
+        modelBuilder.Entity<User>()
             .Property(u => u.Role).HasConversion<string>();
 
         // Companies

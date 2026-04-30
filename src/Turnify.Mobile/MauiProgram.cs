@@ -90,6 +90,7 @@ public static class MauiProgram
         builder.Services.AddTransient<EmployeeListPage>();
         builder.Services.AddTransient<EmployeeDetailPage>();
         builder.Services.AddTransient<EmojiPickerPage>();
+        builder.Services.AddTransient<ManageDataPage>();
         builder.Services.AddTransient<BusinessListPage>();
         builder.Services.AddTransient<BusinessDetailPage>();
         builder.Services.AddTransient<BusinessOpeningHoursPage>();

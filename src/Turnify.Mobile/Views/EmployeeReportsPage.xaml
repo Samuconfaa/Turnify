@@ -127,9 +127,6 @@
                                 <VerticalStackLayout IsVisible="{Binding IsExpanded}"
                                                      Padding="16,0,16,12" Spacing="6">
                                     <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="0,0,0,6"/>
-                                    <BindableLayout.ItemsSource>
-                                        <x:Reference x:Name="breakdownLayout"/>
-                                    </BindableLayout.ItemsSource>
                                     <CollectionView ItemsSource="{Binding Breakdown}">
                                         <CollectionView.ItemTemplate>
                                             <DataTemplate x:DataType="vm:HoursBreakdownDto">

@@ -148,6 +148,12 @@ public partial class LoginViewModel : BaseViewModel
     }
 
     [RelayCommand]
+    private void SelectAdminMode() => IsEmployeeMode = false;
+
+    [RelayCommand]
+    private void SelectEmployeeMode() => IsEmployeeMode = true;
+
+    [RelayCommand]
     private async Task GoToRegisterAsync()
         => await Shell.Current.GoToAsync(nameof(Views.RegisterPage));
 

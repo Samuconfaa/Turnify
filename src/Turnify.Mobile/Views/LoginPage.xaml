@@ -86,7 +86,7 @@
                                     </DataTrigger>
                                 </Border.Triggers>
                                 <Border.GestureRecognizers>
-                                    <TapGestureRecognizer Tapped="OnAdminTabTapped"/>
+                                    <TapGestureRecognizer Command="{Binding SelectAdminModeCommand}"/>
                                 </Border.GestureRecognizers>
                                 <Label Text="Admin / Manager"
                                        FontSize="13" FontAttributes="Bold" FontFamily="PJSBold"
@@ -113,7 +113,7 @@
                                     </DataTrigger>
                                 </Border.Triggers>
                                 <Border.GestureRecognizers>
-                                    <TapGestureRecognizer Tapped="OnEmployeeTabTapped"/>
+                                    <TapGestureRecognizer Command="{Binding SelectEmployeeModeCommand}"/>
                                 </Border.GestureRecognizers>
                                 <Label Text="Dipendente"
                                        FontSize="13" FontAttributes="Bold" FontFamily="PJSBold"

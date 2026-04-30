@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
              x:Class="Turnify.Mobile.Views.ProfilePage"
+             x:DataType="vm:ProfileViewModel"
              Title="Profilo"
              Shell.NavBarIsVisible="False"
              BackgroundColor="{StaticResource Background}">

@@ -7,80 +7,143 @@
              Title="{Binding Title}"
              Shell.NavBarIsVisible="False"
              BackgroundColor="{StaticResource Background}">
+
     <ScrollView>
-        <VerticalStackLayout Spacing="24" Padding="24" VerticalOptions="Center" HorizontalOptions="Fill" MaximumWidthRequest="400">
-            <!-- Header -->
-            <VerticalStackLayout Spacing="8" HorizontalOptions="Center" Margin="0,0,0,16">
-                <Label Text="Turnify" FontSize="30" FontAttributes="Bold" TextColor="{StaticResource Primary}" HorizontalOptions="Center" />
-                <Label Text="Registra la tua azienda" FontSize="16" TextColor="{StaticResource OnSurfaceVariant}" HorizontalOptions="Center" />
-            </VerticalStackLayout>
+        <VerticalStackLayout Spacing="0" Padding="0">
 
-            <!-- Form -->
-            <Border BackgroundColor="{StaticResource SurfaceContainerLowest}" Stroke="{StaticResource OutlineVariant}" Padding="16">
-                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                <VerticalStackLayout Spacing="16">
-                    
-                    <Label Text="Dati Azienda" FontAttributes="Bold" TextColor="{StaticResource Primary}" />
-                    
-                    <Border Padding="0" Stroke="{StaticResource OutlineVariant}" BackgroundColor="{StaticResource SurfaceContainer}">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="8" />
-                        </Border.StrokeShape>
-                        <Entry Text="{Binding CompanyName}" Placeholder="Nome Azienda" HeightRequest="52" Margin="16,0" TextColor="{StaticResource OnBackground}" BackgroundColor="Transparent" />
+            <!-- Hero header -->
+            <Grid HeightRequest="200" BackgroundColor="{StaticResource Navy}">
+                <VerticalStackLayout VerticalOptions="Center"
+                                     HorizontalOptions="Center"
+                                     Spacing="6">
+                    <Label Text="T"
+                           FontSize="32" FontAttributes="Bold" FontFamily="PJSXBold"
+                           TextColor="White" HorizontalOptions="Center"/>
+                    <Label Text="Crea il tuo account"
+                           FontSize="22" FontAttributes="Bold" FontFamily="PJSXBold"
+                           TextColor="White" HorizontalOptions="Center"
+                           CharacterSpacing="-0.5"/>
+                    <Label Text="Registra la tua azienda in pochi secondi"
+                           FontSize="13" FontFamily="PJSReg"
+                           TextColor="#FFFFFF66" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </Grid>
+
+            <Border BackgroundColor="{StaticResource Surface}"
+                    Stroke="Transparent"
+                    Margin="0,-20,0,0">
+                <Border.StrokeShape><RoundRectangle CornerRadius="24,24,0,0"/></Border.StrokeShape>
+                <VerticalStackLayout Spacing="20" Padding="24,28,24,48">
+
+                    <!-- Dati Azienda -->
+                    <Label Text="DATI AZIENDA" Style="{StaticResource SectionLabel}"/>
+
+                    <Border BackgroundColor="{StaticResource Surface}"
+                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                            Padding="0">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
+                        <Border.Shadow>
+                            <Shadow Brush="#000000" Offset="0,4" Radius="16" Opacity="0.06"/>
+                        </Border.Shadow>
+                        <VerticalStackLayout Spacing="0">
+                            <!-- Nome azienda -->
+                            <VerticalStackLayout Spacing="6" Padding="16,16,16,0">
+                                <Label Text="NOME AZIENDA" Style="{StaticResource SectionLabel}" Margin="2,0,0,0"/>
+                                <Border Style="{StaticResource FieldBorder}">
+                                    <Entry Text="{Binding CompanyName}"
+                                           Placeholder="Es. Bar Centrale"
+                                           Style="{StaticResource FieldEntry}"/>
+                                </Border>
+                            </VerticalStackLayout>
+                            <!-- Slug -->
+                            <VerticalStackLayout Spacing="6" Padding="16,14,16,0">
+                                <Label Text="SLUG IDENTIFICATIVO" Style="{StaticResource SectionLabel}" Margin="2,0,0,0"/>
+                                <Border Style="{StaticResource FieldBorder}">
+                                    <Entry Text="{Binding CompanySlug}"
+                                           Placeholder="es. bar-centrale"
+                                           Style="{StaticResource FieldEntry}"/>
+                                </Border>
+                            </VerticalStackLayout>
+                            <!-- Email aziendale -->
+                            <VerticalStackLayout Spacing="6" Padding="16,14,16,16">
+                                <Label Text="EMAIL AZIENDALE" Style="{StaticResource SectionLabel}" Margin="2,0,0,0"/>
+                                <Border Style="{StaticResource FieldBorder}">
+                                    <Entry Text="{Binding CompanyEmail}"
+                                           Placeholder="info@barcentrale.it"
+                                           Keyboard="Email"
+                                           Style="{StaticResource FieldEntry}"/>
+                                </Border>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
                     </Border>
 
-                    <Border Padding="0" Stroke="{StaticResource OutlineVariant}" BackgroundColor="{StaticResource SurfaceContainer}">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="8" />
-                        </Border.StrokeShape>
-                        <Entry Text="{Binding CompanySlug}" Placeholder="Slug (es. la-mia-azienda)" HeightRequest="52" Margin="16,0" TextColor="{StaticResource OnBackground}" BackgroundColor="Transparent" />
+                    <!-- Account Admin -->
+                    <Label Text="ACCOUNT AMMINISTRATORE" Style="{StaticResource SectionLabel}"/>
+
+                    <Border BackgroundColor="{StaticResource Surface}"
+                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                            Padding="0">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
+                        <Border.Shadow>
+                            <Shadow Brush="#000000" Offset="0,4" Radius="16" Opacity="0.06"/>
+                        </Border.Shadow>
+                        <VerticalStackLayout Spacing="0">
+                            <VerticalStackLayout Spacing="6" Padding="16,16,16,0">
+                                <Label Text="EMAIL ADMIN" Style="{StaticResource SectionLabel}" Margin="2,0,0,0"/>
+                                <Border Style="{StaticResource FieldBorder}">
+                                    <Entry Text="{Binding AdminEmail}"
+                                           Placeholder="admin@barcentrale.it"
+                                           Keyboard="Email"
+                                           Style="{StaticResource FieldEntry}"/>
+                                </Border>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Spacing="6" Padding="16,14,16,0">
+                                <Label Text="PASSWORD" Style="{StaticResource SectionLabel}" Margin="2,0,0,0"/>
+                                <Border Style="{StaticResource FieldBorder}">
+                                    <Entry Text="{Binding AdminPassword}"
+                                           Placeholder="Min. 8 caratteri"
+                                           IsPassword="True"
+                                           Style="{StaticResource FieldEntry}"/>
+                                </Border>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Spacing="6" Padding="16,14,16,16">
+                                <Label Text="CONFERMA PASSWORD" Style="{StaticResource SectionLabel}" Margin="2,0,0,0"/>
+                                <Border Style="{StaticResource FieldBorder}">
+                                    <Entry Text="{Binding ConfirmPassword}"
+                                           Placeholder="Ripeti la password"
+                                           IsPassword="True"
+                                           Style="{StaticResource FieldEntry}"/>
+                                </Border>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
                     </Border>
 
-                    <Border Padding="0" Stroke="{StaticResource OutlineVariant}" BackgroundColor="{StaticResource SurfaceContainer}">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="8" />
-                        </Border.StrokeShape>
-                        <Entry Text="{Binding CompanyEmail}" Placeholder="Email Aziendale" Keyboard="Email" HeightRequest="52" Margin="16,0" TextColor="{StaticResource OnBackground}" BackgroundColor="Transparent" />
-                    </Border>
+                    <Button Text="Registrati"
+                            Command="{Binding RegisterCommand}"
+                            Style="{StaticResource PrimaryButton}"/>
 
-                    <Label Text="Account Amministratore" FontAttributes="Bold" TextColor="{StaticResource Primary}" Margin="0,8,0,0" />
+                    <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                       IsVisible="{Binding IsBusy}"
+                                       HorizontalOptions="Center"
+                                       Color="{StaticResource Primary}"/>
 
-                    <Border Padding="0" Stroke="{StaticResource OutlineVariant}" BackgroundColor="{StaticResource SurfaceContainer}">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="8" />
-                        </Border.StrokeShape>
-                        <Entry Text="{Binding AdminEmail}" Placeholder="Email Admin" Keyboard="Email" HeightRequest="52" Margin="16,0" TextColor="{StaticResource OnBackground}" BackgroundColor="Transparent" />
-                    </Border>
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="5">
+                        <Label Text="Hai già un account?"
+                               FontSize="14" FontFamily="PJSReg"
+                               TextColor="{StaticResource OnSurfaceVariant}"
+                               VerticalOptions="Center"/>
+                        <Label Text="Accedi"
+                               FontSize="14" FontAttributes="Bold" FontFamily="PJSBold"
+                               TextColor="{StaticResource Primary}"
+                               VerticalOptions="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </HorizontalStackLayout>
 
-                    <Border Padding="0" Stroke="{StaticResource OutlineVariant}" BackgroundColor="{StaticResource SurfaceContainer}">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="8" />
-                        </Border.StrokeShape>
-                        <Entry Text="{Binding AdminPassword}" Placeholder="Password Admin" IsPassword="True" HeightRequest="52" Margin="16,0" TextColor="{StaticResource OnBackground}" BackgroundColor="Transparent" />
-                    </Border>
-
-                    <Border Padding="0" Stroke="{StaticResource OutlineVariant}" BackgroundColor="{StaticResource SurfaceContainer}">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="8" />
-                        </Border.StrokeShape>
-                        <Entry Text="{Binding ConfirmPassword}" Placeholder="Conferma Password" IsPassword="True" HeightRequest="52" Margin="16,0" TextColor="{StaticResource OnBackground}" BackgroundColor="Transparent" />
-                    </Border>
-
-                    <Button Text="Registrati" Command="{Binding RegisterCommand}" BackgroundColor="{StaticResource Primary}" TextColor="{StaticResource OnPrimary}" HeightRequest="52" CornerRadius="8" FontAttributes="Bold" Margin="0,8,0,0" />
                 </VerticalStackLayout>
             </Border>
-            
-            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" HorizontalOptions="Center" Color="{StaticResource Primary}" />
-
-            <!-- Footer -->
-            <HorizontalStackLayout HorizontalOptions="Center" Margin="0,16,0,0" Spacing="4">
-                <Label Text="Hai già un account?" FontSize="14" TextColor="{StaticResource OnSurfaceVariant}" VerticalOptions="Center" />
-                <Label Text="Accedi" FontSize="14" TextColor="{StaticResource Primary}" TextDecorations="Underline" FontAttributes="Bold" VerticalOptions="Center">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding GoBackCommand}" />
-                    </Label.GestureRecognizers>
-                </Label>
-            </HorizontalStackLayout>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

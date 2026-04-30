@@ -9,79 +9,108 @@
 
     <Grid RowDefinitions="Auto,*">
 
-        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Padding="16,12,16,4">
-            <Label Grid.Column="0" Text="Le mie attività"
-                   FontSize="22" FontAttributes="Bold"
-                   TextColor="{StaticResource OnBackground}"
-                   VerticalOptions="Center"/>
-            <Button Grid.Column="1" Text="+ Aggiungi"
-                    Command="{Binding AddBusinessCommand}"
-                    BackgroundColor="{StaticResource Primary}"
-                    TextColor="White" CornerRadius="20"
-                    HeightRequest="38" Padding="14,0" FontSize="14"/>
+        <!-- Header -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Padding="20,18,20,12">
+            <VerticalStackLayout Grid.Column="0" Spacing="2">
+                <Label Text="Attività"
+                       FontSize="26" FontAttributes="Bold" FontFamily="PJSXBold"
+                       TextColor="{StaticResource OnBackground}"
+                       CharacterSpacing="-0.8"/>
+                <Label Text="Le mie sedi"
+                       FontSize="13" FontFamily="PJSReg"
+                       TextColor="{StaticResource Outline}"/>
+            </VerticalStackLayout>
+            <Border Grid.Column="1"
+                    BackgroundColor="{StaticResource Navy}"
+                    Stroke="Transparent" Padding="16,10"
+                    VerticalOptions="Center">
+                <Border.StrokeShape><RoundRectangle CornerRadius="22"/></Border.StrokeShape>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding AddBusinessCommand}"/>
+                </Border.GestureRecognizers>
+                <Label Text="+ Aggiungi"
+                       FontSize="13" FontAttributes="Bold" FontFamily="PJSBold"
+                       TextColor="White"/>
+            </Border>
         </Grid>
 
+        <!-- List -->
         <RefreshView Grid.Row="1"
                      Command="{Binding LoadCommand}"
                      IsRefreshing="{Binding IsBusy}">
-            <CollectionView ItemsSource="{Binding Businesses}" Margin="16,0,16,16">
+            <CollectionView ItemsSource="{Binding Businesses}"
+                            Margin="20,0,20,20">
                 <CollectionView.EmptyView>
-                    <VerticalStackLayout HorizontalOptions="Center" Margin="0,48,0,0" Spacing="12">
-                        <Label Text="🏪" FontSize="48" HorizontalOptions="Center"/>
+                    <VerticalStackLayout HorizontalOptions="Center"
+                                         Margin="0,48,0,0" Spacing="14">
+                        <Border BackgroundColor="{StaticResource Surface}"
+                                HeightRequest="68" WidthRequest="68"
+                                HorizontalOptions="Center">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                            <Label Text="🏪" FontSize="34"
+                                   HorizontalOptions="Center" VerticalOptions="Center"/>
+                        </Border>
                         <Label Text="Nessuna attività ancora"
-                               FontSize="18" FontAttributes="Bold"
+                               FontSize="18" FontAttributes="Bold" FontFamily="PJSBold"
                                TextColor="{StaticResource OnBackground}"
                                HorizontalOptions="Center"/>
-                        <Label Text="Usa il pulsante + Aggiungi per creare la prima attività."
-                               FontSize="14" TextColor="{StaticResource OnSurfaceVariant}"
+                        <Label Text="Usa + Aggiungi per creare la prima attività."
+                               FontSize="14" FontFamily="PJSReg"
+                               TextColor="{StaticResource OnSurfaceVariant}"
                                HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
                     </VerticalStackLayout>
                 </CollectionView.EmptyView>
+
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="vm:BusinessDto">
                         <Border BackgroundColor="{StaticResource Surface}"
-                                Stroke="{StaticResource Outline}" StrokeThickness="1"
+                                Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
                                 Padding="16" Margin="0,0,0,12">
-                            <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
-                            <VerticalStackLayout Spacing="12">
-
+                            <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
+                            <Border.Shadow>
+                                <Shadow Brush="#000000" Offset="0,4" Radius="16" Opacity="0.06"/>
+                            </Border.Shadow>
+                            <VerticalStackLayout Spacing="14">
                                 <Grid ColumnDefinitions="*,Auto">
-                                    <VerticalStackLayout Grid.Column="0" Spacing="3">
+                                    <VerticalStackLayout Grid.Column="0" Spacing="4">
                                         <Label Text="{Binding Name}"
-                                               FontSize="17" FontAttributes="Bold"
+                                               FontSize="17" FontAttributes="Bold" FontFamily="PJSBold"
                                                TextColor="{StaticResource OnBackground}"/>
                                         <Label Text="{Binding BusinessType}"
-                                               FontSize="14"
+                                               FontSize="13" FontFamily="PJSReg"
                                                TextColor="{StaticResource OnSurfaceVariant}"/>
                                         <Label Text="{Binding Address}"
-                                               FontSize="13"
-                                               TextColor="{StaticResource OnSurfaceVariant}"
+                                               FontSize="12" FontFamily="PJSReg"
+                                               TextColor="{StaticResource Outline}"
                                                IsVisible="{Binding Address, Converter={StaticResource StringNotEmptyConverter}}"/>
                                     </VerticalStackLayout>
                                     <Border Grid.Column="1"
-                                            BackgroundColor="#E6F4EA" Padding="10,4"
+                                            BackgroundColor="{StaticResource SuccessLight}"
+                                            Stroke="Transparent" Padding="10,5"
                                             VerticalOptions="Start">
-                                        <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                                        <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
                                         <Label Text="{Binding StatusText}"
-                                               FontSize="12" FontAttributes="Bold"
-                                               TextColor="{StaticResource Success}"/>
+                                               FontSize="10" FontAttributes="Bold" FontFamily="PJSBold"
+                                               TextColor="{StaticResource SuccessText}"/>
                                     </Border>
                                 </Grid>
-
                                 <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                                    <Button Grid.Column="0" Text="✏️ Modifica"
+                                    <Button Grid.Column="0" Text="Modifica"
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BusinessListViewModel}}, Path=EditBusinessCommand}"
                                             CommandParameter="{Binding .}"
                                             BackgroundColor="Transparent"
                                             TextColor="{StaticResource Primary}"
-                                            BorderColor="{StaticResource Primary}"
-                                            BorderWidth="1" CornerRadius="8" HeightRequest="38" FontSize="14"/>
-                                    <Button Grid.Column="1" Text="🕐 Orari"
+                                            BorderColor="{StaticResource PrimaryMid}"
+                                            BorderWidth="1.5" CornerRadius="10"
+                                            HeightRequest="40" FontSize="13"
+                                            FontAttributes="Bold" FontFamily="PJSBold"/>
+                                    <Button Grid.Column="1" Text="Orari"
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BusinessListViewModel}}, Path=OpenHoursCommand}"
                                             CommandParameter="{Binding .}"
-                                            BackgroundColor="{StaticResource Primary}"
+                                            BackgroundColor="{StaticResource Navy}"
                                             TextColor="White"
-                                            CornerRadius="8" HeightRequest="38" FontSize="14"/>
+                                            CornerRadius="10" HeightRequest="40"
+                                            FontSize="13" FontAttributes="Bold" FontFamily="PJSBold"/>
                                 </Grid>
                             </VerticalStackLayout>
                         </Border>

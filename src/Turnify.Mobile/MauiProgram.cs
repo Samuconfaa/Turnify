@@ -22,6 +22,11 @@ public static class MauiProgram
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                fonts.AddFont("PlusJakartaSans-Regular.ttf",   "PJSReg");
+                fonts.AddFont("PlusJakartaSans-Medium.ttf",    "PJSMed");
+                fonts.AddFont("PlusJakartaSans-SemiBold.ttf",  "PJSSemi");
+                fonts.AddFont("PlusJakartaSans-Bold.ttf",      "PJSBold");
+                fonts.AddFont("PlusJakartaSans-ExtraBold.ttf", "PJSXBold");
             });
 
 #if DEBUG

@@ -7,7 +7,7 @@
              Title="Turni"
              BackgroundColor="{StaticResource Background}">
 
-    <Grid RowDefinitions="Auto,Auto,Auto,Auto,*">
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*">
 
         <!-- ── Week navigation ──────────────────────────────── -->
         <Border Grid.Row="0"
@@ -70,8 +70,106 @@
             </Grid>
         </Border>
 
-        <!-- ── Duplica settimana (admin) ────────────────────── -->
+        <!-- ── Switch vista (admin) ─────────────────────────── -->
         <Border Grid.Row="1"
+                BackgroundColor="{StaticResource Surface}"
+                Stroke="Transparent"
+                IsVisible="{Binding IsAdmin}"
+                Padding="16,6,16,0">
+            <Border.StrokeShape><RoundRectangle CornerRadius="0"/></Border.StrokeShape>
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="6">
+                <!-- Employee -->
+                <Border Grid.Column="0" Padding="0,8">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ChangeViewModeCommand}"
+                                              CommandParameter="{x:Static vm:CalendarViewMode.Employee}"/>
+                    </Border.GestureRecognizers>
+                    <Border.Triggers>
+                        <DataTrigger TargetType="Border" Binding="{Binding IsEmployeeMode}" Value="True">
+                            <Setter Property="BackgroundColor" Value="{StaticResource Navy}"/>
+                            <Setter Property="Stroke" Value="Transparent"/>
+                        </DataTrigger>
+                        <DataTrigger TargetType="Border" Binding="{Binding IsEmployeeMode}" Value="False">
+                            <Setter Property="BackgroundColor" Value="{StaticResource SurfaceContainerLow}"/>
+                            <Setter Property="Stroke" Value="{StaticResource OutlineVariant}"/>
+                        </DataTrigger>
+                    </Border.Triggers>
+                    <Label Text="Dipendenti" FontSize="11" FontAttributes="Bold" FontFamily="PJSBold"
+                           HorizontalOptions="Center">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding IsEmployeeMode}" Value="True">
+                                <Setter Property="TextColor" Value="White"/>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label" Binding="{Binding IsEmployeeMode}" Value="False">
+                                <Setter Property="TextColor" Value="{StaticResource OnSurfaceVariant}"/>
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+                </Border>
+                <!-- Week -->
+                <Border Grid.Column="1" Padding="0,8">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ChangeViewModeCommand}"
+                                              CommandParameter="{x:Static vm:CalendarViewMode.Week}"/>
+                    </Border.GestureRecognizers>
+                    <Border.Triggers>
+                        <DataTrigger TargetType="Border" Binding="{Binding IsWeekMode}" Value="True">
+                            <Setter Property="BackgroundColor" Value="{StaticResource Navy}"/>
+                            <Setter Property="Stroke" Value="Transparent"/>
+                        </DataTrigger>
+                        <DataTrigger TargetType="Border" Binding="{Binding IsWeekMode}" Value="False">
+                            <Setter Property="BackgroundColor" Value="{StaticResource SurfaceContainerLow}"/>
+                            <Setter Property="Stroke" Value="{StaticResource OutlineVariant}"/>
+                        </DataTrigger>
+                    </Border.Triggers>
+                    <Label Text="Settimana" FontSize="11" FontAttributes="Bold" FontFamily="PJSBold"
+                           HorizontalOptions="Center">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding IsWeekMode}" Value="True">
+                                <Setter Property="TextColor" Value="White"/>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label" Binding="{Binding IsWeekMode}" Value="False">
+                                <Setter Property="TextColor" Value="{StaticResource OnSurfaceVariant}"/>
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+                </Border>
+                <!-- Day -->
+                <Border Grid.Column="2" Padding="0,8">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ChangeViewModeCommand}"
+                                              CommandParameter="{x:Static vm:CalendarViewMode.Day}"/>
+                    </Border.GestureRecognizers>
+                    <Border.Triggers>
+                        <DataTrigger TargetType="Border" Binding="{Binding IsDayMode}" Value="True">
+                            <Setter Property="BackgroundColor" Value="{StaticResource Navy}"/>
+                            <Setter Property="Stroke" Value="Transparent"/>
+                        </DataTrigger>
+                        <DataTrigger TargetType="Border" Binding="{Binding IsDayMode}" Value="False">
+                            <Setter Property="BackgroundColor" Value="{StaticResource SurfaceContainerLow}"/>
+                            <Setter Property="Stroke" Value="{StaticResource OutlineVariant}"/>
+                        </DataTrigger>
+                    </Border.Triggers>
+                    <Label Text="Giorno" FontSize="11" FontAttributes="Bold" FontFamily="PJSBold"
+                           HorizontalOptions="Center">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding IsDayMode}" Value="True">
+                                <Setter Property="TextColor" Value="White"/>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label" Binding="{Binding IsDayMode}" Value="False">
+                                <Setter Property="TextColor" Value="{StaticResource OnSurfaceVariant}"/>
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- ── Duplica settimana (admin) ────────────────────── -->
+        <Border Grid.Row="2"
                 BackgroundColor="{StaticResource Surface}"
                 Stroke="Transparent"
                 IsVisible="{Binding IsAdmin}"
@@ -94,7 +192,7 @@
         </Border>
 
         <!-- ── Legenda (admin) ──────────────────────────────── -->
-        <HorizontalStackLayout Grid.Row="2" Spacing="16"
+        <HorizontalStackLayout Grid.Row="3" Spacing="16"
                                Padding="16,6,16,4"
                                IsVisible="{Binding IsAdmin}">
             <HorizontalStackLayout Spacing="6">
@@ -112,7 +210,7 @@
         </HorizontalStackLayout>
 
         <!-- Error -->
-        <Border Grid.Row="3" IsVisible="{Binding HasError}"
+        <Border Grid.Row="4" IsVisible="{Binding HasError}"
                 BackgroundColor="{StaticResource ErrorLight}"
                 Stroke="{StaticResource Error}" StrokeThickness="1"
                 Padding="12,8" Margin="16,4,16,0">
@@ -124,7 +222,7 @@
         </Border>
 
         <!-- ══ EMPLOYEE VIEW ══ ──────────────────────────────── -->
-        <Grid Grid.Row="4" RowDefinitions="Auto,Auto,*"
+        <Grid Grid.Row="5" RowDefinitions="Auto,Auto,*"
               IsVisible="{Binding IsAdmin, Converter={StaticResource InverseBoolConverter}}">
 
             <!-- Timbratura card -->
@@ -262,7 +360,7 @@
         </Grid>
 
         <!-- ══ ADMIN GRID VIEW ══ ────────────────────────────── -->
-        <Grid Grid.Row="4" IsVisible="{Binding IsAdmin}" RowDefinitions="Auto,*">
+        <Grid Grid.Row="5" IsVisible="{Binding IsEmployeeMode}" RowDefinitions="Auto,*">
 
             <!-- Day headers -->
             <Border Grid.Row="0"
@@ -476,7 +574,83 @@
             </RefreshView>
         </Grid>
 
-        <ActivityIndicator Grid.Row="4"
+        <!-- ══ WEEK VIEW ══ ─────────────────────────────────── -->
+        <CollectionView Grid.Row="5"
+                        ItemsSource="{Binding WeekSlots}"
+                        IsVisible="{Binding IsWeekMode}"
+                        Margin="16,8,16,0">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="vm:TimeSlot">
+                    <Grid ColumnDefinitions="52,*" Padding="0,2" ColumnSpacing="10">
+                        <Label Grid.Column="0" Text="{Binding Time}"
+                               FontSize="11" FontFamily="PJSSemi"
+                               TextColor="{Binding TimeColor}"
+                               VerticalOptions="Center"/>
+                        <Border Grid.Column="1"
+                                BackgroundColor="{Binding RowColor}"
+                                Stroke="Transparent" Padding="10,6"
+                                MinimumHeightRequest="36">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
+                            <Label Text="{Binding EmployeesDisplay}"
+                                   FontSize="12" FontFamily="PJSReg"
+                                   TextColor="{StaticResource OnSurfaceVariant}"
+                                   LineBreakMode="TailTruncation"/>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- ══ DAY VIEW ══ ──────────────────────────────────── -->
+        <Grid Grid.Row="5"
+              RowDefinitions="Auto,*"
+              IsVisible="{Binding IsDayMode}">
+            <!-- Selettore giorno -->
+            <Grid Grid.Row="0" ColumnDefinitions="40,*,40" Padding="8,8,8,4">
+                <Button Grid.Column="0" Text="‹"
+                        BackgroundColor="Transparent"
+                        TextColor="{StaticResource Primary}"
+                        FontSize="26" FontFamily="PJSBold"
+                        Padding="0" HorizontalOptions="Center"
+                        Command="{Binding PreviousWeekCommand}"/>
+                <Label Grid.Column="1" Text="{Binding DayLabel}"
+                       FontSize="14" FontAttributes="Bold" FontFamily="PJSBold"
+                       TextColor="{StaticResource OnBackground}"
+                       HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Button Grid.Column="2" Text="›"
+                        BackgroundColor="Transparent"
+                        TextColor="{StaticResource Primary}"
+                        FontSize="26" FontFamily="PJSBold"
+                        Padding="0" HorizontalOptions="Center"
+                        Command="{Binding NextWeekCommand}"/>
+            </Grid>
+            <CollectionView Grid.Row="1"
+                            ItemsSource="{Binding DaySlots}"
+                            Margin="16,0,16,0">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:TimeSlot">
+                        <Grid ColumnDefinitions="52,*" Padding="0,2" ColumnSpacing="10">
+                            <Label Grid.Column="0" Text="{Binding Time}"
+                                   FontSize="11" FontFamily="PJSSemi"
+                                   TextColor="{Binding TimeColor}"
+                                   VerticalOptions="Center"/>
+                            <Border Grid.Column="1"
+                                    BackgroundColor="{Binding RowColor}"
+                                    Stroke="Transparent" Padding="10,6"
+                                    MinimumHeightRequest="36">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
+                                <Label Text="{Binding EmployeesDisplay}"
+                                       FontSize="12" FontFamily="PJSReg"
+                                       TextColor="{StaticResource OnSurfaceVariant}"
+                                       LineBreakMode="TailTruncation"/>
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+
+        <ActivityIndicator Grid.Row="5"
                            IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
                            HorizontalOptions="Center" VerticalOptions="Center"
                            Color="{StaticResource Primary}" ZIndex="10"/>

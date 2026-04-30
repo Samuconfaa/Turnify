@@ -116,6 +116,10 @@ public partial class ProfileViewModel : BaseViewModel
     private async Task GoToReportsAsync()
         => await Shell.Current.GoToAsync(nameof(Views.ReportsPage));
 
+    [RelayCommand]
+    private async Task GoToEmployeeReportsAsync()
+        => await Shell.Current.GoToAsync(nameof(Views.EmployeeReportsPage));
+
     private async Task LoadProfileAsync()
     {
         HasError = false;

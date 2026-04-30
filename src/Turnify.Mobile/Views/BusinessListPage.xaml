@@ -10,8 +10,8 @@
     <Grid RowDefinitions="Auto,*">
 
         <!-- Header -->
-        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Padding="20,18,20,12">
-            <VerticalStackLayout Grid.Column="0" Spacing="2">
+        <Grid Grid.Row="0" Padding="20,18,20,12">
+            <VerticalStackLayout Spacing="2">
                 <Label Text="Attività"
                        FontSize="26" FontAttributes="Bold" FontFamily="PJSXBold"
                        TextColor="{StaticResource OnBackground}"
@@ -20,18 +20,6 @@
                        FontSize="13" FontFamily="PJSReg"
                        TextColor="{StaticResource Outline}"/>
             </VerticalStackLayout>
-            <Border Grid.Column="1"
-                    BackgroundColor="{StaticResource Navy}"
-                    Stroke="Transparent" Padding="16,10"
-                    VerticalOptions="Center">
-                <Border.StrokeShape><RoundRectangle CornerRadius="22"/></Border.StrokeShape>
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding AddBusinessCommand}"/>
-                </Border.GestureRecognizers>
-                <Label Text="+ Aggiungi"
-                       FontSize="13" FontAttributes="Bold" FontFamily="PJSBold"
-                       TextColor="White"/>
-            </Border>
         </Grid>
 
         <!-- List -->
@@ -60,6 +48,22 @@
                                HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
                     </VerticalStackLayout>
                 </CollectionView.EmptyView>
+
+                <CollectionView.Footer>
+                    <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
+                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1.5"
+                            StrokeDashArray="6,4"
+                            Padding="16,20" Margin="0,0,0,12">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding CreateBusinessCommand}"/>
+                        </Border.GestureRecognizers>
+                        <Label Text="Aggiungi un'attività"
+                               FontSize="15" FontAttributes="Bold" FontFamily="PJSBold"
+                               TextColor="{StaticResource OnSurfaceVariant}"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Border>
+                </CollectionView.Footer>
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="vm:BusinessDto">

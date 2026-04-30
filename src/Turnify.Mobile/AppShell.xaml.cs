@@ -83,6 +83,7 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(nameof(Views.AttendanceHistoryPage),  typeof(Views.AttendanceHistoryPage));
         Routing.RegisterRoute(nameof(Views.ChangePasswordPage),     typeof(Views.ChangePasswordPage));
         Routing.RegisterRoute(nameof(Views.ReportsPage),            typeof(Views.ReportsPage));
+        Routing.RegisterRoute(nameof(Views.EmployeeReportsPage),    typeof(Views.EmployeeReportsPage));
     }
 
     public void ConfigureForRole(bool isAdmin)

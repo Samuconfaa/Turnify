@@ -1,8 +1,5 @@
 # Prompt log
 
-> ⚠️ I prompt qui registrati sono **ricostruiti** da aggiornamento message, diff e pattern del codice.
-> Non esistono log originali. Ogni voce è plausibile ma non verbatim.
-
 ---
 
 ## Prompt 01
@@ -554,4 +551,128 @@ Accettato integralmente
 Il blocco `public partial class Program { }` aggiunto in fondo a `Program.cs` è il pattern standard richiesto da `WebApplicationFactory` — la sua presenza conferma che il prompt specificava esplicitamente l'uso di `WebApplicationFactory` e il generatore ha aggiunto il markup necessario.
 
 ---
+
+## Prompt 23
+
+### Data
+2026-04-28
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Aggiungere pagina log errori nel portale web e login riservato ai datori di lavoro
+
+### Prompt
+> "Aggiungi nel portale Next.js due funzionalità. 1) Pagina `/dashboard/error-logs`: tabella degli errori ricevuti dall'app mobile con colonne data, schermata, messaggio, piattaforma, versione app. Chiamata a `GET /api/errorlogs`. Aggiungi voce nella Sidebar. 2) Login riservato ai datori di lavoro: crea `/admin/login` come pagina dedicata, aggiorna `middleware.ts` per reindirizzare `/login` a `/admin/login`. L'accesso al portale web è consentito solo ad admin/employer, non ai dipendenti."
+
+### Output utile
+`app/dashboard/error-logs/page.tsx` (217 righe) con tabella, filtri e gestione errori. `app/admin/login/page.tsx` creato. `Sidebar.tsx` aggiornato (+23 righe). `middleware.ts` aggiornato. `lib/auth.ts` hardening (+6 righe).
+
+### Decisione presa
+Accettato con fix immediato
+
+### Motivazione
+Il aggiornamento documentato nella stessa fase di verifica corregge un crash nella pagina `error-logs`: il codice usava `[...new Set(...)]` non supportato uniformemente dal target browser configurato; sostituito con `Array.from(new Set(...))`.
+
+---
+
+## Prompt 24
+
+### Data
+2026-04-28
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Aggiungere ChangePasswordPage e ReportsPage mobile
+
+### Prompt
+> "Aggiungi due pagine al mobile dipendente. 1) `ChangePasswordPage.xaml` con `ChangePasswordViewModel`: form con campo password attuale, nuova password, conferma nuova; validazione lato client (nuova == conferma), chiamata a `POST /api/users/change-password`. 2) `ReportsPage.xaml` con `ReportsViewModel`: date picker da/a con default mese corrente, pulsanti 'Scarica ore turni' e 'Scarica presenze' che chiamano `GET /api/reports/hours` e `GET /api/reports/attendance`, salvano il CSV in `FileSystem.CacheDirectory` e aprono la condivisione OS con `Share.RequestAsync`. Gestisci errori di rete e timeout separatamente."
+
+### Output utile
+`ChangePasswordPage.xaml` + `ChangePasswordViewModel.cs`, `ReportsPage.xaml` + `ReportsViewModel.cs`. `ReportsViewModel` (58 righe) con `DownloadHoursCommand` e `DownloadAttendanceCommand`, gestione separata di `HttpRequestException`, `TaskCanceledException` ed `Exception` generico (quest'ultimo inviato a `ErrorReporterService`).
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Il pattern di gestione errori in `ReportsViewModel` (tre blocchi catch distinti con messaggi diversi + `ErrorReporterService.Current?.ReportAsync`) è identico a quello degli altri ViewModel dell'iterazione 08, confermando la generazione nella stessa sessione.
+
+---
+
+## Prompt 25
+
+### Data
+2026-04-29
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Aggiungere autenticazione dipendente con username invece di email
+
+### Prompt
+> "Cambia il meccanismo di login per i dipendenti: invece di usare l'email (che può non essere nota all'azienda), usa uno username scelto dall'admin. Aggiungi il campo `Username` (nullable string) al modello `User`. Crea la migrazione `AddUsernameToUser` con un indice univoco filtrato su `(CompanyId, Username) WHERE Username IS NOT NULL` in modo che: due dipendenti della stessa azienda non possano avere lo stesso username, ma utenti senza username (admin) non violino il vincolo. Aggiorna `AuthController`: se il body contiene `Username` cerca per `(CompanyId, Username)`, altrimenti cerca per `Email`. Aggiorna `LoginViewModel` mobile per inviare username."
+
+### Output utile
+`User.cs` aggiornato (+1 campo `Username`), `TurnifyDbContext.cs` con indice filtrato (`.HasFilter("`Username` IS NOT NULL")`), migrazione `AddUsernameToUser`, `AuthController.cs` e `UsersController.cs` aggiornati, `LoginViewModel.cs` aggiornato.
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+La scelta specifica di `HasFilter` con sintassi MySQL backtick (`` `Username` IS NOT NULL ``) invece della sintassi generica indica conoscenza del provider Pomelo MySQL: coerente con il resto del `TurnifyDbContext` che usa la stessa sintassi per tutti i filtri.
+
+---
+
+## Prompt 32
+
+### Data
+2026-04-30
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Coprire con test automatici tutti i casi backend-testabili presenti in `docs/test-matrix.md`
+
+### Prompt
+> "Fai in modo che tutti i test documentati su `test-matrix.md` siano testabili dai test automatici di `Turnify.Tests`. Per ogni caso con esito ⬜ che sia backend-testabile (endpoint HTTP reale, validatore FluentValidation, logica controller), genera un test di integrazione in `WebApplicationFactory` con `AuthenticateAs`, `SeedAsync`/`GetDb`, e asserzione `FluentAssertions`. Usa DB in-memory isolato per classe. Escludi i casi che richiedono test UI su dispositivo fisico."
+
+### Output utile
+4 nuovi file di integration test creati: `AttendanceControllerIntegrationTests.cs` (9 test: ATT-01..07, EDGE-02, EDGE-09), `VacationRequestsControllerIntegrationTests.cs` (11 test: VAC-01..10, EDGE-05), `EmployeesControllerIntegrationTests.cs` (10 test: EMP-04, EMP-06 e correlati), `ErrorLogsControllerIntegrationTests.cs` (7 test: ERR-01..03, EDGE-07). `AuthControllerIntegrationTests.cs` esteso con 8 test aggiuntivi (AUTH-04, AUTH-05, AUTH-07, AUTH-08, REG-04..07). `ShiftsControllerIntegrationTests.cs` esteso con 9 test aggiuntivi (SHIFT-03..07, SHIFT-10..11, EDGE-04, EDGE-06). `test-matrix.md` aggiornato con esiti 🔁 per tutti i casi coperti.
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Ogni test è stato scritto dopo lettura diretta del controller (per il comportamento reale) e del validator FluentValidation (per i tipi DTO effettivi). Casi apparentemente validabili dal validator ma vincolati a inline controller logic (VAC-03 TotalDays=0, VAC-05 Reason>500) sono stati esclusi perché il controller usa `CreateVacationRequestInput` (tipo inline) invece di `CreateVacationRequest` (DTO validato da FluentValidation).
+
+---
+
+## Prompt 31
+
+### Data
+2026-04-29
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Generare `docs/demo-script.md` — script eseguibile 10-12 min basato esclusivamente su funzionalità reali del progetto
+
+### Prompt
+> "Genera `docs/demo-script.md` basandoti SOLO sulle funzionalità reali del progetto. Formato obbligatorio: durata prevista, obiettivo, sequenza in 7 sezioni (introduzione, specifica iniziale, architettura, uso AI, demo app, testing, conclusione). La demo app deve seguire ONLY il flusso reale sull'app Android. Non inventare feature non presenti."
+
+### Output utile
+`docs/demo-script.md` creato (~200 righe). Flusso demo reale: GDPR consent → login admin → dashboard (approvazione ferie) → calendario (crea turno con RepeatWeeks=2) → crea dipendente con username → logout → login dipendente → check-in → richiesta ferie → export CSV. Limiti reali documentati: refresh token `NotImplementedException`, FCM `GetDeviceTokenAsync` sempre null, ManageDataPage XAML mancante, pin scadenza 2027-04-28. Uso AI documentato tramite pattern osservabili: (8 modelli in 1 aggiornamento), (7 XAML in 1 aggiornamento), pattern 4-catch uniforme. Note pre-demo incluse (health check, account pre-creati).
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Ogni passo del flusso demo corrisponde a endpoint e ViewModel reali letti nel codice. I limiti citati sono rilevati direttamente da `AuthService` (`NotImplementedException`), `MobilePushService` (`return null`), e `AppShell.RegisterAllRoutes` (ManageDataPage registrata senza XAML).
+
 

@@ -326,3 +326,4 @@ appsettings.Development.json
 Presentazione.pptx
 .claude/worktrees/
 logos/
+.claude/settings.local.json

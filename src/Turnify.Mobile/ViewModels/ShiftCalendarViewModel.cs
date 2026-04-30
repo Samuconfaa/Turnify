@@ -15,7 +15,6 @@ namespace Turnify.Mobile.ViewModels;
 public enum CalendarViewMode
 {
     Employee,
-    Week,
     Day
 }
 
@@ -35,7 +34,6 @@ public partial class ShiftCalendarViewModel : BaseViewModel
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEmployeeMode))]
-    [NotifyPropertyChangedFor(nameof(IsWeekMode))]
     [NotifyPropertyChangedFor(nameof(IsDayMode))]
     private CalendarViewMode _selectedViewMode = CalendarViewMode.Employee;
 
@@ -43,11 +41,9 @@ public partial class ShiftCalendarViewModel : BaseViewModel
     [NotifyPropertyChangedFor(nameof(DayLabel))]
     private DateTime _selectedDate = DateTime.Today;
 
-    [ObservableProperty] private ObservableCollection<TimeSlot> _weekSlots = new();
     [ObservableProperty] private ObservableCollection<TimeSlot> _daySlots  = new();
 
     public bool IsEmployeeMode => SelectedViewMode == CalendarViewMode.Employee;
-    public bool IsWeekMode     => SelectedViewMode == CalendarViewMode.Week;
     public bool IsDayMode      => SelectedViewMode == CalendarViewMode.Day;
 
     public string DayLabel => SelectedDate.ToString("dddd dd MMMM");
@@ -177,8 +173,8 @@ public partial class ShiftCalendarViewModel : BaseViewModel
             {
                 await LoadAttendanceAsync();
                 CheckInFeedback = "Entrata registrata ✓";
-                _ = Task.Delay(3000).ContinueWith(_ =>
-                    MainThread.BeginInvokeOnMainThread(() => CheckInFeedback = string.Empty));
+                await Task.Delay(3000);
+                CheckInFeedback = string.Empty;
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
                 await Shell.Current.DisplayAlertAsync("Info", "Sei già entrato oggi.", "OK");
@@ -197,8 +193,8 @@ public partial class ShiftCalendarViewModel : BaseViewModel
             {
                 await LoadAttendanceAsync();
                 CheckInFeedback = "Uscita registrata ✓";
-                _ = Task.Delay(3000).ContinueWith(_ =>
-                    MainThread.BeginInvokeOnMainThread(() => CheckInFeedback = string.Empty));
+                await Task.Delay(3000);
+                CheckInFeedback = string.Empty;
             }
         }
         catch (HttpRequestException) { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK"); }
@@ -231,7 +227,6 @@ public partial class ShiftCalendarViewModel : BaseViewModel
                     $"api/vacation-requests/approved?from={fromStr}&to={toStr}")
                     ?? new List<ApprovedVacationDto>();
                 BuildEmployeeRows(shiftList, vacations);
-                BuildWeekSlots(shiftList);
                 BuildDaySlots(shiftList);
             }
 
@@ -334,33 +329,6 @@ public partial class ShiftCalendarViewModel : BaseViewModel
     {
         SelectedViewMode = mode;
         await LoadShiftsAsync();
-    }
-
-    private void BuildWeekSlots(List<ShiftDto> shifts)
-    {
-        var slots = new ObservableCollection<TimeSlot>();
-        for (int h = 0; h < 24; h++)
-        {
-            var employees = new List<string>();
-            for (int d = 0; d < 7; d++)
-            {
-                var day = CurrentWeekStart.AddDays(d);
-                var assigned = shifts.Where(s =>
-                    s.StartTime.ToLocalTime().Date == day.Date &&
-                    s.StartTime.ToLocalTime().Hour <= h &&
-                    s.EndTime.ToLocalTime().Hour > h)
-                    .Select(s => s.EmployeeName)
-                    .ToList();
-                employees.AddRange(assigned);
-            }
-            slots.Add(new TimeSlot
-            {
-                Time      = $"{h:D2}:00",
-                Employees = employees.Distinct().ToList(),
-                IsClosed  = employees.Count == 0
-            });
-        }
-        WeekSlots = slots;
     }
 
     private void BuildDaySlots(List<ShiftDto> shifts)

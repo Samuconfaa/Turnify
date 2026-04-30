@@ -726,3 +726,28 @@ Accettato integralmente
 
 ### Motivazione
 Ogni task segue i pattern MVVM già presenti nel progetto (RelayCommand, ObservableCollection, zero logica nel code-behind). Il footer CollectionView è il pattern MAUI standard per aggiungere elementi fissi in fondo a una lista. I view mode sono pilotati da binding booleani derivati dall'enum, compatibili con DataTrigger XAML.
+
+---
+
+## Prompt 30
+
+### Data
+2026-04-30
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Diagnosticare e correggere il crash all'avvio dell'app Android
+
+### Prompt
+> "L'app crasha all'avvio. Analisi logcat Android: `XamlParseException: StaticResource not found for key White` in `App.InitializeComponent`. Individuare la chiave mancante e ripristinare la compilabilità."
+
+### Output utile
+Identificati due problemi distinti: (1) `ManageDataPage.xaml` mancante — esisteva solo il code-behind `.cs`, causando fallimento della `partial class`; creato file XAML shell e aggiunto al DI container in `MauiProgram.cs`. (2) `Styles.xaml` (default MAUI template) referenziava 16 chiavi colore (`White`, `Black`, `Gray100`–`Gray950`, `Magenta`, `MidnightBlue`, `OffBlack`, `PrimaryDark`, `PrimaryDarkText`, `Secondary`) rimosse quando `Colors.xaml` fu riscritto con il Design System v2; aggiunte tutte le chiavi mancanti come blocco separato in `Colors.xaml`. Build pulito, 0 errori.
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+La causa reale del crash era il blocco (2): confermato da logcat con stack trace esplicito `StaticResource not found for key White` in `App.InitializeComponent` → `ResourceDictionary.SetAndCreateSource`. Le chiavi aggiunte sono alias neutri che non interferiscono con il Design System v2 già in uso.

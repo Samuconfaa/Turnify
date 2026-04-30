@@ -85,6 +85,12 @@ public partial class BusinessListViewModel : BaseViewModel
     }
 
     [RelayCommand]
+    private async Task CreateBusinessAsync()
+    {
+        await Shell.Current.GoToAsync(nameof(Views.BusinessDetailPage));
+    }
+
+    [RelayCommand]
     private async Task EditBusinessAsync(BusinessDto business)
     {
         if (business == null) return;

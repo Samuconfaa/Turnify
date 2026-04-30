@@ -701,3 +701,28 @@ Accettato integralmente
 
 ### Motivazione
 I file XAML nel bundle erano già pronti per .NET MAUI (generati dall'AI design tool con binding e struttura compatibile). Sostituzione diretta senza riscrittura manuale. Nessuna modifica ai code-behind `.xaml.cs` richiesta.
+
+---
+
+## Prompt 29
+
+### Data
+2026-04-30
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Implementare i task dell'iterazione 10: pattern UX add-card nelle liste, endpoint report ore dipendenti con breakdown, calendario avanzato con 3 viste (Employee/Week/Day)
+
+### Prompt
+> "Implementa `it-10.md`: (1) `BusinessListPage` e `EmployeeListPage` — rimuovi bottoni creazione esistenti, aggiungi card tratteggiata in fondo lista con `CreateBusinessCommand`/`CreateEmployeeCommand`; (2) backend `GET /api/reports/employee-hours?from&to&groupBy=week|month&employeeId` con DTO `EmployeeHoursReportDto`+`HoursBreakdownDto`, logica su `Shift.StartTime`/`EndTime`; mobile `EmployeeReportsPage` + `EmployeeReportsViewModel` con filtri date/groupBy, accesso da `ProfilePage` admin; (3) `ShiftCalendarViewModel` — enum `CalendarViewMode`, `SelectedViewMode`, `ChangeViewModeCommand`, `BuildWeekSlots`/`BuildDaySlots`, classe `TimeSlot`; `ShiftCalendarPage` — switch 3 pulsanti, Week View griglia oraria, Day View lista verticale."
+
+### Output utile
+Task 1: rimosso header button da `BusinessListPage`, rimosso FAB da `EmployeeListPage`, aggiunte card tratteggiate con `StrokeDashArray="6,4"` tramite `CollectionView.Footer`, comandi `CreateBusinessCommand`/`CreateEmployeeCommand`. Task 2: `EmployeeHoursReportDto.cs` (2 classi), endpoint `employee-hours` in `ReportsController` (~55 righe), `EmployeeReportsViewModel.cs` (~80 righe), `EmployeeReportsPage.xaml` (~130 righe), voce in `ProfilePage`, `GoToEmployeeReportsCommand` in `ProfileViewModel`, route+DI registrati. Task 3: enum `CalendarViewMode`, 8 nuove proprietà+comandi in `ShiftCalendarViewModel`, classi `TimeSlot`, `BuildWeekSlots`/`BuildDaySlots`; switch UI + Week View + Day View in `ShiftCalendarPage.xaml` (~120 righe aggiunte).
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Ogni task segue i pattern MVVM già presenti nel progetto (RelayCommand, ObservableCollection, zero logica nel code-behind). Il footer CollectionView è il pattern MAUI standard per aggiungere elementi fissi in fondo a una lista. I view mode sono pilotati da binding booleani derivati dall'enum, compatibili con DataTrigger XAML.

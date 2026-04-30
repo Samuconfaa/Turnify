@@ -75,6 +75,7 @@ public static class MauiProgram
         builder.Services.AddTransient<AttendanceHistoryViewModel>();
         builder.Services.AddTransient<ChangePasswordViewModel>();
         builder.Services.AddTransient<ReportsViewModel>();
+        builder.Services.AddTransient<EmployeeReportsViewModel>();
 
         // ── Views ───────────────────────────────────────────────────
         builder.Services.AddTransient<LoginPage>();
@@ -100,6 +101,7 @@ public static class MauiProgram
         builder.Services.AddTransient<AttendanceHistoryPage>();
         builder.Services.AddTransient<ChangePasswordPage>();
         builder.Services.AddTransient<ReportsPage>();
+        builder.Services.AddTransient<EmployeeReportsPage>();
 
         var app = builder.Build();
 

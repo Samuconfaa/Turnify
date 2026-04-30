@@ -363,22 +363,38 @@ Turnify/
 
 ---
 
-### Iterazione 10 — Redesign UI premium (Design System v2)
+### Iterazione 10 — UX liste, report ore dipendenti, calendario avanzato
 **Data:** 2026-04-30
 
 **Lavoro svolto:**
-- Applicato bundle di redesign generato con Claude Design (palette Navy/Indigo, font Plus Jakarta Sans)
-- Sostituiti `Resources/Styles/Colors.xaml` con nuova palette completa (Navy `#0F1629`, Primary `#3B5BDB`, Background `#EDEAE5`, token semantici Success/Warning/Error/Purple)
-- Riscritte 22 pagine XAML: `LoginPage`, `RegisterPage`, `ForgotPasswordPage`, `GdprConsentPage`, `OnboardingPage`, `DashboardPage`, `EmployeeDashboardPage`, `ShiftCalendarPage`, `ShiftDetailPage`, `EmployeeListPage`, `EmployeeDetailPage`, `AvailabilityPage`, `VacationListPage`, `VacationEditPage`, `AttendanceHistoryPage`, `NotificationsPage`, `ReportsPage`, `ProfilePage`, `ChangePasswordPage`, `BusinessListPage`, `BusinessDetailPage`, `BusinessOpeningHoursPage`
-- `MauiProgram.cs`: registrati 5 weight Plus Jakarta Sans (`PJSReg`, `PJSMed`, `PJSSemi`, `PJSBold`, `PJSXBold`)
-- Stili globali definiti in `Colors.xaml`: `PrimaryButton`, `OutlineButton`, `DangerButton`, `FieldBorder`, `FieldEntry`, `CardBorder`, `SectionLabel`, `HeadingLabel`
+- `BusinessListPage.xaml`: rimosso pulsante "+ Aggiungi" nell'header; aggiunta card tratteggiata in fondo alla lista (`CreateBusinessCommand`)
+- `EmployeeListPage.xaml`: rimosso FAB; aggiunta card tratteggiata in fondo alla lista (`CreateEmployeeCommand`)
+- `BusinessListViewModel.cs`, `EmployeeListViewModel.cs`: aggiunti `CreateBusinessCommand` e `CreateEmployeeCommand`
+- `Turnify.Api/DTOs/EmployeeHoursReportDto.cs`: DTO `EmployeeHoursReportDto` + `HoursBreakdownDto`
+- `ReportsController.cs`: endpoint `GET /api/reports/employee-hours?from&to&groupBy=week|month&employeeId` con raggruppamento per settimana/mese
+- `EmployeeReportsViewModel.cs`: caricamento report con filtri `From`, `To`, `SelectedGroupBy`, `LoadReportsCommand`, `ToggleExpandCommand`
+- `EmployeeReportsPage.xaml` + `.xaml.cs`: pagina report ore con filtri e lista espandibile per dipendente
+- `ProfilePage.xaml`: aggiunta voce "Report ore dipendenti" nella sezione GESTIONE ATTIVITÀ (admin)
+- `ProfileViewModel.cs`: aggiunto `GoToEmployeeReportsCommand`
+- `AppShell.xaml.cs`: registrata route `EmployeeReportsPage`
+- `MauiProgram.cs`: registrati `EmployeeReportsViewModel` e `EmployeeReportsPage`
+- `ShiftCalendarViewModel.cs`: aggiunto enum `CalendarViewMode` (Employee/Week/Day), proprietà `SelectedViewMode`, `SelectedDate`, `IsEmployeeMode`, `IsWeekMode`, `IsDayMode`, `WeekSlots`, `DaySlots`, comandi `ChangeViewModeCommand`; classe `TimeSlot`; logica `BuildWeekSlots` e `BuildDaySlots`
+- `ShiftCalendarPage.xaml`: aggiunto switch a 3 pulsanti (Dipendenti/Settimana/Giorno), Week View (griglia oraria), Day View (lista verticale oraria); visibilità viste pilotata da `IsEmployeeMode`/`IsWeekMode`/`IsDayMode`
 
 **File principali:**
-- `Turnify.Mobile/Resources/Styles/Colors.xaml`
-- `Turnify.Mobile/Views/*.xaml` (22 file)
-- `Turnify.Mobile/MauiProgram.cs`
+- `Turnify.Mobile/Views/BusinessListPage.xaml`, `EmployeeListPage.xaml`
+- `Turnify.Mobile/ViewModels/BusinessListViewModel.cs`, `EmployeeListViewModel.cs`
+- `Turnify.Api/Controllers/ReportsController.cs`
+- `Turnify.Api/DTOs/EmployeeHoursReportDto.cs`
+- `Turnify.Mobile/Views/EmployeeReportsPage.xaml`
+- `Turnify.Mobile/ViewModels/EmployeeReportsViewModel.cs`
+- `Turnify.Mobile/Views/ProfilePage.xaml`
+- `Turnify.Mobile/ViewModels/ProfileViewModel.cs`
+- `Turnify.Mobile/ViewModels/ShiftCalendarViewModel.cs`
+- `Turnify.Mobile/Views/ShiftCalendarPage.xaml`
+- `Turnify.Mobile/AppShell.xaml.cs`, `MauiProgram.cs`
 
-**Risultato:** design system v2 applicato su tutte le schermate; font Plus Jakarta Sans registrato; palette e stili globali uniformi.
+**Risultato:** pattern UX liste con card tratteggiata; report ore per dipendente con breakdown settimana/mese; calendario avanzato con 3 viste (dipendenti, settimana, giorno).
 
 ---
 

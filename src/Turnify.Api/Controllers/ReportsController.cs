@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Turnify.Api.DTOs;
 using Turnify.Core.Interfaces.Repositories;
 using Turnify.Core.Interfaces.Services;
 using Turnify.Core.Models;
@@ -20,15 +22,18 @@ public class ReportsController : ControllerBase
     private readonly IDashboardService  _dashboardService;
     private readonly IAttendanceRepository _attendanceRepository;
     private readonly IEmployeeRepository   _employeeRepository;
+    private readonly IShiftRepository      _shiftRepository;
 
     public ReportsController(
         IDashboardService dashboardService,
         IAttendanceRepository attendanceRepository,
-        IEmployeeRepository employeeRepository)
+        IEmployeeRepository employeeRepository,
+        IShiftRepository shiftRepository)
     {
         _dashboardService     = dashboardService;
         _attendanceRepository = attendanceRepository;
         _employeeRepository   = employeeRepository;
+        _shiftRepository      = shiftRepository;
     }
 
     private int GetCompanyId()
@@ -105,5 +110,69 @@ public class ReportsController : ControllerBase
 
         var fileName = $"presenze_{start:yyyy-MM-dd}_{end:yyyy-MM-dd}.csv";
         return File(Encoding.UTF8.GetBytes(sb.ToString()), "text/csv; charset=utf-8", fileName);
+    }
+
+    /// <summary>
+    /// GET /api/reports/employee-hours?from=&amp;to=&amp;groupBy=week|month&amp;employeeId=
+    /// Ore pianificate per dipendente con breakdown settimanale o mensile.
+    /// </summary>
+    [HttpGet("employee-hours")]
+    public async Task<ActionResult<List<EmployeeHoursReportDto>>> GetEmployeeHours(
+        [FromQuery] DateTime? from,
+        [FromQuery] DateTime? to,
+        [FromQuery] string groupBy = "month",
+        [FromQuery] int? employeeId = null,
+        CancellationToken ct = default)
+    {
+        if (!IsManagerOrAdmin()) return Forbid();
+
+        var companyId = GetCompanyId();
+        if (companyId == 0) return Unauthorized();
+
+        var start = from ?? new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+        var end   = to   ?? start.AddMonths(1);
+
+        var shifts = await _shiftRepository.GetByCompanyAsync(companyId, start, end, ct);
+
+        var filtered = employeeId.HasValue
+            ? shifts.Where(s => s.EmployeeId == employeeId.Value).ToList()
+            : shifts.ToList();
+
+        var employees = await _employeeRepository.GetAllByCompanyIdAsync(companyId, null, ct);
+        var nameMap   = employees.ToDictionary(e => e.Id, e => $"{e.FirstName} {e.LastName}".Trim());
+
+        var grouped = filtered
+            .GroupBy(s => s.EmployeeId)
+            .Select(g =>
+            {
+                var name = nameMap.TryGetValue(g.Key, out var n) ? n : $"ID {g.Key}";
+                var breakdown = groupBy == "week"
+                    ? g.GroupBy(s => System.Globalization.ISOWeek.GetWeekOfYear(s.StartTime.Date))
+                        .OrderBy(w => w.Key)
+                        .Select(w => new HoursBreakdownDto
+                        {
+                            Period = $"Settimana {w.Key}",
+                            Hours  = Math.Round(w.Sum(s => (s.EndTime - s.StartTime).TotalHours), 2)
+                        }).ToList()
+                    : g.GroupBy(s => s.StartTime.ToString("yyyy-MM"))
+                        .OrderBy(m => m.Key)
+                        .Select(m => new HoursBreakdownDto
+                        {
+                            Period = m.Key,
+                            Hours  = Math.Round(m.Sum(s => (s.EndTime - s.StartTime).TotalHours), 2)
+                        }).ToList();
+
+                return new EmployeeHoursReportDto
+                {
+                    EmployeeId   = g.Key,
+                    EmployeeName = name,
+                    TotalHours   = Math.Round(g.Sum(s => (s.EndTime - s.StartTime).TotalHours), 2),
+                    Breakdown    = breakdown
+                };
+            })
+            .OrderByDescending(r => r.TotalHours)
+            .ToList();
+
+        return Ok(grouped);
     }
 }

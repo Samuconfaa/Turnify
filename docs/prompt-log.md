@@ -676,3 +676,28 @@ Accettato integralmente
 Ogni passo del flusso demo corrisponde a endpoint e ViewModel reali letti nel codice. I limiti citati sono rilevati direttamente da `AuthService` (`NotImplementedException`), `MobilePushService` (`return null`), e `AppShell.RegisterAllRoutes` (ManageDataPage registrata senza XAML).
 
 
+
+---
+
+## Prompt 28
+
+### Data
+2026-04-30
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Applicare il redesign premium delle pagine XAML .NET MAUI da un bundle HTML/XAML generato con Claude Design
+
+### Prompt
+> "Fetch design bundle da URL Anthropic Design (`F3NkaCxRJxfXSspcKIBtNA`, file `Turnify Redesign.html`), leggi il README del bundle, converti il design da HTML a XAML applicabile in .NET MAUI e applica le nuove pagine. Operare sul branch `develop`."
+
+### Output utile
+Bundle decompresso (tar.gz, 415KB). Estratti: `Colors.xaml` (nuovo design system v2), 22 pagine XAML ridisegnate. Palette: `Navy #0F1629`, `Primary #3B5BDB` (accent indigo), `Background #EDEAE5`. Font: Plus Jakarta Sans (5 weight: Regular/Medium/SemiBold/Bold/ExtraBold), alias `PJSReg`/`PJSMed`/`PJSSemi`/`PJSBold`/`PJSXBold`. Stili globali: `PrimaryButton`, `OutlineButton`, `DangerButton`, `FieldBorder`, `FieldEntry`, `CardBorder`, `SectionLabel`, `HeadingLabel`. File copiati: `Resources/Styles/Colors.xaml` + 22 `Views/*.xaml`. `MauiProgram.cs` aggiornato con 5 `AddFont`. Commit su branch `develop`: `02faa41`.
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+I file XAML nel bundle erano già pronti per .NET MAUI (generati dall'AI design tool con binding e struttura compatibile). Sostituzione diretta senza riscrittura manuale. Nessuna modifica ai code-behind `.xaml.cs` richiesta.

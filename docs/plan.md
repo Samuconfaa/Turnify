@@ -363,6 +363,25 @@ Turnify/
 
 ---
 
+### Iterazione 10 — Redesign UI premium (Design System v2)
+**Data:** 2026-04-30
+
+**Lavoro svolto:**
+- Applicato bundle di redesign generato con Claude Design (palette Navy/Indigo, font Plus Jakarta Sans)
+- Sostituiti `Resources/Styles/Colors.xaml` con nuova palette completa (Navy `#0F1629`, Primary `#3B5BDB`, Background `#EDEAE5`, token semantici Success/Warning/Error/Purple)
+- Riscritte 22 pagine XAML: `LoginPage`, `RegisterPage`, `ForgotPasswordPage`, `GdprConsentPage`, `OnboardingPage`, `DashboardPage`, `EmployeeDashboardPage`, `ShiftCalendarPage`, `ShiftDetailPage`, `EmployeeListPage`, `EmployeeDetailPage`, `AvailabilityPage`, `VacationListPage`, `VacationEditPage`, `AttendanceHistoryPage`, `NotificationsPage`, `ReportsPage`, `ProfilePage`, `ChangePasswordPage`, `BusinessListPage`, `BusinessDetailPage`, `BusinessOpeningHoursPage`
+- `MauiProgram.cs`: registrati 5 weight Plus Jakarta Sans (`PJSReg`, `PJSMed`, `PJSSemi`, `PJSBold`, `PJSXBold`)
+- Stili globali definiti in `Colors.xaml`: `PrimaryButton`, `OutlineButton`, `DangerButton`, `FieldBorder`, `FieldEntry`, `CardBorder`, `SectionLabel`, `HeadingLabel`
+
+**File principali:**
+- `Turnify.Mobile/Resources/Styles/Colors.xaml`
+- `Turnify.Mobile/Views/*.xaml` (22 file)
+- `Turnify.Mobile/MauiProgram.cs`
+
+**Risultato:** design system v2 applicato su tutte le schermate; font Plus Jakarta Sans registrato; palette e stili globali uniformi.
+
+---
+
 ## Rischi tecnici
 
 Derivati da problemi tecnici reali osservati durante lo sviluppo e la verifica:

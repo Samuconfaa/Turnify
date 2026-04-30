@@ -6,6 +6,18 @@
 ## Regole MAUI
 Per qualsiasi lavoro su file `.cs` o `.xaml` del progetto mobile, seguire sempre le regole definite in `.agents/skills/maui-expert/SKILL.md`, `docs/method/man-in-the-loop.md` e `AGENTS-md`.
 
+## Documentazione iterazioni
+
+Prima di iniziare qualsiasi task significativo, leggere sempre:
+- `docs/plan.md` — per capire in quale iterazione si lavora e cosa è previsto
+- `docs/iterations/it-0N.md` dell'iterazione corrente — per il contesto del lavoro
+
+Al termine del task, aggiornare o creare i file necessari:
+- **`docs/iterations/it-0N.md`**: se il task appartiene a un'iterazione nuova o in corso, aggiornare la sezione "File creati/modificati" e "Prompt principali utilizzati". Se l'iterazione non esiste ancora, creare il file seguendo la struttura delle iterazioni esistenti (Data, Commit, Obiettivo, Piano, Prompt principali, File creati).
+- **`docs/plan.md`**: se è iniziata una nuova iterazione, aggiungere la sezione `### Iterazione N` con obiettivo, deliverable e status. Non modificare le sezioni delle iterazioni già completate.
+
+**Regola sulle date**: la data da usare in `### Data` del file iterazione è la data reale del giorno in cui viene svolta l'attività (oggi). Non inventare date passate.
+
 ## Prompt log
 Alla fine di ogni messaggio ricevuto dall'utente che richiede un task significativo (nuova funzionalità, modifica architetturale, bugfix, generazione di codice), aggiungere una voce in `docs/prompt-log.md`.
 

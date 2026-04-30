@@ -7,7 +7,7 @@ In questo schema l'AI non opera da sola, ma interviene dentro una pipeline contr
 >
 > È importante chiarire che l'approccio "Man-in-the-Loop" applicato in questo corso è una **scelta puramente didattica** pensata per favorire la padronanza delle fasi di sviluppo, delle logiche architetturali e dei limiti dell'AI.
 >
-> Nel panorama odierno esistono già pratiche agentiche avanzate (come [*Ralph Loop*](https://www.aihero.dev/getting-started-with-ralph), [*Ralph Loop Plugin*](https://example.com/ralph-loop-plugin), framework [*GSD*](https://example.com/gsd-framework), [*BMAD*](https://docs.bmad-method.org/), ecc.) che abbattono drasticamente l'interazione umana, permettendo a un agente AI di pianificare, sviluppare, correggere e rilasciare un'intera applicazione in quasi totale autonomia. Nel nostro contesto, però, l'"imbrigliare" l'AI serve proprio ad evitare l'effetto scatola nera e garantire l'apprendimento consapevole dello studente.
+> Nel panorama odierno esistono già pratiche agentiche avanzate (come [*Ralph Loop*](https://www.aihero.dev/getting-started-with-ralph), [*Ralph Loop Plugin*](https://piattaforma remota.com/Th0rgal/opencode-ralph-wiggum), framework [*GSD*](https://piattaforma remota.com/gsd-build/get-shit-done), [*BMAD*](https://docs.bmad-method.org/), ecc.) che abbattono drasticamente l'interazione umana, permettendo a un agente AI di pianificare, sviluppare, correggere e rilasciare un'intera applicazione in quasi totale autonomia. Nel nostro contesto, però, l'"imbrigliare" l'AI serve proprio ad evitare l'effetto scatola nera e garantire l'apprendimento consapevole dello studente.
 
 ### 1.1 Panoramica del ciclo
 
@@ -172,13 +172,13 @@ Non generare ancora codice di test, solo la lista dei casi.
 
 ### 1.6 Fase 5: Documentazione e Git
 
-Durante l'intero ciclo di sviluppo dell'iterazione, le migliori pratiche (sia tradizionali che AI-assisted) prevedono di effettuare **salvataggi frequenti e atomici**. Ogni volta che l'AI (o lo sviluppatore) genera un blocco di codice coerente, testato e funzionante (es. un DTO, un Service API, o un fix mirato), si dovrebbe registrare un salvataggio del lavoro con un messaggio descrittivo. In questo modo, il branch temporaneo della iterazione conterrà una cronologia dettagliata di piccoli passi, rendendo facile tornare indietro in caso di errori senza perdere tutto il lavoro svolto.
+Durante l'intero ciclo di sviluppo dell'iterazione, le migliori pratiche (sia tradizionali che AI-assisted) prevedono di effettuare **aggiornamento frequenti e atomici**. Ogni volta che l'AI (o lo sviluppatore) genera un blocco di codice coerente, testato e funzionante (es. un DTO, un Service API, o un fix mirato), si dovrebbe registrare un aggiornamento (es. `git aggiornamento -am "feat: aggiunto Service API"`). In questo modo, il branch temporaneo della iterazione conterrà una cronologia dettagliata di piccoli passi, rendendo facile tornare indietro in caso di errori senza perdere tutto il lavoro svolto.
 
 Al termine dell'iterazione (o allo sviluppo dell'intera feature), la Fase 5 serve a fare il bilancio finale, completare la documentazione e chiudere il ciclo di lavoro:
 
 - si aggiorna il log di iterazione (`docs/iterations/it-XX-nome-corto.md`) con obiettivo, piano, test ed esito;
 - si aggiornano la specifica (`docs/spec.md`), il prompt log (`docs/prompt-log.md`) e la matrice di test (`docs/test-matrix.md`), laddove vi siano modifiche rilevanti;
-- si esegue una eventuale salvataggio finale relativa a queste integrazioni documentali;
+- si esegue una eventuale aggiornamento finale relativa a queste integrazioni documentali;
 - si effettua il **merge** del branch completato nel branch principale (es. `main` o `develop`), dopodiché si esegue il `git push` sul repository remoto.
 
 Questa fase chiude formalmente il ciclo dell'iterazione e ne consolida le modifiche unificandole con il codice stabile, preparando un terreno pulito per avviare l'iterazione successiva.
@@ -191,52 +191,53 @@ Questa fase chiude formalmente il ciclo dell'iterazione e ne consolida le modifi
     - **Quando si crea**: Si divide il ramo iniziale (con `git checkout -b <nome>`) esattamente all'inizio dello sviluppo di una nuova funzionalità (Feature), di un'iterazione descritta nel nostro piano, o della correzione di un problema architetturale (Bugfix).
     - **Best Practice**: Un branch per una feature (feature/login, it-03-lista-meteo). Il branch vive tutto il tempo necessario per completare l'obiettivo, per poi essere "chiuso" e fuso alla fine.
 
-2. **I salvataggi progressivi**
+2. **Le aggiornamento (i salvataggi progressivi)**
 
-    - **Scopo**: Un salvataggio non è "la consegna finale" del lavoro, ma un fotogramma esatto (uno snapshot) dello stato del codice in un preciso momento.
+    - **Scopo**: Una aggiornamento non è "la consegna finale" del lavoro, ma un fotogramma esatto (uno snapshot) dello stato del codice in un preciso momento.
     - **Quando si crea**: Ogni volta che si realizza un insieme significativo e coerente di codice, o quando un test passa dopo aver scritto una certa implementazione (oppure ogni volta l'AI fornisce una soluzione funzionante di un file e lo collaudiamo).
-    - **Best Practice**: Sviluppo atomico e regola del *"salva presto, salva spesso"*. Un singolo branch può contenere decine di salvataggi o più. Si salva quando si crea l'interfaccia Service ("feat: aggiunta interfaccia web"), un altro salvataggio quando si correda la View XAML ("feat: aggiornata UI meteo"), un altro per un fix spontaneo ("fix: risolto errore di binding null").
+    - **Best Practice**: Sviluppo atomico e regola del *"aggiornamento early, aggiornamento often"* (fai aggiornamento presto e spesso). Un singolo branch può contenere decine di aggiornamento o più. Si fa un aggiornamento quando si crea l'interfaccia Service ("feat: aggiunta interfaccia web"), un altro aggiornamento quando si correda la View XAML ("feat: aggiornata UI meteo"), un altro per un fix spontaneo ("fix: risolto errore di binding null").
 
 3. **La Merge (la chiusura)**
 
     - **Scopo**: Riportare il lavoro ultimato, funzionante e testato nel ramo stabile principale.
-    - **Quando si fa**: È la vera azione tecnica che si compie alla conclusione di ciascuna iterazione. Riporta all'ovile la serie di salvataggi che hai elaborato.
+    - **Quando si fa**: È la vera azione tecnica che si compie alla conclusione di ciascuna iterazione. Riporta all'ovile la miriade di aggiornamento che hai elaborato.
 
-```text\nWorkflow di esempio
-    checkpoint: "Inizio progetto"
+```mermaid
+gitGraph
+    aggiornamento id: "Inizio progetto"
     branch develop
     checkout develop
-    checkpoint: "setup repository base"
+    aggiornamento id: "setup repository base"
     branch it-01-setup
     checkout it-01-setup
-    checkpoint: "feat: progetto MAUI"
-    checkpoint: "feat: AppShell"
+    aggiornamento id: "feat: progetto MAUI"
+    aggiornamento id: "feat: AppShell"
     checkout develop
     merge it-01-setup
     branch feature/login
     checkout feature/login
-    checkpoint: "feat: Auth Service"
-    checkpoint: "feat: Login ViewModel"
-    checkpoint: "feat: Login XAML View"
-    checkpoint: "fix: validazione form"
+    aggiornamento id: "feat: Auth Service"
+    aggiornamento id: "feat: Login ViewModel"
+    aggiornamento id: "feat: Login XAML View"
+    aggiornamento id: "fix: validazione form"
     checkout develop
     merge feature/login
     branch it-02-api-integrazione
     checkout it-02-api-integrazione
-    checkpoint: "feat: DTO e Models"
-    checkpoint: "feat: HttpClient Service"
-    checkpoint: "test: mock response"
+    aggiornamento id: "feat: DTO e Models"
+    aggiornamento id: "feat: HttpClient Service"
+    aggiornamento id: "test: mock response"
     checkout develop
     merge it-02-api-integrazione
     branch bugfix/shell-routing
     checkout bugfix/shell-routing
-    checkpoint: "fix: rotta in AppShell"
+    aggiornamento id: "fix: rotta in AppShell"
     checkout develop
     merge bugfix/shell-routing
     branch it-03-lista-risultati
     checkout it-03-lista-risultati
-    checkpoint: "feat: UI CollectionView"
-    checkpoint: "feat: loading state"
+    aggiornamento id: "feat: UI CollectionView"
+    aggiornamento id: "feat: loading state"
     checkout develop
     merge it-03-lista-risultati
     checkout main
@@ -322,8 +323,8 @@ ProjectRoot/
 ├─ AGENTS.md                          # Regole e contesto per agenti AI (OpenCode, Copilot)
 ├─ README.md                          # Descrizione del progetto, setup, istruzioni di build
 ├─ BookScout.Mobile.sln               # Solution del repository
-├─ assistant-config/
-│  └─ assistant-instructions.md       # Istruzioni specifiche per assistente AI
+├─ .piattaforma remota/
+│  └─ copilot-instructions.md         # Istruzioni specifiche per assistente AI
 ├─ docs/
 │  ├─ spec.md                         # Specifica funzionale e non funzionale completa
 │  ├─ plan.md                         # Piano di lavoro con iterazioni e rischi
@@ -428,7 +429,7 @@ controllato e documentato di una applicazione completa.
 - Aggiornare la documentazione quando cambia il comportamento del progetto.
 - Non generare grandi blocchi di codice non richiesti.
 - Indicare sempre rischi, dipendenze e test suggeriti.
-- Usa git per creare branch per ogni iterazione e genera salvataggi semantici.
+- Usa git per creare branch per ogni iterazione e genera aggiornamento semantici.
 
 ## Documentation policy
 
@@ -470,7 +471,7 @@ Per ogni richiesta importante restituire:
 
 ### 2.3 File copilot-instructions.md
 
-Il file `assistant-config/assistant-instructions.md` contiene istruzioni specifiche per l'assistente AI quando viene utilizzato in Visual Studio o VS Code.  
+Il file `.piattaforma remota/copilot-instructions.md` contiene le istruzioni specifiche per assistente AI quando viene utilizzato in Visual Studio o VS Code.  
 Copilot legge automaticamente questo file per calibrare le sue risposte.
 
 Di seguito un esempio completo:
@@ -494,7 +495,7 @@ Le risposte devono supportare uno sviluppo spec-driven e documentato.
 - Tenere separati View, ViewModel, Model e Service.
 - Gestire stati di caricamento (IsBusy), errore (ErrorMessage) e dati vuoti.
 - Segnalare eventuali rischi di regressione.
-- Suggerire e/o eseguire messaggi di salvataggio basati sulle modifiche al momento opportuno.
+- Suggerire e/o eseguire messaggi di aggiornamento basati sulle modifiche al momento opportuno.
 
 ## Formato preferito delle risposte
 
@@ -910,7 +911,7 @@ La View deve gestire almeno questi stati visivi:
 
 ## Sicurezza
 
-- Le API key non devono essere salvate nel repository pubblico.
+- Le API key non devono essere salvati nel repository nel repository pubblico.
   Usare variabili d'ambiente o file .env escluso dal .gitignore.
 - I dati locali non contengono informazioni sensibili.
 - Gli input dell'utente devono essere validati prima di essere usati.
@@ -1189,7 +1190,7 @@ Indicare:
 
 Descrivere in modo sintetico:
 - se è stato creato un keystore dedicato;
-- dove viene gestito (NON salvare nel repository);
+- dove viene gestito (NON salvare nel repository nel repository);
 - come viene protetto (password non nel codice).
 
 ## Permessi e privacy

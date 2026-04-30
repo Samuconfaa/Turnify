@@ -9,118 +9,117 @@
 
     <Grid RowDefinitions="300,*">
 
-        <!-- ── Hero header con gradiente ────────────────────── -->
-        <Grid Grid.Row="0">
-            <Grid.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#1E40AF" Offset="0"/>
-                    <GradientStop Color="#2563EB" Offset="1"/>
-                </LinearGradientBrush>
-            </Grid.Background>
+        <!-- ── Hero ──────────────────────────────────────── -->
+        <Grid Grid.Row="0" BackgroundColor="{StaticResource Navy}">
+            <!-- Decorative circles -->
+            <BoxView Color="#3B5BDB" Opacity="0.18"
+                     HeightRequest="180" WidthRequest="180"
+                     CornerRadius="90"
+                     HorizontalOptions="Start" VerticalOptions="Start"
+                     Margin="-40,-40,0,0"/>
+            <BoxView Color="#3B5BDB" Opacity="0.12"
+                     HeightRequest="130" WidthRequest="130"
+                     CornerRadius="65"
+                     HorizontalOptions="End" VerticalOptions="End"
+                     Margin="0,0,-30,-30"/>
 
             <VerticalStackLayout VerticalOptions="Center"
                                  HorizontalOptions="Center"
-                                 Spacing="6" Margin="0,24,0,0">
-
-                <!-- Avatar (tap to change) -->
+                                 Spacing="8" Margin="0,24,0,0">
+                <!-- Avatar -->
                 <Grid HorizontalOptions="Center">
                     <Grid.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding PickAvatarCommand}"/>
                     </Grid.GestureRecognizers>
 
                     <!-- Photo avatar -->
-                    <Border HeightRequest="96" WidthRequest="96"
+                    <Border HeightRequest="88" WidthRequest="88"
                             HorizontalOptions="Center"
                             IsVisible="{Binding ShowPhoto}"
-                            Stroke="Transparent">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="48"/></Border.StrokeShape>
+                            Stroke="#FFFFFF33" StrokeThickness="2.5">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="44"/></Border.StrokeShape>
                         <Image Source="{Binding AvatarPhoto}"
                                Aspect="AspectFill"
-                               HeightRequest="96" WidthRequest="96"/>
+                               HeightRequest="88" WidthRequest="88"/>
                     </Border>
 
                     <!-- Emoji avatar -->
-                    <Border BackgroundColor="#FFFFFF26"
-                            HeightRequest="96" WidthRequest="96"
+                    <Border BackgroundColor="#FFFFFF14"
+                            HeightRequest="88" WidthRequest="88"
                             HorizontalOptions="Center"
                             IsVisible="{Binding ShowEmoji}"
-                            Stroke="#FFFFFF4D" StrokeThickness="2">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="48"/></Border.StrokeShape>
+                            Stroke="#FFFFFF33" StrokeThickness="2.5">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="44"/></Border.StrokeShape>
                         <Label Text="{Binding AvatarEmoji}"
-                               FontSize="48"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center"/>
+                               FontSize="44"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
                     </Border>
 
-                    <!-- Initials avatar (default) -->
-                    <Border BackgroundColor="#FFFFFF26"
-                            HeightRequest="96" WidthRequest="96"
+                    <!-- Initials avatar -->
+                    <Border BackgroundColor="#FFFFFF14"
+                            HeightRequest="88" WidthRequest="88"
                             HorizontalOptions="Center"
                             IsVisible="{Binding ShowInitials}"
-                            Stroke="#FFFFFF4D" StrokeThickness="2">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="48"/></Border.StrokeShape>
+                            Stroke="#FFFFFF33" StrokeThickness="2.5">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="44"/></Border.StrokeShape>
                         <Label Text="{Binding ComputedInitials}"
-                               FontSize="34" FontAttributes="Bold"
+                               FontSize="32" FontAttributes="Bold" FontFamily="PJSXBold"
                                TextColor="White"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center"/>
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
                     </Border>
 
                     <!-- Edit badge -->
                     <Border BackgroundColor="White"
                             HeightRequest="28" WidthRequest="28"
-                            HorizontalOptions="End"
-                            VerticalOptions="End"
+                            HorizontalOptions="End" VerticalOptions="End"
                             Margin="0,0,2,2"
                             Stroke="Transparent">
                         <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
-                        <Label Text="✏️" FontSize="13"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center"/>
+                        <Border.Shadow>
+                            <Shadow Brush="#000000" Offset="0,2" Radius="8" Opacity="0.18"/>
+                        </Border.Shadow>
+                        <Label Text="✏" FontSize="12"
+                               TextColor="{StaticResource OnBackground}"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
                     </Border>
                 </Grid>
 
-                <!-- User info -->
                 <Label Text="{Binding FullName}"
-                       FontSize="22" FontAttributes="Bold"
-                       TextColor="White"
-                       HorizontalOptions="Center"/>
+                       FontSize="22" FontAttributes="Bold" FontFamily="PJSXBold"
+                       TextColor="White" HorizontalOptions="Center"
+                       CharacterSpacing="-0.5"/>
                 <Label Text="{Binding Email}"
-                       FontSize="14"
-                       TextColor="#B3FFFFFF"
-                       HorizontalOptions="Center"/>
-                <Border BackgroundColor="#FFFFFF1A"
-                        Stroke="#FFFFFF66" StrokeThickness="1"
-                        HorizontalOptions="Center" Padding="14,5">
+                       FontSize="13" FontFamily="PJSReg"
+                       TextColor="#FFFFFF55" HorizontalOptions="Center"/>
+                <Border BackgroundColor="#FFFFFF12"
+                        Stroke="#FFFFFF22" StrokeThickness="1"
+                        HorizontalOptions="Center" Padding="16,6">
                     <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
                     <Label Text="{Binding RoleDisplay}"
-                           FontSize="11" FontAttributes="Bold"
-                           TextColor="White"/>
+                           FontSize="11" FontAttributes="Bold" FontFamily="PJSBold"
+                           TextColor="#FFFFFFCC"/>
                 </Border>
             </VerticalStackLayout>
         </Grid>
 
-        <!-- ── Settings card (scrollabile) ─────────────────── -->
-        <ScrollView Grid.Row="1" Margin="0,-32,0,0">
+        <!-- ── Settings card ─────────────────────────────── -->
+        <ScrollView Grid.Row="1" Margin="0,-24,0,0">
             <Border BackgroundColor="{StaticResource Surface}"
-                    Padding="0,0,0,48"
+                    Padding="0,0,0,56"
                     Stroke="Transparent">
-                <Border.StrokeShape><RoundRectangle CornerRadius="28,28,0,0"/></Border.StrokeShape>
+                <Border.StrokeShape><RoundRectangle CornerRadius="24,24,0,0"/></Border.StrokeShape>
 
                 <VerticalStackLayout Spacing="0">
 
-                    <!-- ── ACCOUNT ─────────────────────────── -->
-                    <VerticalStackLayout Padding="24,24,24,0" Spacing="0">
-                        <Label Text="ACCOUNT"
-                               FontSize="11" FontAttributes="Bold"
-                               TextColor="{StaticResource Outline}"
+                    <!-- ACCOUNT -->
+                    <VerticalStackLayout Padding="24,26,24,0" Spacing="0">
+                        <Label Text="ACCOUNT" Style="{StaticResource SectionLabel}"
                                Margin="0,0,0,12"/>
                         <Border BackgroundColor="{StaticResource Surface}"
-                                Stroke="#E2E8F0" StrokeThickness="1"
+                                Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
                                 Padding="0">
-                            <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                            <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
                             <VerticalStackLayout>
-
                                 <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,14">
                                     <Grid.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding PickAvatarCommand}"/>
@@ -130,20 +129,21 @@
                                             HeightRequest="36" WidthRequest="36"
                                             Stroke="Transparent" Margin="0,0,14,0">
                                         <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                                        <Label Text="🖼️" FontSize="18"
-                                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                                        <Label Text="✎" FontSize="16"
+                                               HorizontalOptions="Center" VerticalOptions="Center"
+                                               TextColor="{StaticResource OnSurfaceVariant}"/>
                                     </Border>
                                     <Label Grid.Column="1" Text="Cambia foto profilo"
-                                           FontSize="15" TextColor="{StaticResource OnBackground}"
+                                           FontSize="14" FontFamily="PJSSemi"
+                                           TextColor="{StaticResource OnBackground}"
                                            VerticalOptions="Center"/>
-                                    <Label Grid.Column="2" Text="›" FontSize="22"
-                                           TextColor="{StaticResource OutlineVariant}"
+                                    <Label Grid.Column="2" Text="›" FontSize="20"
+                                           FontFamily="PJSBold"
+                                           TextColor="{StaticResource Outline}"
                                            VerticalOptions="Center"/>
                                 </Grid>
-
                                 <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}"
                                          Margin="16,0"/>
-
                                 <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,14">
                                     <Grid.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding ChangePasswordCommand}"/>
@@ -153,166 +153,124 @@
                                             HeightRequest="36" WidthRequest="36"
                                             Stroke="Transparent" Margin="0,0,14,0">
                                         <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                                        <Label Text="🔒" FontSize="18"
+                                        <Label Text="🔒" FontSize="16"
                                                HorizontalOptions="Center" VerticalOptions="Center"/>
                                     </Border>
                                     <Label Grid.Column="1" Text="Cambia Password"
-                                           FontSize="15" TextColor="{StaticResource OnBackground}"
+                                           FontSize="14" FontFamily="PJSSemi"
+                                           TextColor="{StaticResource OnBackground}"
                                            VerticalOptions="Center"/>
-                                    <Label Grid.Column="2" Text="›" FontSize="22"
-                                           TextColor="{StaticResource OutlineVariant}"
+                                    <Label Grid.Column="2" Text="›" FontSize="20"
+                                           FontFamily="PJSBold"
+                                           TextColor="{StaticResource Outline}"
                                            VerticalOptions="Center"/>
                                 </Grid>
-
                             </VerticalStackLayout>
                         </Border>
                     </VerticalStackLayout>
 
-                    <!-- ── GESTIONE ATTIVITÀ (admin only) ───── -->
+                    <!-- GESTIONE ATTIVITÀ (admin only) -->
                     <VerticalStackLayout Padding="24,20,24,0" Spacing="0"
                                          IsVisible="{Binding IsAdmin}">
-                        <Label Text="GESTIONE ATTIVITÀ"
-                               FontSize="11" FontAttributes="Bold"
-                               TextColor="{StaticResource Outline}"
+                        <Label Text="GESTIONE ATTIVITÀ" Style="{StaticResource SectionLabel}"
                                Margin="0,0,0,12"/>
                         <Border BackgroundColor="{StaticResource Surface}"
-                                Stroke="#E2E8F0" StrokeThickness="1"
+                                Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
                                 Padding="0">
-                            <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
-                            <VerticalStackLayout>
+                            <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
 
+                            <VerticalStackLayout>
+                                <!-- Le mie attività -->
                                 <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,14">
                                     <Grid.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding ManageBusinessesCommand}"/>
                                     </Grid.GestureRecognizers>
-                                    <Border Grid.Column="0"
-                                            BackgroundColor="{StaticResource SurfaceContainerLow}"
-                                            HeightRequest="36" WidthRequest="36"
-                                            Stroke="Transparent" Margin="0,0,14,0">
+                                    <Border Grid.Column="0" BackgroundColor="{StaticResource SurfaceContainerLow}"
+                                            HeightRequest="36" WidthRequest="36" Stroke="Transparent" Margin="0,0,14,0">
                                         <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                                        <Label Text="🏪" FontSize="18"
-                                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                                        <Label Text="🏪" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center"/>
                                     </Border>
                                     <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
-                                        <Label Text="Le mie attività"
-                                               FontSize="15" TextColor="{StaticResource OnBackground}"/>
-                                        <Label Text="Crea e gestisci sedi"
-                                               FontSize="12" TextColor="{StaticResource Outline}"/>
+                                        <Label Text="Le mie attività" FontSize="14" FontFamily="PJSSemi" TextColor="{StaticResource OnBackground}"/>
+                                        <Label Text="Crea e gestisci sedi" FontSize="11" FontFamily="PJSReg" TextColor="{StaticResource Outline}"/>
                                     </VerticalStackLayout>
-                                    <Label Grid.Column="2" Text="›" FontSize="22"
-                                           TextColor="{StaticResource OutlineVariant}"
-                                           VerticalOptions="Center"/>
+                                    <Label Grid.Column="2" Text="›" FontSize="20" FontFamily="PJSBold" TextColor="{StaticResource Outline}" VerticalOptions="Center"/>
                                 </Grid>
-
-                                <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}"
-                                         Margin="16,0"/>
-
+                                <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="16,0"/>
+                                <!-- Orari di apertura -->
                                 <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,14">
                                     <Grid.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding ManageOpeningHoursCommand}"/>
                                     </Grid.GestureRecognizers>
-                                    <Border Grid.Column="0"
-                                            BackgroundColor="{StaticResource SurfaceContainerLow}"
-                                            HeightRequest="36" WidthRequest="36"
-                                            Stroke="Transparent" Margin="0,0,14,0">
+                                    <Border Grid.Column="0" BackgroundColor="{StaticResource SurfaceContainerLow}"
+                                            HeightRequest="36" WidthRequest="36" Stroke="Transparent" Margin="0,0,14,0">
                                         <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                                        <Label Text="🕐" FontSize="18"
-                                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                                        <Label Text="🕐" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center"/>
                                     </Border>
                                     <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
-                                        <Label Text="Orari di Apertura"
-                                               FontSize="15" TextColor="{StaticResource OnBackground}"/>
-                                        <Label Text="Configura apertura/chiusura"
-                                               FontSize="12" TextColor="{StaticResource Outline}"/>
+                                        <Label Text="Orari di Apertura" FontSize="14" FontFamily="PJSSemi" TextColor="{StaticResource OnBackground}"/>
+                                        <Label Text="Configura apertura/chiusura" FontSize="11" FontFamily="PJSReg" TextColor="{StaticResource Outline}"/>
                                     </VerticalStackLayout>
-                                    <Label Grid.Column="2" Text="›" FontSize="22"
-                                           TextColor="{StaticResource OutlineVariant}"
-                                           VerticalOptions="Center"/>
+                                    <Label Grid.Column="2" Text="›" FontSize="20" FontFamily="PJSBold" TextColor="{StaticResource Outline}" VerticalOptions="Center"/>
                                 </Grid>
-
-                                <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}"
-                                         Margin="16,0"/>
-
+                                <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="16,0"/>
+                                <!-- Team -->
                                 <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,14">
                                     <Grid.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding GoToTeamCommand}"/>
                                     </Grid.GestureRecognizers>
-                                    <Border Grid.Column="0"
-                                            BackgroundColor="{StaticResource SurfaceContainerLow}"
-                                            HeightRequest="36" WidthRequest="36"
-                                            Stroke="Transparent" Margin="0,0,14,0">
+                                    <Border Grid.Column="0" BackgroundColor="{StaticResource SurfaceContainerLow}"
+                                            HeightRequest="36" WidthRequest="36" Stroke="Transparent" Margin="0,0,14,0">
                                         <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                                        <Label Text="👥" FontSize="18"
-                                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                                        <Label Text="👥" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center"/>
                                     </Border>
                                     <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
-                                        <Label Text="Gestisci Team"
-                                               FontSize="15" TextColor="{StaticResource OnBackground}"/>
-                                        <Label Text="Aggiungi o modifica dipendenti"
-                                               FontSize="12" TextColor="{StaticResource Outline}"/>
+                                        <Label Text="Gestisci Team" FontSize="14" FontFamily="PJSSemi" TextColor="{StaticResource OnBackground}"/>
+                                        <Label Text="Aggiungi o modifica dipendenti" FontSize="11" FontFamily="PJSReg" TextColor="{StaticResource Outline}"/>
                                     </VerticalStackLayout>
-                                    <Label Grid.Column="2" Text="›" FontSize="22"
-                                           TextColor="{StaticResource OutlineVariant}"
-                                           VerticalOptions="Center"/>
+                                    <Label Grid.Column="2" Text="›" FontSize="20" FontFamily="PJSBold" TextColor="{StaticResource Outline}" VerticalOptions="Center"/>
                                 </Grid>
-
-                                <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}"
-                                         Margin="16,0"/>
-
+                                <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="16,0"/>
+                                <!-- Report -->
                                 <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,14">
                                     <Grid.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding GoToReportsCommand}"/>
                                     </Grid.GestureRecognizers>
-                                    <Border Grid.Column="0"
-                                            BackgroundColor="{StaticResource SurfaceContainerLow}"
-                                            HeightRequest="36" WidthRequest="36"
-                                            Stroke="Transparent" Margin="0,0,14,0">
+                                    <Border Grid.Column="0" BackgroundColor="{StaticResource SurfaceContainerLow}"
+                                            HeightRequest="36" WidthRequest="36" Stroke="Transparent" Margin="0,0,14,0">
                                         <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                                        <Label Text="📊" FontSize="18"
-                                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                                        <Label Text="📊" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center"/>
                                     </Border>
                                     <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
-                                        <Label Text="Report e statistiche"
-                                               FontSize="15" TextColor="{StaticResource OnBackground}"/>
-                                        <Label Text="Esporta ore e presenze in CSV"
-                                               FontSize="12" TextColor="{StaticResource Outline}"/>
+                                        <Label Text="Report e statistiche" FontSize="14" FontFamily="PJSSemi" TextColor="{StaticResource OnBackground}"/>
+                                        <Label Text="Esporta ore e presenze in CSV" FontSize="11" FontFamily="PJSReg" TextColor="{StaticResource Outline}"/>
                                     </VerticalStackLayout>
-                                    <Label Grid.Column="2" Text="›" FontSize="22"
-                                           TextColor="{StaticResource OutlineVariant}"
-                                           VerticalOptions="Center"/>
+                                    <Label Grid.Column="2" Text="›" FontSize="20" FontFamily="PJSBold" TextColor="{StaticResource Outline}" VerticalOptions="Center"/>
                                 </Grid>
-
                             </VerticalStackLayout>
                         </Border>
                     </VerticalStackLayout>
 
-                    <!-- ── Logout + version ───────────────── -->
-                    <VerticalStackLayout Padding="24,24,24,0" Spacing="12">
+                    <!-- Logout -->
+                    <VerticalStackLayout Padding="24,22,24,0" Spacing="0">
                         <Button Text="Esci dall'account"
                                 Command="{Binding LogoutCommand}"
-                                BackgroundColor="Transparent"
-                                TextColor="{StaticResource Error}"
-                                BorderColor="{StaticResource Error}"
-                                BorderWidth="1.5" CornerRadius="14"
-                                FontSize="15" FontAttributes="Bold"
-                                HeightRequest="52"/>
-
-                        <Label Text="Turnify v1.0.0"
-                               FontSize="12"
-                               TextColor="{StaticResource OutlineVariant}"
-                               HorizontalOptions="Center"
-                               Margin="0,8,0,0"/>
+                                Style="{StaticResource DangerButton}"/>
                     </VerticalStackLayout>
+
+                    <Label Text="Turnify v1.0.0"
+                           FontSize="11" FontFamily="PJSReg"
+                           TextColor="{StaticResource Outline}"
+                           HorizontalOptions="Center"
+                           Margin="0,18,0,0"/>
 
                     <ActivityIndicator IsRunning="{Binding IsBusy}"
                                        IsVisible="{Binding IsBusy}"
                                        HorizontalOptions="Center"
                                        Color="{StaticResource Primary}"
                                        Margin="0,12,0,0"/>
-
                 </VerticalStackLayout>
             </Border>
         </ScrollView>
-
     </Grid>
 </ContentPage>

@@ -70,7 +70,7 @@
 | ATT-03 | Presenze | Check-out dopo check-in | Dipendente chiama `POST /api/attendance/checkout` dopo check-in | `CheckOutTime` aggiornato nella riga esistente | 🔁 | `AttendanceControllerIntegrationTests` |
 | ATT-04 | Presenze | Stato presenze di oggi | `GET /api/attendance/today` con check-in attivo | `{ "isCheckedIn": true, "checkInTime": "...", "checkOutTime": null }` | 🔁 | `AttendanceControllerIntegrationTests` |
 | ATT-05 | Presenze | Stato presenze di oggi senza check-in | `GET /api/attendance/today` prima del check-in | `{ "isCheckedIn": false, "checkInTime": null, "checkOutTime": null }` | 🔁 | `AttendanceControllerIntegrationTests` |
-| ATT-06 | Presenze | Storico presenze mobile: orari in locale | `AttendanceHistoryPage` mostra storico | Timestamp visualizzati in ora locale (non UTC) | ✅ | Fix bug UTC — `DateTime.SpecifyKind(..., Utc).ToLocalTime` |
+| ATT-06 | Presenze | Storico presenze mobile: orari in locale | `AttendanceHistoryPage` mostra storico | Timestamp visualizzati in ora locale (non UTC) | ✅ | Fix bug UTC in — `DateTime.SpecifyKind(..., Utc).ToLocalTime` |
 | ATT-07 | Presenze | Check-in senza dipendente associato | User senza record `Employee` chiama `checkin` | 403 Forbid | 🔁 | `AttendanceControllerIntegrationTests` |
 
 ---
@@ -214,13 +214,13 @@ Documentati dalla matrice tecnica e dalle verifiche di regressione.
 
 | ID | Bug | Verifica/fix | Comportamento errato | Comportamento corretto |
 |---|---|---|---|---|
-| BUG-01 | Timestamp presenze mostrati in UTC invece dell'ora locale | Verifica regressione | `AttendanceHistoryPage` mostrava es. "08:00" per un check-in delle 10:00 (UTC+2) | `DateTime.SpecifyKind(..., Utc).ToLocalTime` — orario convertito al fuso del dispositivo |
+| BUG-01 | Timestamp presenze mostrati in UTC invece dell'ora locale | | `AttendanceHistoryPage` mostrava es. "08:00" per un check-in delle 10:00 (UTC+2) | `DateTime.SpecifyKind(..., Utc).ToLocalTime` — orario convertito al fuso del dispositivo |
 | BUG-02 | `EmployeeDashboardPage` non accessibile ai dipendenti | | Un controllo ruolo errato nel ViewModel bloccava il caricamento per i dipendenti | Rimosso controllo errato — pagina caricata correttamente |
 | BUG-03 | `RegisterPage.xaml` su Android: input bloccato | | `Frame` in MAUI su Android impediva l'inserimento di testo nei campi form | Sostituito `Frame` con `Border` |
 | BUG-04 | Tab admin visibili al dipendente al login | | `AppShell` riutilizzata senza reinizializzazione → tab admin non rimosse per i dipendenti | Forzata creazione nuova istanza `AppShell` al login con `ConfigureForRole` |
 | BUG-05 | Login layout non scrollabile su schermi piccoli | | `LoginPage.xaml` non aveva `ScrollView` → elementi tagliati su dispositivi con schermo < 5" | Aggiunto `ScrollView` wrapping |
 | BUG-06 | Rate limiter globale invece che per-IP | | Il rate limiter condivideva il limite tra tutti gli IP — un solo IP non poteva saturarlo intenzionalmente | Riscritto con `RemoteIpAddress` come partition key |
-| BUG-07 | Registrazione email duplicata → 500 invece di 409 | Verifica regressione | Eccezione MySQL non gestita per constraint email univoca restituiva HTTP 500 | Catturata `DbUpdateException` → `Conflict` 409 |
+| BUG-07 | Registrazione email duplicata → 500 invece di 409 | | Eccezione MySQL non gestita per constraint email univoca restituiva HTTP 500 | Catturata `DbUpdateException` → `Conflict` 409 |
 | BUG-08 | Pagina web error-logs crashava su alcuni browser | | `[...new Set(...)]` — spread operator su `Set` non supportato dal target browser | Sostituito con `Array.from(new Set(...))` |
 | BUG-09 | Migrazione `AddEmployeeAvailableDays` non scoperta da EF CLI | | Migrazione manuale senza file `Designer.cs` → `dotnet ef` non la trovava | Aggiunto file `Designer.cs` companion |
 | BUG-10 | Portale Next.js non si avviava su VPS Node 20 | | Incompatibilità configurazione Next.js 14 con Node 20 in produzione | Fix configurazione `next.config.ts` |

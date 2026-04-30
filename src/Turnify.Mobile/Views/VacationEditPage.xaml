@@ -8,70 +8,84 @@
              BackgroundColor="{StaticResource Background}">
 
     <ScrollView>
-        <VerticalStackLayout Spacing="14" Padding="20">
+        <VerticalStackLayout Spacing="14" Padding="20,20,20,40">
 
-            <Border BackgroundColor="{StaticResource PrimaryContainer}"
-                    Padding="14,10">
-                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                <HorizontalStackLayout Spacing="10">
-                    <Label Text="👤" FontSize="18" VerticalOptions="Center"/>
+            <!-- Employee badge -->
+            <Border BackgroundColor="{StaticResource PrimaryLight}"
+                    Stroke="{StaticResource PrimaryMid}" StrokeThickness="1"
+                    Padding="16,12">
+                <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                <HorizontalStackLayout Spacing="12">
+                    <Border BackgroundColor="{StaticResource Primary}"
+                            HeightRequest="36" WidthRequest="36" Stroke="Transparent">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
+                        <Label Text="👤" FontSize="16"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Border>
                     <Label Text="{Binding EmployeeName}"
-                           FontSize="16" FontAttributes="Bold"
+                           FontSize="15" FontAttributes="Bold" FontFamily="PJSBold"
                            TextColor="{StaticResource Primary}"
                            VerticalOptions="Center"/>
                 </HorizontalStackLayout>
             </Border>
 
-            <Label Text="Tipo richiesta" FontSize="13"
-                   TextColor="{StaticResource OnSurfaceVariant}" Margin="2,0,0,0"/>
-            <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="0">
-                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+            <!-- Tipo -->
+            <Label Text="TIPO RICHIESTA" Style="{StaticResource SectionLabel}" Margin="2,6,0,0"/>
+            <Border Style="{StaticResource FieldBorder}">
                 <Picker ItemsSource="{Binding VacationTypesDisplay}"
                         SelectedIndex="{Binding SelectedTypeIndex}"
+                        FontFamily="PJSReg"
+                        TextColor="{StaticResource OnBackground}"
                         Margin="10,0"/>
             </Border>
 
+            <!-- Date -->
             <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                <VerticalStackLayout Grid.Column="0" Spacing="4">
-                    <Label Text="Data inizio" FontSize="13"
-                           TextColor="{StaticResource OnSurfaceVariant}" Margin="2,0,0,0"/>
-                    <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="4">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                        <DatePicker Date="{Binding StartDate}" Margin="6,0"/>
+                <VerticalStackLayout Grid.Column="0" Spacing="6">
+                    <Label Text="INIZIO" Style="{StaticResource SectionLabel}" Margin="2,0,0,0"/>
+                    <Border Style="{StaticResource FieldBorder}">
+                        <DatePicker Date="{Binding StartDate}"
+                                    FontFamily="PJSReg"
+                                    TextColor="{StaticResource OnBackground}"
+                                    Margin="12,0"/>
                     </Border>
                 </VerticalStackLayout>
-                <VerticalStackLayout Grid.Column="1" Spacing="4">
-                    <Label Text="Data fine" FontSize="13"
-                           TextColor="{StaticResource OnSurfaceVariant}" Margin="2,0,0,0"/>
-                    <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="4">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                        <DatePicker Date="{Binding EndDate}" Margin="6,0"/>
+                <VerticalStackLayout Grid.Column="1" Spacing="6">
+                    <Label Text="FINE" Style="{StaticResource SectionLabel}" Margin="2,0,0,0"/>
+                    <Border Style="{StaticResource FieldBorder}">
+                        <DatePicker Date="{Binding EndDate}"
+                                    FontFamily="PJSReg"
+                                    TextColor="{StaticResource OnBackground}"
+                                    Margin="12,0"/>
                     </Border>
                 </VerticalStackLayout>
             </Grid>
 
-            <Label Text="Stato" FontSize="13"
-                   TextColor="{StaticResource OnSurfaceVariant}" Margin="2,0,0,0"/>
-            <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="0">
-                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+            <!-- Stato -->
+            <Label Text="STATO" Style="{StaticResource SectionLabel}" Margin="2,6,0,0"/>
+            <Border Style="{StaticResource FieldBorder}">
                 <Picker ItemsSource="{Binding StatusOptionsDisplay}"
                         SelectedIndex="{Binding SelectedStatusIndex}"
+                        FontFamily="PJSReg"
+                        TextColor="{StaticResource OnBackground}"
                         Margin="10,0"/>
             </Border>
 
-            <Label Text="Motivazione" FontSize="13"
-                   TextColor="{StaticResource OnSurfaceVariant}" Margin="2,0,0,0"/>
-            <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="0">
-                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                <Editor Text="{Binding Reason}" Placeholder="Motivazione..."
-                        HeightRequest="70" Margin="10,4"/>
+            <!-- Motivazione -->
+            <Label Text="MOTIVAZIONE" Style="{StaticResource SectionLabel}" Margin="2,6,0,0"/>
+            <Border Style="{StaticResource FieldBorder}">
+                <Editor Text="{Binding Reason}"
+                        Placeholder="Motivazione…"
+                        PlaceholderColor="{StaticResource Outline}"
+                        FontFamily="PJSReg"
+                        TextColor="{StaticResource OnBackground}"
+                        HeightRequest="80" Margin="14,8"/>
             </Border>
 
             <Button Text="Salva modifiche"
                     Command="{Binding SaveCommand}"
-                    BackgroundColor="{StaticResource Primary}"
-                    TextColor="White" CornerRadius="10" HeightRequest="50"
-                    FontAttributes="Bold" Margin="0,8,0,0"/>
+                    Style="{StaticResource PrimaryButton}"
+                    Margin="0,12,0,0"/>
 
             <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
                                HorizontalOptions="Center" Color="{StaticResource Primary}"/>

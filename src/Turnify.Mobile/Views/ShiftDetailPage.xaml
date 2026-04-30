@@ -8,133 +8,142 @@
              BackgroundColor="{StaticResource Background}">
 
     <ScrollView>
-        <VerticalStackLayout Spacing="14" Padding="20">
+        <VerticalStackLayout Spacing="14" Padding="20,20,20,40">
 
             <!-- Dipendente -->
-            <Label Text="Dipendente *" FontSize="13"
-                   TextColor="{StaticResource OnSurfaceVariant}" Margin="2,0,0,0"/>
-            <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="0">
-                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+            <Label Text="DIPENDENTE" Style="{StaticResource SectionLabel}" Margin="2,0,0,0"/>
+            <Border Style="{StaticResource FieldBorder}">
                 <Picker ItemsSource="{Binding Employees}"
                         ItemDisplayBinding="{Binding FullName}"
                         SelectedItem="{Binding SelectedEmployee}"
                         Title="Seleziona dipendente"
+                        FontFamily="PJSReg"
+                        TextColor="{StaticResource OnBackground}"
+                        TitleColor="{StaticResource Outline}"
                         Margin="10,0"/>
             </Border>
 
-            <!-- Nessun dipendente warning -->
-            <Border BackgroundColor="#FEF3C7" Stroke="#FDE68A" StrokeThickness="1" Padding="12"
+            <!-- Avviso nessun dipendente -->
+            <Border BackgroundColor="{StaticResource WarningLight}"
+                    Stroke="{StaticResource Warning}" StrokeThickness="1" Padding="14,12"
                     IsVisible="{Binding Employees.Count, Converter={StaticResource IntIsZeroConverter}}">
-                <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
-                <HorizontalStackLayout Spacing="10">
-                    <Label Text="⚠️" FontSize="18" VerticalOptions="Center"/>
-                    <VerticalStackLayout>
-                        <Label Text="Nessun dipendente disponibile."
-                               FontSize="14" FontAttributes="Bold" TextColor="#92400E"/>
-                        <Label Text="Aggiungi prima un dipendente dalla sezione Team."
-                               FontSize="13" TextColor="#92400E"/>
-                    </VerticalStackLayout>
-                </HorizontalStackLayout>
+                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                <VerticalStackLayout Spacing="3">
+                    <Label Text="Nessun dipendente disponibile."
+                           FontSize="14" FontAttributes="Bold" FontFamily="PJSBold"
+                           TextColor="{StaticResource WarningText}"/>
+                    <Label Text="Aggiungi prima un dipendente dalla sezione Team."
+                           FontSize="13" FontFamily="PJSReg"
+                           TextColor="{StaticResource WarningText}"/>
+                </VerticalStackLayout>
             </Border>
 
             <!-- Data -->
-            <Label Text="Data *" FontSize="13"
-                   TextColor="{StaticResource OnSurfaceVariant}" Margin="2,6,0,0"/>
-            <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="4">
-                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+            <Label Text="DATA" Style="{StaticResource SectionLabel}" Margin="2,6,0,0"/>
+            <Border Style="{StaticResource FieldBorder}">
                 <DatePicker Date="{Binding ShiftDate}"
                             Format="dddd dd MMMM yyyy"
                             MinimumDate="2020-01-01"
-                            Margin="10,0"/>
+                            FontFamily="PJSReg"
+                            TextColor="{StaticResource OnBackground}"
+                            Margin="16,0"/>
             </Border>
 
             <!-- Orari -->
             <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                <VerticalStackLayout Grid.Column="0" Spacing="4">
-                    <Label Text="Inizio *" FontSize="13"
-                           TextColor="{StaticResource OnSurfaceVariant}" Margin="2,0,0,0"/>
-                    <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="4">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                        <TimePicker Time="{Binding StartTime}" Format="HH:mm" Margin="10,0"/>
+                <VerticalStackLayout Grid.Column="0" Spacing="6">
+                    <Label Text="INIZIO" Style="{StaticResource SectionLabel}" Margin="2,0,0,0"/>
+                    <Border Style="{StaticResource FieldBorder}">
+                        <TimePicker Time="{Binding StartTime}" Format="HH:mm"
+                                    FontFamily="PJSReg"
+                                    TextColor="{StaticResource OnBackground}"
+                                    Margin="16,0"/>
                     </Border>
                 </VerticalStackLayout>
-                <VerticalStackLayout Grid.Column="1" Spacing="4">
-                    <Label Text="Fine *" FontSize="13"
-                           TextColor="{StaticResource OnSurfaceVariant}" Margin="2,0,0,0"/>
-                    <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="4">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                        <TimePicker Time="{Binding EndTime}" Format="HH:mm" Margin="10,0"/>
+                <VerticalStackLayout Grid.Column="1" Spacing="6">
+                    <Label Text="FINE" Style="{StaticResource SectionLabel}" Margin="2,0,0,0"/>
+                    <Border Style="{StaticResource FieldBorder}">
+                        <TimePicker Time="{Binding EndTime}" Format="HH:mm"
+                                    FontFamily="PJSReg"
+                                    TextColor="{StaticResource OnBackground}"
+                                    Margin="16,0"/>
                     </Border>
                 </VerticalStackLayout>
             </Grid>
 
             <!-- Etichetta -->
-            <Label Text="Etichetta (opzionale)" FontSize="13"
-                   TextColor="{StaticResource OnSurfaceVariant}" Margin="2,6,0,0"/>
-            <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="0">
-                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                <Entry Text="{Binding Label}" Placeholder="Es. Apertura, Turno pranzo..."
-                       HeightRequest="50" Margin="14,0" BackgroundColor="Transparent"/>
+            <Label Text="ETICHETTA (OPZIONALE)" Style="{StaticResource SectionLabel}" Margin="2,6,0,0"/>
+            <Border Style="{StaticResource FieldBorder}">
+                <Entry Text="{Binding Label}" Placeholder="Es. Apertura, Turno pranzo…" Style="{StaticResource FieldEntry}"/>
             </Border>
 
             <!-- Note -->
-            <Label Text="Note (opzionale)" FontSize="13"
-                   TextColor="{StaticResource OnSurfaceVariant}" Margin="2,0,0,0"/>
-            <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="0">
-                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                <Editor Text="{Binding Note}" Placeholder="Es. Copertura per Mario assente..."
-                        HeightRequest="80" Margin="10,4"/>
+            <Label Text="NOTE (OPZIONALE)" Style="{StaticResource SectionLabel}" Margin="2,0,0,0"/>
+            <Border Style="{StaticResource FieldBorder}">
+                <Editor Text="{Binding Note}" Placeholder="Es. Copertura per Mario assente…"
+                        FontFamily="PJSReg"
+                        PlaceholderColor="{StaticResource Outline}"
+                        TextColor="{StaticResource OnBackground}"
+                        HeightRequest="80" Margin="14,8"/>
             </Border>
 
-            <!-- Ricorrenza (solo creazione) -->
+            <!-- Ricorrenza (create only) -->
             <VerticalStackLayout Spacing="6" IsVisible="{Binding IsCreateMode}">
-                <Label Text="Ripeti turno (settimane successive)" FontSize="13"
-                       TextColor="{StaticResource OnSurfaceVariant}" Margin="2,6,0,0"/>
-                <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="12,8">
-                    <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                    <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="8">
+                <Label Text="RIPETI TURNO (SETTIMANE SUCCESSIVE)"
+                       Style="{StaticResource SectionLabel}" Margin="2,6,0,0"/>
+                <Border BackgroundColor="{StaticResource Surface}"
+                        Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                        Padding="16,12">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="13"/></Border.StrokeShape>
+                    <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="10">
                         <Label Grid.Column="0" Text="{Binding RepeatLabel}"
-                               FontSize="14" TextColor="{StaticResource OnBackground}"
+                               FontSize="14" FontFamily="PJSSemi"
+                               TextColor="{StaticResource OnBackground}"
                                VerticalOptions="Center"/>
-                        <Button Grid.Column="1" Text="−"
-                                Command="{Binding DecrementRepeatWeeksCommand}"
-                                BackgroundColor="{StaticResource SurfaceContainer}"
-                                TextColor="{StaticResource OnBackground}"
-                                WidthRequest="40" HeightRequest="40"
-                                CornerRadius="20" Padding="0" FontSize="18"/>
+                        <Border Grid.Column="1"
+                                BackgroundColor="{StaticResource SurfaceContainerLow}"
+                                HeightRequest="40" WidthRequest="40"
+                                Stroke="{StaticResource OutlineVariant}" StrokeThickness="1">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding DecrementRepeatWeeksCommand}"/>
+                            </Border.GestureRecognizers>
+                            <Label Text="−" FontSize="18" FontAttributes="Bold" FontFamily="PJSBold"
+                                   TextColor="{StaticResource OnBackground}"
+                                   HorizontalOptions="Center" VerticalOptions="Center"/>
+                        </Border>
                         <Label Grid.Column="2" Text="{Binding RepeatWeeks}"
-                               FontSize="16" FontAttributes="Bold"
+                               FontSize="16" FontAttributes="Bold" FontFamily="PJSBold"
                                TextColor="{StaticResource Primary}"
-                               VerticalOptions="Center"
-                               HorizontalOptions="Center"
+                               VerticalOptions="Center" HorizontalOptions="Center"
                                MinimumWidthRequest="28"/>
-                        <Button Grid.Column="3" Text="+"
-                                Command="{Binding IncrementRepeatWeeksCommand}"
-                                BackgroundColor="{StaticResource Primary}"
-                                TextColor="White"
-                                WidthRequest="40" HeightRequest="40"
-                                CornerRadius="20" Padding="0" FontSize="18"/>
+                        <Border Grid.Column="3"
+                                BackgroundColor="{StaticResource Navy}"
+                                HeightRequest="40" WidthRequest="40"
+                                Stroke="Transparent">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding IncrementRepeatWeeksCommand}"/>
+                            </Border.GestureRecognizers>
+                            <Label Text="+" FontSize="18" FontAttributes="Bold" FontFamily="PJSBold"
+                                   TextColor="White"
+                                   HorizontalOptions="Center" VerticalOptions="Center"/>
+                        </Border>
                     </Grid>
                 </Border>
             </VerticalStackLayout>
 
-            <!-- Bottoni -->
+            <!-- Buttons -->
             <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,12,0,0">
                 <Button Grid.Column="0" Text="Elimina"
                         Command="{Binding DeleteCommand}"
                         IsVisible="{Binding IsEditMode}"
-                        BackgroundColor="Transparent"
-                        TextColor="{StaticResource Error}"
-                        BorderColor="{StaticResource Error}"
-                        BorderWidth="1" CornerRadius="10" HeightRequest="50"/>
+                        Style="{StaticResource DangerButton}"/>
                 <Button Grid.Column="1" Text="Salva Turno"
                         Command="{Binding SaveCommand}"
-                        BackgroundColor="{StaticResource Primary}"
-                        TextColor="White" CornerRadius="10" HeightRequest="50"
-                        FontAttributes="Bold">
+                        Style="{StaticResource PrimaryButton}">
                     <Button.Triggers>
-                        <DataTrigger TargetType="Button"
-                                     Binding="{Binding IsCreateMode}" Value="True">
+                        <DataTrigger TargetType="Button" Binding="{Binding IsCreateMode}" Value="True">
                             <Setter Property="Grid.ColumnSpan" Value="2"/>
                             <Setter Property="Grid.Column" Value="0"/>
                         </DataTrigger>

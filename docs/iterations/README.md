@@ -1,4 +1,4 @@
-# Iterazioni applicative Turnify
+# Iterazioni applicative BookScout Mobile
 
 Questa cartella è riservata ai log delle iterazioni applicative definite in `docs/plan.md`.
 La stessa convenzione deve essere rispettata dalle skill del repository quando creano o aggiornano log di iterazione, in particolare `man-in-the-loop-workflow` e `prd-to-plan`.

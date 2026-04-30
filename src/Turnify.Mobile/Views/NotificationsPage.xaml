@@ -9,78 +9,78 @@
 
     <Grid RowDefinitions="Auto,*">
 
-        <!-- ── Header ────────────────────────────────────────── -->
+        <!-- Header -->
         <Border Grid.Row="0"
                 BackgroundColor="{StaticResource Surface}"
-                Stroke="#E2E8F0" StrokeThickness="0,0,0,1"
-                Padding="16,14,16,10">
+                Stroke="{StaticResource OutlineVariant}" StrokeThickness="0,0,0,1"
+                Padding="20,16,20,14">
             <Border.StrokeShape><RoundRectangle CornerRadius="0"/></Border.StrokeShape>
             <Grid ColumnDefinitions="*,Auto">
                 <HorizontalStackLayout Grid.Column="0" Spacing="10" VerticalOptions="Center">
                     <Label Text="Notifiche"
-                           FontSize="22" FontAttributes="Bold"
-                           TextColor="{StaticResource OnBackground}"/>
+                           FontSize="24" FontAttributes="Bold" FontFamily="PJSXBold"
+                           TextColor="{StaticResource OnBackground}"
+                           CharacterSpacing="-0.8"/>
                     <Border BackgroundColor="{StaticResource Primary}"
-                            Stroke="Transparent" Padding="8,3"
+                            Stroke="Transparent" Padding="9,4"
                             IsVisible="{Binding UnreadCount, Converter={StaticResource IntIsZeroConverter}, ConverterParameter=invert}">
                         <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
                         <Label Text="{Binding UnreadCount, StringFormat='{0} non lette'}"
-                               FontSize="11" FontAttributes="Bold"
+                               FontSize="10" FontAttributes="Bold" FontFamily="PJSBold"
                                TextColor="White"/>
                     </Border>
                 </HorizontalStackLayout>
-
-                <Border Grid.Column="1"
-                        BackgroundColor="Transparent"
-                        Stroke="Transparent"
-                        IsVisible="{Binding UnreadCount, Converter={StaticResource IntIsZeroConverter}, ConverterParameter=invert}"
-                        VerticalOptions="Center">
-                    <Border.GestureRecognizers>
+                <Label Grid.Column="1"
+                       Text="Segna tutte lette"
+                       FontSize="13" FontAttributes="Bold" FontFamily="PJSSemi"
+                       TextColor="{StaticResource Primary}"
+                       VerticalOptions="Center"
+                       IsVisible="{Binding UnreadCount, Converter={StaticResource IntIsZeroConverter}, ConverterParameter=invert}">
+                    <Label.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding MarkAllReadCommand}"/>
-                    </Border.GestureRecognizers>
-                    <Label Text="Segna tutte lette"
-                           FontSize="13" FontAttributes="Bold"
-                           TextColor="{StaticResource Primary}"/>
-                </Border>
+                    </Label.GestureRecognizers>
+                </Label>
             </Grid>
         </Border>
 
-        <!-- ── Error ──────────────────────────────────────────── -->
-        <Border Grid.Row="0" Grid.RowSpan="2"
+        <!-- Error -->
+        <Border Grid.Row="1"
                 IsVisible="{Binding HasError}"
-                BackgroundColor="#FEF2F2"
-                Stroke="#FECACA" StrokeThickness="1"
-                Padding="16" Margin="16,70,16,0"
+                BackgroundColor="{StaticResource ErrorLight}"
+                Stroke="{StaticResource Error}" StrokeThickness="1"
+                Padding="16" Margin="20,16,20,0"
                 VerticalOptions="Start">
-            <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-            <HorizontalStackLayout Spacing="8">
-                <Label Text="⚠️" FontSize="16" VerticalOptions="Center"/>
-                <Label Text="{Binding ErrorMessage}"
-                       FontSize="14" TextColor="#DC2626" VerticalOptions="Center"/>
-            </HorizontalStackLayout>
+            <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+            <Label Text="{Binding ErrorMessage}"
+                   FontSize="13" FontFamily="PJSSemi"
+                   TextColor="{StaticResource ErrorText}"/>
         </Border>
 
-        <!-- ── Notifications List ─────────────────────────────── -->
+        <!-- List -->
         <RefreshView Grid.Row="1"
                      Command="{Binding LoadCommand}"
                      IsRefreshing="{Binding IsBusy}">
-            <CollectionView ItemsSource="{Binding Notifications}"
-                            Margin="0,4,0,0">
+            <CollectionView ItemsSource="{Binding Notifications}" Margin="0,6,0,0">
 
                 <CollectionView.EmptyView>
                     <VerticalStackLayout HorizontalOptions="Center"
                                          Margin="0,60,0,0" Spacing="14"
                                          IsVisible="{Binding HasError, Converter={StaticResource InverseBoolConverter}}">
-                        <Label Text="🔔" FontSize="52" HorizontalOptions="Center"/>
+                        <Border BackgroundColor="{StaticResource Surface}"
+                                HeightRequest="68" WidthRequest="68"
+                                HorizontalOptions="Center">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                            <Label Text="🔔" FontSize="34"
+                                   HorizontalOptions="Center" VerticalOptions="Center"/>
+                        </Border>
                         <Label Text="Nessuna notifica"
-                               FontSize="18" FontAttributes="Bold"
+                               FontSize="18" FontAttributes="Bold" FontFamily="PJSBold"
                                TextColor="{StaticResource OnBackground}"
                                HorizontalOptions="Center"/>
                         <Label Text="Le notifiche sui tuoi turni e ferie appariranno qui."
-                               FontSize="14"
+                               FontSize="14" FontFamily="PJSReg"
                                TextColor="{StaticResource OnSurfaceVariant}"
-                               HorizontalOptions="Center"
-                               HorizontalTextAlignment="Center"
+                               HorizontalOptions="Center" HorizontalTextAlignment="Center"
                                Margin="32,0"/>
                     </VerticalStackLayout>
                 </CollectionView.EmptyView>
@@ -88,22 +88,22 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="vm:NotificationDto">
                         <Border BackgroundColor="{Binding BackgroundColor}"
-                                Stroke="Transparent" StrokeThickness="0"
-                                Padding="16,12" Margin="8,0,8,2">
-                            <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                                Stroke="Transparent"
+                                Padding="16,14" Margin="12,0,12,4">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NotificationsViewModel}}, Path=MarkReadCommand}"
                                     CommandParameter="{Binding .}"/>
                             </Border.GestureRecognizers>
 
-                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
-
-                                <!-- Icon circle -->
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
+                                <!-- Icon -->
                                 <Border Grid.Column="0"
-                                        BackgroundColor="{StaticResource SecondaryContainer}"
+                                        BackgroundColor="{StaticResource PrimaryLight}"
                                         HeightRequest="44" WidthRequest="44"
-                                        VerticalOptions="Start">
+                                        VerticalOptions="Start"
+                                        Stroke="Transparent">
                                     <Border.StrokeShape><RoundRectangle CornerRadius="22"/></Border.StrokeShape>
                                     <Label Text="{Binding Icon}"
                                            FontSize="20"
@@ -114,15 +114,15 @@
                                 <!-- Content -->
                                 <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
                                     <Label Text="{Binding Title}"
-                                           FontSize="15" FontAttributes="Bold"
+                                           FontSize="14" FontAttributes="Bold" FontFamily="PJSBold"
                                            TextColor="{StaticResource OnBackground}"
                                            LineBreakMode="TailTruncation"/>
                                     <Label Text="{Binding Body}"
-                                           FontSize="13"
+                                           FontSize="13" FontFamily="PJSReg"
                                            TextColor="{StaticResource OnSurfaceVariant}"
                                            LineBreakMode="WordWrap"/>
                                     <Label Text="{Binding TimeAgo}"
-                                           FontSize="11"
+                                           FontSize="11" FontFamily="PJSReg"
                                            TextColor="{StaticResource Outline}"
                                            Margin="0,2,0,0"/>
                                 </VerticalStackLayout>
@@ -130,17 +130,15 @@
                                 <!-- Unread dot -->
                                 <Ellipse Grid.Column="2"
                                          Fill="{StaticResource Primary}"
-                                         HeightRequest="9" WidthRequest="9"
+                                         HeightRequest="8" WidthRequest="8"
                                          VerticalOptions="Start"
                                          Margin="0,6,0,0">
                                     <Ellipse.Triggers>
-                                        <DataTrigger TargetType="Ellipse"
-                                                     Binding="{Binding IsRead}" Value="True">
+                                        <DataTrigger TargetType="Ellipse" Binding="{Binding IsRead}" Value="True">
                                             <Setter Property="IsVisible" Value="False"/>
                                         </DataTrigger>
                                     </Ellipse.Triggers>
                                 </Ellipse>
-
                             </Grid>
                         </Border>
                     </DataTemplate>
@@ -149,10 +147,8 @@
         </RefreshView>
 
         <ActivityIndicator Grid.Row="1"
-                           IsRunning="{Binding IsBusy}"
-                           IsVisible="{Binding IsBusy}"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center"
+                           IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                           HorizontalOptions="Center" VerticalOptions="Center"
                            Color="{StaticResource Primary}"/>
     </Grid>
 </ContentPage>

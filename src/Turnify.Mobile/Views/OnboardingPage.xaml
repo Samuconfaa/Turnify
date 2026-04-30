@@ -5,413 +5,330 @@
              x:Class="Turnify.Mobile.Views.OnboardingPage"
              x:DataType="vm:OnboardingViewModel"
              Shell.NavBarIsVisible="False"
-             BackgroundColor="#F9FAFB">
+             BackgroundColor="{StaticResource Background}">
 
     <Grid RowDefinitions="56,*,Auto">
 
-        <!-- ══ HEADER BAR ══ -->
-        <Grid Grid.Row="0" ColumnDefinitions="56,*,56"
-              BackgroundColor="White">
-            <Grid.Shadow>
-                <Shadow Brush="#000000" Offset="0,1" Radius="4" Opacity="0.06"/>
-            </Grid.Shadow>
+        <!-- Header bar -->
+        <Border Grid.Row="0"
+                BackgroundColor="{StaticResource Surface}"
+                Stroke="{StaticResource OutlineVariant}" StrokeThickness="0,0,0,1">
+            <Border.StrokeShape><RoundRectangle CornerRadius="0"/></Border.StrokeShape>
+            <Grid ColumnDefinitions="56,*,56" Padding="0">
+                <Button Grid.Column="0" Text="‹"
+                        Command="{Binding PreviousStepCommand}"
+                        IsVisible="{Binding IsStep1, Converter={StaticResource InverseBoolConverter}}"
+                        BackgroundColor="Transparent"
+                        TextColor="{StaticResource OnSurfaceVariant}"
+                        FontSize="24" FontFamily="PJSBold"
+                        Padding="0"/>
 
-            <!-- Back (nascosto su step 1) -->
-            <Button Grid.Column="0"
-                    Text="←"
-                    Command="{Binding PreviousStepCommand}"
-                    IsVisible="{Binding IsStep1, Converter={StaticResource InverseBoolConverter}}"
-                    BackgroundColor="Transparent"
-                    TextColor="#6B7280"
-                    FontSize="22"
-                    Padding="0"/>
+                <!-- Progress dots -->
+                <HorizontalStackLayout Grid.Column="1"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"
+                                       Spacing="8">
+                    <Border HeightRequest="8" WidthRequest="8">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="4"/></Border.StrokeShape>
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding Step1Dot}" Value="True">
+                                <Setter Property="BackgroundColor" Value="{StaticResource Navy}"/>
+                                <Setter Property="WidthRequest" Value="22"/>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Border" Binding="{Binding Step1Dot}" Value="False">
+                                <Setter Property="BackgroundColor" Value="{StaticResource OutlineVariant}"/>
+                            </DataTrigger>
+                        </Border.Triggers>
+                    </Border>
+                    <Border HeightRequest="8" WidthRequest="8">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="4"/></Border.StrokeShape>
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding Step2Dot}" Value="True">
+                                <Setter Property="BackgroundColor" Value="{StaticResource Navy}"/>
+                                <Setter Property="WidthRequest" Value="22"/>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Border" Binding="{Binding Step2Dot}" Value="False">
+                                <Setter Property="BackgroundColor" Value="{StaticResource OutlineVariant}"/>
+                            </DataTrigger>
+                        </Border.Triggers>
+                    </Border>
+                    <Border HeightRequest="8" WidthRequest="8">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="4"/></Border.StrokeShape>
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding Step3Dot}" Value="True">
+                                <Setter Property="BackgroundColor" Value="{StaticResource Navy}"/>
+                                <Setter Property="WidthRequest" Value="22"/>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Border" Binding="{Binding Step3Dot}" Value="False">
+                                <Setter Property="BackgroundColor" Value="{StaticResource OutlineVariant}"/>
+                            </DataTrigger>
+                        </Border.Triggers>
+                    </Border>
+                </HorizontalStackLayout>
 
-            <!-- Progress dots centrati -->
-            <HorizontalStackLayout Grid.Column="1"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"
-                                   Spacing="8">
-                <!-- Dot 1 -->
-                <Border HeightRequest="10" WidthRequest="10">
-                    <Border.StrokeShape><RoundRectangle CornerRadius="5"/></Border.StrokeShape>
-                    <Border.Triggers>
-                        <DataTrigger TargetType="Border" Binding="{Binding Step1Dot}" Value="True">
-                            <Setter Property="BackgroundColor" Value="#2563EB"/>
-                        </DataTrigger>
-                        <DataTrigger TargetType="Border" Binding="{Binding Step1Dot}" Value="False">
-                            <Setter Property="BackgroundColor" Value="#E5E7EB"/>
-                        </DataTrigger>
-                    </Border.Triggers>
-                </Border>
-                <!-- Dot 2 -->
-                <Border HeightRequest="10" WidthRequest="10">
-                    <Border.StrokeShape><RoundRectangle CornerRadius="5"/></Border.StrokeShape>
-                    <Border.Triggers>
-                        <DataTrigger TargetType="Border" Binding="{Binding Step2Dot}" Value="True">
-                            <Setter Property="BackgroundColor" Value="#2563EB"/>
-                        </DataTrigger>
-                        <DataTrigger TargetType="Border" Binding="{Binding Step2Dot}" Value="False">
-                            <Setter Property="BackgroundColor" Value="#E5E7EB"/>
-                        </DataTrigger>
-                    </Border.Triggers>
-                </Border>
-                <!-- Dot 3 -->
-                <Border HeightRequest="10" WidthRequest="10">
-                    <Border.StrokeShape><RoundRectangle CornerRadius="5"/></Border.StrokeShape>
-                    <Border.Triggers>
-                        <DataTrigger TargetType="Border" Binding="{Binding Step3Dot}" Value="True">
-                            <Setter Property="BackgroundColor" Value="#2563EB"/>
-                        </DataTrigger>
-                        <DataTrigger TargetType="Border" Binding="{Binding Step3Dot}" Value="False">
-                            <Setter Property="BackgroundColor" Value="#E5E7EB"/>
-                        </DataTrigger>
-                    </Border.Triggers>
-                </Border>
-            </HorizontalStackLayout>
+                <Label Grid.Column="2"
+                       Text="Salta"
+                       FontSize="14" FontAttributes="Bold" FontFamily="PJSSemi"
+                       TextColor="{StaticResource Primary}"
+                       HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SkipOnboardingCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </Grid>
+        </Border>
 
-            <!-- Skip -->
-            <Button Grid.Column="2"
-                    Text="Salta"
-                    Command="{Binding SkipOnboardingCommand}"
-                    BackgroundColor="Transparent"
-                    TextColor="#2563EB"
-                    FontSize="14"
-                    FontAttributes="Bold"
-                    Padding="8,0"/>
-        </Grid>
-
-        <!-- ══ CONTENUTO STEP ══ -->
+        <!-- Step content -->
         <ScrollView Grid.Row="1">
             <VerticalStackLayout Spacing="0">
 
-                <!-- ────────────── STEP 1 — BENVENUTO ────────────── -->
+                <!-- ── STEP 1 – Benvenuto ── -->
                 <VerticalStackLayout IsVisible="{Binding IsStep1}"
-                                     Spacing="24" Padding="20,32,20,20">
-
-                    <!-- Card principale -->
-                    <Border BackgroundColor="White"
-                            Stroke="#E5E7EB" StrokeThickness="1"
+                                     Spacing="24" Padding="20,36,20,20">
+                    <!-- Hero card -->
+                    <Border BackgroundColor="{StaticResource Surface}"
+                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
                             Padding="24">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                        <Border.StrokeShape><RoundRectangle CornerRadius="24"/></Border.StrokeShape>
                         <Border.Shadow>
-                            <Shadow Brush="#000000" Offset="0,2" Radius="8" Opacity="0.06"/>
+                            <Shadow Brush="#000000" Offset="0,4" Radius="20" Opacity="0.07"/>
                         </Border.Shadow>
                         <VerticalStackLayout Spacing="24">
-
-                            <!-- Emoji hero -->
-                            <Border BackgroundColor="#F3F4FE"
-                                    HeightRequest="128" WidthRequest="128"
+                            <!-- Logo badge -->
+                            <Border BackgroundColor="{StaticResource Navy}"
+                                    HeightRequest="80" WidthRequest="80"
                                     HorizontalOptions="Center">
-                                <Border.StrokeShape><RoundRectangle CornerRadius="64"/></Border.StrokeShape>
-                                <Label Text="🎉" FontSize="56"
-                                       HorizontalOptions="Center"
-                                       VerticalOptions="Center"/>
+                                <Border.StrokeShape><RoundRectangle CornerRadius="24"/></Border.StrokeShape>
+                                <Label Text="T"
+                                       FontSize="36" FontAttributes="Bold" FontFamily="PJSXBold"
+                                       TextColor="White"
+                                       HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Border>
-
-                            <!-- Testo -->
                             <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
                                 <Label Text="Benvenuto in Turnify!"
-                                       FontSize="26" FontAttributes="Bold"
-                                       TextColor="#191B23"
-                                       HorizontalOptions="Center"
-                                       HorizontalTextAlignment="Center"/>
+                                       FontSize="24" FontAttributes="Bold" FontFamily="PJSXBold"
+                                       TextColor="{StaticResource OnBackground}"
+                                       HorizontalOptions="Center" HorizontalTextAlignment="Center"
+                                       CharacterSpacing="-0.5"/>
                                 <Label Text="Configura la tua azienda in 3 semplici passi. Ci vogliono meno di 2 minuti."
-                                       FontSize="16" TextColor="#737686"
-                                       HorizontalOptions="Center"
-                                       HorizontalTextAlignment="Center"/>
+                                       FontSize="15" FontFamily="PJSReg"
+                                       TextColor="{StaticResource OnSurfaceVariant}"
+                                       HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
                             </VerticalStackLayout>
-
-                            <!-- Feature cards -->
+                            <!-- Feature rows -->
                             <VerticalStackLayout Spacing="8">
-                                <Border BackgroundColor="White"
-                                        Stroke="#E5E7EB" StrokeThickness="1"
+                                <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
+                                        Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
                                         Padding="14,12">
-                                    <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                                    <HorizontalStackLayout Spacing="12">
-                                        <Label Text="🗓️" FontSize="22" VerticalOptions="Center"/>
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                                    <HorizontalStackLayout Spacing="14">
+                                        <Border BackgroundColor="{StaticResource PrimaryLight}"
+                                                HeightRequest="36" WidthRequest="36" Stroke="Transparent">
+                                            <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                                            <Label Text="📅" FontSize="18"
+                                                   HorizontalOptions="Center" VerticalOptions="Center"/>
+                                        </Border>
                                         <VerticalStackLayout Spacing="2" VerticalOptions="Center">
                                             <Label Text="Gestione Turni Automatica"
-                                                   FontSize="13" FontAttributes="Bold"
-                                                   TextColor="#191B23"/>
-                                            <Label Text="Ottimizza i tempi con il nostro algoritmo di scheduling."
-                                                   FontSize="13" TextColor="#737686"/>
+                                                   FontSize="13" FontAttributes="Bold" FontFamily="PJSBold"
+                                                   TextColor="{StaticResource OnBackground}"/>
+                                            <Label Text="Ottimizza i tempi con scheduling intelligente."
+                                                   FontSize="12" FontFamily="PJSReg"
+                                                   TextColor="{StaticResource OnSurfaceVariant}"/>
                                         </VerticalStackLayout>
                                     </HorizontalStackLayout>
                                 </Border>
-                                <Border BackgroundColor="White"
-                                        Stroke="#E5E7EB" StrokeThickness="1"
+                                <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
+                                        Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
                                         Padding="14,12">
-                                    <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                                    <HorizontalStackLayout Spacing="12">
-                                        <Label Text="👥" FontSize="22" VerticalOptions="Center"/>
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                                    <HorizontalStackLayout Spacing="14">
+                                        <Border BackgroundColor="{StaticResource SuccessLight}"
+                                                HeightRequest="36" WidthRequest="36" Stroke="Transparent">
+                                            <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                                            <Label Text="👥" FontSize="18"
+                                                   HorizontalOptions="Center" VerticalOptions="Center"/>
+                                        </Border>
                                         <VerticalStackLayout Spacing="2" VerticalOptions="Center">
                                             <Label Text="Team Management"
-                                                   FontSize="13" FontAttributes="Bold"
-                                                   TextColor="#191B23"/>
-                                            <Label Text="Tieni traccia delle disponibilità e delle ferie in un unico posto."
-                                                   FontSize="13" TextColor="#737686"/>
+                                                   FontSize="13" FontAttributes="Bold" FontFamily="PJSBold"
+                                                   TextColor="{StaticResource OnBackground}"/>
+                                            <Label Text="Tieni traccia di disponibilità e ferie."
+                                                   FontSize="12" FontFamily="PJSReg"
+                                                   TextColor="{StaticResource OnSurfaceVariant}"/>
                                         </VerticalStackLayout>
                                     </HorizontalStackLayout>
                                 </Border>
                             </VerticalStackLayout>
-
                         </VerticalStackLayout>
                     </Border>
-
-                    <!-- Trust line -->
-                    <Label Text="SCELTO DALLE MIGLIORI AZIENDE ITALIANE"
-                           FontSize="10" TextColor="#C3C6D7"
-                           FontAttributes="Bold"
-                           HorizontalOptions="Center"
-                           HorizontalTextAlignment="Center"
-                           CharacterSpacing="2"/>
-
                 </VerticalStackLayout>
 
-                <!-- ────────────── STEP 2 — LA TUA ATTIVITÀ ────────────── -->
+                <!-- ── STEP 2 – La tua attività ── -->
                 <VerticalStackLayout IsVisible="{Binding IsStep2}"
                                      Spacing="20" Padding="20,32,20,20">
-
-                    <!-- Icon + header -->
-                    <VerticalStackLayout Spacing="8" HorizontalOptions="Start">
-                        <Border BackgroundColor="#EDEDF9"
-                                HeightRequest="52" WidthRequest="52">
-                            <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
-                            <Label Text="🏪" FontSize="24"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"/>
-                        </Border>
+                    <VerticalStackLayout Spacing="6">
                         <Label Text="La tua attività"
-                               FontSize="22" FontAttributes="Bold"
-                               TextColor="#191B23"/>
+                               FontSize="24" FontAttributes="Bold" FontFamily="PJSXBold"
+                               TextColor="{StaticResource OnBackground}"
+                               CharacterSpacing="-0.5"/>
                         <Label Text="Inserisci i dati base della tua attività"
-                               FontSize="14" TextColor="#737686"/>
+                               FontSize="14" FontFamily="PJSReg"
+                               TextColor="{StaticResource OnSurfaceVariant}"/>
                     </VerticalStackLayout>
 
-                    <!-- Form fields -->
-                    <VerticalStackLayout Spacing="16">
-
-                        <VerticalStackLayout Spacing="4">
-                            <Label Text="Nome attività *" FontSize="12" FontAttributes="Bold"
-                                   TextColor="#434655"/>
-                            <Border Stroke="#E5E7EB" StrokeThickness="1" Padding="0">
-                                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                                <Entry Text="{Binding BusinessName}"
-                                       Placeholder="Es. Pizzeria Roma"
-                                       HeightRequest="44" Margin="14,0"
-                                       BackgroundColor="Transparent"/>
+                    <VerticalStackLayout Spacing="14">
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="NOME ATTIVITÀ" Style="{StaticResource SectionLabel}" Margin="2,0,0,0"/>
+                            <Border Style="{StaticResource FieldBorder}">
+                                <Entry Text="{Binding BusinessName}" Placeholder="Es. Pizzeria Roma"
+                                       Style="{StaticResource FieldEntry}"/>
                             </Border>
                         </VerticalStackLayout>
-
-                        <VerticalStackLayout Spacing="4">
-                            <Label Text="Tipo attività" FontSize="12" FontAttributes="Bold"
-                                   TextColor="#434655"/>
-                            <Border Stroke="#E5E7EB" StrokeThickness="1" Padding="0">
-                                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="TIPO ATTIVITÀ" Style="{StaticResource SectionLabel}" Margin="2,0,0,0"/>
+                            <Border Style="{StaticResource FieldBorder}">
                                 <Picker ItemsSource="{Binding BusinessTypes}"
                                         SelectedItem="{Binding BusinessType}"
                                         Title="Seleziona tipo"
+                                        FontFamily="PJSReg"
+                                        TextColor="{StaticResource OnBackground}"
+                                        TitleColor="{StaticResource Outline}"
                                         Margin="10,0"/>
                             </Border>
                         </VerticalStackLayout>
-
-                        <VerticalStackLayout Spacing="4">
-                            <Label Text="Indirizzo" FontSize="12" FontAttributes="Bold"
-                                   TextColor="#434655"/>
-                            <Border Stroke="#E5E7EB" StrokeThickness="1" Padding="0">
-                                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                                <Entry Text="{Binding BusinessAddress}"
-                                       Placeholder="Via Roma 1, Milano"
-                                       HeightRequest="44" Margin="14,0"
-                                       BackgroundColor="Transparent"/>
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="INDIRIZZO" Style="{StaticResource SectionLabel}" Margin="2,0,0,0"/>
+                            <Border Style="{StaticResource FieldBorder}">
+                                <Entry Text="{Binding BusinessAddress}" Placeholder="Via Roma 1, Milano"
+                                       Style="{StaticResource FieldEntry}"/>
                             </Border>
                         </VerticalStackLayout>
-
                     </VerticalStackLayout>
 
-                    <!-- Info card -->
-                    <Border BackgroundColor="White"
-                            Stroke="#E5E7EB" StrokeThickness="1"
+                    <Border BackgroundColor="{StaticResource PrimaryLight}"
+                            Stroke="{StaticResource PrimaryMid}" StrokeThickness="1"
                             Padding="14,12">
                         <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                        <Border.Shadow>
-                            <Shadow Brush="#000000" Offset="0,1" Radius="4" Opacity="0.05"/>
-                        </Border.Shadow>
                         <HorizontalStackLayout Spacing="12">
-                            <Border BackgroundColor="#EFF6FF"
-                                    HeightRequest="36" WidthRequest="36"
-                                    VerticalOptions="Start">
-                                <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
-                                <Label Text="ℹ️" FontSize="16"
-                                       HorizontalOptions="Center"
-                                       VerticalOptions="Center"/>
+                            <Border BackgroundColor="{StaticResource Primary}"
+                                    HeightRequest="34" WidthRequest="34" Stroke="Transparent">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="9"/></Border.StrokeShape>
+                                <Label Text="i" FontSize="16" FontAttributes="Bold" FontFamily="PJSBold"
+                                       TextColor="White"
+                                       HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Border>
                             <VerticalStackLayout Spacing="2" HorizontalOptions="Fill">
                                 <Label Text="Perché queste informazioni?"
-                                       FontSize="12" FontAttributes="Bold"
-                                       TextColor="#191B23"/>
-                                <Label Text="Questi dati verranno utilizzati per personalizzare la tua dashboard aziendale."
-                                       FontSize="13" TextColor="#737686"/>
+                                       FontSize="12" FontAttributes="Bold" FontFamily="PJSBold"
+                                       TextColor="{StaticResource Primary}"/>
+                                <Label Text="Personalizzano la tua dashboard e i report."
+                                       FontSize="12" FontFamily="PJSReg"
+                                       TextColor="{StaticResource Primary}"/>
                             </VerticalStackLayout>
                         </HorizontalStackLayout>
                     </Border>
-
                 </VerticalStackLayout>
 
-                <!-- ────────────── STEP 3 — PRIMO DIPENDENTE ────────────── -->
+                <!-- ── STEP 3 – Primo dipendente ── -->
                 <VerticalStackLayout IsVisible="{Binding IsStep3}"
                                      Spacing="20" Padding="20,32,20,20">
-
-                    <!-- Icon + header -->
-                    <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
-                        <Border BackgroundColor="#EDEDF9"
-                                HeightRequest="52" WidthRequest="52"
-                                HorizontalOptions="Center">
-                            <Border.StrokeShape><RoundRectangle CornerRadius="26"/></Border.StrokeShape>
-                            <Label Text="👤" FontSize="24"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"/>
-                        </Border>
+                    <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
                         <Label Text="Il tuo primo dipendente"
-                               FontSize="22" FontAttributes="Bold"
-                               TextColor="#191B23"
-                               HorizontalOptions="Center"
-                               HorizontalTextAlignment="Center"/>
+                               FontSize="24" FontAttributes="Bold" FontFamily="PJSXBold"
+                               TextColor="{StaticResource OnBackground}"
+                               HorizontalOptions="Center" HorizontalTextAlignment="Center"
+                               CharacterSpacing="-0.5"/>
                         <Label Text="Aggiungi almeno un dipendente per iniziare a creare turni"
-                               FontSize="14" TextColor="#737686"
-                               HorizontalOptions="Center"
-                               HorizontalTextAlignment="Center"/>
+                               FontSize="14" FontFamily="PJSReg"
+                               TextColor="{StaticResource OnSurfaceVariant}"
+                               HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
                     </VerticalStackLayout>
 
-                    <!-- Form card -->
-                    <Border BackgroundColor="White"
-                            Stroke="#E5E7EB" StrokeThickness="1"
-                            Padding="16">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                    <Border BackgroundColor="{StaticResource Surface}"
+                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                            Padding="20">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
                         <Border.Shadow>
-                            <Shadow Brush="#000000" Offset="0,2" Radius="8" Opacity="0.06"/>
+                            <Shadow Brush="#000000" Offset="0,4" Radius="16" Opacity="0.06"/>
                         </Border.Shadow>
                         <VerticalStackLayout Spacing="14">
-
-                            <VerticalStackLayout Spacing="4">
-                                <Label Text="Nome *" FontSize="12" FontAttributes="Bold"
-                                       TextColor="#434655"/>
-                                <Border Stroke="#E5E7EB" StrokeThickness="1" Padding="0">
-                                    <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                                    <Entry Text="{Binding EmployeeFirstName}"
-                                           Placeholder="Es. Mario"
-                                           HeightRequest="44" Margin="14,0"
-                                           BackgroundColor="Transparent"/>
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="NOME" Style="{StaticResource SectionLabel}" Margin="2,0,0,0"/>
+                                <Border Style="{StaticResource FieldBorder}">
+                                    <Entry Text="{Binding EmployeeFirstName}" Placeholder="Es. Mario"
+                                           Style="{StaticResource FieldEntry}"/>
                                 </Border>
                             </VerticalStackLayout>
-
-                            <VerticalStackLayout Spacing="4">
-                                <Label Text="Cognome *" FontSize="12" FontAttributes="Bold"
-                                       TextColor="#434655"/>
-                                <Border Stroke="#E5E7EB" StrokeThickness="1" Padding="0">
-                                    <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                                    <Entry Text="{Binding EmployeeLastName}"
-                                           Placeholder="Es. Rossi"
-                                           HeightRequest="44" Margin="14,0"
-                                           BackgroundColor="Transparent"/>
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="COGNOME" Style="{StaticResource SectionLabel}" Margin="2,0,0,0"/>
+                                <Border Style="{StaticResource FieldBorder}">
+                                    <Entry Text="{Binding EmployeeLastName}" Placeholder="Es. Rossi"
+                                           Style="{StaticResource FieldEntry}"/>
                                 </Border>
                             </VerticalStackLayout>
-
-                            <VerticalStackLayout Spacing="4">
-                                <Label Text="Email *" FontSize="12" FontAttributes="Bold"
-                                       TextColor="#434655"/>
-                                <Border Stroke="#E5E7EB" StrokeThickness="1" Padding="0">
-                                    <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                                    <Entry Text="{Binding EmployeeEmail}"
-                                           Placeholder="mario.rossi@azienda.it"
-                                           Keyboard="Email"
-                                           HeightRequest="44" Margin="14,0"
-                                           BackgroundColor="Transparent"/>
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="EMAIL" Style="{StaticResource SectionLabel}" Margin="2,0,0,0"/>
+                                <Border Style="{StaticResource FieldBorder}">
+                                    <Entry Text="{Binding EmployeeEmail}" Placeholder="mario.rossi@azienda.it"
+                                           Keyboard="Email" Style="{StaticResource FieldEntry}"/>
                                 </Border>
                             </VerticalStackLayout>
-
-                            <VerticalStackLayout Spacing="4">
-                                <Label Text="Password temporanea *" FontSize="12" FontAttributes="Bold"
-                                       TextColor="#434655"/>
-                                <Border Stroke="#E5E7EB" StrokeThickness="1" Padding="0">
-                                    <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                                    <Entry Text="{Binding EmployeePassword}"
-                                           IsPassword="True"
-                                           HeightRequest="44" Margin="14,0"
-                                           BackgroundColor="Transparent"/>
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="PASSWORD TEMPORANEA" Style="{StaticResource SectionLabel}" Margin="2,0,0,0"/>
+                                <Border Style="{StaticResource FieldBorder}">
+                                    <Entry Text="{Binding EmployeePassword}" IsPassword="True"
+                                           Style="{StaticResource FieldEntry}"/>
                                 </Border>
-                                <HorizontalStackLayout Spacing="4">
-                                    <Label Text="ℹ️" FontSize="12" VerticalOptions="Center"/>
-                                    <Label Text="Il dipendente potrà cambiarla al primo accesso"
-                                           FontSize="11" TextColor="#737686"
-                                           VerticalOptions="Center"/>
-                                </HorizontalStackLayout>
+                                <Label Text="Il dipendente potrà cambiarla al primo accesso."
+                                       FontSize="11" FontFamily="PJSReg"
+                                       TextColor="{StaticResource Outline}" Margin="4,0,0,0"/>
                             </VerticalStackLayout>
-
                         </VerticalStackLayout>
                     </Border>
-
                 </VerticalStackLayout>
 
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- ══ FOOTER PULSANTI ══ -->
-        <Grid Grid.Row="2"
-              BackgroundColor="#F9FAFB"
-              Padding="20,12,20,28">
+        <!-- Footer buttons -->
+        <Grid Grid.Row="2" BackgroundColor="{StaticResource Background}"
+              Padding="20,12,20,32">
 
-            <!-- Step 1 footer -->
-            <VerticalStackLayout IsVisible="{Binding IsStep1}" Spacing="12">
+            <!-- Step 1 -->
+            <VerticalStackLayout IsVisible="{Binding IsStep1}" Spacing="10">
                 <Button Text="Inizia →"
                         Command="{Binding GoToStep2Command}"
-                        BackgroundColor="#2563EB"
-                        TextColor="White"
-                        CornerRadius="12"
-                        HeightRequest="48"
-                        FontSize="16"
-                        FontAttributes="Bold"/>
+                        Style="{StaticResource PrimaryButton}"/>
                 <Button Text="Salta per ora"
                         Command="{Binding SkipOnboardingCommand}"
                         BackgroundColor="Transparent"
-                        TextColor="#9CA3AF"
-                        FontSize="13"
+                        TextColor="{StaticResource Outline}"
+                        FontSize="13" FontFamily="PJSReg"
                         HeightRequest="36"/>
             </VerticalStackLayout>
 
-            <!-- Step 2 footer -->
+            <!-- Step 2 -->
             <Button IsVisible="{Binding IsStep2}"
                     Text="Avanti →"
                     Command="{Binding SaveBusinessAndContinueCommand}"
-                    BackgroundColor="#2563EB"
-                    TextColor="White"
-                    CornerRadius="12"
-                    HeightRequest="48"
-                    FontSize="16"
-                    FontAttributes="Bold"/>
+                    Style="{StaticResource PrimaryButton}"/>
 
-            <!-- Step 3 footer -->
-            <VerticalStackLayout IsVisible="{Binding IsStep3}" Spacing="12">
-                <Button Text="Completa configurazione ✓"
+            <!-- Step 3 -->
+            <VerticalStackLayout IsVisible="{Binding IsStep3}" Spacing="10">
+                <Button Text="Completa configurazione"
                         Command="{Binding SaveEmployeeAndCompleteCommand}"
-                        BackgroundColor="#2563EB"
-                        TextColor="White"
-                        CornerRadius="12"
-                        HeightRequest="48"
-                        FontSize="15"
-                        FontAttributes="Bold"/>
+                        Style="{StaticResource PrimaryButton}"/>
                 <Button Text="Aggiungi dopo"
                         Command="{Binding SkipEmployeeCommand}"
                         BackgroundColor="Transparent"
-                        TextColor="#9CA3AF"
-                        FontSize="13"
+                        TextColor="{StaticResource Outline}"
+                        FontSize="13" FontFamily="PJSReg"
                         HeightRequest="36"/>
             </VerticalStackLayout>
 
-            <ActivityIndicator IsRunning="{Binding IsBusy}"
-                               IsVisible="{Binding IsBusy}"
-                               HorizontalOptions="Center"
-                               Color="#2563EB"/>
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                               HorizontalOptions="Center" Color="{StaticResource Primary}"/>
         </Grid>
 
     </Grid>

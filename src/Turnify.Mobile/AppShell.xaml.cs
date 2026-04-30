@@ -1,5 +1,3 @@
-using CommunityToolkit.Mvvm.Messaging;
-using CommunityToolkit.Mvvm.Messaging.Messages;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
 
@@ -15,13 +13,6 @@ public partial class AppShell : Shell
         InitializeComponent();
         RegisterAllRoutes();
         ConfigureForRole(isAdmin);
-
-        // Aggiorna il badge della tab Notifiche quando cambia il conteggio non letti
-        WeakReferenceMessenger.Default.Register<ValueChangedMessage<int>>(this, (_, msg) =>
-        {
-            var count = msg.Value;
-            NotificationsTab.Title = count > 0 ? $"Notifiche ({count})" : "Notifiche";
-        });
 
         // Naviga alla schermata iniziale corretta dopo l'init
         Dispatcher.Dispatch(async () =>
@@ -81,8 +72,6 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(nameof(Views.AvailabilityPage),       typeof(Views.AvailabilityPage));
         Routing.RegisterRoute(nameof(Views.EmployeeDashboardPage),  typeof(Views.EmployeeDashboardPage));
         Routing.RegisterRoute(nameof(Views.AttendanceHistoryPage),  typeof(Views.AttendanceHistoryPage));
-        Routing.RegisterRoute(nameof(Views.ChangePasswordPage),     typeof(Views.ChangePasswordPage));
-        Routing.RegisterRoute(nameof(Views.ReportsPage),            typeof(Views.ReportsPage));
     }
 
     public void ConfigureForRole(bool isAdmin)

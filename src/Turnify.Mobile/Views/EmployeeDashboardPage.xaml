@@ -163,20 +163,12 @@
                         Padding="16" Margin="0,0,0,20">
                     <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
                     <Grid ColumnDefinitions="*,Auto">
-                        <VerticalStackLayout Spacing="4">
-                            <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
-                                <Label Text="{Binding VacationDaysRemaining, StringFormat='{0}'}"
-                                       FontSize="28" FontAttributes="Bold"
-                                       TextColor="{StaticResource Primary}"/>
-                                <Label Text="{Binding VacationDaysAllowed, StringFormat='/ {0} giorni rimanenti'}"
-                                       FontSize="13" TextColor="{StaticResource OnSurfaceVariant}"
-                                       VerticalOptions="End" Margin="0,0,0,4"/>
-                            </HorizontalStackLayout>
+                        <VerticalStackLayout Spacing="2">
                             <Label Text="{Binding VacationDaysUsed, StringFormat='{0} giorni usati quest\'anno'}"
-                                   FontSize="13" TextColor="{StaticResource OnSurfaceVariant}"/>
+                                   FontSize="15" FontAttributes="Bold"
+                                   TextColor="{StaticResource OnBackground}"/>
                             <Label Text="{Binding PendingVacations, StringFormat='{0} richieste in attesa'}"
-                                   FontSize="12" TextColor="{StaticResource Warning}"
-                                   IsVisible="{Binding PendingVacations, Converter={StaticResource IntIsZeroConverter}, ConverterParameter='invert'}"/>
+                                   FontSize="13" TextColor="{StaticResource OnSurfaceVariant}"/>
                         </VerticalStackLayout>
                         <Button Grid.Column="1"
                                 Text="Vedi →"

@@ -1,280 +1,342 @@
-# Deployment
+# Deployment — Turnify su VPS Linux
 
-## Obiettivo
-
-Documentare la build e la distribuzione reale dei tre componenti del progetto: app mobile MAUI, backend ASP.NET Core 10, portale web Next.js 14. Le informazioni sono derivate dai file di configurazione presenti nel repository.
+**Versione:** 1.0  
+**Target:** VPS Ubuntu 22.04 LTS  
+**Stack:** Nginx + ASP.NET Core + PostgreSQL + Let's Encrypt
 
 ---
 
-## Target previsti
+## 1. Requisiti VPS
 
-### Mobile (Turnify.Mobile.csproj)
-
-| Piattaforma | Framework | Condizione build | Versione minima OS |
-|---|---|---|---|
-| Android | `net10.0-android` | sempre (unico obbligatorio) | API 21 (Android 5.0) |
-| iOS | `net10.0-ios` | build machine non Linux | iOS 15.0 |
-| macOS Catalyst | `net10.0-maccatalyst` | build machine non Linux | macCatalyst 15.0 |
-| Windows | `net10.0-windows10.0.19041.0` | build machine Windows | Windows 10 build 17763 |
-
-Il target Android è l'unico presente in tutti gli ambienti di build. iOS, macOS e Windows sono condizionali alla piattaforma di sviluppo.
-
-`WindowsPackageType` è impostato a `None`: il build Windows produce un eseguibile non impacchettato (non passa per il Microsoft Store).
-
-### Backend (Turnify.Api.csproj)
-
-| Componente | Framework | Host |
+| Risorsa | Minimo (MVP) | Consigliato |
 |---|---|---|
-| ASP.NET Core API | `net10.0` | VPS, path base `/turnify` |
+| CPU | 1 vCPU | 2 vCPU |
+| RAM | 1 GB | 2 GB |
+| Storage | 20 GB SSD | 40 GB SSD |
+| OS | Ubuntu 22.04 LTS | Ubuntu 22.04 LTS |
+| Banda | 1 Gbps | 1 Gbps |
 
-### Portale web (package.json)
-
-| Componente | Runtime | Porta | Base path |
-|---|---|---|---|
-| Next.js 14 | Node 20 | 3004 | `/admin` |
+Provider consigliati per PMI italiane: Hetzner, Contabo, OVH, DigitalOcean.
 
 ---
 
-## Identificativo e versione app mobile
+## 2. Architettura di Deployment
 
-Dal `.csproj`:
-
-```xml
-<ApplicationId>it.samuconfa.turnify.mobile</ApplicationId>
-<ApplicationTitle>Turnify.Mobile</ApplicationTitle>
-<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-<ApplicationVersion>1</ApplicationVersion>
+```
+Internet (HTTPS :443)
+         │
+    ┌────▼────┐
+    │  Nginx  │  ← Reverse proxy, SSL termination, static files
+    └────┬────┘
+         │ HTTP interno :5000
+    ┌────▼──────────┐
+    │ ASP.NET Core  │  ← systemd service (turnify-api.service)
+    │  Web API      │
+    └────┬──────────┘
+         │ TCP :5432 (localhost)
+    ┌────▼──────┐
+    │ MySQL│  ← Solo localhost, non esposto
+    └───────────┘
 ```
 
-- `ApplicationDisplayVersion` è la versione visibile all'utente (`versionName` su Android).
-- `ApplicationVersion` è il codice numerico incrementale (`versionCode` su Android). Va aumentato ad ogni release sul Play Store.
+---
+
+## 3. Setup Iniziale Server
+
+### 3.1 Aggiornamento sistema
+```bash
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y curl wget git unzip ufw
+```
+
+### 3.2 Configurazione Firewall (UFW)
+```bash
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow ssh        # porta 22
+sudo ufw allow 80/tcp     # HTTP (per certbot)
+sudo ufw allow 443/tcp    # HTTPS
+sudo ufw enable
+sudo ufw status
+```
+
+### 3.3 Creazione utente applicazione
+```bash
+sudo useradd -m -s /bin/bash turnify
+sudo usermod -aG sudo turnify
+```
 
 ---
 
-## Configurazioni
-
-### XAML source generation
-
-`MauiXamlInflator` è impostato a `SourceGen`: il XAML viene compilato in C# a compile-time invece di essere interpretato a runtime. Nessuna azione richiesta, ma va mantenuto per evitare regressioni di performance.
-
-### Risorse mobile presenti
-
-| Tipo | File |
-|---|---|
-| Icona app | `Resources/AppIcon/appicon.png` |
-| Splash screen | `Resources/Splash/splash.svg` (colore `#512BD4`, base size 128×128) |
-| Font | `Resources/Fonts/*` |
-| Immagini | `Resources/Images/*` |
-
----
-
-## Build Android
-
-### Comando publish
+## 4. Installazione .NET Runtime
 
 ```bash
-dotnet publish src/Turnify.Mobile/Turnify.Mobile.csproj \
-  -f net10.0-android \
-  -c Release
+# Aggiunge il repository Microsoft
+wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+sudo apt update
+
+# Installa solo il runtime (non il full SDK in produzione)
+sudo apt install -y aspnetcore-runtime-8.0
+dotnet --info  # verifica installazione
 ```
 
-L'output è un file `.apk` (debug) o `.aab` (Android App Bundle per Play Store) nella cartella `bin/Release/net10.0-android/`.
+---
 
-Per produrre un AAB firmato per il Play Store aggiungere le proprietà di firma:
+## 5. Installazione e Configurazione PostgreSQL
 
+### 5.1 Installazione
 ```bash
-dotnet publish src/Turnify.Mobile/Turnify.Mobile.csproj \
-  -f net10.0-android \
-  -c Release \
-  -p:AndroidKeyStore=true \
-  -p:AndroidSigningKeyStore=<path.keystore> \
-  -p:AndroidSigningKeyAlias=<alias> \
-  -p:AndroidSigningKeyPass=<password> \
-  -p:AndroidSigningStorePass=<password>
+sudo apt install -y postgresql postgresql-contrib
+sudo systemctl enable postgresql
+sudo systemctl start postgresql
 ```
 
-### Keystore
-
-Non è presente alcun file `.keystore` o configurazione di firma nel repository. Le credenziali di firma devono essere fornite al momento del build e non devono mai essere salvati nel repository.
-
----
-
-## Permessi Android
-
-Dichiarati in `Platforms/Android/AndroidManifest.xml`:
-
-```xml
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-<uses-permission android:name="android.permission.INTERNET" />
-```
-
-- `INTERNET`: richiesto per tutte le chiamate HTTP verso l'API.
-- `ACCESS_NETWORK_STATE`: usato per verificare la disponibilità di rete.
-
-Altre impostazioni nel manifest:
-
-```xml
-android:allowBackup="false"
-android:networkSecurityConfig="@xml/network_security_config"
-```
-
-- `allowBackup="false"`: esclude i dati dell'app dai backup Android automatici.
-- `networkSecurityConfig`: punta al file di certificate pinning.
-
----
-
-## Certificate pinning Android
-
-File: `Platforms/Android/Resources/xml/network_security_config.xml`
-
-```xml
-<domain-config cleartextTrafficPermitted="false">
-    <domain includeSubdomains="false">samuconfa.it</domain>
-    <pin-set expiration="2027-04-28">
-        <pin digest="SHA-256">...</pin>   <!-- pin primario -->
-        <pin digest="SHA-256">...</pin>   <!-- pin di backup -->
-    </pin-set>
-</domain-config>
-```
-
-- Il traffico cleartext (HTTP) è vietato verso `samuconfa.it`.
-- Il pin scade il **2027-04-28**: aggiornare prima della scadenza altrimenti l'app non potrà connettersi al backend.
-- Per ricalcolare il pin corrente:
-
+### 5.2 Creazione database e utente
 ```bash
-openssl s_client -connect samuconfa.it:443 \
-  | openssl x509 -pubkey -noout \
-  | openssl pkey -pubin -outform DER \
-  | openssl dgst -sha256 -binary \
-  | base64
+sudo -u postgres psql
 ```
+
+```sql
+CREATE USER turnify_user WITH PASSWORD 'STRONG_PASSWORD_HERE';
+CREATE DATABASE turnify_db OWNER turnify_user;
+GRANT ALL PRIVILEGES ON DATABASE turnify_db TO turnify_user;
+\q
+```
+
+### 5.3 Sicurezza PostgreSQL
+- PostgreSQL in ascolto solo su `localhost` (default)
+- Verificare `/etc/postgresql/15/main/postgresql.conf`: `listen_addresses = 'localhost'`
+- Nessuna porta esposta verso internet
 
 ---
 
-## Backend ASP.NET Core
+## 6. Deploy Applicazione ASP.NET Core
 
-### Configurazione produzione
+### 6.1 Pubblicazione (da macchina di sviluppo)
+```bash
+dotnet publish ./src/Turnify.Api -c Release -r linux-x64 --self-contained false -o ./publish
+```
 
-`appsettings.Production.json` (presente nel repository):
+### 6.2 Trasferimento su VPS
+```bash
+scp -r ./publish/* turnify@tuovps.com:/home/turnify/app/
+```
+
+### 6.3 Configurazione variabili d'ambiente
+Creare il file `/home/turnify/app/appsettings.Production.json` **sul server** (mai nel repo):
 
 ```json
 {
-  "AllowedHosts": "samuconfa.it,www.samuconfa.it",
-  "Cors": { "AllowedOrigins": ["https://samuconfa.it", "https://www.samuconfa.it"] },
-  "Jwt": {
-    "Issuer":    "https://api.turnify.it",
-    "Audience":  "turnify-mobile-app",
-    "AccessTokenExpiryMinutes": 15,
-    "RefreshTokenExpiryDays":   7
+  "ConnectionStrings": {
+    "Default": "Host=localhost;Database=turnify_db;Username=turnify_user;Password=STRONG_PASSWORD"
   },
-  "Logging": { "LogLevel": { "Default": "Warning", "Microsoft.AspNetCore": "Error" } }
-}
-```
-
-Le variabili sensibili (`Jwt:Secret`, `ConnectionStrings:Default`) non sono nel repository. Il backend le carica da un file `.env` alla root via `DotNetEnv` (`Env.TraversePath.Load`).
-
-### Path base
-
-Il backend è pubblicato al path `/turnify` sul server:
-
-```csharp
-app.UsePathBase("/turnify");
-```
-
-Tutti gli endpoint sono raggiungibili a `https://samuconfa.it/turnify/api/...`. L'URL base configurata in `MauiProgram.cs` è `https://samuconfa.it/turnify/`.
-
-### Reverse proxy
-
-`UseForwardedHeaders` con `XForwardedFor | XForwardedProto` è abilitato, indicando che il backend è dietro un reverse proxy (gestisce TLS e forwarda le richieste).
-
-### Swagger
-
-Swagger UI è attivo **solo in Development** (`if (app.Environment.IsDevelopment)`). In produzione non è esposto.
-
-### Health check
-
-Endpoint: `GET /turnify/health` — risposta JSON `{ "status": "healthy", "timestamp": "..." }`.
-
-### Comando publish
-
-```bash
-dotnet publish src/Turnify.Api/Turnify.Api.csproj \
-  -c Release \
-  -o ./publish/api
-```
-
----
-
-## Portale web Next.js
-
-### Build
-
-```bash
-cd src/Turnify.Web
-npm run build   # equivale a: next build
-```
-
-Il build produce la cartella `.next/standalone/` (configurata da `output: 'standalone'` in `next.config.mjs`).
-
-### Deploy con PM2
-
-File `ecosystem.config.js`:
-
-```js
-{
-  name: 'turnify-web',
-  script: '.next/standalone/server.js',
-  cwd: '/var/www/turnify/Turnify.Web',
-  env: {
-    NODE_ENV: 'production',
-    PORT:     '3004',
-    HOSTNAME: '0.0.0.0',
+  "Jwt": {
+    "Secret": "ALMENO_32_CARATTERI_RANDOM_QUI_DA_GENERARE",
+    "Issuer": "https://api.turnify.it",
+    "Audience": "turnify-mobile-app",
+    "AccessTokenExpiryMinutes": 15,
+    "RefreshTokenExpiryDays": 7
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Warning",
+      "Microsoft.AspNetCore": "Warning"
+    }
   }
 }
 ```
 
-```bash
-pm2 start ecosystem.config.js
-pm2 save
+### 6.4 Configurazione systemd service
+Creare `/etc/systemd/system/turnify-api.service`:
+
+```ini
+[Unit]
+Description=Turnify API Service
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=turnify
+WorkingDirectory=/home/turnify/app
+ExecStart=/usr/bin/dotnet /home/turnify/app/Turnify.Api.dll
+Restart=on-failure
+RestartSec=10
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=ASPNETCORE_URLS=http://localhost:5000
+
+[Install]
+WantedBy=multi-user.target
 ```
 
-Il portale è raggiungibile al path `/admin` (da `basePath: '/admin'` in `next.config.mjs`), su porta 3004.
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable turnify-api
+sudo systemctl start turnify-api
+sudo systemctl status turnify-api  # verifica che sia running
+```
 
 ---
 
-## Checklist pre-release
+## 7. Configurazione Nginx
 
-### Mobile (Android)
+### 7.1 Installazione
+```bash
+sudo apt install -y nginx
+sudo systemctl enable nginx
+```
 
-- [ ] Aggiornare `ApplicationDisplayVersion` e `ApplicationVersion` nel `.csproj`
-- [ ] Verificare che i pin in `network_security_config.xml` non siano scaduti (scadenza: 2027-04-28)
-- [ ] Build Release su device fisico Android (API ≥ 21)
-- [ ] Verificare flusso startup completo: GDPR → Login → Dashboard admin / Employee Dashboard
-- [ ] Verificare certificate pinning su device: nessun errore alla prima chiamata API
-- [ ] Produrre AAB firmato con keystore di produzione
-- [ ] Caricare AAB su Google Play Console (internal track prima di production)
+### 7.2 Virtual host `/etc/nginx/sites-available/turnify-api`
 
-### Backend
+```nginx
+server {
+    listen 80;
+    server_name api.turnify.it;
 
-- [ ] File `.env` presente sul server con `Jwt:Secret` e `ConnectionStrings:Default`
-- [ ] Variabile `ASPNETCORE_ENVIRONMENT=Production` impostata
-- [ ] Migrazioni applicate: `dotnet ef database update`
-- [ ] Health check verde: `curl https://samuconfa.it/turnify/health`
-- [ ] Swagger non raggiungibile in produzione (verifica: `https://samuconfa.it/turnify/swagger` → 404)
+    # Redirect tutto su HTTPS
+    return 301 https://$host$request_uri;
+}
 
-### Portale web
+server {
+    listen 443 ssl http2;
+    server_name api.turnify.it;
 
-- [ ] Build completata senza errori TypeScript/ESLint
-- [ ] PM2 in esecuzione: `pm2 status turnify-web`
-- [ ] Login admin funzionante: `https://samuconfa.it/admin/login`
+    ssl_certificate     /etc/letsencrypt/live/api.turnify.it/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/api.turnify.it/privkey.pem;
+
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers off;
+
+    # Header di sicurezza
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    add_header X-Content-Type-Options nosniff;
+    add_header X-Frame-Options DENY;
+    add_header Referrer-Policy no-referrer;
+
+    # Proxy verso ASP.NET Core
+    location / {
+        proxy_pass         http://localhost:5000;
+        proxy_http_version 1.1;
+        proxy_set_header   Upgrade $http_upgrade;
+        proxy_set_header   Connection keep-alive;
+        proxy_set_header   Host $host;
+        proxy_set_header   X-Real-IP $remote_addr;
+        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+
+        # Timeout
+        proxy_connect_timeout 60s;
+        proxy_read_timeout    60s;
+    }
+
+    # Limita dimensione corpo richiesta
+    client_max_body_size 10M;
+}
+```
+
+```bash
+sudo ln -s /etc/nginx/sites-available/turnify-api /etc/nginx/sites-enabled/
+sudo nginx -t  # verifica configurazione
+sudo systemctl reload nginx
+```
 
 ---
 
-## Risultato finale
+## 8. SSL con Let's Encrypt
 
-| Componente | URL produzione | Processo |
-|---|---|---|
-| API backend | `https://samuconfa.it/turnify/` | ASP.NET Core dietro reverse proxy |
-| Health check | `https://samuconfa.it/turnify/health` | — |
-| Portale web | `https://samuconfa.it/admin` | PM2 `turnify-web` porta 3004 |
-| App mobile | `it.samuconfa.turnify.mobile` | APK/AAB su dispositivo Android |
+```bash
+sudo apt install -y certbot python3-certbot-nginx
+sudo certbot --nginx -d api.turnify.it
+```
+
+Certbot configura automaticamente il rinnovo. Verificare:
+```bash
+sudo certbot renew --dry-run  # test rinnovo automatico
+```
+
+Il rinnovo automatico è gestito da un timer systemd (verificare con `systemctl list-timers | grep certbot`).
+
+---
+
+## 9. Migrazioni Database
+
+```bash
+# Da eseguire sul server dopo ogni deploy
+cd /home/turnify/app
+dotnet ef database update --connection "connstring" 
+# oppure: la migration viene applicata automaticamente all'avvio se configurata
+```
+
+**Consiglio:** configurare l'app per applicare le migrazioni pendenti automaticamente all'avvio in produzione (opzione `MigrateOnStartup = true`).
+
+---
+
+## 10. Backup Automatico
+
+Script `/home/turnify/scripts/backup.sh`:
+
+```bash
+#!/bin/bash
+DATE=$(date +%Y%m%d_%H%M%S)
+BACKUP_DIR="/home/turnify/backups"
+DB_NAME="turnify_db"
+DB_USER="turnify_user"
+
+mkdir -p $BACKUP_DIR
+PGPASSWORD="$DB_PASSWORD" pg_dump -U $DB_USER $DB_NAME | gzip > $BACKUP_DIR/backup_$DATE.sql.gz
+
+# Mantieni solo gli ultimi 30 backup
+find $BACKUP_DIR -name "backup_*.sql.gz" -mtime +30 -delete
+
+echo "Backup completato: backup_$DATE.sql.gz"
+```
+
+Cron job (`crontab -e` come utente turnify):
+```
+0 2 * * * /home/turnify/scripts/backup.sh >> /home/turnify/logs/backup.log 2>&1
+```
+
+---
+
+## 11. Monitoraggio
+
+- **UptimeRobot** (gratuito): monitoring HTTPS ogni 5 minuti, notifica email se down
+- **Endpoint salute:** `GET /health` → risponde `200 OK` se API e DB sono raggiungibili
+- **Log applicazione:** `/home/turnify/logs/` — consultare in caso di errori
+
+---
+
+## 12. Procedura di Deploy Aggiornamento
+
+```bash
+# 1. Backup preventivo
+/home/turnify/scripts/backup.sh
+
+# 2. Deploy nuova versione
+scp -r ./publish/* turnify@tuovps.com:/home/turnify/app-new/
+ssh turnify@tuovps.com
+
+# 3. Swap atomico e riavvio servizio
+mv /home/turnify/app /home/turnify/app-old
+mv /home/turnify/app-new /home/turnify/app
+sudo systemctl restart turnify-api
+sleep 5
+curl -f https://api.turnify.it/health && echo "Deploy OK" || echo "ERRORE - rollback!"
+
+# 4. In caso di errore: rollback
+# sudo systemctl stop turnify-api
+# mv /home/turnify/app /home/turnify/app-failed
+# mv /home/turnify/app-old /home/turnify/app
+# sudo systemctl start turnify-api
+```
+
+---
+
+## 13. CI/CD Futuro (v2.0)
+
+Il processo di deploy attuale è manuale. Nella roadmap è prevista l'automazione con:
+
+- **pipeline CI:** build, test, pubblicazione artefatto al merge su `main`
+- **Deploy automatico:** trasferimento su VPS e riavvio servizio via SSH
+- **Environment staging:** deploy automatico su staging, deploy produzione manuale con approvazione

@@ -65,10 +65,17 @@ public class EmployeesController : ControllerBase
         _userRepository = userRepository;
     }
 
+    // Fix: try multiple claim names to handle different JWT formats
     private int GetCompanyId()
     {
-        var claim = User.FindFirst("companyId");
-        return claim != null && int.TryParse(claim.Value, out int id) ? id : 0;
+        var claim = User.FindFirst("companyId")
+                 ?? User.FindFirst("CompanyId")
+                 ?? User.FindFirst("company_id");
+
+        if (claim != null && int.TryParse(claim.Value, out int id))
+            return id;
+
+        return 0;
     }
 
     private int GetUserId()
@@ -118,11 +125,6 @@ public class EmployeesController : ControllerBase
 
         if (string.IsNullOrWhiteSpace(request.Password))
             return BadRequest(new { message = "La password è obbligatoria." });
-
-        if (request.Password.Length < 8 ||
-            !request.Password.Any(char.IsUpper) ||
-            !request.Password.Any(char.IsDigit))
-            return BadRequest(new { message = "La password deve avere almeno 8 caratteri, una maiuscola e un numero." });
 
         // Accetta solo Employee o Manager — non si può creare un Admin via API
         var accountRole = Enum.TryParse<UserRole>(request.AccountRole, true, out var parsedRole)
@@ -253,11 +255,8 @@ public class EmployeesController : ControllerBase
         if (employee == null) return NotFound();
         if (employee.CompanyId != GetCompanyId()) return Forbid();
 
-        if (string.IsNullOrWhiteSpace(request.NewPassword) ||
-            request.NewPassword.Length < 8 ||
-            !request.NewPassword.Any(char.IsUpper) ||
-            !request.NewPassword.Any(char.IsDigit))
-            return BadRequest(new { message = "La password deve avere almeno 8 caratteri, una maiuscola e un numero." });
+        if (string.IsNullOrWhiteSpace(request.NewPassword) || request.NewPassword.Length < 6)
+            return BadRequest(new { message = "La password deve essere di almeno 6 caratteri." });
 
         if (!employee.UserId.HasValue) return NotFound(new { message = "Nessun account associato a questo dipendente." });
 

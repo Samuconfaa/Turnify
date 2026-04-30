@@ -4,21 +4,21 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Turnify.Mobile.Services;
 
-// Per aggiornare i pin dopo rinnovo certificato eseguire:
-//   openssl s_client -connect samuconfa.it:443 2>/dev/null \
-//     | openssl x509 -pubkey -noout \
-//     | openssl pkey -pubin -outform DER \
-//     | openssl dgst -sha256 -binary | base64
-// Sostituire le costanti CERT_PIN_* di conseguenza.
+/// <summary>
+/// Verifica che il certificato del server corrisponda ai pin SHA-256 attesi.
+/// In caso di mancata corrispondenza, la connessione viene rifiutata.
+/// Aggiorna <see cref="ExpectedPins"/> dopo ogni rinnovo del certificato.
+/// </summary>
 public class CertificatePinningHandler : HttpClientHandler
 {
-    private const string CERT_PIN_LEAF   = "REPLACE_WITH_REAL_LEAF_PIN=";
-    private const string CERT_PIN_BACKUP = "REPLACE_WITH_REAL_BACKUP_PIN=";
-
+    // SHA-256 della chiave pubblica (SPKI) in formato base64.
+    // Genera con: openssl s_client -connect samuconfa.it:443 2>/dev/null |
+    //             openssl x509 -pubkey -noout | openssl pkey -pubin -outform DER |
+    //             openssl dgst -sha256 -binary | base64
     private static readonly HashSet<string> ExpectedPins = new(StringComparer.Ordinal)
     {
-        CERT_PIN_LEAF,
-        CERT_PIN_BACKUP
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB="
     };
 
     public CertificatePinningHandler()
@@ -33,20 +33,19 @@ public class CertificatePinningHandler : HttpClientHandler
         SslPolicyErrors    policyErrors)
     {
 #if DEBUG
+        // In debug su emulatore/simulator si accetta qualsiasi certificato
+        // per permettere il proxy (Burp/Charles) durante lo sviluppo.
         return true;
 #else
         if (policyErrors != SslPolicyErrors.None || cert == null)
-            return false;
-
-        // Rifiuta i pin placeholder non aggiornati in produzione
-        if (CERT_PIN_LEAF.StartsWith("REPLACE_") || CERT_PIN_BACKUP.StartsWith("REPLACE_"))
             return false;
 
         try
         {
             var spki = cert.GetPublicKey();
             using var sha256 = SHA256.Create();
-            var pin = Convert.ToBase64String(sha256.ComputeHash(spki));
+            var hash = sha256.ComputeHash(spki);
+            var pin  = Convert.ToBase64String(hash);
             return ExpectedPins.Contains(pin);
         }
         catch

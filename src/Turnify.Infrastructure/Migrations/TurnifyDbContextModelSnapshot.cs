@@ -329,9 +329,6 @@ namespace Turnify.Infrastructure.Migrations
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("VacationDaysAllowed")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("WeeklyHours")
                         .HasColumnType("decimal(65,30)");
 
@@ -458,9 +455,6 @@ namespace Turnify.Infrastructure.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AvatarEmoji")
-                        .HasColumnType("longtext");
-
                     b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
@@ -468,6 +462,7 @@ namespace Turnify.Infrastructure.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.Property<bool>("IsActive")
@@ -499,19 +494,12 @@ namespace Turnify.Infrastructure.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("Username")
-                        .HasColumnType("varchar(255)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
 
                     b.HasIndex("Email")
                         .IsUnique();
-
-                    b.HasIndex("CompanyId", "Username")
-                        .IsUnique()
-                        .HasFilter("`Username` IS NOT NULL");
 
                     b.ToTable("Users");
                 });

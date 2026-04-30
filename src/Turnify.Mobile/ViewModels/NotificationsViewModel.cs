@@ -6,8 +6,6 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
-using CommunityToolkit.Mvvm.Messaging.Messages;
 
 namespace Turnify.Mobile.ViewModels;
 
@@ -90,8 +88,6 @@ public partial class NotificationsViewModel : BaseViewModel
             UnreadCount  = result?.UnreadCount ?? 0;
             HasData      = Notifications.Count > 0;
             IsEmptyState = Notifications.Count == 0;
-
-            WeakReferenceMessenger.Default.Send(new ValueChangedMessage<int>(UnreadCount));
         }
         catch (HttpRequestException)
         {

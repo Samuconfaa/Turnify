@@ -65,14 +65,13 @@ public class DashboardController : ControllerBase
                 label     = summary.NextShift.Label,
                 note      = summary.NextShift.Note
             },
-            vacationDaysUsedThisYear  = summary.VacationDaysUsedThisYear,
-            vacationDaysAllowed       = employee.VacationDaysAllowed,
-            pendingVacationRequests   = summary.PendingVacationRequests,
-            isCheckedInToday          = summary.IsCheckedInToday,
-            todayCheckIn              = summary.TodayCheckIn,
-            todayCheckOut             = summary.TodayCheckOut,
-            hoursWorkedThisMonth      = summary.HoursWorkedThisMonth,
-            hoursScheduledThisWeek    = summary.HoursScheduledThisWeek
+            vacationDaysUsedThisYear = summary.VacationDaysUsedThisYear,
+            pendingVacationRequests  = summary.PendingVacationRequests,
+            isCheckedInToday         = summary.IsCheckedInToday,
+            todayCheckIn             = summary.TodayCheckIn,
+            todayCheckOut            = summary.TodayCheckOut,
+            hoursWorkedThisMonth     = summary.HoursWorkedThisMonth,
+            hoursScheduledThisWeek   = summary.HoursScheduledThisWeek
         });
     }
 

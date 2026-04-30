@@ -28,18 +28,16 @@ const string CorsPolicy = "TurnifyCors";
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
 
-var corsOrigins = builder.Configuration
-    .GetSection("Cors:AllowedOrigins")
-    .Get<string[]>()
-    ?? ["https://samuconfa.it", "https://www.samuconfa.it"];
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(CorsPolicy, policy =>
     {
-        policy.WithOrigins(corsOrigins)
-              .WithHeaders("Content-Type", "Authorization", "X-Requested-With")
-              .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+        policy.WithOrigins(
+                "https://samuconfa.it",
+                "https://www.samuconfa.it",
+                "http://localhost:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
               .AllowCredentials();
     });
 });
@@ -87,10 +85,9 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
-// ── Rate limiting ────────────────────────────────────────────────
+// ── Rate limiting: max 10 tentativi/min per IP su endpoint auth ──
 builder.Services.AddRateLimiter(opts =>
 {
-    // Policy stretta per auth (10 req/min per IP)
     opts.AddPolicy("auth", httpContext =>
         RateLimitPartition.GetSlidingWindowLimiter(
             httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
@@ -102,33 +99,6 @@ builder.Services.AddRateLimiter(opts =>
                 QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                 QueueLimit           = 0
             }));
-
-    // Policy stretta per errorlogs (non autenticato, aperto al pubblico)
-    opts.AddPolicy("errorlogs", httpContext =>
-        RateLimitPartition.GetSlidingWindowLimiter(
-            httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
-            _ => new System.Threading.RateLimiting.SlidingWindowRateLimiterOptions
-            {
-                PermitLimit          = 20,
-                Window               = TimeSpan.FromMinutes(1),
-                SegmentsPerWindow    = 6,
-                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-                QueueLimit           = 0
-            }));
-
-    // Rate limiter globale: 120 req/min per IP su tutti gli endpoint
-    opts.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
-        RateLimitPartition.GetSlidingWindowLimiter(
-            httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
-            _ => new System.Threading.RateLimiting.SlidingWindowRateLimiterOptions
-            {
-                PermitLimit          = 120,
-                Window               = TimeSpan.FromMinutes(1),
-                SegmentsPerWindow    = 6,
-                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-                QueueLimit           = 0
-            }));
-
     opts.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 });
 

@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
              x:Class="Turnify.Mobile.Views.ShiftCalendarPage"
-             x:Name="page"
              Title="Turni"
              BackgroundColor="{StaticResource Background}">
 
@@ -118,7 +117,7 @@
         </Border>
 
         <!-- ══ EMPLOYEE VIEW ══ ──────────────────────────────────── -->
-        <Grid Grid.Row="4" RowDefinitions="Auto,Auto,*"
+        <Grid Grid.Row="4" RowDefinitions="Auto,*"
               IsVisible="{Binding IsAdmin, Converter={StaticResource InverseBoolConverter}}">
 
             <!-- Timbratura card -->
@@ -152,21 +151,7 @@
                 </Grid>
             </Border>
 
-            <!-- Check-in/out feedback banner -->
-            <Border Grid.Row="1"
-                    IsVisible="{Binding HasCheckInFeedback}"
-                    BackgroundColor="#ECFDF5" Stroke="#6EE7B7" StrokeThickness="1"
-                    Padding="12,7" Margin="16,2,16,0">
-                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                <HorizontalStackLayout Spacing="8">
-                    <Label Text="✓" FontSize="15" FontAttributes="Bold"
-                           TextColor="#059669" VerticalOptions="Center"/>
-                    <Label Text="{Binding CheckInFeedback}" FontSize="13"
-                           TextColor="#065F46" VerticalOptions="Center"/>
-                </HorizontalStackLayout>
-            </Border>
-
-            <RefreshView Grid.Row="2"
+            <RefreshView Grid.Row="1"
                          Command="{Binding LoadShiftsCommand}"
                          IsRefreshing="{Binding IsBusy}">
                 <CollectionView ItemsSource="{Binding Shifts}">
@@ -189,30 +174,14 @@
                                     Stroke="#E2E8F0" StrokeThickness="1"
                                     Padding="0" Margin="16,0,16,10">
                                 <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                                <Border.Triggers>
-                                    <DataTrigger TargetType="Border" Binding="{Binding IsToday}" Value="True">
-                                        <Setter Property="Stroke" Value="#16A34A"/>
-                                        <Setter Property="StrokeThickness" Value="2"/>
-                                    </DataTrigger>
-                                </Border.Triggers>
                                 <Grid ColumnDefinitions="6,*">
-                                    <BoxView Grid.Column="0" BackgroundColor="{Binding AccentColor}"
+                                    <BoxView Grid.Column="0" BackgroundColor="{StaticResource Primary}"
                                              VerticalOptions="Fill"/>
                                     <Grid Grid.Column="1" ColumnDefinitions="*,Auto" Padding="14,14">
                                         <VerticalStackLayout Grid.Column="0" Spacing="4">
-                                            <HorizontalStackLayout Spacing="8">
-                                                <Label Text="{Binding StartTime, StringFormat='{0:dddd dd MMMM}'}"
-                                                       FontSize="15" FontAttributes="Bold"
-                                                       TextColor="{StaticResource OnBackground}"/>
-                                                <Border BackgroundColor="#DCFCE7"
-                                                        Stroke="Transparent" Padding="6,2"
-                                                        IsVisible="{Binding IsToday}"
-                                                        VerticalOptions="Center">
-                                                    <Border.StrokeShape><RoundRectangle CornerRadius="6"/></Border.StrokeShape>
-                                                    <Label Text="OGGI" FontSize="9" FontAttributes="Bold"
-                                                           TextColor="#16A34A"/>
-                                                </Border>
-                                            </HorizontalStackLayout>
+                                            <Label Text="{Binding StartTime, StringFormat='{0:dddd dd MMMM}'}"
+                                                   FontSize="15" FontAttributes="Bold"
+                                                   TextColor="{StaticResource OnBackground}"/>
                                             <Label Text="{Binding StartTime, StringFormat='{0:HH:mm}'}"
                                                    FontSize="14" TextColor="{StaticResource OnSurfaceVariant}"/>
                                             <Label Text="{Binding Label}" FontSize="12"
@@ -248,83 +217,34 @@
                 <Border.StrokeShape><RoundRectangle CornerRadius="0"/></Border.StrokeShape>
                 <Grid ColumnDefinitions="72,*,*,*,*,*,*,*">
                     <Label Grid.Column="0"/>
-                    <Border Grid.Column="1" Padding="2,3" Stroke="Transparent">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="6"/></Border.StrokeShape>
-                        <Border.Triggers>
-                            <DataTrigger TargetType="Border"
-                                         Binding="{Binding TodayColumnIndex}" Value="0">
-                                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryContainer}"/>
-                            </DataTrigger>
-                        </Border.Triggers>
+                    <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center" Spacing="1">
                         <Label Text="LUN" HorizontalOptions="Center" FontSize="9"
                                FontAttributes="Bold" TextColor="{StaticResource OnSurfaceVariant}"/>
-                    </Border>
-                    <Border Grid.Column="2" Padding="2,3" Stroke="Transparent">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="6"/></Border.StrokeShape>
-                        <Border.Triggers>
-                            <DataTrigger TargetType="Border"
-                                         Binding="{Binding TodayColumnIndex}" Value="1">
-                                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryContainer}"/>
-                            </DataTrigger>
-                        </Border.Triggers>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center" Spacing="1">
                         <Label Text="MAR" HorizontalOptions="Center" FontSize="9"
                                FontAttributes="Bold" TextColor="{StaticResource OnSurfaceVariant}"/>
-                    </Border>
-                    <Border Grid.Column="3" Padding="2,3" Stroke="Transparent">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="6"/></Border.StrokeShape>
-                        <Border.Triggers>
-                            <DataTrigger TargetType="Border"
-                                         Binding="{Binding TodayColumnIndex}" Value="2">
-                                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryContainer}"/>
-                            </DataTrigger>
-                        </Border.Triggers>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="3" HorizontalOptions="Center" Spacing="1">
                         <Label Text="MER" HorizontalOptions="Center" FontSize="9"
                                FontAttributes="Bold" TextColor="{StaticResource OnSurfaceVariant}"/>
-                    </Border>
-                    <Border Grid.Column="4" Padding="2,3" Stroke="Transparent">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="6"/></Border.StrokeShape>
-                        <Border.Triggers>
-                            <DataTrigger TargetType="Border"
-                                         Binding="{Binding TodayColumnIndex}" Value="3">
-                                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryContainer}"/>
-                            </DataTrigger>
-                        </Border.Triggers>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="4" HorizontalOptions="Center" Spacing="1">
                         <Label Text="GIO" HorizontalOptions="Center" FontSize="9"
                                FontAttributes="Bold" TextColor="{StaticResource OnSurfaceVariant}"/>
-                    </Border>
-                    <Border Grid.Column="5" Padding="2,3" Stroke="Transparent">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="6"/></Border.StrokeShape>
-                        <Border.Triggers>
-                            <DataTrigger TargetType="Border"
-                                         Binding="{Binding TodayColumnIndex}" Value="4">
-                                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryContainer}"/>
-                            </DataTrigger>
-                        </Border.Triggers>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="5" HorizontalOptions="Center" Spacing="1">
                         <Label Text="VEN" HorizontalOptions="Center" FontSize="9"
                                FontAttributes="Bold" TextColor="{StaticResource OnSurfaceVariant}"/>
-                    </Border>
-                    <Border Grid.Column="6" Padding="2,3" Stroke="Transparent">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="6"/></Border.StrokeShape>
-                        <Border.Triggers>
-                            <DataTrigger TargetType="Border"
-                                         Binding="{Binding TodayColumnIndex}" Value="5">
-                                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryContainer}"/>
-                            </DataTrigger>
-                        </Border.Triggers>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="6" HorizontalOptions="Center" Spacing="1">
                         <Label Text="SAB" HorizontalOptions="Center" FontSize="9"
                                FontAttributes="Bold" TextColor="#D97706"/>
-                    </Border>
-                    <Border Grid.Column="7" Padding="2,3" Stroke="Transparent">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="6"/></Border.StrokeShape>
-                        <Border.Triggers>
-                            <DataTrigger TargetType="Border"
-                                         Binding="{Binding TodayColumnIndex}" Value="6">
-                                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryContainer}"/>
-                            </DataTrigger>
-                        </Border.Triggers>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="7" HorizontalOptions="Center" Spacing="1">
                         <Label Text="DOM" HorizontalOptions="Center" FontSize="9"
                                FontAttributes="Bold" TextColor="{StaticResource Error}"/>
-                    </Border>
+                    </VerticalStackLayout>
                 </Grid>
             </Border>
 

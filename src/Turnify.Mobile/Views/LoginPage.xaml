@@ -66,11 +66,9 @@
                     </Border>
 
                     <!-- Toggle admin / dipendente -->
-                    <Border Margin="0,0,0,20"
-                            BackgroundColor="{StaticResource SurfaceContainerLow}"
-                            Stroke="Transparent">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                    <Grid ColumnDefinitions="*,*">
+                    <Grid ColumnDefinitions="*,*" Margin="0,0,0,20"
+                          BackgroundColor="{StaticResource SurfaceContainerLow}">
+                        <Grid.StrokeShape><RoundRectangle CornerRadius="12"/></Grid.StrokeShape>
                         <Border Grid.Column="0"
                                 Stroke="Transparent" Padding="0,10">
                             <Border.Triggers>
@@ -126,7 +124,6 @@
                             </Label>
                         </Border>
                     </Grid>
-                    </Border>
 
                     <!-- ── Campi Admin / Manager ── -->
                     <VerticalStackLayout IsVisible="{Binding IsAdminMode}" Spacing="0">

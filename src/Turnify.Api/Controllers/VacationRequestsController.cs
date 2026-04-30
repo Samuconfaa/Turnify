@@ -129,9 +129,6 @@ public class VacationRequestsController : ControllerBase
         if (input.EndDate < input.StartDate)
             return BadRequest(new { message = "La data di fine deve essere dopo la data di inizio." });
 
-        if ((input.EndDate - input.StartDate).TotalDays > 365)
-            return BadRequest(new { message = "Il periodo non può superare 365 giorni." });
-
         if (!Enum.TryParse<VacationRequestType>(input.Type, ignoreCase: true, out var vacationType))
             vacationType = VacationRequestType.Holiday;
 

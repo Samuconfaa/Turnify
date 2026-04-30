@@ -36,6 +36,7 @@ public static class MauiProgram
         builder.Services.AddTransient<AuthDelegatingHandler>();
         builder.Services.AddTransient<CertificatePinningHandler>();
         builder.Services.AddSingleton<IErrorReporterService, ErrorReporterService>();
+        builder.Services.AddSingleton<IAppNavigationService, AppNavigationService>();
 
         builder.Services.AddHttpClient<IAuthService, AuthService>(client =>
         {

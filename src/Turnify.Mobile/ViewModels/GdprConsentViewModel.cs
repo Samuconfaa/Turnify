@@ -6,12 +6,14 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
+using Turnify.Mobile.Services;
 
 namespace Turnify.Mobile.ViewModels;
 
 public partial class GdprConsentViewModel : BaseViewModel
 {
     private readonly HttpClient _httpClient;
+    private readonly IAppNavigationService _appNavigation;
 
     public const string CONSENT_GIVEN_KEY   = "gdpr_consent_given";
     public const string CONSENT_VERSION_KEY = "gdpr_consent_version";
@@ -26,10 +28,11 @@ public partial class GdprConsentViewModel : BaseViewModel
 
     public bool CanProceed => PrivacyAccepted;
 
-    public GdprConsentViewModel(IHttpClientFactory httpClientFactory)
+    public GdprConsentViewModel(IHttpClientFactory httpClientFactory, IAppNavigationService appNavigation)
     {
-        _httpClient = httpClientFactory.CreateClient("TurnifyApi");
-        Title = "Privacy e Consenso";
+        _httpClient    = httpClientFactory.CreateClient("TurnifyApi");
+        _appNavigation = appNavigation;
+        Title          = "Privacy e Consenso";
     }
 
     public static bool NeedsConsent()
@@ -48,10 +51,7 @@ public partial class GdprConsentViewModel : BaseViewModel
         Preferences.Default.Set("gdpr_marketing_accepted", MarketingAccepted);
         Preferences.Default.Set("gdpr_consent_date",  DateTime.UtcNow.ToString("O"));
 
-        // Dopo il consenso GDPR → sempre LoginPage
-        // L'utente da lì può fare login (se ha già un account)
-        // oppure toccare "Registra la tua azienda" per creare un nuovo account
-        Application.Current!.Windows[0].Page = new AppShell(isAdmin: false, startRoute: "Login");
+        await _appNavigation.NavigateToShellAsync(isAdmin: false, startRoute: "Login");
     }
 
     [RelayCommand]
@@ -128,7 +128,7 @@ public partial class GdprConsentViewModel : BaseViewModel
                     "Riceverai una email di conferma.",
                     "OK");
 
-                Application.Current!.Windows[0].Page = new AppShell(isAdmin: false, startRoute: "Login");
+                await _appNavigation.NavigateToShellAsync(isAdmin: false, startRoute: "Login");
             }
             else
             {

@@ -7,12 +7,14 @@ using System.Net.Http.Json;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Turnify.Mobile.Services;
 
 namespace Turnify.Mobile.ViewModels;
 
 public partial class ProfileViewModel : BaseViewModel
 {
     private readonly HttpClient _httpClient;
+    private readonly IAppNavigationService _appNavigation;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(FullName))]
@@ -93,10 +95,11 @@ public partial class ProfileViewModel : BaseViewModel
         "🌟","⚡","🔥","🌈","🎯","🎸","🏆","🚀"
     };
 
-    public ProfileViewModel(IHttpClientFactory httpClientFactory)
+    public ProfileViewModel(IHttpClientFactory httpClientFactory, IAppNavigationService appNavigation)
     {
-        _httpClient = httpClientFactory.CreateClient("TurnifyApi");
-        Title = "Profilo";
+        _httpClient    = httpClientFactory.CreateClient("TurnifyApi");
+        _appNavigation = appNavigation;
+        Title          = "Profilo";
     }
 
     public async Task OnAppearingAsync()
@@ -316,13 +319,10 @@ public partial class ProfileViewModel : BaseViewModel
         try { await _httpClient.PostAsync("api/auth/logout", null); }
         catch (HttpRequestException) { }
         catch (TaskCanceledException) { }
-        finally
-        {
-            SecureStorage.Default.Remove("jwt_token");
-            SecureStorage.Default.Remove("refresh_token");
-            SecureStorage.Default.Remove("user_role");
-            Application.Current!.Windows[0].Page = new AppShell();
-        }
+        SecureStorage.Default.Remove("jwt_token");
+        SecureStorage.Default.Remove("refresh_token");
+        SecureStorage.Default.Remove("user_role");
+        await _appNavigation.NavigateToShellAsync(isAdmin: false, startRoute: "Login");
     }
 
     private class UserMeResponse

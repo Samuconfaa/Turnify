@@ -363,6 +363,41 @@ Turnify/
 
 ---
 
+### Iterazione 10 — UX liste, report ore dipendenti, calendario avanzato
+**Data:** 2026-04-30
+
+**Lavoro svolto:**
+- `BusinessListPage.xaml`: rimosso pulsante "+ Aggiungi" nell'header; aggiunta card tratteggiata in fondo alla lista (`CreateBusinessCommand`)
+- `EmployeeListPage.xaml`: rimosso FAB; aggiunta card tratteggiata in fondo alla lista (`CreateEmployeeCommand`)
+- `BusinessListViewModel.cs`, `EmployeeListViewModel.cs`: aggiunti `CreateBusinessCommand` e `CreateEmployeeCommand`
+- `Turnify.Api/DTOs/EmployeeHoursReportDto.cs`: DTO `EmployeeHoursReportDto` + `HoursBreakdownDto`
+- `ReportsController.cs`: endpoint `GET /api/reports/employee-hours?from&to&groupBy=week|month&employeeId` con raggruppamento per settimana/mese
+- `EmployeeReportsViewModel.cs`: caricamento report con filtri `From`, `To`, `SelectedGroupBy`, `LoadReportsCommand`, `ToggleExpandCommand`
+- `EmployeeReportsPage.xaml` + `.xaml.cs`: pagina report ore con filtri e lista espandibile per dipendente
+- `ProfilePage.xaml`: aggiunta voce "Report ore dipendenti" nella sezione GESTIONE ATTIVITÀ (admin)
+- `ProfileViewModel.cs`: aggiunto `GoToEmployeeReportsCommand`
+- `AppShell.xaml.cs`: registrata route `EmployeeReportsPage`
+- `MauiProgram.cs`: registrati `EmployeeReportsViewModel` e `EmployeeReportsPage`
+- `ShiftCalendarViewModel.cs`: aggiunto enum `CalendarViewMode` (Employee/Week/Day), proprietà `SelectedViewMode`, `SelectedDate`, `IsEmployeeMode`, `IsWeekMode`, `IsDayMode`, `WeekSlots`, `DaySlots`, comandi `ChangeViewModeCommand`; classe `TimeSlot`; logica `BuildWeekSlots` e `BuildDaySlots`
+- `ShiftCalendarPage.xaml`: aggiunto switch a 3 pulsanti (Dipendenti/Settimana/Giorno), Week View (griglia oraria), Day View (lista verticale oraria); visibilità viste pilotata da `IsEmployeeMode`/`IsWeekMode`/`IsDayMode`
+
+**File principali:**
+- `Turnify.Mobile/Views/BusinessListPage.xaml`, `EmployeeListPage.xaml`
+- `Turnify.Mobile/ViewModels/BusinessListViewModel.cs`, `EmployeeListViewModel.cs`
+- `Turnify.Api/Controllers/ReportsController.cs`
+- `Turnify.Api/DTOs/EmployeeHoursReportDto.cs`
+- `Turnify.Mobile/Views/EmployeeReportsPage.xaml`
+- `Turnify.Mobile/ViewModels/EmployeeReportsViewModel.cs`
+- `Turnify.Mobile/Views/ProfilePage.xaml`
+- `Turnify.Mobile/ViewModels/ProfileViewModel.cs`
+- `Turnify.Mobile/ViewModels/ShiftCalendarViewModel.cs`
+- `Turnify.Mobile/Views/ShiftCalendarPage.xaml`
+- `Turnify.Mobile/AppShell.xaml.cs`, `MauiProgram.cs`
+
+**Risultato:** pattern UX liste con card tratteggiata; report ore per dipendente con breakdown settimana/mese; calendario avanzato con 3 viste (dipendenti, settimana, giorno).
+
+---
+
 ## Rischi tecnici
 
 Derivati da problemi tecnici reali osservati durante lo sviluppo e la verifica:

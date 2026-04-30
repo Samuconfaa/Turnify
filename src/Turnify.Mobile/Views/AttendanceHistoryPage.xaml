@@ -9,79 +9,104 @@
 
     <Grid RowDefinitions="Auto,Auto,*">
 
-        <!-- Header navigazione mese -->
+        <!-- Month navigation -->
         <Border Grid.Row="0"
                 BackgroundColor="{StaticResource Surface}"
-                Stroke="{StaticResource OutlineVariant}" StrokeThickness="0"
-                Padding="16,12">
+                Stroke="{StaticResource OutlineVariant}" StrokeThickness="0,0,0,1"
+                Padding="8,10">
+            <Border.StrokeShape><RoundRectangle CornerRadius="0"/></Border.StrokeShape>
             <Border.Shadow>
-                <Shadow Brush="#000000" Offset="0,1" Radius="4" Opacity="0.06"/>
+                <Shadow Brush="#000000" Offset="0,2" Radius="8" Opacity="0.05"/>
             </Border.Shadow>
             <Grid ColumnDefinitions="44,*,44">
                 <Button Grid.Column="0" Text="‹"
                         Command="{Binding PreviousMonthCommand}"
                         BackgroundColor="Transparent"
                         TextColor="{StaticResource Primary}"
-                        FontSize="24" Padding="0"
-                        HeightRequest="44"/>
+                        FontSize="26" FontFamily="PJSBold"
+                        Padding="0" HeightRequest="44"/>
                 <Label Grid.Column="1"
                        Text="{Binding MonthLabel}"
-                       FontSize="16" FontAttributes="Bold"
+                       FontSize="16" FontAttributes="Bold" FontFamily="PJSBold"
                        TextColor="{StaticResource OnBackground}"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center"/>
+                       HorizontalOptions="Center" VerticalOptions="Center"/>
                 <Button Grid.Column="2" Text="›"
                         Command="{Binding NextMonthCommand}"
                         BackgroundColor="Transparent"
                         TextColor="{StaticResource Primary}"
-                        FontSize="24" Padding="0"
-                        HeightRequest="44"/>
+                        FontSize="26" FontFamily="PJSBold"
+                        Padding="0" HeightRequest="44"/>
             </Grid>
         </Border>
 
-        <!-- Riepilogo mese -->
-        <Grid Grid.Row="1" ColumnDefinitions="*,*" Padding="16,12" ColumnSpacing="12">
+        <!-- Monthly summary -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,*"
+              ColumnSpacing="10" Padding="20,14,20,0">
             <Border Grid.Column="0"
                     BackgroundColor="{StaticResource Surface}"
                     Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
-                    Padding="14,12">
-                <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
-                <VerticalStackLayout Spacing="2">
-                    <Label Text="📅" FontSize="20"/>
-                    <Label Text="{Binding DaysWorked, StringFormat='{0} giorni'}"
-                           FontSize="20" FontAttributes="Bold"
-                           TextColor="{StaticResource OnBackground}"/>
-                    <Label Text="Giorni lavorati" FontSize="11"
-                           TextColor="{StaticResource OnSurfaceVariant}"/>
+                    Padding="16,14">
+                <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
+                <Border.Shadow>
+                    <Shadow Brush="#000000" Offset="0,4" Radius="14" Opacity="0.06"/>
+                </Border.Shadow>
+                <VerticalStackLayout Spacing="4">
+                    <Border BackgroundColor="{StaticResource PrimaryLight}"
+                            HeightRequest="34" WidthRequest="34" Stroke="Transparent" Margin="0,0,0,6">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                        <Label Text="📅" FontSize="16"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Border>
+                    <Label Text="{Binding DaysWorked, StringFormat='{0}'}"
+                           FontSize="24" FontAttributes="Bold" FontFamily="PJSXBold"
+                           TextColor="{StaticResource OnBackground}"
+                           CharacterSpacing="-0.8"/>
+                    <Label Text="Giorni lavorati"
+                           FontSize="11" FontFamily="PJSReg"
+                           TextColor="{StaticResource Outline}"/>
                 </VerticalStackLayout>
             </Border>
             <Border Grid.Column="1"
                     BackgroundColor="{StaticResource Surface}"
                     Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
-                    Padding="14,12">
-                <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
-                <VerticalStackLayout Spacing="2">
-                    <Label Text="⏱️" FontSize="20"/>
+                    Padding="16,14">
+                <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
+                <Border.Shadow>
+                    <Shadow Brush="#000000" Offset="0,4" Radius="14" Opacity="0.06"/>
+                </Border.Shadow>
+                <VerticalStackLayout Spacing="4">
+                    <Border BackgroundColor="{StaticResource PurpleLight}"
+                            HeightRequest="34" WidthRequest="34" Stroke="Transparent" Margin="0,0,0,6">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                        <Label Text="⏱️" FontSize="16"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Border>
                     <Label Text="{Binding TotalHours, StringFormat='{0:F1} h'}"
-                           FontSize="20" FontAttributes="Bold"
-                           TextColor="{StaticResource OnBackground}"/>
-                    <Label Text="Ore totali" FontSize="11"
-                           TextColor="{StaticResource OnSurfaceVariant}"/>
+                           FontSize="24" FontAttributes="Bold" FontFamily="PJSXBold"
+                           TextColor="{StaticResource OnBackground}"
+                           CharacterSpacing="-0.8"/>
+                    <Label Text="Ore totali"
+                           FontSize="11" FontFamily="PJSReg"
+                           TextColor="{StaticResource Outline}"/>
                 </VerticalStackLayout>
             </Border>
         </Grid>
 
-        <!-- Lista presenze -->
+        <!-- Attendance list -->
         <RefreshView Grid.Row="2"
                      Command="{Binding LoadDataCommand}"
                      IsRefreshing="{Binding IsBusy}">
             <CollectionView ItemsSource="{Binding Entries}"
-                            Margin="16,0,16,16">
+                            Margin="20,14,20,20">
                 <CollectionView.EmptyView>
                     <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center"
-                                         Spacing="8" Margin="0,40,0,0">
-                        <Label Text="📭" FontSize="48" HorizontalOptions="Center"/>
-                        <Label Text="Nessuna presenza registrata" FontSize="15"
+                                         Spacing="10" Margin="0,40,0,0">
+                        <Label Text="—"
+                               FontSize="40" FontAttributes="Bold" FontFamily="PJSXBold"
+                               TextColor="{StaticResource Outline}"
+                               HorizontalOptions="Center"/>
+                        <Label Text="Nessuna presenza registrata"
+                               FontSize="15" FontFamily="PJSSemi"
                                TextColor="{StaticResource OnSurfaceVariant}"
                                HorizontalOptions="Center"/>
                     </VerticalStackLayout>
@@ -91,31 +116,33 @@
                         <Border BackgroundColor="{StaticResource Surface}"
                                 Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
                                 Padding="16,14" Margin="0,0,0,10">
-                            <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
-                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
-                                <!-- Icona stato -->
+                            <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                            <Border.Shadow>
+                                <Shadow Brush="#000000" Offset="0,2" Radius="10" Opacity="0.05"/>
+                            </Border.Shadow>
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
+                                <!-- Status circle -->
                                 <Border Grid.Column="0"
                                         BackgroundColor="{Binding IsComplete, Converter={StaticResource BoolToShiftColorConverter}}"
-                                        HeightRequest="40" WidthRequest="40">
+                                        HeightRequest="40" WidthRequest="40"
+                                        Stroke="Transparent">
                                     <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
-                                    <Label Text="✓" FontSize="18" FontAttributes="Bold"
+                                    <Label Text="✓"
+                                           FontSize="17" FontAttributes="Bold" FontFamily="PJSBold"
                                            TextColor="White"
-                                           HorizontalOptions="Center"
-                                           VerticalOptions="Center"/>
+                                           HorizontalOptions="Center" VerticalOptions="Center"/>
                                 </Border>
-                                <!-- Info -->
-                                <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
                                     <Label Text="{Binding DayLabel}"
-                                           FontSize="13" FontAttributes="Bold"
+                                           FontSize="14" FontAttributes="Bold" FontFamily="PJSBold"
                                            TextColor="{StaticResource OnBackground}"/>
                                     <Label Text="{Binding TimeDisplay}"
-                                           FontSize="12"
+                                           FontSize="12" FontFamily="PJSReg"
                                            TextColor="{StaticResource OnSurfaceVariant}"/>
                                 </VerticalStackLayout>
-                                <!-- Ore -->
                                 <Label Grid.Column="2"
                                        Text="{Binding HoursLabel}"
-                                       FontSize="14" FontAttributes="Bold"
+                                       FontSize="14" FontAttributes="Bold" FontFamily="PJSBold"
                                        TextColor="{StaticResource Primary}"
                                        VerticalOptions="Center"/>
                             </Grid>

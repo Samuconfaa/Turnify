@@ -200,4 +200,155 @@ public class AuthControllerIntegrationTests : IntegrationTestBase
         var res = await Client.PostAsync("/turnify/api/auth/logout", null);
         res.StatusCode.Should().Be(HttpStatusCode.OK);
     }
+
+    // ── POST /api/auth/employee-login ───────────────────────────────
+
+    // AUTH-04 — login dipendente con username corretto → 200 + JWT
+    [Fact]
+    public async Task EmployeeLogin_ValidCredentials_Returns200WithTokens()
+    {
+        var password = "Password1!";
+        var username = $"emp_{Guid.NewGuid():N}".Substring(0, 20);
+        var slug     = $"az-{Guid.NewGuid():N}".Substring(0, 20);
+
+        await SeedAsync(db =>
+        {
+            db.Companies.Add(new Turnify.Core.Models.Company
+            {
+                Name      = "Azienda Test",
+                Slug      = slug,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            });
+        });
+
+        // Recupera l'ID della company appena creata
+        int companyId;
+        using (var db = GetDb())
+            companyId = db.Companies.First(c => c.Slug == slug).Id;
+
+        await SeedAsync(db => db.Users.Add(new User
+        {
+            Username     = username,
+            Email        = null,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
+            Role         = UserRole.Employee,
+            CompanyId    = companyId,
+            IsActive     = true,
+            CreatedAt    = DateTime.UtcNow,
+            UpdatedAt    = DateTime.UtcNow
+        }));
+
+        var res = await Client.PostAsJsonAsync("/turnify/api/auth/employee-login",
+            new { companySlug = slug, username, password });
+
+        res.StatusCode.Should().Be(HttpStatusCode.OK);
+        var body = await res.Content.ReadFromJsonAsync<System.Text.Json.JsonElement>();
+        body.GetProperty("accessToken").GetString().Should().NotBeNullOrEmpty();
+    }
+
+    // AUTH-05 — login dipendente con username errato → 401
+    [Fact]
+    public async Task EmployeeLogin_WrongUsername_Returns401()
+    {
+        var slug = $"az-{Guid.NewGuid():N}".Substring(0, 20);
+        await SeedAsync(db => db.Companies.Add(new Turnify.Core.Models.Company
+        {
+            Name      = "Test",
+            Slug      = slug,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        }));
+
+        var res = await Client.PostAsJsonAsync("/turnify/api/auth/employee-login",
+            new { companySlug = slug, username = "nessuno", password = "Password1!" });
+
+        res.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    }
+
+    // AUTH-07 — login con password < 6 caratteri → 400 (LoginRequestValidator)
+    [Fact]
+    public async Task Login_PasswordTooShort_Returns400()
+    {
+        var res = await Client.PostAsJsonAsync("/turnify/api/auth/login",
+            new { email = "test@test.it", password = "abc" });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    // AUTH-08 — login con campi vuoti → 400
+    [Fact]
+    public async Task Login_AllFieldsEmpty_Returns400()
+    {
+        var res = await Client.PostAsJsonAsync("/turnify/api/auth/login",
+            new { email = (string?)null, password = (string?)null });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    // ── POST /api/auth/register — validator extra ───────────────────
+
+    // REG-04 — password admin < 8 caratteri → 400
+    [Fact]
+    public async Task Register_PasswordUnder8Chars_Returns400()
+    {
+        var res = await Client.PostAsJsonAsync("/turnify/api/auth/register", new
+        {
+            companyName   = "Test",
+            companySlug   = "test-slug-short",
+            companyEmail  = "info@test.it",
+            adminEmail    = "admin@test.it",
+            adminPassword = "Ab1234"  // 6 caratteri, sopra min del login (6) ma sotto min di register (8)
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    // REG-05 — password senza maiuscole → 400
+    [Fact]
+    public async Task Register_PasswordNoUppercase_Returns400()
+    {
+        var res = await Client.PostAsJsonAsync("/turnify/api/auth/register", new
+        {
+            companyName   = "Test",
+            companySlug   = "test-slug-noupper",
+            companyEmail  = "info@test.it",
+            adminEmail    = "admin@test.it",
+            adminPassword = "password1234"
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    // REG-06 — password senza numeri → 400
+    [Fact]
+    public async Task Register_PasswordNoDigit_Returns400()
+    {
+        var res = await Client.PostAsJsonAsync("/turnify/api/auth/register", new
+        {
+            companyName   = "Test",
+            companySlug   = "test-slug-nodigit",
+            companyEmail  = "info@test.it",
+            adminEmail    = "admin@test.it",
+            adminPassword = "PasswordNoDigit"
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    // REG-07 — CompanyName vuoto → 400
+    [Fact]
+    public async Task Register_EmptyCompanyName_Returns400()
+    {
+        var res = await Client.PostAsJsonAsync("/turnify/api/auth/register", new
+        {
+            companyName   = "",
+            companySlug   = "test-slug-noname",
+            companyEmail  = "info@test.it",
+            adminEmail    = "admin@test.it",
+            adminPassword = "Admin1234!"
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
 }

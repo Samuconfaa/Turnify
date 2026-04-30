@@ -9,171 +9,179 @@
 
     <Grid RowDefinitions="Auto,Auto,Auto,*">
 
-        <!-- ── Header ────────────────────────────────────────── -->
-        <Border Grid.Row="0"
-                BackgroundColor="{StaticResource Surface}"
-                Stroke="Transparent" StrokeThickness="0"
-                Padding="16,14,16,10">
-            <Border.StrokeShape><RoundRectangle CornerRadius="0"/></Border.StrokeShape>
-            <Grid ColumnDefinitions="*,Auto">
-                <Label Grid.Column="0"
-                       Text="Ferie e Permessi"
-                       FontSize="22" FontAttributes="Bold"
+        <!-- ── Header ────────────────────────────────────── -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Padding="20,18,20,0">
+            <VerticalStackLayout Grid.Column="0" Spacing="2">
+                <Label Text="Ferie"
+                       FontSize="26" FontAttributes="Bold" FontFamily="PJSXBold"
                        TextColor="{StaticResource OnBackground}"
-                       VerticalOptions="Center"/>
-                <!-- Employee: new request button -->
-                <Border Grid.Column="1"
-                        BackgroundColor="{StaticResource Primary}"
-                        Stroke="Transparent" Padding="14,8"
-                        IsVisible="{Binding IsAdmin, Converter={StaticResource InverseBoolConverter}}"
-                        VerticalOptions="Center">
-                    <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding ShowNewRequestFormCommand}"/>
-                    </Border.GestureRecognizers>
-                    <Label Text="+ Richiedi"
-                           FontSize="13" FontAttributes="Bold"
-                           TextColor="White"/>
-                </Border>
-            </Grid>
-        </Border>
+                       CharacterSpacing="-0.8"/>
+                <Label Text="e Permessi"
+                       FontSize="13" FontFamily="PJSReg"
+                       TextColor="{StaticResource Outline}"/>
+            </VerticalStackLayout>
+            <!-- Employee: new request -->
+            <Border Grid.Column="1"
+                    BackgroundColor="{StaticResource Navy}"
+                    Stroke="Transparent" Padding="16,10"
+                    IsVisible="{Binding IsAdmin, Converter={StaticResource InverseBoolConverter}}"
+                    VerticalOptions="Center">
+                <Border.StrokeShape><RoundRectangle CornerRadius="22"/></Border.StrokeShape>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ShowNewRequestFormCommand}"/>
+                </Border.GestureRecognizers>
+                <Label Text="+ Richiedi"
+                       FontSize="13" FontAttributes="Bold" FontFamily="PJSBold"
+                       TextColor="White"/>
+            </Border>
+        </Grid>
 
-        <!-- ── Filter chips ───────────────────────────────────── -->
+        <!-- ── Filter chips ──────────────────────────────── -->
         <ScrollView Grid.Row="1"
                     Orientation="Horizontal"
                     HorizontalScrollBarVisibility="Never"
-                    Padding="16,0,16,8">
+                    Padding="20,12,20,0">
             <HorizontalStackLayout Spacing="8">
-
                 <!-- Tutte -->
-                <Border BackgroundColor="{StaticResource SurfaceContainerHigh}"
-                        Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
-                        Padding="14,8">
+                <Border Padding="14,8">
                     <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding SetFilterIndexCommand}" CommandParameter="0"/>
                     </Border.GestureRecognizers>
                     <Border.Triggers>
                         <DataTrigger TargetType="Border" Binding="{Binding FilterIndex}" Value="0">
-                            <Setter Property="BackgroundColor" Value="{StaticResource SecondaryContainer}"/>
+                            <Setter Property="BackgroundColor" Value="{StaticResource Navy}"/>
                             <Setter Property="Stroke" Value="Transparent"/>
                         </DataTrigger>
+                        <DataTrigger TargetType="Border" Binding="{Binding FilterIndex}" Value="1">
+                            <Setter Property="BackgroundColor" Value="{StaticResource Surface}"/>
+                            <Setter Property="Stroke" Value="{StaticResource OutlineVariant}"/>
+                        </DataTrigger>
+                        <DataTrigger TargetType="Border" Binding="{Binding FilterIndex}" Value="2">
+                            <Setter Property="BackgroundColor" Value="{StaticResource Surface}"/>
+                            <Setter Property="Stroke" Value="{StaticResource OutlineVariant}"/>
+                        </DataTrigger>
+                        <DataTrigger TargetType="Border" Binding="{Binding FilterIndex}" Value="3">
+                            <Setter Property="BackgroundColor" Value="{StaticResource Surface}"/>
+                            <Setter Property="Stroke" Value="{StaticResource OutlineVariant}"/>
+                        </DataTrigger>
                     </Border.Triggers>
-                    <Label Text="Tutte" FontSize="12" FontAttributes="Bold"
-                           TextColor="{StaticResource OnSurfaceVariant}">
+                    <Label Text="Tutte" FontSize="12" FontAttributes="Bold" FontFamily="PJSBold">
                         <Label.Triggers>
                             <DataTrigger TargetType="Label" Binding="{Binding FilterIndex}" Value="0">
-                                <Setter Property="TextColor" Value="{StaticResource Primary}"/>
+                                <Setter Property="TextColor" Value="White"/>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label" Binding="{Binding FilterIndex}" Value="1">
+                                <Setter Property="TextColor" Value="{StaticResource OnSurfaceVariant}"/>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label" Binding="{Binding FilterIndex}" Value="2">
+                                <Setter Property="TextColor" Value="{StaticResource OnSurfaceVariant}"/>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label" Binding="{Binding FilterIndex}" Value="3">
+                                <Setter Property="TextColor" Value="{StaticResource OnSurfaceVariant}"/>
                             </DataTrigger>
                         </Label.Triggers>
                     </Label>
                 </Border>
-
                 <!-- In Attesa -->
-                <Border BackgroundColor="{StaticResource SurfaceContainerHigh}"
-                        Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
-                        Padding="14,8">
+                <Border Stroke="{StaticResource OutlineVariant}" StrokeThickness="1.5" Padding="14,8">
                     <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding SetFilterIndexCommand}" CommandParameter="1"/>
                     </Border.GestureRecognizers>
                     <Border.Triggers>
                         <DataTrigger TargetType="Border" Binding="{Binding FilterIndex}" Value="1">
-                            <Setter Property="BackgroundColor" Value="{StaticResource SecondaryContainer}"/>
+                            <Setter Property="BackgroundColor" Value="{StaticResource Navy}"/>
                             <Setter Property="Stroke" Value="Transparent"/>
                         </DataTrigger>
                     </Border.Triggers>
-                    <Label Text="In Attesa" FontSize="12" FontAttributes="Bold"
+                    <Label Text="In Attesa" FontSize="12" FontAttributes="Bold" FontFamily="PJSBold"
                            TextColor="{StaticResource OnSurfaceVariant}">
                         <Label.Triggers>
                             <DataTrigger TargetType="Label" Binding="{Binding FilterIndex}" Value="1">
-                                <Setter Property="TextColor" Value="{StaticResource Primary}"/>
+                                <Setter Property="TextColor" Value="White"/>
                             </DataTrigger>
                         </Label.Triggers>
                     </Label>
                 </Border>
-
                 <!-- Approvate -->
-                <Border BackgroundColor="{StaticResource SurfaceContainerHigh}"
-                        Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
-                        Padding="14,8">
+                <Border Stroke="{StaticResource OutlineVariant}" StrokeThickness="1.5" Padding="14,8">
                     <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding SetFilterIndexCommand}" CommandParameter="2"/>
                     </Border.GestureRecognizers>
                     <Border.Triggers>
                         <DataTrigger TargetType="Border" Binding="{Binding FilterIndex}" Value="2">
-                            <Setter Property="BackgroundColor" Value="{StaticResource SecondaryContainer}"/>
+                            <Setter Property="BackgroundColor" Value="{StaticResource Navy}"/>
                             <Setter Property="Stroke" Value="Transparent"/>
                         </DataTrigger>
                     </Border.Triggers>
-                    <Label Text="Approvate" FontSize="12" FontAttributes="Bold"
+                    <Label Text="Approvate" FontSize="12" FontAttributes="Bold" FontFamily="PJSBold"
                            TextColor="{StaticResource OnSurfaceVariant}">
                         <Label.Triggers>
                             <DataTrigger TargetType="Label" Binding="{Binding FilterIndex}" Value="2">
-                                <Setter Property="TextColor" Value="{StaticResource Primary}"/>
+                                <Setter Property="TextColor" Value="White"/>
                             </DataTrigger>
                         </Label.Triggers>
                     </Label>
                 </Border>
-
                 <!-- Rifiutate -->
-                <Border BackgroundColor="{StaticResource SurfaceContainerHigh}"
-                        Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
-                        Padding="14,8">
+                <Border Stroke="{StaticResource OutlineVariant}" StrokeThickness="1.5" Padding="14,8">
                     <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding SetFilterIndexCommand}" CommandParameter="3"/>
                     </Border.GestureRecognizers>
                     <Border.Triggers>
                         <DataTrigger TargetType="Border" Binding="{Binding FilterIndex}" Value="3">
-                            <Setter Property="BackgroundColor" Value="{StaticResource SecondaryContainer}"/>
+                            <Setter Property="BackgroundColor" Value="{StaticResource Navy}"/>
                             <Setter Property="Stroke" Value="Transparent"/>
                         </DataTrigger>
                     </Border.Triggers>
-                    <Label Text="Rifiutate" FontSize="12" FontAttributes="Bold"
+                    <Label Text="Rifiutate" FontSize="12" FontAttributes="Bold" FontFamily="PJSBold"
                            TextColor="{StaticResource OnSurfaceVariant}">
                         <Label.Triggers>
                             <DataTrigger TargetType="Label" Binding="{Binding FilterIndex}" Value="3">
-                                <Setter Property="TextColor" Value="{StaticResource Primary}"/>
+                                <Setter Property="TextColor" Value="White"/>
                             </DataTrigger>
                         </Label.Triggers>
                     </Label>
                 </Border>
-
             </HorizontalStackLayout>
         </ScrollView>
 
-        <!-- ── Error banner ───────────────────────────────────── -->
+        <!-- Error -->
         <Border Grid.Row="2" IsVisible="{Binding HasError}"
-                BackgroundColor="#FEF2F2" Stroke="#FECACA" StrokeThickness="1"
-                Padding="12,8" Margin="16,0,16,4">
+                BackgroundColor="{StaticResource ErrorLight}"
+                Stroke="{StaticResource Error}" StrokeThickness="1"
+                Padding="12,8" Margin="20,8,20,0">
             <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-            <HorizontalStackLayout Spacing="8">
-                <Label Text="⚠️" FontSize="14" VerticalOptions="Center"/>
-                <Label Text="{Binding ErrorMessage}" FontSize="13" TextColor="#DC2626"
-                       VerticalOptions="Center"/>
-            </HorizontalStackLayout>
+            <Label Text="{Binding ErrorMessage}"
+                   FontSize="13" FontFamily="PJSSemi"
+                   TextColor="{StaticResource ErrorText}"/>
         </Border>
 
-        <!-- ── Requests List ──────────────────────────────────── -->
+        <!-- ── List ──────────────────────────────────────── -->
         <RefreshView Grid.Row="3"
                      Command="{Binding LoadRequestsCommand}"
                      IsRefreshing="{Binding IsBusy}">
-            <CollectionView ItemsSource="{Binding Requests}"
-                            Margin="0,0,0,4">
-
+            <CollectionView ItemsSource="{Binding Requests}" Margin="0,8,0,4">
                 <CollectionView.EmptyView>
                     <VerticalStackLayout HorizontalOptions="Center"
-                                         Margin="0,52,0,0" Spacing="12"
-                                         IsVisible="{Binding HasError, Converter={StaticResource InverseBoolConverter}}">
-                        <Label Text="🏖️" FontSize="52" HorizontalOptions="Center"/>
+                                         Margin="0,52,0,0" Spacing="12">
+                        <Border BackgroundColor="{StaticResource Surface}"
+                                HeightRequest="68" WidthRequest="68"
+                                HorizontalOptions="Center">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                            <Label Text="🏖️" FontSize="34"
+                                   HorizontalOptions="Center" VerticalOptions="Center"/>
+                        </Border>
                         <Label Text="Nessuna richiesta"
-                               FontSize="17" FontAttributes="Bold"
+                               FontSize="17" FontAttributes="Bold" FontFamily="PJSBold"
                                TextColor="{StaticResource OnBackground}"
                                HorizontalOptions="Center"/>
-                        <Label Text="Le tue richieste di ferie e permessi appariranno qui."
-                               FontSize="14" TextColor="{StaticResource OnSurfaceVariant}"
+                        <Label Text="Le richieste di ferie e permessi appariranno qui."
+                               FontSize="14" FontFamily="PJSReg"
+                               TextColor="{StaticResource OnSurfaceVariant}"
                                HorizontalOptions="Center" HorizontalTextAlignment="Center"
                                Margin="28,0"/>
                     </VerticalStackLayout>
@@ -181,148 +189,156 @@
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="vm:VacationRequestDto">
-                        <Border BackgroundColor="{StaticResource Surface}"
-                                Stroke="#E2E8F0" StrokeThickness="1"
-                                Padding="0" Margin="16,0,16,10">
-                            <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                        <SwipeView Margin="20,0,20,10">
+                            <SwipeView.LeftItems>
+                                <SwipeItems Mode="Execute">
+                                    <SwipeItem Text="Approva"
+                                               BackgroundColor="{StaticResource Success}"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type vm:VacationListViewModel}}, Path=ApproveCommand}"
+                                               CommandParameter="{Binding .}"
+                                               IsVisible="{Binding IsPending}"/>
+                                </SwipeItems>
+                            </SwipeView.LeftItems>
+                            <SwipeView.RightItems>
+                                <SwipeItems Mode="Execute">
+                                    <SwipeItem Text="Rifiuta"
+                                               BackgroundColor="{StaticResource Error}"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type vm:VacationListViewModel}}, Path=RejectCommand}"
+                                               CommandParameter="{Binding .}"
+                                               IsVisible="{Binding IsPending}"/>
+                                </SwipeItems>
+                            </SwipeView.RightItems>
 
-                            <Grid ColumnDefinitions="5,*">
-                                <!-- Left color strip -->
-                                <BoxView Grid.Column="0"
-                                         Color="{Binding StripColor}"
-                                         VerticalOptions="Fill"/>
-
-                                <!-- Card content -->
-                                <VerticalStackLayout Grid.Column="1"
-                                                     Spacing="10" Padding="14,14">
-
-                                    <!-- Employee name (admin view) -->
-                                    <HorizontalStackLayout Spacing="10"
-                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type vm:VacationListViewModel}}, Path=IsAdmin}">
-                                        <Border BackgroundColor="{StaticResource PrimaryFixed}"
-                                                HeightRequest="36" WidthRequest="36"
-                                                Stroke="Transparent">
-                                            <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
-                                            <Label Text="{Binding Initials}" FontSize="13" FontAttributes="Bold"
-                                                   TextColor="{StaticResource Primary}"
-                                                   HorizontalOptions="Center" VerticalOptions="Center"/>
-                                        </Border>
-                                        <Label Text="{Binding EmployeeName}"
-                                               FontSize="15" FontAttributes="Bold"
-                                               TextColor="{StaticResource OnBackground}"
-                                               VerticalOptions="Center"/>
-                                    </HorizontalStackLayout>
-
-                                    <!-- Type + status -->
-                                    <Grid ColumnDefinitions="*,Auto">
-                                        <HorizontalStackLayout Grid.Column="0" Spacing="8" VerticalOptions="Center">
-                                            <Label Text="{Binding TypeEmoji}" FontSize="18" VerticalOptions="Center"/>
-                                            <VerticalStackLayout Spacing="2" VerticalOptions="Center">
-                                                <Label Text="{Binding TypeDisplay}"
-                                                       FontSize="15" FontAttributes="Bold"
-                                                       TextColor="{StaticResource OnBackground}"/>
-                                                <Label Text="{Binding DateRange}"
-                                                       FontSize="13"
-                                                       TextColor="{StaticResource OnSurfaceVariant}"/>
-                                            </VerticalStackLayout>
-                                        </HorizontalStackLayout>
-                                        <Border Grid.Column="1"
-                                                BackgroundColor="{Binding StatusBgColor}"
-                                                Stroke="Transparent" Padding="10,5"
-                                                VerticalOptions="Center">
-                                            <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
-                                            <Label Text="{Binding StatusDisplay}"
-                                                   FontSize="11" FontAttributes="Bold"
-                                                   TextColor="{Binding StatusColor}"/>
-                                        </Border>
-                                    </Grid>
-
-                                    <!-- Working days chip -->
-                                    <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
-                                            Stroke="Transparent" Padding="8,4"
-                                            HorizontalOptions="Start">
-                                        <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
-                                        <Label Text="{Binding TotalDays, StringFormat='{0} giorni lavorativi'}"
-                                               FontSize="12" FontAttributes="Bold"
-                                               TextColor="{StaticResource OnSurfaceVariant}"/>
-                                    </Border>
-
-                                    <!-- Review note -->
-                                    <Border BackgroundColor="#FEF3C7" Stroke="#FDE68A" StrokeThickness="1"
-                                            Padding="10,8"
-                                            IsVisible="{Binding ReviewNote, Converter={StaticResource StringNotEmptyConverter}}">
-                                        <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
-                                        <HorizontalStackLayout Spacing="6">
-                                            <Label Text="ℹ️" FontSize="14" VerticalOptions="Center"/>
-                                            <Label Text="{Binding ReviewNote}"
-                                                   FontSize="12" TextColor="#92400E"
+                            <Border BackgroundColor="{StaticResource Surface}"
+                                    Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                                    Padding="0">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
+                                <Border.Shadow>
+                                    <Shadow Brush="#000000" Offset="0,4" Radius="14" Opacity="0.06"/>
+                                </Border.Shadow>
+                                <Grid ColumnDefinitions="4,*">
+                                    <BoxView Grid.Column="0"
+                                             Color="{Binding StripColor}"
+                                             VerticalOptions="Fill"
+                                             CornerRadius="5,0,0,5"/>
+                                    <VerticalStackLayout Grid.Column="1"
+                                                         Spacing="10" Padding="14,14">
+                                        <!-- Employee (admin only) -->
+                                        <HorizontalStackLayout Spacing="12"
+                                            IsVisible="{Binding Source={RelativeSource AncestorType={x:Type vm:VacationListViewModel}}, Path=IsAdmin}">
+                                            <Border BackgroundColor="{StaticResource PrimaryLight}"
+                                                    HeightRequest="36" WidthRequest="36"
+                                                    Stroke="Transparent">
+                                                <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
+                                                <Label Text="{Binding Initials}"
+                                                       FontSize="12" FontAttributes="Bold" FontFamily="PJSBold"
+                                                       TextColor="{StaticResource Primary}"
+                                                       HorizontalOptions="Center" VerticalOptions="Center"/>
+                                            </Border>
+                                            <Label Text="{Binding EmployeeName}"
+                                                   FontSize="14" FontAttributes="Bold" FontFamily="PJSBold"
+                                                   TextColor="{StaticResource OnBackground}"
                                                    VerticalOptions="Center"/>
                                         </HorizontalStackLayout>
-                                    </Border>
 
-                                    <!-- ADMIN action buttons -->
-                                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8"
-                                          IsVisible="{Binding Source={RelativeSource AncestorType={x:Type vm:VacationListViewModel}}, Path=IsAdmin}">
-                                        <Button Grid.Column="0" Text="✏️ Modifica"
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:VacationListViewModel}}, Path=EditRequestCommand}"
-                                                CommandParameter="{Binding .}"
-                                                BackgroundColor="Transparent"
-                                                TextColor="{StaticResource Primary}"
-                                                BorderColor="{StaticResource Primary}"
-                                                BorderWidth="1" CornerRadius="8" HeightRequest="36" FontSize="12"/>
-                                        <Button Grid.Column="1" Text="✓ Approva"
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:VacationListViewModel}}, Path=ApproveCommand}"
-                                                CommandParameter="{Binding .}"
-                                                BackgroundColor="{StaticResource Success}"
-                                                TextColor="White"
-                                                CornerRadius="8" HeightRequest="36" FontSize="12"
-                                                IsVisible="{Binding IsPending}"/>
-                                        <Button Grid.Column="2" Text="✕ Rifiuta"
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:VacationListViewModel}}, Path=RejectCommand}"
+                                        <!-- Type + status -->
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
+                                                <Label Text="{Binding TypeDisplay}"
+                                                       FontSize="14" FontAttributes="Bold" FontFamily="PJSBold"
+                                                       TextColor="{StaticResource OnBackground}"/>
+                                                <Label Text="{Binding DateRange}"
+                                                       FontSize="12" FontFamily="PJSReg"
+                                                       TextColor="{StaticResource OnSurfaceVariant}"/>
+                                            </VerticalStackLayout>
+                                            <Border Grid.Column="1"
+                                                    BackgroundColor="{Binding StatusBgColor}"
+                                                    Stroke="Transparent" Padding="10,5"
+                                                    VerticalOptions="Center">
+                                                <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                                                <Label Text="{Binding StatusDisplay}"
+                                                       FontSize="10" FontAttributes="Bold" FontFamily="PJSBold"
+                                                       TextColor="{Binding StatusColor}"/>
+                                            </Border>
+                                        </Grid>
+
+                                        <!-- Days chip -->
+                                        <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
+                                                Stroke="Transparent" Padding="9,4"
+                                                HorizontalOptions="Start">
+                                            <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
+                                            <Label Text="{Binding TotalDays, StringFormat='{0} giorni lavorativi'}"
+                                                   FontSize="11" FontAttributes="Bold" FontFamily="PJSBold"
+                                                   TextColor="{StaticResource OnSurfaceVariant}"/>
+                                        </Border>
+
+                                        <!-- Review note -->
+                                        <Border BackgroundColor="{StaticResource WarningLight}"
+                                                Stroke="{StaticResource Warning}" StrokeThickness="1"
+                                                Padding="10,8"
+                                                IsVisible="{Binding ReviewNote, Converter={StaticResource StringNotEmptyConverter}}">
+                                            <Border.StrokeShape><RoundRectangle CornerRadius="9"/></Border.StrokeShape>
+                                            <Label Text="{Binding ReviewNote}"
+                                                   FontSize="12" FontFamily="PJSReg"
+                                                   TextColor="{StaticResource WarningText}"/>
+                                        </Border>
+
+                                        <!-- Admin buttons -->
+                                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8"
+                                              IsVisible="{Binding Source={RelativeSource AncestorType={x:Type vm:VacationListViewModel}}, Path=IsAdmin}">
+                                            <Button Grid.Column="0" Text="Modifica"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:VacationListViewModel}}, Path=EditRequestCommand}"
+                                                    CommandParameter="{Binding .}"
+                                                    BackgroundColor="Transparent"
+                                                    TextColor="{StaticResource Primary}"
+                                                    BorderColor="{StaticResource PrimaryMid}"
+                                                    BorderWidth="1.5" CornerRadius="9"
+                                                    HeightRequest="38" FontSize="12"
+                                                    FontAttributes="Bold" FontFamily="PJSBold"/>
+                                            <Button Grid.Column="1" Text="Approva"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:VacationListViewModel}}, Path=ApproveCommand}"
+                                                    CommandParameter="{Binding .}"
+                                                    BackgroundColor="{StaticResource Success}"
+                                                    TextColor="White"
+                                                    CornerRadius="9" HeightRequest="38"
+                                                    FontSize="12" FontAttributes="Bold" FontFamily="PJSBold"
+                                                    IsVisible="{Binding IsPending}"/>
+                                            <Button Grid.Column="2" Text="Rifiuta"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:VacationListViewModel}}, Path=RejectCommand}"
+                                                    CommandParameter="{Binding .}"
+                                                    BackgroundColor="Transparent"
+                                                    TextColor="{StaticResource Error}"
+                                                    BorderColor="{StaticResource Error}"
+                                                    BorderWidth="1.5" CornerRadius="9"
+                                                    HeightRequest="38" FontSize="12"
+                                                    FontAttributes="Bold" FontFamily="PJSBold"
+                                                    IsVisible="{Binding IsPending}"/>
+                                        </Grid>
+
+                                        <!-- Employee cancel -->
+                                        <Button Text="Annulla richiesta"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:VacationListViewModel}}, Path=CancelRequestCommand}"
                                                 CommandParameter="{Binding .}"
                                                 BackgroundColor="Transparent"
                                                 TextColor="{StaticResource Error}"
                                                 BorderColor="{StaticResource Error}"
-                                                BorderWidth="1" CornerRadius="8" HeightRequest="36" FontSize="12"
-                                                IsVisible="{Binding IsPending}"/>
-                                        <Button Grid.Column="1" Grid.ColumnSpan="2"
-                                                Text="🗑️ Elimina"
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:VacationListViewModel}}, Path=DeleteRequestCommand}"
-                                                CommandParameter="{Binding .}"
-                                                BackgroundColor="Transparent"
-                                                TextColor="{StaticResource Error}"
-                                                BorderColor="{StaticResource Error}"
-                                                BorderWidth="1" CornerRadius="8" HeightRequest="36" FontSize="12">
+                                                BorderWidth="1.5" CornerRadius="10"
+                                                HeightRequest="40" FontSize="13"
+                                                FontAttributes="Bold" FontFamily="PJSBold"
+                                                IsVisible="{Binding IsPending}">
                                             <Button.Triggers>
                                                 <DataTrigger TargetType="Button"
-                                                             Binding="{Binding IsPending}" Value="True">
+                                                             Binding="{Binding Source={RelativeSource AncestorType={x:Type vm:VacationListViewModel}}, Path=IsAdmin}"
+                                                             Value="True">
                                                     <Setter Property="IsVisible" Value="False"/>
                                                 </DataTrigger>
                                             </Button.Triggers>
                                         </Button>
-                                    </Grid>
 
-                                    <!-- EMPLOYEE cancel button -->
-                                    <Button Text="Annulla richiesta"
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:VacationListViewModel}}, Path=CancelRequestCommand}"
-                                            CommandParameter="{Binding .}"
-                                            BackgroundColor="Transparent"
-                                            TextColor="{StaticResource Error}"
-                                            BorderColor="{StaticResource Error}"
-                                            BorderWidth="1" CornerRadius="8" HeightRequest="38"
-                                            IsVisible="{Binding IsPending}">
-                                        <Button.Triggers>
-                                            <DataTrigger TargetType="Button"
-                                                         Binding="{Binding Source={RelativeSource AncestorType={x:Type vm:VacationListViewModel}}, Path=IsAdmin}"
-                                                         Value="True">
-                                                <Setter Property="IsVisible" Value="False"/>
-                                            </DataTrigger>
-                                        </Button.Triggers>
-                                    </Button>
-
-                                </VerticalStackLayout>
-                            </Grid>
-                        </Border>
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Border>
+                        </SwipeView>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
@@ -333,29 +349,31 @@
                            HorizontalOptions="Center" VerticalOptions="Center"
                            Color="{StaticResource Primary}"/>
 
-        <!-- ── New Request Form overlay ──────────────────────── -->
+        <!-- New request bottom sheet overlay -->
         <Grid Grid.RowSpan="4"
               IsVisible="{Binding IsFormVisible}"
               BackgroundColor="#80000000">
             <Border BackgroundColor="{StaticResource Surface}"
-                    Padding="24,8,24,32"
-                    Margin="0,0,0,0"
-                    VerticalOptions="End">
+                    Padding="24,8,24,36"
+                    VerticalOptions="End"
+                    Stroke="Transparent">
                 <Border.StrokeShape><RoundRectangle CornerRadius="28,28,0,0"/></Border.StrokeShape>
-                <Border.Stroke>Transparent</Border.Stroke>
-
-                <!-- Handle -->
+                <Border.Shadow>
+                    <Shadow Brush="#000000" Offset="0,-4" Radius="24" Opacity="0.14"/>
+                </Border.Shadow>
                 <VerticalStackLayout Spacing="0">
+                    <!-- Handle -->
                     <BoxView BackgroundColor="{StaticResource OutlineVariant}"
                              HeightRequest="4" WidthRequest="40"
                              CornerRadius="2"
                              HorizontalOptions="Center"
-                             Margin="0,12,0,20"/>
-
+                             Margin="0,14,0,22"/>
                     <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,20">
-                        <Label Grid.Column="0" Text="Nuova Richiesta"
-                               FontSize="20" FontAttributes="Bold"
-                               TextColor="{StaticResource OnBackground}"/>
+                        <Label Grid.Column="0"
+                               Text="Nuova Richiesta"
+                               FontSize="20" FontAttributes="Bold" FontFamily="PJSXBold"
+                               TextColor="{StaticResource OnBackground}"
+                               CharacterSpacing="-0.5"/>
                         <Button Grid.Column="1" Text="✕"
                                 Command="{Binding HideFormCommand}"
                                 BackgroundColor="Transparent"
@@ -363,72 +381,52 @@
                                 Padding="8,0" HeightRequest="36"/>
                     </Grid>
 
-                    <!-- Tipo richiesta -->
-                    <Label Text="TIPO RICHIESTA" FontSize="11" FontAttributes="Bold"
-                           TextColor="{StaticResource OnSurfaceVariant}"
-                           Margin="0,0,0,8"/>
-                    <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
-                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
-                            Margin="0,0,0,16">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                    <Label Text="TIPO RICHIESTA" Style="{StaticResource SectionLabel}" Margin="0,0,0,8"/>
+                    <Border Style="{StaticResource FieldBorder}" Margin="0,0,0,16">
                         <Picker ItemsSource="{Binding VacationTypesDisplay}"
                                 SelectedIndex="{Binding NewTypeIndex}"
+                                FontFamily="PJSReg"
                                 Margin="16,0"/>
                     </Border>
 
-                    <!-- Date -->
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,0,0,16">
                         <VerticalStackLayout Grid.Column="0" Spacing="6">
-                            <Label Text="INIZIO" FontSize="11" FontAttributes="Bold"
-                                   TextColor="{StaticResource OnSurfaceVariant}"/>
-                            <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
-                                    Stroke="{StaticResource OutlineVariant}" StrokeThickness="1">
-                                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                                <DatePicker Date="{Binding NewStartDate}" Margin="12,0"/>
+                            <Label Text="INIZIO" Style="{StaticResource SectionLabel}"/>
+                            <Border Style="{StaticResource FieldBorder}">
+                                <DatePicker Date="{Binding NewStartDate}" FontFamily="PJSReg" Margin="12,0"/>
                             </Border>
                         </VerticalStackLayout>
                         <VerticalStackLayout Grid.Column="1" Spacing="6">
-                            <Label Text="FINE" FontSize="11" FontAttributes="Bold"
-                                   TextColor="{StaticResource OnSurfaceVariant}"/>
-                            <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
-                                    Stroke="{StaticResource OutlineVariant}" StrokeThickness="1">
-                                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                                <DatePicker Date="{Binding NewEndDate}" Margin="12,0"/>
+                            <Label Text="FINE" Style="{StaticResource SectionLabel}"/>
+                            <Border Style="{StaticResource FieldBorder}">
+                                <DatePicker Date="{Binding NewEndDate}" FontFamily="PJSReg" Margin="12,0"/>
                             </Border>
                         </VerticalStackLayout>
                     </Grid>
 
-                    <!-- Days preview -->
-                    <Border BackgroundColor="#ECFDF5" Stroke="#D1FAE5" StrokeThickness="1"
-                            Padding="12,8" HorizontalOptions="Center"
-                            Margin="0,0,0,20">
+                    <Border BackgroundColor="{StaticResource SuccessLight}"
+                            Stroke="{StaticResource Success}" StrokeThickness="1"
+                            Padding="14,8" HorizontalOptions="Center" Margin="0,0,0,18">
                         <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
                         <Label Text="{Binding NewDaysPreview}"
-                               FontSize="13" FontAttributes="Bold"
-                               TextColor="{StaticResource Success}"/>
+                               FontSize="13" FontAttributes="Bold" FontFamily="PJSBold"
+                               TextColor="{StaticResource SuccessText}"/>
                     </Border>
 
-                    <!-- Motivo (opzionale) -->
-                    <Label Text="MOTIVO (OPZIONALE)" FontSize="11" FontAttributes="Bold"
-                           TextColor="{StaticResource OnSurfaceVariant}"
-                           Margin="0,0,0,8"/>
-                    <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
-                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
-                            Margin="0,0,0,20">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                    <Label Text="MOTIVO (OPZIONALE)" Style="{StaticResource SectionLabel}" Margin="0,0,0,8"/>
+                    <Border Style="{StaticResource FieldBorder}" Margin="0,0,0,20">
                         <Editor Text="{Binding NewReason}"
                                 Placeholder="Descrivi brevemente il motivo…"
-                                PlaceholderColor="{StaticResource OnSurfaceVariant}"
+                                PlaceholderColor="{StaticResource Outline}"
+                                FontFamily="PJSReg"
                                 AutoSize="TextChanges"
-                                MinimumHeightRequest="80"
+                                MinimumHeightRequest="76"
                                 Margin="12,8"/>
                     </Border>
 
                     <Button Text="Invia Richiesta"
                             Command="{Binding SubmitRequestCommand}"
-                            BackgroundColor="{StaticResource Primary}"
-                            TextColor="White" CornerRadius="14"
-                            HeightRequest="52" FontSize="16" FontAttributes="Bold"/>
+                            Style="{StaticResource PrimaryButton}"/>
                 </VerticalStackLayout>
             </Border>
         </Grid>

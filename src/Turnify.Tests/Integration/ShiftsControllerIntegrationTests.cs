@@ -285,4 +285,183 @@ public class ShiftsControllerIntegrationTests : IntegrationTestBase
 
         res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
+
+    // SHIFT-03 — durata turno > 24 ore → 400
+    [Fact]
+    public async Task CreateShift_DurationOver24Hours_Returns400()
+    {
+        AuthenticateAs(AdminId, CompanyId, UserRole.Admin);
+        var start = DateTime.UtcNow.Date.AddDays(60).AddHours(8);
+        var end   = start.AddHours(25);
+
+        var res = await Client.PostAsJsonAsync("/turnify/api/shifts", new
+        {
+            employeeId  = 1,
+            startTime   = start.ToString("o"),
+            endTime     = end.ToString("o"),
+            label       = "Turno troppo lungo",
+            isRecurring = false
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    // SHIFT-04 — EmployeeId = 0 → 400
+    [Fact]
+    public async Task CreateShift_EmployeeIdZero_Returns400()
+    {
+        AuthenticateAs(AdminId, CompanyId, UserRole.Admin);
+
+        var res = await Client.PostAsJsonAsync("/turnify/api/shifts", new
+        {
+            employeeId  = 0,
+            startTime   = DateTime.UtcNow.Date.AddDays(70).AddHours(9).ToString("o"),
+            endTime     = DateTime.UtcNow.Date.AddDays(70).AddHours(17).ToString("o"),
+            label       = "Test",
+            isRecurring = false
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    // SHIFT-05 — Label > 100 caratteri → 400
+    [Fact]
+    public async Task CreateShift_LabelTooLong_Returns400()
+    {
+        AuthenticateAs(AdminId, CompanyId, UserRole.Admin);
+
+        var res = await Client.PostAsJsonAsync("/turnify/api/shifts", new
+        {
+            employeeId  = 1,
+            startTime   = DateTime.UtcNow.Date.AddDays(75).AddHours(9).ToString("o"),
+            endTime     = DateTime.UtcNow.Date.AddDays(75).AddHours(17).ToString("o"),
+            label       = new string('x', 101),
+            isRecurring = false
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    // SHIFT-06 — Note > 500 caratteri → 400
+    [Fact]
+    public async Task CreateShift_NoteTooLong_Returns400()
+    {
+        AuthenticateAs(AdminId, CompanyId, UserRole.Admin);
+
+        var res = await Client.PostAsJsonAsync("/turnify/api/shifts", new
+        {
+            employeeId  = 1,
+            startTime   = DateTime.UtcNow.Date.AddDays(80).AddHours(9).ToString("o"),
+            endTime     = DateTime.UtcNow.Date.AddDays(80).AddHours(17).ToString("o"),
+            label       = "Test",
+            note        = new string('x', 501),
+            isRecurring = false
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    // SHIFT-07 — PUT turno con EndTime ≤ StartTime → 400 (FluentValidation su UpdateShiftRequest)
+    [Fact]
+    public async Task UpdateShift_EndBeforeStart_Returns400()
+    {
+        AuthenticateAs(AdminId, CompanyId, UserRole.Admin);
+        var start = DateTime.UtcNow.Date.AddDays(90).AddHours(17);
+        var end   = DateTime.UtcNow.Date.AddDays(90).AddHours(9);
+
+        var res = await Client.PutAsJsonAsync("/turnify/api/shifts/99999", new
+        {
+            startTime   = start.ToString("o"),
+            endTime     = end.ToString("o"),
+            label       = "Sbagliato",
+            note        = "",
+            status      = "Scheduled",
+            isRecurring = false
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    // SHIFT-10 — turni ricorrenti con Weeks = 0 → 400
+    [Fact]
+    public async Task CreateRecurringShifts_WeeksZero_Returns400()
+    {
+        AuthenticateAs(AdminId, CompanyId, UserRole.Admin);
+
+        var res = await Client.PostAsJsonAsync("/turnify/api/shifts/recurring", new
+        {
+            employeeId = 1,
+            startTime  = DateTime.UtcNow.Date.AddDays(100).AddHours(9).ToString("o"),
+            endTime    = DateTime.UtcNow.Date.AddDays(100).AddHours(17).ToString("o"),
+            weeks      = 0
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    // SHIFT-11 — turni ricorrenti con Weeks = 53 → 400
+    [Fact]
+    public async Task CreateRecurringShifts_Weeks53_Returns400()
+    {
+        AuthenticateAs(AdminId, CompanyId, UserRole.Admin);
+
+        var res = await Client.PostAsJsonAsync("/turnify/api/shifts/recurring", new
+        {
+            employeeId = 1,
+            startTime  = DateTime.UtcNow.Date.AddDays(200).AddHours(9).ToString("o"),
+            endTime    = DateTime.UtcNow.Date.AddDays(200).AddHours(17).ToString("o"),
+            weeks      = 53
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    // EDGE-04 — durata turno esattamente 24 ore → 201 (valore limite)
+    [Fact]
+    public async Task CreateShift_DurationExactly24Hours_Returns201()
+    {
+        AuthenticateAs(AdminId, CompanyId, UserRole.Admin);
+        using var db  = GetDb();
+        int empId = await SeedEmployeeAsync(db);
+
+        var start = DateTime.UtcNow.Date.AddDays(120);
+        var end   = start.AddHours(24);
+
+        var res = await Client.PostAsJsonAsync("/turnify/api/shifts", new
+        {
+            employeeId  = empId,
+            startTime   = start.ToString("o"),
+            endTime     = end.ToString("o"),
+            label       = "Turno 24h",
+            isRecurring = false
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.Created);
+    }
+
+    // EDGE-06 — turni ricorrenti: Weeks = 1 e Weeks = 52 sono valori limite validi → 200
+    [Theory]
+    [InlineData(1)]
+    [InlineData(52)]
+    public async Task CreateRecurringShifts_BoundaryWeeks_Returns200(int weeks)
+    {
+        AuthenticateAs(AdminId, CompanyId, UserRole.Admin);
+        using var db  = GetDb();
+        int empId = await SeedEmployeeAsync(db);
+
+        var start = DateTime.UtcNow.Date.AddDays(150 + weeks).AddHours(9);
+        var end   = start.AddHours(8);
+
+        var res = await Client.PostAsJsonAsync("/turnify/api/shifts/recurring", new
+        {
+            employeeId = empId,
+            startTime  = start.ToString("o"),
+            endTime    = end.ToString("o"),
+            weeks
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.OK);
+        var body = await res.Content.ReadFromJsonAsync<JsonElement>();
+        body.GetProperty("created").GetInt32().Should().Be(weeks);
+    }
 }

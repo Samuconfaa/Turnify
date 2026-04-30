@@ -152,6 +152,12 @@ public partial class EmployeeListViewModel : BaseViewModel
     }
 
     [RelayCommand]
+    private async Task CreateEmployeeAsync()
+    {
+        await Shell.Current.GoToAsync(nameof(EmployeeDetailPage));
+    }
+
+    [RelayCommand]
     private async Task EditEmployeeAsync(EmployeeListDto emp)
     {
         if (emp == null) return;

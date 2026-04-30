@@ -3,284 +3,236 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
              x:Class="Turnify.Mobile.Views.LoginPage"
+             x:DataType="vm:LoginViewModel"
              Title="{Binding Title}"
              Shell.NavBarIsVisible="False"
-             BackgroundColor="#1E40AF">
+             BackgroundColor="{StaticResource Navy}">
 
-    <Grid RowDefinitions="200,*">
+    <Grid RowDefinitions="220,*">
 
-        <!-- ── Top: Hero blu ─────────────────────────────────────────── -->
-        <Grid Grid.Row="0"
-              BackgroundColor="Transparent"
-              VerticalOptions="Fill">
-            <VerticalStackLayout VerticalOptions="Center"
-                                 HorizontalOptions="Center"
-                                 Spacing="6">
-                <Label Text="📅"
-                       FontSize="40"
-                       HorizontalOptions="Center"/>
-                <Label Text="Turnify"
+        <!-- ── Hero ──────────────────────────────────────────── -->
+        <VerticalStackLayout Grid.Row="0"
+                             VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             Spacing="8">
+            <!-- Logo mark -->
+            <Border BackgroundColor="#FFFFFF14"
+                    Stroke="#FFFFFF22" StrokeThickness="1.5"
+                    HeightRequest="68" WidthRequest="68"
+                    HorizontalOptions="Center"
+                    Margin="0,0,0,4">
+                <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                <Label Text="T"
                        FontSize="30" FontAttributes="Bold"
+                       FontFamily="PJSXBold"
                        TextColor="White"
-                       HorizontalOptions="Center"/>
-                <Label Text="Gestisci il tuo team"
-                       FontSize="14"
-                       TextColor="#B3FFFFFF"
-                       HorizontalOptions="Center"/>
-            </VerticalStackLayout>
-        </Grid>
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+            </Border>
+            <Label Text="Turnify"
+                   FontSize="28" FontAttributes="Bold"
+                   FontFamily="PJSXBold"
+                   TextColor="White"
+                   HorizontalOptions="Center"
+                   CharacterSpacing="-0.8"/>
+            <Label Text="Gestisci il tuo team, ovunque"
+                   FontSize="14" FontFamily="PJSReg"
+                   TextColor="#FFFFFF70"
+                   HorizontalOptions="Center"/>
+        </VerticalStackLayout>
 
-        <!-- ── Bottom: Login Sheet ────────────────────────────────────── -->
+        <!-- ── Bottom sheet ───────────────────────────────────── -->
         <Border Grid.Row="1"
                 BackgroundColor="{StaticResource Surface}"
-                Padding="24,28,24,24"
-                Margin="0,-28,0,0">
-            <Border.StrokeShape>
-                <RoundRectangle CornerRadius="28,28,0,0"/>
-            </Border.StrokeShape>
-            <Border.Stroke>Transparent</Border.Stroke>
+                Stroke="Transparent"
+                Margin="0,-24,0,0">
+            <Border.StrokeShape><RoundRectangle CornerRadius="28,28,0,0"/></Border.StrokeShape>
 
-            <Grid>
-                <!-- Form content -->
-                <VerticalStackLayout Spacing="0">
+            <ScrollView>
+                <VerticalStackLayout Spacing="18" Padding="24,30,24,48">
 
                     <Label Text="Accedi"
-                           FontSize="20" FontAttributes="Bold"
+                           FontSize="22" FontAttributes="Bold"
+                           FontFamily="PJSXBold"
                            TextColor="{StaticResource OnBackground}"
-                           Margin="0,0,0,16"/>
+                           CharacterSpacing="-0.5"/>
 
                     <!-- Error banner -->
-                    <Border BackgroundColor="{StaticResource ErrorContainer}"
-                            Stroke="{StaticResource Error}"
-                            StrokeThickness="1" Padding="12,8"
-                            IsVisible="{Binding HasError}"
-                            Margin="0,0,0,12">
+                    <Border BackgroundColor="{StaticResource ErrorLight}"
+                            Stroke="{StaticResource Error}" StrokeThickness="1"
+                            Padding="14,10"
+                            IsVisible="{Binding HasError}">
                         <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                        <HorizontalStackLayout Spacing="10">
-                            <Label Text="⚠️" FontSize="15" VerticalOptions="Center"/>
-                            <Label Text="{Binding ErrorMessage}"
-                                   FontSize="13" FontAttributes="Bold"
-                                   TextColor="{StaticResource OnErrorContainer}"
-                                   VerticalOptions="Center"/>
-                        </HorizontalStackLayout>
+                        <Label Text="{Binding ErrorMessage}"
+                               FontSize="13" FontFamily="PJSSemi"
+                               TextColor="{StaticResource ErrorText}"/>
                     </Border>
 
-                    <!-- Toggle admin / dipendente -->
-                    <Grid ColumnDefinitions="*,*" Margin="0,0,0,20"
-                          BackgroundColor="{StaticResource SurfaceContainerLow}">
-                        <Grid.StrokeShape><RoundRectangle CornerRadius="12"/></Grid.StrokeShape>
-                        <Border Grid.Column="0"
-                                Stroke="Transparent" Padding="0,10">
-                            <Border.Triggers>
-                                <DataTrigger TargetType="Border" Binding="{Binding IsAdminMode}" Value="True">
-                                    <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
-                                </DataTrigger>
-                                <DataTrigger TargetType="Border" Binding="{Binding IsAdminMode}" Value="False">
-                                    <Setter Property="BackgroundColor" Value="Transparent"/>
-                                </DataTrigger>
-                            </Border.Triggers>
-                            <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnAdminTabTapped"/>
-                            </Border.GestureRecognizers>
-                            <Label Text="Admin / Manager"
-                                   FontSize="13" FontAttributes="Bold"
-                                   HorizontalOptions="Center">
-                                <Label.Triggers>
-                                    <DataTrigger TargetType="Label" Binding="{Binding IsAdminMode}" Value="True">
-                                        <Setter Property="TextColor" Value="White"/>
+                    <!-- Mode toggle -->
+                    <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
+                            Stroke="Transparent"
+                            Padding="4">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="0">
+                            <Border Grid.Column="0"
+                                    Stroke="Transparent" Padding="0,10">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="11"/></Border.StrokeShape>
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsAdminMode}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="{StaticResource Navy}"/>
                                     </DataTrigger>
-                                    <DataTrigger TargetType="Label" Binding="{Binding IsAdminMode}" Value="False">
-                                        <Setter Property="TextColor" Value="{StaticResource OnSurfaceVariant}"/>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsAdminMode}" Value="False">
+                                        <Setter Property="BackgroundColor" Value="Transparent"/>
                                     </DataTrigger>
-                                </Label.Triggers>
-                            </Label>
-                        </Border>
-                        <Border Grid.Column="1"
-                                Stroke="Transparent" Padding="0,10">
-                            <Border.Triggers>
-                                <DataTrigger TargetType="Border" Binding="{Binding IsEmployeeMode}" Value="True">
-                                    <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
-                                </DataTrigger>
-                                <DataTrigger TargetType="Border" Binding="{Binding IsEmployeeMode}" Value="False">
-                                    <Setter Property="BackgroundColor" Value="Transparent"/>
-                                </DataTrigger>
-                            </Border.Triggers>
-                            <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnEmployeeTabTapped"/>
-                            </Border.GestureRecognizers>
-                            <Label Text="Dipendente"
-                                   FontSize="13" FontAttributes="Bold"
-                                   HorizontalOptions="Center">
-                                <Label.Triggers>
-                                    <DataTrigger TargetType="Label" Binding="{Binding IsEmployeeMode}" Value="True">
-                                        <Setter Property="TextColor" Value="White"/>
+                                </Border.Triggers>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnAdminTabTapped"/>
+                                </Border.GestureRecognizers>
+                                <Label Text="Admin / Manager"
+                                       FontSize="13" FontAttributes="Bold" FontFamily="PJSBold"
+                                       HorizontalOptions="Center">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding IsAdminMode}" Value="True">
+                                            <Setter Property="TextColor" Value="White"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Label" Binding="{Binding IsAdminMode}" Value="False">
+                                            <Setter Property="TextColor" Value="{StaticResource OnSurfaceVariant}"/>
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                            </Border>
+                            <Border Grid.Column="1"
+                                    Stroke="Transparent" Padding="0,10">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="11"/></Border.StrokeShape>
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsEmployeeMode}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="{StaticResource Navy}"/>
                                     </DataTrigger>
-                                    <DataTrigger TargetType="Label" Binding="{Binding IsEmployeeMode}" Value="False">
-                                        <Setter Property="TextColor" Value="{StaticResource OnSurfaceVariant}"/>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsEmployeeMode}" Value="False">
+                                        <Setter Property="BackgroundColor" Value="Transparent"/>
                                     </DataTrigger>
-                                </Label.Triggers>
-                            </Label>
-                        </Border>
-                    </Grid>
+                                </Border.Triggers>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnEmployeeTabTapped"/>
+                                </Border.GestureRecognizers>
+                                <Label Text="Dipendente"
+                                       FontSize="13" FontAttributes="Bold" FontFamily="PJSBold"
+                                       HorizontalOptions="Center">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding IsEmployeeMode}" Value="True">
+                                            <Setter Property="TextColor" Value="White"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Label" Binding="{Binding IsEmployeeMode}" Value="False">
+                                            <Setter Property="TextColor" Value="{StaticResource OnSurfaceVariant}"/>
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                            </Border>
+                        </Grid>
+                    </Border>
 
-                    <!-- ── Campi Admin / Manager ── -->
-                    <VerticalStackLayout IsVisible="{Binding IsAdminMode}" Spacing="0">
-                        <Label Text="Email"
-                               FontSize="12" FontAttributes="Bold"
-                               TextColor="{StaticResource OnSurfaceVariant}"
-                               Margin="4,0,0,5"/>
-                        <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
-                                Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
-                                Margin="0,0,0,12">
-                            <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                    <!-- Admin fields -->
+                    <VerticalStackLayout IsVisible="{Binding IsAdminMode}" Spacing="6">
+                        <Label Text="EMAIL" Style="{StaticResource SectionLabel}" Margin="4,0,0,2"/>
+                        <Border Style="{StaticResource FieldBorder}">
                             <Entry Text="{Binding Email}"
                                    Placeholder="nome@azienda.it"
                                    Keyboard="Email"
-                                   HeightRequest="48"
-                                   Margin="16,0"
-                                   TextColor="{StaticResource OnBackground}"
-                                   PlaceholderColor="{StaticResource Outline}"
-                                   BackgroundColor="Transparent"/>
+                                   Style="{StaticResource FieldEntry}"/>
                         </Border>
                     </VerticalStackLayout>
 
-                    <!-- ── Campi Dipendente ── -->
-                    <VerticalStackLayout IsVisible="{Binding IsEmployeeMode}" Spacing="0">
-                        <Label Text="Nome azienda"
-                               FontSize="12" FontAttributes="Bold"
-                               TextColor="{StaticResource OnSurfaceVariant}"
-                               Margin="4,0,0,5"/>
-                        <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
-                                Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
-                                Margin="0,0,0,12">
-                            <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                            <Entry Text="{Binding CompanySlug}"
-                                   Placeholder="es. pizzeria-mario"
-                                   HeightRequest="48"
-                                   Margin="16,0"
-                                   TextColor="{StaticResource OnBackground}"
-                                   PlaceholderColor="{StaticResource Outline}"
-                                   BackgroundColor="Transparent"/>
-                        </Border>
-                        <Label Text="Nome utente"
-                               FontSize="12" FontAttributes="Bold"
-                               TextColor="{StaticResource OnSurfaceVariant}"
-                               Margin="4,0,0,5"/>
-                        <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
-                                Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
-                                Margin="0,0,0,12">
-                            <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                            <Entry Text="{Binding Username}"
-                                   Placeholder="mario.rossi"
-                                   HeightRequest="48"
-                                   Margin="16,0"
-                                   TextColor="{StaticResource OnBackground}"
-                                   PlaceholderColor="{StaticResource Outline}"
-                                   BackgroundColor="Transparent"/>
+                    <!-- Employee fields -->
+                    <VerticalStackLayout IsVisible="{Binding IsEmployeeMode}" Spacing="14">
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="NOME AZIENDA" Style="{StaticResource SectionLabel}" Margin="4,0,0,2"/>
+                            <Border Style="{StaticResource FieldBorder}">
+                                <Entry Text="{Binding CompanySlug}"
+                                       Placeholder="pizzeria-mario"
+                                       Style="{StaticResource FieldEntry}"/>
+                            </Border>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="NOME UTENTE" Style="{StaticResource SectionLabel}" Margin="4,0,0,2"/>
+                            <Border Style="{StaticResource FieldBorder}">
+                                <Entry Text="{Binding Username}"
+                                       Placeholder="mario.rossi"
+                                       Style="{StaticResource FieldEntry}"/>
+                            </Border>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+
+                    <!-- Password -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="PASSWORD" Style="{StaticResource SectionLabel}" Margin="4,0,0,2"/>
+                        <Border Style="{StaticResource FieldBorder}">
+                            <Entry Text="{Binding Password}"
+                                   Placeholder="••••••••"
+                                   IsPassword="True"
+                                   Style="{StaticResource FieldEntry}"/>
                         </Border>
                     </VerticalStackLayout>
 
-                    <!-- Password (comune a entrambe le modalità) -->
-                    <Label Text="Password"
-                           FontSize="12" FontAttributes="Bold"
-                           TextColor="{StaticResource OnSurfaceVariant}"
-                           Margin="4,0,0,5"/>
-                    <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
-                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
-                            Margin="0,0,0,6">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                        <Entry Text="{Binding Password}"
-                               Placeholder="••••••••"
-                               IsPassword="True"
-                               HeightRequest="48"
-                               Margin="16,0"
-                               TextColor="{StaticResource OnBackground}"
-                               PlaceholderColor="{StaticResource Outline}"
-                               BackgroundColor="Transparent"/>
-                    </Border>
-
-                    <!-- Forgot password (solo admin) -->
+                    <!-- Forgot password -->
                     <Label Text="Password dimenticata?"
-                           FontSize="13" FontAttributes="Bold"
+                           FontSize="13" FontAttributes="Bold" FontFamily="PJSSemi"
                            TextColor="{StaticResource Primary}"
                            HorizontalOptions="End"
                            IsVisible="{Binding IsAdminMode}"
-                           Margin="0,0,0,24">
+                           Margin="0,-8,0,0">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding GoToForgotPasswordCommand}"/>
                         </Label.GestureRecognizers>
                     </Label>
-                    <BoxView HeightRequest="24" BackgroundColor="Transparent"
+                    <BoxView HeightRequest="4" BackgroundColor="Transparent"
                              IsVisible="{Binding IsEmployeeMode}"/>
 
                     <!-- Login button -->
                     <Button Text="Accedi"
                             Command="{Binding LoginCommand}"
-                            BackgroundColor="{StaticResource Primary}"
-                            TextColor="White"
-                            HeightRequest="52" CornerRadius="12"
-                            FontSize="16" FontAttributes="Bold"
-                            Margin="0,0,0,12"/>
+                            Style="{StaticResource PrimaryButton}"/>
 
                     <ActivityIndicator IsRunning="{Binding IsBusy}"
                                        IsVisible="{Binding IsBusy}"
                                        HorizontalOptions="Center"
-                                       Color="{StaticResource Primary}"
-                                       Margin="0,0,0,12"/>
+                                       Color="{StaticResource Primary}"/>
 
                     <!-- Divider -->
-                    <Grid ColumnDefinitions="*,Auto,*" ColumnSpacing="12"
-                          Margin="0,0,0,16">
+                    <Grid ColumnDefinitions="*,Auto,*" ColumnSpacing="12">
                         <BoxView Grid.Column="0" HeightRequest="1"
                                  BackgroundColor="{StaticResource OutlineVariant}"
                                  VerticalOptions="Center"/>
                         <Label Grid.Column="1" Text="oppure"
-                               FontSize="12" TextColor="{StaticResource Outline}"/>
+                               FontSize="12" FontFamily="PJSReg"
+                               TextColor="{StaticResource Outline}"/>
                         <BoxView Grid.Column="2" HeightRequest="1"
                                  BackgroundColor="{StaticResource OutlineVariant}"
                                  VerticalOptions="Center"/>
                     </Grid>
 
-                    <!-- Register button -->
                     <Button Text="Registra la tua azienda"
                             Command="{Binding GoToRegisterCommand}"
-                            BackgroundColor="Transparent"
-                            TextColor="{StaticResource OnSurfaceVariant}"
-                            BorderColor="{StaticResource OutlineVariant}"
-                            BorderWidth="1.5"
-                            HeightRequest="52" CornerRadius="12"
-                            FontSize="16" Margin="0,0,0,20"/>
+                            Style="{StaticResource OutlineButton}"/>
 
-                    <!-- Footer legal -->
-                    <Label FontSize="11"
+                    <!-- Legal -->
+                    <Label FontSize="11" FontFamily="PJSReg"
                            TextColor="{StaticResource Outline}"
                            HorizontalOptions="Center"
                            HorizontalTextAlignment="Center">
                         <Label.FormattedText>
                             <FormattedString>
                                 <Span Text="Accedendo, accetti i nostri "/>
-                                <Span Text="Termini di Servizio" TextColor="{StaticResource Primary}"/>
+                                <Span Text="Termini di Servizio"
+                                      TextColor="{StaticResource Primary}" FontAttributes="Bold"/>
                                 <Span Text=" e la "/>
-                                <Span Text="Privacy Policy" TextColor="{StaticResource Primary}"/>
+                                <Span Text="Privacy Policy"
+                                      TextColor="{StaticResource Primary}" FontAttributes="Bold"/>
                             </FormattedString>
                         </Label.FormattedText>
                     </Label>
 
                 </VerticalStackLayout>
-
-                <!-- Loading overlay — sempre visibile, non richiede scroll -->
-                <Border IsVisible="{Binding IsBusy}"
-                        BackgroundColor="#CCFFFFFF"
-                        Stroke="Transparent">
-                    <Border.StrokeShape><RoundRectangle CornerRadius="28,28,0,0"/></Border.StrokeShape>
-                    <ActivityIndicator IsRunning="{Binding IsBusy}"
-                                       HorizontalOptions="Center"
-                                       VerticalOptions="Center"
-                                       Color="{StaticResource Primary}"/>
-                </Border>
-            </Grid>
+            </ScrollView>
         </Border>
 
     </Grid>

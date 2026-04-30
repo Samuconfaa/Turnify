@@ -22,6 +22,11 @@ public static class MauiProgram
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                fonts.AddFont("PlusJakartaSans-Regular.ttf",   "PJSReg");
+                fonts.AddFont("PlusJakartaSans-Medium.ttf",    "PJSMed");
+                fonts.AddFont("PlusJakartaSans-SemiBold.ttf",  "PJSSemi");
+                fonts.AddFont("PlusJakartaSans-Bold.ttf",      "PJSBold");
+                fonts.AddFont("PlusJakartaSans-ExtraBold.ttf", "PJSXBold");
             });
 
 #if DEBUG
@@ -68,6 +73,9 @@ public static class MauiProgram
         builder.Services.AddTransient<ForgotPasswordViewModel>();
         builder.Services.AddTransient<EmployeeDashboardViewModel>();
         builder.Services.AddTransient<AttendanceHistoryViewModel>();
+        builder.Services.AddTransient<ChangePasswordViewModel>();
+        builder.Services.AddTransient<ReportsViewModel>();
+        builder.Services.AddTransient<EmployeeReportsViewModel>();
 
         // ── Views ───────────────────────────────────────────────────
         builder.Services.AddTransient<LoginPage>();
@@ -91,6 +99,9 @@ public static class MauiProgram
         builder.Services.AddTransient<ForgotPasswordPage>();
         builder.Services.AddTransient<EmployeeDashboardPage>();
         builder.Services.AddTransient<AttendanceHistoryPage>();
+        builder.Services.AddTransient<ChangePasswordPage>();
+        builder.Services.AddTransient<ReportsPage>();
+        builder.Services.AddTransient<EmployeeReportsPage>();
 
         var app = builder.Build();
 

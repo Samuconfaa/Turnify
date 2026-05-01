@@ -39,6 +39,20 @@
                         Margin="10,0"/>
             </Border>
 
+            <!-- Saldo ferie residue -->
+            <Border BackgroundColor="#F0FDF4" Stroke="#86EFAC" StrokeThickness="1"
+                    Padding="14,10" IsVisible="{Binding ShowBalance}">
+                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                <Label Text="{Binding BalanceLabel}"
+                       FontSize="13" FontFamily="PJSSemi" TextColor="#166534"/>
+            </Border>
+            <Border BackgroundColor="#FEF9C3" Stroke="#FDE047" StrokeThickness="1"
+                    Padding="14,10" IsVisible="{Binding ShowBalanceWarning}">
+                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                <Label Text="⚠️ Saldo esaurito — la richiesta verrà comunque inoltrata"
+                       FontSize="13" FontFamily="PJSSemi" TextColor="#854D0E"/>
+            </Border>
+
             <!-- Date -->
             <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                 <VerticalStackLayout Grid.Column="0" Spacing="6">

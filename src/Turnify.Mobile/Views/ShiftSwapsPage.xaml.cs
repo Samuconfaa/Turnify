@@ -2,11 +2,11 @@ using Turnify.Mobile.ViewModels;
 
 namespace Turnify.Mobile.Views;
 
-public partial class VacationEditPage : ContentPage
+public partial class ShiftSwapsPage : ContentPage
 {
-    private readonly VacationEditViewModel _viewModel;
+    private readonly ShiftSwapsViewModel _viewModel;
 
-    public VacationEditPage(VacationEditViewModel viewModel)
+    public ShiftSwapsPage(ShiftSwapsViewModel viewModel)
     {
         InitializeComponent();
         BindingContext = _viewModel = viewModel;

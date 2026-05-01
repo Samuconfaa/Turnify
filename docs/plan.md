@@ -398,6 +398,52 @@ Turnify/
 
 ---
 
+### Iterazione 11 — Gap architetturali e funzionali post-audit
+**Data:** 2026-05-01
+
+**Obiettivo:** correggere i gap emersi dall'audit MVVM e completare le funzionalità mancanti per un'app production-ready.
+
+**Deliverable:**
+1. Refresh token automatico su 401 in `AuthDelegatingHandler` — sessione persistente senza re-login
+2. UI approvazione/rifiuto ferie per admin (`VacationApprovalsPage` + ViewModel)
+3. Push notification inviate dal backend su creazione/modifica/eliminazione turno
+4. Navigazione Day View corretta con `PreviousDayCommand`/`NextDayCommand`
+5. `x:DataType` verificato e corretto su tutte le View XAML
+6. `EmojiPickerViewModel` dedicato con comunicazione via `WeakReferenceMessenger`
+7. Gestione turni ricorrenti in `ShiftDetailPage` (scope singolo vs tutti i successivi)
+
+**Status:** completata
+
+---
+
+### Iterazione 12 — Sessione persistente, saldo ferie, onboarding via codice invito
+**Data:** 2026-05-01
+
+**Obiettivo:** migliorare l'esperienza utente fondamentale e completare i flussi core mancanti.
+
+**Deliverable:**
+1. Sessione persistente all'avvio — se il refresh token è valido, l'utente accede direttamente alla schermata principale senza reinserire le credenziali (`ISessionService`)
+2. Saldo ferie residue — endpoint `GET /api/vacation-balance/{employeeId}` + UI in `VacationEditPage` e `EmployeeDetailPage`
+3. Onboarding dipendenti via codice invito — backend `Invite` model + endpoint CRUD + flow mobile admin (genera/revoca) + flow mobile dipendente (inserisce codice)
+
+**Status:** completata
+
+---
+
+### Iterazione 13 — Pianificazione avanzata: swap turni, copertura dashboard, disponibilità in calendario
+**Data:** 2026-05-01
+
+**Obiettivo:** dare all'admin visibilità completa sulla pianificazione e ai dipendenti autonomia negli scambi turno.
+
+**Deliverable:**
+1. Scambio turni tra dipendenti — `ShiftSwapRequest` model + controller + flow mobile (proposta, accettazione collega, approvazione admin) con push notification a ogni cambio di stato
+2. Dashboard admin con copertura settimanale — endpoint `GET /api/shifts/coverage` + sezione "Copertura questa settimana" in `DashboardPage` con card colorate per giorno
+3. Disponibilità dipendente visibile nel calendario — endpoint `GET /api/employees/{id}/availability` + overlay fascia disponibile in `ShiftCalendarPage` + avviso se l'admin assegna turno fuori disponibilità
+
+**Status:** completata
+
+---
+
 ## Rischi tecnici
 
 Derivati da problemi tecnici reali osservati durante lo sviluppo e la verifica:

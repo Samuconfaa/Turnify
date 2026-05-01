@@ -556,7 +556,7 @@
                         TextColor="{StaticResource Primary}"
                         FontSize="26" FontFamily="PJSBold"
                         Padding="0" HorizontalOptions="Center"
-                        Command="{Binding PreviousWeekCommand}"/>
+                        Command="{Binding PreviousDayCommand}"/>
                 <Label Grid.Column="1" Text="{Binding DayLabel}"
                        FontSize="14" FontAttributes="Bold" FontFamily="PJSBold"
                        TextColor="{StaticResource OnBackground}"
@@ -566,7 +566,7 @@
                         TextColor="{StaticResource Primary}"
                         FontSize="26" FontFamily="PJSBold"
                         Padding="0" HorizontalOptions="Center"
-                        Command="{Binding NextWeekCommand}"/>
+                        Command="{Binding NextDayCommand}"/>
             </Grid>
             <CollectionView Grid.Row="1"
                             ItemsSource="{Binding DaySlots}"

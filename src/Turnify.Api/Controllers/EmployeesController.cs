@@ -272,6 +272,25 @@ public class EmployeesController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>GET /api/employees/{id}/availability — giorni disponibili di un dipendente (admin)</summary>
+    [HttpGet("{id}/availability")]
+    public async Task<IActionResult> GetAvailability(int id, CancellationToken ct)
+    {
+        var companyId = GetCompanyId();
+        if (companyId == 0) return Unauthorized();
+
+        var employee = await _employeeRepository.GetByIdAsync(id, ct);
+        if (employee == null || employee.CompanyId != companyId) return StatusCode(403);
+
+        var days = (employee.AvailableDays ?? "1,2,3,4,5")
+            .Split(',', System.StringSplitOptions.RemoveEmptyEntries)
+            .Select(d => int.TryParse(d.Trim(), out var n) ? n : -1)
+            .Where(n => n >= 0)
+            .ToArray();
+
+        return Ok(new { availableDays = days });
+    }
+
     [HttpGet("me/availability")]
     public async Task<IActionResult> GetMyAvailability(CancellationToken ct)
     {

@@ -20,11 +20,16 @@ public class ShiftsController : ControllerBase
 {
     private readonly IShiftService _shiftService;
     private readonly IEmployeeRepository _employeeRepository;
+    private readonly IPushNotificationService _pushNotificationService;
 
-    public ShiftsController(IShiftService shiftService, IEmployeeRepository employeeRepository)
+    public ShiftsController(
+        IShiftService shiftService,
+        IEmployeeRepository employeeRepository,
+        IPushNotificationService pushNotificationService)
     {
-        _shiftService = shiftService;
-        _employeeRepository = employeeRepository;
+        _shiftService             = shiftService;
+        _employeeRepository       = employeeRepository;
+        _pushNotificationService  = pushNotificationService;
     }
 
     private int GetCompanyId()
@@ -44,6 +49,30 @@ public class ShiftsController : ControllerBase
     private bool IsAdmin() => User.IsInRole(UserRole.Admin.ToString());
     private bool IsManagerOrAdmin() =>
         User.IsInRole(UserRole.Admin.ToString()) || User.IsInRole(UserRole.Manager.ToString());
+
+    /// <summary>GET /api/shifts/coverage?from=&amp;to= — copertura giornaliera per l'admin</summary>
+    [HttpGet("coverage")]
+    public async Task<IActionResult> GetCoverage(
+        [FromQuery] DateTime from,
+        [FromQuery] DateTime to,
+        CancellationToken ct = default)
+    {
+        if (!IsManagerOrAdmin()) return StatusCode(403);
+        var companyId = GetCompanyId();
+        if (companyId == 0) return Unauthorized();
+
+        var shifts = await _shiftService.GetShiftsAsync(companyId, from, to, ct);
+
+        var result = new System.Collections.Generic.List<object>();
+        for (var day = from.Date; day <= to.Date; day = day.AddDays(1))
+        {
+            var dayShifts = shifts.Count(s => s.StartTime.Date == day);
+            var status    = dayShifts == 0 ? "Empty" : dayShifts < 2 ? "Partial" : "Full";
+            result.Add(new { date = day, totalShifts = dayShifts, coverageStatus = status });
+        }
+
+        return Ok(result);
+    }
 
     [HttpGet]
     public async Task<IActionResult> GetShifts(
@@ -214,6 +243,10 @@ public class ShiftsController : ControllerBase
         try
         {
             var created = await _shiftService.CreateShiftAsync(shift, ct);
+            _ = SendShiftPushAsync(created.EmployeeId,
+                "Nuovo turno assegnato",
+                $"Hai un nuovo turno il {created.StartTime.ToLocalTime():dddd dd MMMM} " +
+                $"dalle {created.StartTime.ToLocalTime():HH:mm}", ct);
             return Created($"/api/shifts/{created.Id}", MapToDto(created));
         }
         catch (InvalidOperationException ex)
@@ -260,6 +293,9 @@ public class ShiftsController : ControllerBase
         try
         {
             var updated = await _shiftService.UpdateShiftAsync(shift, ct);
+            _ = SendShiftPushAsync(updated.EmployeeId,
+                "Turno aggiornato",
+                $"Il tuo turno del {updated.StartTime.ToLocalTime():dddd dd MMMM} è stato modificato", ct);
             return Ok(MapToDto(updated));
         }
         catch (InvalidOperationException ex)
@@ -278,8 +314,24 @@ public class ShiftsController : ControllerBase
         if (shift == null) return NotFound();
         if (shift.CompanyId != GetCompanyId()) return StatusCode(403);
 
+        var employeeId = shift.EmployeeId;
+        var shiftDate  = shift.StartTime.ToLocalTime();
         await _shiftService.DeleteShiftAsync(id, ct);
+        _ = SendShiftPushAsync(employeeId,
+            "Turno rimosso",
+            $"Il tuo turno del {shiftDate:dddd dd MMMM} è stato cancellato", ct);
         return NoContent();
+    }
+
+    private async Task SendShiftPushAsync(int employeeId, string title, string body, CancellationToken ct)
+    {
+        try
+        {
+            var employee = await _employeeRepository.GetByIdAsync(employeeId, ct);
+            if (employee?.UserId == null) return;
+            await _pushNotificationService.SendToUserAsync(employee.UserId.Value, title, body, ct: ct);
+        }
+        catch { /* push non è critico — non blocca la risposta HTTP */ }
     }
 
     private static ShiftDto MapToDto(Shift s) => new()

@@ -227,6 +227,7 @@ public partial class ShiftCalendarViewModel : BaseViewModel
                     $"api/vacation-requests/approved?from={fromStr}&to={toStr}")
                     ?? new List<ApprovedVacationDto>();
                 BuildEmployeeRows(shiftList, vacations);
+                await ApplyAvailabilityAsync();
                 BuildDaySlots(shiftList);
             }
 
@@ -324,6 +325,28 @@ public partial class ShiftCalendarViewModel : BaseViewModel
         EmployeeRows = new ObservableCollection<EmployeeWeekRow>(rows);
     }
 
+    private async Task ApplyAvailabilityAsync()
+    {
+        foreach (var row in EmployeeRows)
+        {
+            try
+            {
+                var avail = await _httpClient.GetFromJsonAsync<AvailabilityDto>(
+                    $"api/employees/{row.EmployeeId}/availability");
+                if (avail?.AvailableDays == null) continue;
+                var available = new HashSet<int>(avail.AvailableDays);
+                for (int i = 0; i < row.Days.Count; i++)
+                {
+                    var dayOfWeek = (int)CurrentWeekStart.AddDays(i).DayOfWeek;
+                    if (dayOfWeek == 0) dayOfWeek = 7; // Sunday = 7
+                    if (!available.Contains(dayOfWeek) && !row.Days[i].HasShift && !row.Days[i].IsVacation)
+                        row.Days[i].IsUnavailable = true;
+                }
+            }
+            catch { /* non critico */ }
+        }
+    }
+
     [RelayCommand]
     private async Task ChangeViewModeAsync(CalendarViewMode mode)
     {
@@ -364,6 +387,20 @@ public partial class ShiftCalendarViewModel : BaseViewModel
     {
         CurrentWeekStart = CurrentWeekStart.AddDays(7);
         await LoadShiftsAsync();
+    }
+
+    [RelayCommand]
+    private void PreviousDay()
+    {
+        SelectedDate = SelectedDate.AddDays(-1);
+        BuildDaySlots(Shifts.ToList());
+    }
+
+    [RelayCommand]
+    private void NextDay()
+    {
+        SelectedDate = SelectedDate.AddDays(1);
+        BuildDaySlots(Shifts.ToList());
     }
 
     // Feature 1 – torna alla settimana corrente
@@ -530,10 +567,16 @@ public class DayCell
 {
     public bool HasShift { get; set; }
     public bool IsVacation { get; set; }
+    public bool IsUnavailable { get; set; }
     public string Label { get; set; } = string.Empty;
     public int ShiftId { get; set; }
-    public string CellColor  => IsVacation ? "#D97706" : HasShift ? "#2563EB" : "#E5E7EB";
+    public string CellColor  => IsVacation ? "#D97706" : HasShift ? "#2563EB" : IsUnavailable ? "#FCA5A5" : "#E5E7EB";
     public string LabelColor => (HasShift || IsVacation) ? "White" : "Transparent";
+}
+
+public class AvailabilityDto
+{
+    [JsonPropertyName("availableDays")] public int[] AvailableDays { get; set; } = Array.Empty<int>();
 }
 
 public class TimeSlot

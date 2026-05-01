@@ -40,6 +40,10 @@ public partial class EmployeeDetailViewModel : BaseViewModel
 
     [ObservableProperty] private int _employeeId;
     [ObservableProperty] private bool _hasError;
+    // Saldo ferie
+    [ObservableProperty] private string _holidayBalance   = string.Empty;
+    [ObservableProperty] private string _paidLeaveBalance = string.Empty;
+    [ObservableProperty] private bool _showEmployeeBalance;
     [ObservableProperty] private string _errorMessage = string.Empty;
     [ObservableProperty] private bool _hasData;
     [ObservableProperty] private bool _isEmptyState;
@@ -130,6 +134,7 @@ public partial class EmployeeDetailViewModel : BaseViewModel
                     SelectedAccountRoleIndex = emp.AccountRole == "Manager" ? 1 : 0;
                     HasData = true;
                     IsEmptyState = false;
+                    await LoadBalanceAsync();
                 }
                 else
                 {
@@ -312,6 +317,30 @@ public partial class EmployeeDetailViewModel : BaseViewModel
         catch (HttpRequestException) { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK"); }
         catch (TaskCanceledException) { await Shell.Current.DisplayAlertAsync("Errore", "Richiesta scaduta. Riprova.", "OK"); }
         finally { IsBusy = false; }
+    }
+
+    private async Task LoadBalanceAsync()
+    {
+        try
+        {
+            var bal = await _httpClient.GetFromJsonAsync<BalanceDto>($"api/vacation-balance/{EmployeeId}");
+            if (bal == null) return;
+            HolidayBalance   = $"🏖️ Ferie: {bal.Holiday.Remaining}/{bal.Holiday.Total} gg rimanenti";
+            PaidLeaveBalance = $"📋 Permessi: {bal.PaidLeave.Remaining}/{bal.PaidLeave.Total} gg rimanenti";
+            ShowEmployeeBalance = true;
+        }
+        catch { /* saldo non critico */ }
+    }
+
+    private class BalanceDto
+    {
+        public BalanceEntry Holiday   { get; set; } = new();
+        public BalanceEntry PaidLeave { get; set; } = new();
+        public class BalanceEntry
+        {
+            public int Total     { get; set; }
+            public int Remaining { get; set; }
+        }
     }
 
     private class BusinessItemDto

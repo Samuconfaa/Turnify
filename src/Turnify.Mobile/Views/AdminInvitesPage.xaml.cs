@@ -2,11 +2,11 @@ using Turnify.Mobile.ViewModels;
 
 namespace Turnify.Mobile.Views;
 
-public partial class VacationEditPage : ContentPage
+public partial class AdminInvitesPage : ContentPage
 {
-    private readonly VacationEditViewModel _viewModel;
+    private readonly AdminInvitesViewModel _viewModel;
 
-    public VacationEditPage(VacationEditViewModel viewModel)
+    public AdminInvitesPage(AdminInvitesViewModel viewModel)
     {
         InitializeComponent();
         BindingContext = _viewModel = viewModel;

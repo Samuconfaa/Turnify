@@ -84,6 +84,10 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(nameof(Views.ChangePasswordPage),     typeof(Views.ChangePasswordPage));
         Routing.RegisterRoute(nameof(Views.ReportsPage),            typeof(Views.ReportsPage));
         Routing.RegisterRoute(nameof(Views.EmployeeReportsPage),    typeof(Views.EmployeeReportsPage));
+        Routing.RegisterRoute(nameof(Views.AdminInvitesPage),       typeof(Views.AdminInvitesPage));
+        Routing.RegisterRoute(nameof(Views.InviteCodePage),         typeof(Views.InviteCodePage));
+        Routing.RegisterRoute(nameof(Views.ShiftSwapsPage),         typeof(Views.ShiftSwapsPage));
+        Routing.RegisterRoute("ShiftSwapRequestPage",               typeof(Views.ShiftSwapRequestPage));
     }
 
     public void ConfigureForRole(bool isAdmin)

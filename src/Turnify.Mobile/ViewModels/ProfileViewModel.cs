@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
 using System.Net.Http;
@@ -7,6 +8,7 @@ using System.Net.Http.Json;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Turnify.Mobile.Messages;
 using Turnify.Mobile.Services;
 
 namespace Turnify.Mobile.ViewModels;
@@ -77,29 +79,12 @@ public partial class ProfileViewModel : BaseViewModel
         }
     }
 
-    [ObservableProperty] private string? _selectedEmoji;
-
-    partial void OnSelectedEmojiChanged(string? value)
-    {
-        if (string.IsNullOrEmpty(value)) return;
-        SetEmoji(value);
-        SelectedEmoji = null;
-        _ = Shell.Current.GoToAsync("..");
-    }
-
-    // Emoji grid for picker (4 per row)
-    public string[] AvailableEmojis { get; } =
-    {
-        "😀","😎","🧑","👨","👩","🧔","👴","👵",
-        "🐶","🐱","🦊","🐼","🐨","🦁","🐯","🐻",
-        "🌟","⚡","🔥","🌈","🎯","🎸","🏆","🚀"
-    };
-
     public ProfileViewModel(IHttpClientFactory httpClientFactory, IAppNavigationService appNavigation)
     {
         _httpClient    = httpClientFactory.CreateClient("TurnifyApi");
         _appNavigation = appNavigation;
         Title          = "Profilo";
+        WeakReferenceMessenger.Default.Register<EmojiSelectedMessage>(this, (_, msg) => SetEmoji(msg.Emoji));
     }
 
     public async Task OnAppearingAsync()
@@ -258,6 +243,18 @@ public partial class ProfileViewModel : BaseViewModel
     [RelayCommand]
     private async Task ChangePasswordAsync()
         => await Shell.Current.GoToAsync(nameof(Views.ChangePasswordPage));
+
+    [RelayCommand]
+    private async Task GoToInvitesAsync()
+        => await Shell.Current.GoToAsync(nameof(Views.AdminInvitesPage));
+
+    [RelayCommand]
+    private async Task GoToInviteCodeAsync()
+        => await Shell.Current.GoToAsync(nameof(Views.InviteCodePage));
+
+    [RelayCommand]
+    private async Task GoToShiftSwapsAsync()
+        => await Shell.Current.GoToAsync(nameof(Views.ShiftSwapsPage));
 
     [RelayCommand]
     private async Task ManageOpeningHoursAsync()

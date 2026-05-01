@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Storage;
 
 namespace Turnify.Mobile.ViewModels;
 
@@ -29,13 +30,23 @@ public partial class VacationEditViewModel : BaseViewModel
     [ObservableProperty] private int _selectedStatusIndex;
     [ObservableProperty] private string _reviewNote = string.Empty;
 
+    // Saldo ferie
+    [ObservableProperty] private string _balanceLabel = string.Empty;
+    [ObservableProperty] private bool _showBalanceWarning;
+    [ObservableProperty] private bool _showBalance;
+
     public string[] VacationTypes        { get; } = { "Holiday", "PaidLeave", "SickLeave", "UnpaidLeave" };
     public string[] VacationTypesDisplay { get; } = { "Ferie", "Permesso Pagato", "Malattia", "Permesso Non Pagato" };
     public string[] StatusOptions        { get; } = { "Pending", "Approved", "Rejected", "Cancelled" };
     public string[] StatusOptionsDisplay { get; } = { "In Attesa", "Approvata", "Rifiutata", "Annullata" };
 
-    partial void OnSelectedTypeIndexChanged(int value) =>
+    private VacationBalanceDto? _balance;
+
+    partial void OnSelectedTypeIndexChanged(int value)
+    {
         SelectedType = VacationTypes.ElementAtOrDefault(value) ?? "Holiday";
+        UpdateBalanceLabel();
+    }
 
     partial void OnSelectedStatusIndexChanged(int value) =>
         SelectedStatus = StatusOptions.ElementAtOrDefault(value) ?? "Pending";
@@ -44,6 +55,37 @@ public partial class VacationEditViewModel : BaseViewModel
     {
         _httpClient = httpClientFactory.CreateClient("TurnifyApi");
         Title = "Modifica Richiesta";
+    }
+
+    public async Task OnAppearingAsync() => await LoadBalanceAsync();
+
+    private async Task LoadBalanceAsync()
+    {
+        try
+        {
+            _balance = await _httpClient.GetFromJsonAsync<VacationBalanceDto>("api/vacation-balance/me");
+            UpdateBalanceLabel();
+        }
+        catch { /* saldo non critico */ }
+    }
+
+    private void UpdateBalanceLabel()
+    {
+        if (_balance == null) { ShowBalance = false; return; }
+        ShowBalance = true;
+        (int total, int remaining) = SelectedType switch
+        {
+            "Holiday"   => (_balance.Holiday.Total,   _balance.Holiday.Remaining),
+            "PaidLeave" => (_balance.PaidLeave.Total, _balance.PaidLeave.Remaining),
+            _           => (0, 0)
+        };
+        if (total == 0) { ShowBalance = false; return; }
+
+        var emoji = SelectedType == "Holiday" ? "🏖️" : "📋";
+        var label = VacationTypesDisplay.ElementAtOrDefault(SelectedTypeIndex) ?? SelectedType;
+        BalanceLabel      = $"{emoji} {label} — {remaining} giorni rimanenti su {total}";
+        ShowBalanceWarning = remaining == 0;
+        ShowBalance        = true;
     }
 
     async partial void OnRequestIdChanged(int value)
@@ -149,6 +191,19 @@ public partial class VacationEditViewModel : BaseViewModel
             if (d.DayOfWeek != DayOfWeek.Saturday && d.DayOfWeek != DayOfWeek.Sunday)
                 count++;
         return count;
+    }
+
+    private class VacationBalanceDto
+    {
+        [JsonPropertyName("holiday")]   public BalanceEntry Holiday   { get; set; } = new();
+        [JsonPropertyName("paidLeave")] public BalanceEntry PaidLeave { get; set; } = new();
+
+        public class BalanceEntry
+        {
+            [JsonPropertyName("total")]     public int Total     { get; set; }
+            [JsonPropertyName("used")]      public int Used      { get; set; }
+            [JsonPropertyName("remaining")] public int Remaining { get; set; }
+        }
     }
 
     private class VacationRequestDto

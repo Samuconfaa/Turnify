@@ -347,6 +347,33 @@
                     </CollectionView>
                 </VerticalStackLayout>
 
+                <!-- ── Copertura settimana (solo admin) ─────────── -->
+                <VerticalStackLayout Spacing="10" Padding="20,16,20,0"
+                                     IsVisible="{Binding IsAdmin}">
+                    <Label Text="COPERTURA QUESTA SETTIMANA"
+                           FontSize="11" FontFamily="PJSSemi" CharacterSpacing="1.2"
+                           TextColor="{StaticResource Outline}"/>
+                    <CollectionView ItemsSource="{Binding WeeklyCoverage}"
+                                    ItemsLayout="HorizontalList">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="vm:CoverageDay">
+                                <Border Padding="10,10" Margin="0,0,8,0"
+                                        BackgroundColor="{Binding CardColor}"
+                                        Stroke="Transparent" WidthRequest="72">
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                                    <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                                        <Label Text="{Binding Icon}" FontSize="18" HorizontalOptions="Center"/>
+                                        <Label Text="{Binding DayLabel}" FontFamily="PJSSemi" FontSize="12"
+                                               TextColor="{Binding TextColor}" HorizontalOptions="Center"/>
+                                        <Label Text="{Binding DateLabel}" FontFamily="PJSReg" FontSize="11"
+                                               TextColor="{Binding TextColor}" HorizontalOptions="Center"/>
+                                    </VerticalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+
             </VerticalStackLayout>
         </ScrollView>
     </RefreshView>

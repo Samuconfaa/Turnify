@@ -121,6 +121,43 @@
                                 Padding="0">
                             <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
                             <VerticalStackLayout>
+                                <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,14"
+                                      IsVisible="{Binding IsAdmin, Converter={StaticResource InverseBoolConverter}}">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding GoToInviteCodeCommand}"/>
+                                    </Grid.GestureRecognizers>
+                                    <Border Grid.Column="0" BackgroundColor="{StaticResource SurfaceContainerLow}"
+                                            HeightRequest="36" WidthRequest="36" Stroke="Transparent" Margin="0,0,14,0">
+                                        <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                                        <Label Text="🎟️" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    </Border>
+                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                        <Label Text="Inserisci codice invito" FontSize="14" FontFamily="PJSSemi" TextColor="{StaticResource OnBackground}"/>
+                                        <Label Text="Associati a un'azienda" FontSize="11" FontFamily="PJSReg" TextColor="{StaticResource Outline}"/>
+                                    </VerticalStackLayout>
+                                    <Label Grid.Column="2" Text="›" FontSize="20" FontFamily="PJSBold" TextColor="{StaticResource Outline}" VerticalOptions="Center"/>
+                                </Grid>
+                                <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="16,0"
+                                         IsVisible="{Binding IsAdmin, Converter={StaticResource InverseBoolConverter}}"/>
+                                <!-- Scambi turno (dipendenti) -->
+                                <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,14"
+                                      IsVisible="{Binding IsAdmin, Converter={StaticResource InverseBoolConverter}}">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding GoToShiftSwapsCommand}"/>
+                                    </Grid.GestureRecognizers>
+                                    <Border Grid.Column="0" BackgroundColor="{StaticResource SurfaceContainerLow}"
+                                            HeightRequest="36" WidthRequest="36" Stroke="Transparent" Margin="0,0,14,0">
+                                        <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                                        <Label Text="🔄" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    </Border>
+                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                        <Label Text="Scambi turno" FontSize="14" FontFamily="PJSSemi" TextColor="{StaticResource OnBackground}"/>
+                                        <Label Text="Proposte di scambio ricevute e inviate" FontSize="11" FontFamily="PJSReg" TextColor="{StaticResource Outline}"/>
+                                    </VerticalStackLayout>
+                                    <Label Grid.Column="2" Text="›" FontSize="20" FontFamily="PJSBold" TextColor="{StaticResource Outline}" VerticalOptions="Center"/>
+                                </Grid>
+                                <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="16,0"
+                                         IsVisible="{Binding IsAdmin, Converter={StaticResource InverseBoolConverter}}"/>
                                 <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,14">
                                     <Grid.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding PickAvatarCommand}"/>
@@ -228,6 +265,40 @@
                                     <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
                                         <Label Text="Gestisci Team" FontSize="14" FontFamily="PJSSemi" TextColor="{StaticResource OnBackground}"/>
                                         <Label Text="Aggiungi o modifica dipendenti" FontSize="11" FontFamily="PJSReg" TextColor="{StaticResource Outline}"/>
+                                    </VerticalStackLayout>
+                                    <Label Grid.Column="2" Text="›" FontSize="20" FontFamily="PJSBold" TextColor="{StaticResource Outline}" VerticalOptions="Center"/>
+                                </Grid>
+                                <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="16,0"/>
+                                <!-- Scambi turni -->
+                                <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,14">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding GoToShiftSwapsCommand}"/>
+                                    </Grid.GestureRecognizers>
+                                    <Border Grid.Column="0" BackgroundColor="{StaticResource SurfaceContainerLow}"
+                                            HeightRequest="36" WidthRequest="36" Stroke="Transparent" Margin="0,0,14,0">
+                                        <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                                        <Label Text="🔄" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    </Border>
+                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                        <Label Text="Scambi turno" FontSize="14" FontFamily="PJSSemi" TextColor="{StaticResource OnBackground}"/>
+                                        <Label Text="Gestisci proposte di scambio" FontSize="11" FontFamily="PJSReg" TextColor="{StaticResource Outline}"/>
+                                    </VerticalStackLayout>
+                                    <Label Grid.Column="2" Text="›" FontSize="20" FontFamily="PJSBold" TextColor="{StaticResource Outline}" VerticalOptions="Center"/>
+                                </Grid>
+                                <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="16,0"/>
+                                <!-- Codici invito -->
+                                <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,14">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding GoToInvitesCommand}"/>
+                                    </Grid.GestureRecognizers>
+                                    <Border Grid.Column="0" BackgroundColor="{StaticResource SurfaceContainerLow}"
+                                            HeightRequest="36" WidthRequest="36" Stroke="Transparent" Margin="0,0,14,0">
+                                        <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                                        <Label Text="🎟️" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    </Border>
+                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                        <Label Text="Invita dipendenti" FontSize="14" FontFamily="PJSSemi" TextColor="{StaticResource OnBackground}"/>
+                                        <Label Text="Genera codici di accesso" FontSize="11" FontFamily="PJSReg" TextColor="{StaticResource Outline}"/>
                                     </VerticalStackLayout>
                                     <Label Grid.Column="2" Text="›" FontSize="20" FontFamily="PJSBold" TextColor="{StaticResource Outline}" VerticalOptions="Center"/>
                                 </Grid>

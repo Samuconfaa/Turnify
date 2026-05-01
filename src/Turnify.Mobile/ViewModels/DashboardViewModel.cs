@@ -2,9 +2,11 @@ using System;
 using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Storage;
 
 namespace Turnify.Mobile.ViewModels;
 
@@ -58,6 +60,29 @@ public class DashboardSummaryDto
     public DashboardPendingVacationDto[] PendingRequests { get; set; } = Array.Empty<DashboardPendingVacationDto>();
 }
 
+public class CoverageDay
+{
+    [JsonPropertyName("date")]     public DateTime Date     { get; set; }
+    [JsonPropertyName("coverage")] public string   Coverage { get; set; } = string.Empty;
+    [JsonPropertyName("count")]    public int      Count    { get; set; }
+
+    public string DayLabel   => Date.ToString("ddd");
+    public string DateLabel  => Date.ToString("dd/MM");
+    public string Icon       => Coverage switch { "Full" => "✅", "Partial" => "⚠️", _ => "❌" };
+    public Color  CardColor  => Coverage switch
+    {
+        "Full"    => Color.FromArgb("#E6F4EA"),
+        "Partial" => Color.FromArgb("#FFF8E1"),
+        _         => Color.FromArgb("#FDECEA")
+    };
+    public Color  TextColor  => Coverage switch
+    {
+        "Full"    => Color.FromArgb("#2E7D32"),
+        "Partial" => Color.FromArgb("#F57F17"),
+        _         => Color.FromArgb("#C62828")
+    };
+}
+
 public partial class DashboardViewModel : BaseViewModel
 {
     private readonly HttpClient _httpClient;
@@ -70,14 +95,17 @@ public partial class DashboardViewModel : BaseViewModel
     [ObservableProperty] private string _errorMessage = string.Empty;
     [ObservableProperty] private bool _isEmptyState;
     [ObservableProperty] private bool _hasData;
+    [ObservableProperty] private bool _isAdmin;
 
     public ObservableCollection<DashboardShiftDto> ShiftsToday { get; } = new();
     public ObservableCollection<DashboardPendingVacationDto> PendingRequests { get; } = new();
+    public ObservableCollection<CoverageDay> WeeklyCoverage { get; } = new();
 
     public DashboardViewModel(IHttpClientFactory httpClientFactory)
     {
         Title = "Dashboard";
         _httpClient = httpClientFactory.CreateClient("TurnifyApi");
+        IsAdmin = Preferences.Default.Get("user_role_cached", string.Empty) == "Admin";
     }
 
     [RelayCommand]
@@ -112,6 +140,9 @@ public partial class DashboardViewModel : BaseViewModel
                 bool empty = TotalEmployees == 0 && ShiftsThisWeek == 0;
                 HasData = !empty;
                 IsEmptyState = empty;
+
+                if (IsAdmin)
+                    await LoadCoverageAsync();
             }
             else
             {
@@ -152,6 +183,21 @@ public partial class DashboardViewModel : BaseViewModel
         {
             IsBusy = false;
         }
+    }
+
+    private async Task LoadCoverageAsync()
+    {
+        try
+        {
+            var from = DateTime.Today.ToString("yyyy-MM-dd");
+            var to   = DateTime.Today.AddDays(6).ToString("yyyy-MM-dd");
+            var days = await _httpClient.GetFromJsonAsync<CoverageDay[]>(
+                $"api/shifts/coverage?from={from}&to={to}");
+            WeeklyCoverage.Clear();
+            if (days != null)
+                foreach (var d in days) WeeklyCoverage.Add(d);
+        }
+        catch { /* non critico */ }
     }
 
     // Fix 6 & 8: Approve vacation from dashboard

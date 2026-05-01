@@ -117,6 +117,23 @@
                        TextColor="{StaticResource Outline}" Margin="4,0,0,0"/>
             </VerticalStackLayout>
 
+            <!-- Saldo ferie (edit only) -->
+            <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
+                    Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                    Padding="16,14" IsVisible="{Binding ShowEmployeeBalance}" Margin="0,6,0,0">
+                <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="SALDO FERIE ANNO CORRENTE"
+                           Style="{StaticResource SectionLabel}" Margin="0,0,0,4"/>
+                    <Label Text="{Binding HolidayBalance}"
+                           FontSize="13" FontFamily="PJSSemi"
+                           TextColor="{StaticResource OnBackground}"/>
+                    <Label Text="{Binding PaidLeaveBalance}"
+                           FontSize="13" FontFamily="PJSSemi"
+                           TextColor="{StaticResource OnBackground}"/>
+                </VerticalStackLayout>
+            </Border>
+
             <!-- Reset password (edit only) -->
             <Button Text="Reimposta password"
                     Command="{Binding ResetPasswordCommand}"

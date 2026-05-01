@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
+             x:Class="Turnify.Mobile.Views.InviteCodePage"
+             x:DataType="vm:InviteCodeViewModel"
+             Title="Codice Invito"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{StaticResource Background}">
+
+    <Grid RowDefinitions="*,Auto" Padding="28,48,28,32">
+
+        <VerticalStackLayout Grid.Row="0" Spacing="24" VerticalOptions="Center">
+
+            <!-- Hero icon -->
+            <Border BackgroundColor="{StaticResource PrimaryLight}"
+                    HeightRequest="88" WidthRequest="88"
+                    HorizontalOptions="Center" Stroke="Transparent">
+                <Border.StrokeShape><RoundRectangle CornerRadius="28"/></Border.StrokeShape>
+                <Label Text="🎟️" FontSize="44"
+                       HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Border>
+
+            <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                <Label Text="Hai un codice invito?"
+                       FontSize="26" FontAttributes="Bold" FontFamily="PJSXBold"
+                       TextColor="{StaticResource OnBackground}"
+                       HorizontalOptions="Center" HorizontalTextAlignment="Center"
+                       CharacterSpacing="-0.5"/>
+                <Label Text="Inserisci il codice ricevuto dal tuo responsabile per associarti all'azienda."
+                       FontSize="14" FontFamily="PJSReg"
+                       TextColor="{StaticResource OnSurfaceVariant}"
+                       HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+            </VerticalStackLayout>
+
+            <!-- Campo codice -->
+            <Border BackgroundColor="{StaticResource Surface}"
+                    Stroke="{StaticResource Primary}" StrokeThickness="2">
+                <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                <Entry Text="{Binding Code}"
+                       Placeholder="Es. TURN-X7K2"
+                       FontSize="20" FontAttributes="Bold" FontFamily="PJSBold"
+                       TextColor="{StaticResource Navy}"
+                       PlaceholderColor="{StaticResource Outline}"
+                       HorizontalTextAlignment="Center"
+                       Keyboard="Text"
+                       Margin="14,10"/>
+            </Border>
+
+            <!-- Errore -->
+            <Border BackgroundColor="{StaticResource ErrorLight}"
+                    Stroke="{StaticResource Error}" StrokeThickness="1"
+                    Padding="14,10"
+                    IsVisible="{Binding HasError}">
+                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                <Label Text="{Binding ErrorMessage}"
+                       FontSize="13" FontFamily="PJSSemi"
+                       TextColor="{StaticResource Error}"
+                       HorizontalTextAlignment="Center"/>
+            </Border>
+
+        </VerticalStackLayout>
+
+        <!-- Pulsanti footer -->
+        <VerticalStackLayout Grid.Row="1" Spacing="10">
+            <Button Text="Attiva codice"
+                    Command="{Binding RedeemCommand}"
+                    Style="{StaticResource PrimaryButton}"/>
+            <Button Text="Salta per ora"
+                    Command="{Binding SkipCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="{StaticResource Outline}"
+                    FontSize="13" FontFamily="PJSReg"
+                    HeightRequest="38"/>
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                               HorizontalOptions="Center" Color="{StaticResource Primary}"/>
+        </VerticalStackLayout>
+
+    </Grid>
+</ContentPage>

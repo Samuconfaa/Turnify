@@ -2,9 +2,9 @@ using Turnify.Mobile.ViewModels;
 
 namespace Turnify.Mobile.Views;
 
-public partial class EmojiPickerPage : ContentPage
+public partial class InviteCodePage : ContentPage
 {
-    public EmojiPickerPage(EmojiPickerViewModel viewModel)
+    public InviteCodePage(InviteCodeViewModel viewModel)
     {
         InitializeComponent();
         BindingContext = viewModel;

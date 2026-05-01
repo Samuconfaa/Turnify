@@ -19,6 +19,7 @@ public class Employee
     public string Notes { get; set; } = string.Empty;
     public string AvailableDays { get; set; } = "1,2,3,4,5";
     public int VacationDaysAllowed { get; set; } = 25;
+    public int PaidLeaveDaysPerYear { get; set; } = 8;
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public int? BusinessId { get; set; }

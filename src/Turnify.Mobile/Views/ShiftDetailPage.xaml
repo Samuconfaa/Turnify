@@ -38,6 +38,14 @@
                 </VerticalStackLayout>
             </Border>
 
+            <!-- Badge ricorrente (solo edit mode) -->
+            <Border BackgroundColor="#EFF6FF" Stroke="#BFDBFE" StrokeThickness="1"
+                    Padding="12,6" HorizontalOptions="Start"
+                    IsVisible="{Binding IsRecurring}">
+                <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                <Label Text="🔁 Turno ricorrente" FontSize="13" FontFamily="PJSSemi" TextColor="#1D4ED8"/>
+            </Border>
+
             <!-- Data -->
             <Label Text="DATA" Style="{StaticResource SectionLabel}" Margin="2,6,0,0"/>
             <Border Style="{StaticResource FieldBorder}">
@@ -150,6 +158,13 @@
                     </Button.Triggers>
                 </Button>
             </Grid>
+
+            <!-- Proponi scambio (solo dipendenti in modalità modifica) -->
+            <Button Text="🔄 Proponi scambio turno"
+                    Command="{Binding ProposeSwapCommand}"
+                    IsVisible="{Binding CanProposeSwap}"
+                    Style="{StaticResource GhostButton}"
+                    Margin="0,4,0,0"/>
 
             <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
                                HorizontalOptions="Center" Color="{StaticResource Primary}"/>

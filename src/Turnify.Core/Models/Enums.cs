@@ -57,3 +57,13 @@ public enum CheckInMethod
     Badge,
     Manual
 }
+
+public enum SwapStatus
+{
+    Pending,
+    AcceptedByPeer,
+    RejectedByPeer,
+    ApprovedByAdmin,
+    RejectedByAdmin,
+    Executed
+}

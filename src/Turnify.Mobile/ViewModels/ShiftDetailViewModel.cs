@@ -6,6 +6,8 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui.Storage;
 
 namespace Turnify.Mobile.ViewModels;
 
@@ -24,6 +26,7 @@ public partial class ShiftDetailViewModel : BaseViewModel
     private readonly HttpClient _httpClient;
 
     [ObservableProperty] private int _shiftId;
+    [ObservableProperty] private bool _isRecurring;
     [ObservableProperty] private bool _hasError;
     [ObservableProperty] private string _errorMessage = string.Empty;
     [ObservableProperty] private bool _hasData;
@@ -48,6 +51,8 @@ public partial class ShiftDetailViewModel : BaseViewModel
 
     public bool IsEditMode  => ShiftId > 0;
     public bool IsCreateMode => !IsEditMode;
+    public bool IsEmployee  => Preferences.Default.Get("user_role_cached", string.Empty) != "Admin";
+    public bool CanProposeSwap => IsEditMode && IsEmployee;
 
     public ShiftDetailViewModel(IHttpClientFactory httpClientFactory)
     {
@@ -123,8 +128,9 @@ public partial class ShiftDetailViewModel : BaseViewModel
             ShiftDate  = shift.StartTime.Date;
             StartTime  = shift.StartTime.TimeOfDay;
             EndTime    = shift.EndTime.TimeOfDay;
-            Label      = shift.Label;
-            Note       = shift.Note;
+            Label       = shift.Label;
+            Note        = shift.Note;
+            IsRecurring = shift.IsRecurring;
             SelectedEmployee = Employees.FirstOrDefault(e => e.Id == shift.EmployeeId);
         }
         catch (HttpRequestException) { }
@@ -171,9 +177,22 @@ public partial class ShiftDetailViewModel : BaseViewModel
 
             HttpResponseMessage response;
             if (IsCreateMode)
+            {
                 response = await _httpClient.PostAsJsonAsync("api/shifts", dto);
+            }
             else
-                response = await _httpClient.PutAsJsonAsync($"api/shifts/{ShiftId}", dto);
+            {
+                var scope = string.Empty;
+                if (IsRecurring)
+                {
+                    var choice = await Shell.Current.DisplayActionSheetAsync(
+                        "Turno ricorrente", "Annulla", null,
+                        "Solo questo turno", "Questo e tutti i successivi");
+                    if (choice == "Annulla" || choice == null) { IsBusy = false; return; }
+                    scope = choice == "Solo questo turno" ? "?scope=single" : "?scope=following";
+                }
+                response = await _httpClient.PutAsJsonAsync($"api/shifts/{ShiftId}{scope}", dto);
+            }
 
             if (response.IsSuccessStatusCode)
             {
@@ -229,6 +248,12 @@ public partial class ShiftDetailViewModel : BaseViewModel
     }
 
     [RelayCommand]
+    private async Task ProposeSwapAsync()
+    {
+        await Shell.Current.GoToAsync($"ShiftSwapRequestPage?myShiftId={ShiftId}");
+    }
+
+    [RelayCommand]
     private void IncrementRepeatWeeks() { if (RepeatWeeks < 12) RepeatWeeks++; }
 
     [RelayCommand]
@@ -260,5 +285,6 @@ public partial class ShiftDetailViewModel : BaseViewModel
         public DateTime EndTime { get; set; }
         public string Label { get; set; } = string.Empty;
         public string Note { get; set; } = string.Empty;
+        public bool IsRecurring { get; set; }
     }
 }

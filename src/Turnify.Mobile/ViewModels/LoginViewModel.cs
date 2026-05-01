@@ -7,13 +7,14 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
 using Turnify.Core.Interfaces.Services;
-using Turnify.Mobile.ViewModels;
+using Turnify.Mobile.Services;
 
 namespace Turnify.Mobile.ViewModels;
 
 public partial class LoginViewModel : BaseViewModel
 {
     private readonly IAuthService _authService;
+    private readonly IAppNavigationService _appNavigation;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
@@ -46,10 +47,11 @@ public partial class LoginViewModel : BaseViewModel
 
     public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
 
-    public LoginViewModel(IAuthService authService)
+    public LoginViewModel(IAuthService authService, IAppNavigationService appNavigation)
     {
-        _authService = authService;
-        Title        = "Login";
+        _authService   = authService;
+        _appNavigation = appNavigation;
+        Title          = "Login";
     }
 
     private bool CanLogin()
@@ -100,17 +102,12 @@ public partial class LoginViewModel : BaseViewModel
             // Admin al primo accesso → mostra onboarding wizard
             if (isAdmin && OnboardingViewModel.NeedsOnboarding())
             {
-                Application.Current!.Windows[0].Page = new AppShell(isAdmin: true, startRoute: "Login");
-                await Shell.Current.GoToAsync(nameof(Views.OnboardingPage));
+                await _appNavigation.NavigateToShellAsync(isAdmin: true, startRoute: "Onboarding");
                 return;
             }
 
             // Accesso normale
-            Application.Current!.Windows[0].Page = new AppShell(isAdmin);
-            if (isAdmin)
-                await Shell.Current.GoToAsync("//Dashboard");
-            else
-                await Shell.Current.GoToAsync(nameof(Views.EmployeeDashboardPage));
+            await _appNavigation.NavigateToShellAsync(isAdmin, startRoute: "Main");
         }
         catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
         {

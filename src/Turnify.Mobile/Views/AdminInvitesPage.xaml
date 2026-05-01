@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
+             x:Class="Turnify.Mobile.Views.AdminInvitesPage"
+             x:DataType="vm:AdminInvitesViewModel"
+             Title="{Binding Title}"
+             BackgroundColor="{StaticResource Background}">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Pulsante genera -->
+        <Border Grid.Row="0" Padding="16,12"
+                BackgroundColor="{StaticResource Surface}"
+                Stroke="{StaticResource OutlineVariant}" StrokeThickness="0,0,0,1">
+            <Border.StrokeShape><RoundRectangle CornerRadius="0"/></Border.StrokeShape>
+            <Button Text="+ Genera nuovo codice"
+                    Command="{Binding GenerateCommand}"
+                    Style="{StaticResource PrimaryButton}"
+                    HeightRequest="46"/>
+        </Border>
+
+        <RefreshView Grid.Row="1"
+                     Command="{Binding RefreshCommand}"
+                     IsRefreshing="{Binding IsRefreshing}">
+            <Grid>
+
+                <!-- Empty state -->
+                <VerticalStackLayout IsVisible="{Binding IsEmptyState}"
+                                     VerticalOptions="Center"
+                                     HorizontalOptions="Center"
+                                     Spacing="12" Padding="40">
+                    <Label Text="🎟️" FontSize="48" HorizontalOptions="Center"/>
+                    <Label Text="Nessun codice invito attivo"
+                           FontSize="16" FontFamily="PJSSemi"
+                           TextColor="{StaticResource OnSurfaceVariant}"
+                           HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                    <Label Text="Genera un codice da condividere con i tuoi dipendenti."
+                           FontSize="13" FontFamily="PJSReg"
+                           TextColor="{StaticResource Outline}"
+                           HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                </VerticalStackLayout>
+
+                <!-- Error state -->
+                <Label IsVisible="{Binding HasError}"
+                       Text="{Binding ErrorMessage}"
+                       FontSize="14" FontFamily="PJSReg"
+                       TextColor="{StaticResource Error}"
+                       HorizontalOptions="Center" VerticalOptions="Center"
+                       Margin="24"/>
+
+                <!-- Lista codici -->
+                <CollectionView ItemsSource="{Binding Invites}"
+                                IsVisible="{Binding HasData}"
+                                Margin="16,12">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="vm:AdminInvitesViewModel+InviteDto">
+                            <Border BackgroundColor="{StaticResource Surface}"
+                                    Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                                    Padding="16,14" Margin="0,0,0,10">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                                    <Label Grid.Row="0" Grid.Column="0"
+                                           Text="{Binding Code}"
+                                           FontSize="20" FontAttributes="Bold" FontFamily="PJSBold"
+                                           TextColor="{StaticResource Navy}"
+                                           LetterSpacing="2"/>
+                                    <Label Grid.Row="1" Grid.Column="0"
+                                           Text="{Binding ExpiresLabel}"
+                                           FontSize="12" FontFamily="PJSReg"
+                                           TextColor="{StaticResource Outline}"
+                                           Margin="0,4,0,0"/>
+                                    <HorizontalStackLayout Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
+                                                           VerticalOptions="Center" Spacing="8">
+                                        <Border BackgroundColor="{StaticResource PrimaryLight}"
+                                                Padding="10,6" Stroke="Transparent">
+                                            <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
+                                            <Border.GestureRecognizers>
+                                                <TapGestureRecognizer
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AdminInvitesViewModel}}, Path=ShowCodeCommand}"
+                                                    CommandParameter="{Binding .}"/>
+                                            </Border.GestureRecognizers>
+                                            <Label Text="👁" FontSize="14"/>
+                                        </Border>
+                                        <Border BackgroundColor="{StaticResource ErrorLight}"
+                                                Padding="10,6" Stroke="Transparent">
+                                            <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
+                                            <Border.GestureRecognizers>
+                                                <TapGestureRecognizer
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AdminInvitesViewModel}}, Path=RevokeCommand}"
+                                                    CommandParameter="{Binding .}"/>
+                                            </Border.GestureRecognizers>
+                                            <Label Text="✕" FontSize="14" TextColor="{StaticResource Error}"/>
+                                        </Border>
+                                    </HorizontalStackLayout>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                                   HorizontalOptions="Center" VerticalOptions="Center"
+                                   Color="{StaticResource Primary}"/>
+            </Grid>
+        </RefreshView>
+
+    </Grid>
+</ContentPage>

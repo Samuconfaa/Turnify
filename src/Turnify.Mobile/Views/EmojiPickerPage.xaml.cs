@@ -4,7 +4,7 @@ namespace Turnify.Mobile.Views;
 
 public partial class EmojiPickerPage : ContentPage
 {
-    public EmojiPickerPage(ProfileViewModel viewModel)
+    public EmojiPickerPage(EmojiPickerViewModel viewModel)
     {
         InitializeComponent();
         BindingContext = viewModel;

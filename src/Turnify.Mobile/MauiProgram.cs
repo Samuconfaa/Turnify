@@ -36,6 +36,8 @@ public static class MauiProgram
         builder.Services.AddTransient<AuthDelegatingHandler>();
         builder.Services.AddTransient<CertificatePinningHandler>();
         builder.Services.AddSingleton<IErrorReporterService, ErrorReporterService>();
+        builder.Services.AddSingleton<IAppNavigationService, AppNavigationService>();
+        builder.Services.AddSingleton<ISessionService,       SessionService>();
 
         builder.Services.AddHttpClient<IAuthService, AuthService>(client =>
         {
@@ -76,6 +78,11 @@ public static class MauiProgram
         builder.Services.AddTransient<ChangePasswordViewModel>();
         builder.Services.AddTransient<ReportsViewModel>();
         builder.Services.AddTransient<EmployeeReportsViewModel>();
+        builder.Services.AddTransient<EmojiPickerViewModel>();
+        builder.Services.AddTransient<AdminInvitesViewModel>();
+        builder.Services.AddTransient<InviteCodeViewModel>();
+        builder.Services.AddTransient<ShiftSwapsViewModel>();
+        builder.Services.AddTransient<ShiftSwapRequestViewModel>();
 
         // ── Views ───────────────────────────────────────────────────
         builder.Services.AddTransient<LoginPage>();
@@ -103,6 +110,10 @@ public static class MauiProgram
         builder.Services.AddTransient<ChangePasswordPage>();
         builder.Services.AddTransient<ReportsPage>();
         builder.Services.AddTransient<EmployeeReportsPage>();
+        builder.Services.AddTransient<AdminInvitesPage>();
+        builder.Services.AddTransient<InviteCodePage>();
+        builder.Services.AddTransient<ShiftSwapsPage>();
+        builder.Services.AddTransient<ShiftSwapRequestPage>();
 
         var app = builder.Build();
 

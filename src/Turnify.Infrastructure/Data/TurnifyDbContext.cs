@@ -21,6 +21,8 @@ public class TurnifyDbContext : DbContext
     public DbSet<AttendanceLog> AttendanceLogs => Set<AttendanceLog>();
     public DbSet<DeviceToken> DeviceTokens => Set<DeviceToken>();
     public DbSet<AppErrorLog> AppErrorLogs => Set<AppErrorLog>();
+    public DbSet<Invite> Invites => Set<Invite>();
+    public DbSet<ShiftSwapRequest> ShiftSwapRequests => Set<ShiftSwapRequest>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -90,6 +92,14 @@ public class TurnifyDbContext : DbContext
             .HasIndex(t => t.Token).IsUnique();
         modelBuilder.Entity<DeviceToken>()
             .Property(t => t.Platform).HasConversion<string>();
+
+        // ShiftSwapRequests
+        modelBuilder.Entity<ShiftSwapRequest>()
+            .HasIndex(s => s.RequestingEmployeeId);
+        modelBuilder.Entity<ShiftSwapRequest>()
+            .HasIndex(s => s.RequestedEmployeeId);
+        modelBuilder.Entity<ShiftSwapRequest>()
+            .Property(s => s.Status).HasConversion<string>();
 
         // AppErrorLogs
         modelBuilder.Entity<AppErrorLog>()

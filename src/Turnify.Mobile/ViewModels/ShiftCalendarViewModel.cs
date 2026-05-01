@@ -15,7 +15,6 @@ namespace Turnify.Mobile.ViewModels;
 public enum CalendarViewMode
 {
     Employee,
-    Week,
     Day
 }
 
@@ -35,7 +34,6 @@ public partial class ShiftCalendarViewModel : BaseViewModel
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEmployeeMode))]
-    [NotifyPropertyChangedFor(nameof(IsWeekMode))]
     [NotifyPropertyChangedFor(nameof(IsDayMode))]
     private CalendarViewMode _selectedViewMode = CalendarViewMode.Employee;
 
@@ -43,11 +41,9 @@ public partial class ShiftCalendarViewModel : BaseViewModel
     [NotifyPropertyChangedFor(nameof(DayLabel))]
     private DateTime _selectedDate = DateTime.Today;
 
-    [ObservableProperty] private ObservableCollection<TimeSlot> _weekSlots = new();
     [ObservableProperty] private ObservableCollection<TimeSlot> _daySlots  = new();
 
     public bool IsEmployeeMode => SelectedViewMode == CalendarViewMode.Employee;
-    public bool IsWeekMode     => SelectedViewMode == CalendarViewMode.Week;
     public bool IsDayMode      => SelectedViewMode == CalendarViewMode.Day;
 
     public string DayLabel => SelectedDate.ToString("dddd dd MMMM");
@@ -177,8 +173,8 @@ public partial class ShiftCalendarViewModel : BaseViewModel
             {
                 await LoadAttendanceAsync();
                 CheckInFeedback = "Entrata registrata ✓";
-                _ = Task.Delay(3000).ContinueWith(_ =>
-                    MainThread.BeginInvokeOnMainThread(() => CheckInFeedback = string.Empty));
+                await Task.Delay(3000);
+                CheckInFeedback = string.Empty;
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
                 await Shell.Current.DisplayAlertAsync("Info", "Sei già entrato oggi.", "OK");
@@ -197,8 +193,8 @@ public partial class ShiftCalendarViewModel : BaseViewModel
             {
                 await LoadAttendanceAsync();
                 CheckInFeedback = "Uscita registrata ✓";
-                _ = Task.Delay(3000).ContinueWith(_ =>
-                    MainThread.BeginInvokeOnMainThread(() => CheckInFeedback = string.Empty));
+                await Task.Delay(3000);
+                CheckInFeedback = string.Empty;
             }
         }
         catch (HttpRequestException) { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK"); }
@@ -231,7 +227,7 @@ public partial class ShiftCalendarViewModel : BaseViewModel
                     $"api/vacation-requests/approved?from={fromStr}&to={toStr}")
                     ?? new List<ApprovedVacationDto>();
                 BuildEmployeeRows(shiftList, vacations);
-                BuildWeekSlots(shiftList);
+                await ApplyAvailabilityAsync();
                 BuildDaySlots(shiftList);
             }
 
@@ -329,38 +325,33 @@ public partial class ShiftCalendarViewModel : BaseViewModel
         EmployeeRows = new ObservableCollection<EmployeeWeekRow>(rows);
     }
 
+    private async Task ApplyAvailabilityAsync()
+    {
+        foreach (var row in EmployeeRows)
+        {
+            try
+            {
+                var avail = await _httpClient.GetFromJsonAsync<AvailabilityDto>(
+                    $"api/employees/{row.EmployeeId}/availability");
+                if (avail?.AvailableDays == null) continue;
+                var available = new HashSet<int>(avail.AvailableDays);
+                for (int i = 0; i < row.Days.Count; i++)
+                {
+                    var dayOfWeek = (int)CurrentWeekStart.AddDays(i).DayOfWeek;
+                    if (dayOfWeek == 0) dayOfWeek = 7; // Sunday = 7
+                    if (!available.Contains(dayOfWeek) && !row.Days[i].HasShift && !row.Days[i].IsVacation)
+                        row.Days[i].IsUnavailable = true;
+                }
+            }
+            catch { /* non critico */ }
+        }
+    }
+
     [RelayCommand]
     private async Task ChangeViewModeAsync(CalendarViewMode mode)
     {
         SelectedViewMode = mode;
         await LoadShiftsAsync();
-    }
-
-    private void BuildWeekSlots(List<ShiftDto> shifts)
-    {
-        var slots = new ObservableCollection<TimeSlot>();
-        for (int h = 0; h < 24; h++)
-        {
-            var employees = new List<string>();
-            for (int d = 0; d < 7; d++)
-            {
-                var day = CurrentWeekStart.AddDays(d);
-                var assigned = shifts.Where(s =>
-                    s.StartTime.ToLocalTime().Date == day.Date &&
-                    s.StartTime.ToLocalTime().Hour <= h &&
-                    s.EndTime.ToLocalTime().Hour > h)
-                    .Select(s => s.EmployeeName)
-                    .ToList();
-                employees.AddRange(assigned);
-            }
-            slots.Add(new TimeSlot
-            {
-                Time      = $"{h:D2}:00",
-                Employees = employees.Distinct().ToList(),
-                IsClosed  = employees.Count == 0
-            });
-        }
-        WeekSlots = slots;
     }
 
     private void BuildDaySlots(List<ShiftDto> shifts)
@@ -396,6 +387,20 @@ public partial class ShiftCalendarViewModel : BaseViewModel
     {
         CurrentWeekStart = CurrentWeekStart.AddDays(7);
         await LoadShiftsAsync();
+    }
+
+    [RelayCommand]
+    private void PreviousDay()
+    {
+        SelectedDate = SelectedDate.AddDays(-1);
+        BuildDaySlots(Shifts.ToList());
+    }
+
+    [RelayCommand]
+    private void NextDay()
+    {
+        SelectedDate = SelectedDate.AddDays(1);
+        BuildDaySlots(Shifts.ToList());
     }
 
     // Feature 1 – torna alla settimana corrente
@@ -562,10 +567,16 @@ public class DayCell
 {
     public bool HasShift { get; set; }
     public bool IsVacation { get; set; }
+    public bool IsUnavailable { get; set; }
     public string Label { get; set; } = string.Empty;
     public int ShiftId { get; set; }
-    public string CellColor  => IsVacation ? "#D97706" : HasShift ? "#2563EB" : "#E5E7EB";
+    public string CellColor  => IsVacation ? "#D97706" : HasShift ? "#2563EB" : IsUnavailable ? "#FCA5A5" : "#E5E7EB";
     public string LabelColor => (HasShift || IsVacation) ? "White" : "Transparent";
+}
+
+public class AvailabilityDto
+{
+    [JsonPropertyName("availableDays")] public int[] AvailableDays { get; set; } = Array.Empty<int>();
 }
 
 public class TimeSlot

@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
+using Turnify.Mobile.Services;
 
 namespace Turnify.Mobile.ViewModels;
 
@@ -48,9 +49,12 @@ public partial class OnboardingViewModel : BaseViewModel
     [ObservableProperty] private string _employeeEmail     = string.Empty;
     [ObservableProperty] private string _employeePassword  = string.Empty;
 
-    public OnboardingViewModel(IHttpClientFactory httpClientFactory)
+    private readonly IAppNavigationService _appNavigation;
+
+    public OnboardingViewModel(IHttpClientFactory httpClientFactory, IAppNavigationService appNavigation)
     {
-        _httpClient = httpClientFactory.CreateClient("TurnifyApi");
+        _httpClient    = httpClientFactory.CreateClient("TurnifyApi");
+        _appNavigation = appNavigation;
         Title = "Configura Turnify";
     }
 
@@ -156,11 +160,8 @@ public partial class OnboardingViewModel : BaseViewModel
     private async Task CompleteOnboardingAsync()
     {
         Preferences.Default.Set(ONBOARDING_DONE_KEY, true);
-
         var storedRole = await SecureStorage.Default.GetAsync("user_role");
         bool isAdmin   = storedRole == "Admin";
-
-        Application.Current!.Windows[0].Page = new AppShell(isAdmin);
-        await Shell.Current.GoToAsync(isAdmin ? "//Dashboard" : "//Shifts");
+        await _appNavigation.NavigateToShellAsync(isAdmin, startRoute: "Main");
     }
 }

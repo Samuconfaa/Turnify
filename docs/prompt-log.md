@@ -627,7 +627,7 @@ La scelta specifica di `HasFilter` con sintassi MySQL backtick (`` `Username` IS
 
 ---
 
-## Prompt 32
+## Prompt 26
 
 ### Data
 2026-04-30
@@ -652,7 +652,7 @@ Ogni test è stato scritto dopo lettura diretta del controller (per il comportam
 
 ---
 
-## Prompt 31
+## Prompt 27
 
 ### Data
 2026-04-29
@@ -751,3 +751,104 @@ Accettato integralmente
 
 ### Motivazione
 La causa reale del crash era il blocco (2): confermato da logcat con stack trace esplicito `StaticResource not found for key White` in `App.InitializeComponent` → `ResourceDictionary.SetAndCreateSource`. Le chiavi aggiunte sono alias neutri che non interferiscono con il Design System v2 già in uso.
+
+---
+
+## Prompt 31
+
+### Data
+2026-05-01
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Implementare l'iterazione 11 completa: gap architetturali e funzionali post-audit MVVM
+
+### Prompt
+> "Vai, fai tutto ciò che c'è nella iterazione 11, aggiorna plan.md." — Implementare i 7 deliverable: (1) refresh token automatico in `AuthDelegatingHandler` con `SemaphoreSlim` e retry su 401; (2) UI approvazione ferie (già presente: `VacationListPage` con SwipeView); (3) push notification su turni da `ShiftsController`; (4) `PreviousDayCommand`/`NextDayCommand` in `ShiftCalendarViewModel`; (5) conversione `ManageDataPage` da code-behind puro a XAML con `x:DataType="vm:GdprConsentViewModel"`; (6) `EmojiPickerViewModel` dedicato con `WeakReferenceMessenger` e record `EmojiSelectedMessage`; (7) badge "Ricorrente" + scope dialog (`?scope=single`/`?scope=following`) in `ShiftDetailPage` e relativo ViewModel.
+
+### Output utile
+File creati: `IAppNavigationService.cs`, `AppNavigationService.cs`, `Messages/EmojiSelectedMessage.cs`, `ViewModels/EmojiPickerViewModel.cs`. File modificati: `AuthDelegatingHandler.cs` (refresh token + retry), `LoginViewModel.cs`, `ProfileViewModel.cs`, `GdprConsentViewModel.cs`, `MauiProgram.cs` (registrazioni DI), `ShiftCalendarViewModel.cs` (PreviousDayCommand/NextDayCommand, rimozione WeekMode), `ShiftCalendarPage.xaml` (rimozione week view, fix button commands), `ManageDataPage.xaml` + `.xaml.cs` (conversione a XAML), `EmojiPickerPage.xaml` + `.xaml.cs` (x:DataType → EmojiPickerViewModel), `ShiftDetailViewModel.cs` (IsRecurring, scope dialog), `ShiftDetailPage.xaml` (badge ricorrente), `ShiftsController.cs` (push notification su CRUD turni), `docs/plan.md` (status → completata).
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Tutti i task dell'iterazione 11 implementati in sequenza. Task 2 (UI ferie) era già presente; il resto era assente o parzialmente implementato.
+
+---
+
+## Prompt 32
+
+### Data
+2026-05-01
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Pianificare l'iterazione 11 e preparare i documenti di piano
+
+### Prompt
+> "preparami la nuova iterazione e la nuova sezione di plan.md per apportare queste modifiche" — dopo l'analisi dei gap identificati (refresh token, UI ferie, push notification, Day View navigation, x:DataType, EmojiPickerViewModel, turni ricorrenti), creare `docs/iterations/it-11.md` con obiettivo + piano per i 7 task, e aggiungere la sezione `### Iterazione 11` in `docs/plan.md`.
+
+### Output utile
+Creato `docs/iterations/it-11.md` con 7 task dettagliati (problema, file da modificare, cosa fare). Aggiunta sezione `### Iterazione 11` in `docs/plan.md` con deliverable e Status: pianificata.
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Formato corretto (Obiettivo + Piano, non retrospettiva) confermato dalla memory del progetto.
+
+---
+
+## Prompt 33
+
+### Data
+2026-05-01
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Implementare l'iterazione 12 completa: sessione persistente, saldo ferie, onboarding via codice invito
+
+### Prompt
+> "vai fai tutto ciò che c'è nella iterazione 12, aggiorna plan.md e prompt-logs" — implementare i 3 deliverable: (1) `ISessionService`/`SessionService` per sessione persistente senza login ripetuto, verifica JWT + refresh all'avvio in `App.xaml.cs`; (2) `VacationBalanceController` con endpoint `GET /api/vacation-balance/{employeeId}` e `GET /api/vacation-balance/me`, saldo in `VacationEditPage` e `EmployeeDetailPage`; (3) modello `Invite` + `IInviteRepository` + `InviteRepository` + `InviteController` con generate/redeem/revoke, `AdminInvitesViewModel`/`AdminInvitesPage` (admin), `InviteCodeViewModel`/`InviteCodePage` (dipendente), voci in `ProfilePage`.
+
+### Output utile
+File creati: `ISessionService.cs`, `SessionService.cs`, `VacationBalanceController.cs`, `Invite.cs`, `IInviteRepository.cs`, `InviteRepository.cs`, `InviteController.cs`, `AdminInvitesViewModel.cs`, `AdminInvitesPage.xaml` + `.cs`, `InviteCodeViewModel.cs`, `InviteCodePage.xaml` + `.cs`, migrazione `20260501000000_AddPaidLeaveAndInvites.cs`. File modificati: `App.xaml.cs` (iniezione SessionService, async session check), `Employee.cs` (PaidLeaveDaysPerYear), `TurnifyDbContext.cs` (DbSet Invites), `Program.cs` (registrazione IInviteRepository), `MauiProgram.cs` (SessionService, AdminInvitesViewModel, InviteCodeViewModel, AdminInvitesPage, InviteCodePage), `VacationEditViewModel.cs` (balance loading), `VacationEditPage.xaml` (card saldo), `EmployeeDetailViewModel.cs` (balance loading), `EmployeeDetailPage.xaml` (sezione saldo), `ProfileViewModel.cs` (GoToInvitesCommand, GoToInviteCodeCommand), `ProfilePage.xaml` (voci invito admin e employee), `AppShell.xaml.cs` (route AdminInvitesPage e InviteCodePage), `OnboardingViewModel.cs` (fix IAppNavigationService).
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Tutti i task dell'iterazione 12 implementati. SessionService usa decodifica JWT Base64 per check expiry senza librerie aggiuntive. Fix bonus: OnboardingViewModel ancora usava Application.Current, ora corretto.
+
+---
+
+## Prompt 34
+
+### Data
+2026-05-01
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Implementare l'iterazione 13 completa: scambio turni, copertura dashboard admin, disponibilità dipendente in calendario
+
+### Prompt
+> "fai la 13 aggiornando plan e prompt log e sincronizzando develop e main" — implementare: (1) backend `ShiftSwapRequest` model + `IShiftSwapRepository` + `ShiftSwapRepository` + `ShiftSwapsController` (GET/POST/PUT peer-accept/peer-reject/admin-approve/admin-reject) con push notification a ogni step; endpoint `GET /api/shifts/coverage` in `ShiftsController`; endpoint `GET /api/employees/{id}/availability` in `EmployeesController`; (2) mobile TASK 1: `ShiftSwapsViewModel` + `ShiftSwapsPage.xaml` (lista scambi con azioni peer/admin), `ShiftSwapRequestViewModel` + `ShiftSwapRequestPage.xaml` (form proposta), `ProposeSwapCommand` + `CanProposeSwap` in `ShiftDetailViewModel`, bottone "Proponi scambio turno" in `ShiftDetailPage.xaml`; (3) mobile TASK 2: `CoverageDay` DTO + `WeeklyCoverage` collection in `DashboardViewModel`, sezione 7-card copertura in `DashboardPage.xaml`; (4) mobile TASK 3: `ApplyAvailabilityAsync` in `ShiftCalendarViewModel` che carica availability per ogni dipendente e marca celle `IsUnavailable`, `AvailabilityDto` DTO, `IsUnavailable` in `DayCell` con colore rosso chiaro; (5) registrazione route e DI; (6) voce "Scambi turno" in `ProfilePage.xaml` per admin e dipendenti.
+
+### Output utile
+Backend (già in precedente sessione): `ShiftSwapRequest.cs`, `IShiftSwapRepository.cs`, `ShiftSwapRepository.cs`, `ShiftSwapsController.cs`, migrazione `20260501100000_AddShiftSwapRequests.cs`, `GET /api/shifts/coverage`, `GET /api/employees/{id}/availability`. Mobile: `ShiftSwapsViewModel.cs`, `ShiftSwapsPage.xaml` + `.cs`, `ShiftSwapRequestViewModel.cs` (già), `ShiftSwapRequestPage.xaml` + `.cs` (già). Modificati: `ShiftDetailViewModel.cs` (CanProposeSwap, ProposeSwapCommand), `ShiftDetailPage.xaml` (bottone scambio), `DashboardViewModel.cs` (CoverageDay, WeeklyCoverage, IsAdmin, LoadCoverageAsync), `DashboardPage.xaml` (sezione copertura settimanale), `ShiftCalendarViewModel.cs` (ApplyAvailabilityAsync, AvailabilityDto, DayCell.IsUnavailable), `MauiProgram.cs` (ShiftSwapsViewModel, ShiftSwapRequestViewModel, ShiftSwapsPage, ShiftSwapRequestPage), `AppShell.xaml.cs` (route ShiftSwapsPage e ShiftSwapRequestPage), `ProfileViewModel.cs` (GoToShiftSwapsCommand), `ProfilePage.xaml` (voci scambi turno admin e dipendente).
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Tutti i deliverable dell'iterazione 13 implementati. Disponibilità calendario usa colore rosso chiaro (#FCA5A5) per celle non disponibili senza turno. Copertura dashboard caricata solo per admin tramite flag IsAdmin da Preferences.
+

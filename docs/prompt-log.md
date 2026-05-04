@@ -829,6 +829,31 @@ Tutti i task dell'iterazione 12 implementati. SessionService usa decodifica JWT 
 
 ---
 
+## Prompt 35
+
+### Data
+2026-05-04
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Bugfix deploy VPS: risoluzione errore "credenziali non valide" causato da configurazione AllowedHosts e migrazioni mancanti sul DB di produzione
+
+### Prompt
+> Diagnosi e fix di "credenziali non valide" su app mobile: (1) rimozione `LetterSpacing` non supportato su `Label` MAUI in `AdminInvitesPage.xaml`; (2) aggiunta `.Trim()` su `Email` in `LoginViewModel.LoginAsync`; (3) fix VPS: `AllowedHosts` non includeva wildcard in `appsettings.Production.json`, servizio bloccato da porta occupata da processo zombie; (4) applicazione manuale migrazioni MySQL mancanti: `AddPaidLeaveAndInvites` (tabella `Invites`, colonna `PaidLeaveDaysPerYear`), `AddShiftSwapRequests`, `AddVacationDaysAndAvatar` (colonna `AvatarEmoji` in `Users`).
+
+### Output utile
+`AdminInvitesPage.xaml` riga 67: rimossa proprietà `LetterSpacing`. `LoginViewModel.cs` riga 87: `Email.Trim()`. VPS: `appsettings.Production.json` aggiornato con `AllowedHosts: "*"`. DB: colonne e tabelle aggiunte manualmente via MySQL.
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Login funzionante confermato da curl su `https://samuconfa.it/turnify/api/auth/login`.
+
+---
+
 ## Prompt 34
 
 ### Data

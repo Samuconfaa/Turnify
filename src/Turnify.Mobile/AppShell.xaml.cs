@@ -26,7 +26,7 @@ public partial class AppShell : Shell
                     await Shell.Current.GoToAsync(nameof(Views.OnboardingPage));
                     break;
                 case "Main":
-                    await Shell.Current.GoToAsync(isAdmin ? "//Dashboard" : "//Shifts");
+                    await Shell.Current.GoToAsync(isAdmin ? "//Dashboard" : "//EmployeeDashboard");
                     break;
                 default: // "Login"
                     // La LoginPage è già la prima tab/route dello shell
@@ -38,8 +38,9 @@ public partial class AppShell : Shell
     private void RegisterAllRoutes()
     {
         // Auth
-        Routing.RegisterRoute(nameof(Views.LoginPage),    typeof(Views.LoginPage));
-        Routing.RegisterRoute(nameof(Views.RegisterPage), typeof(Views.RegisterPage));
+        Routing.RegisterRoute(nameof(Views.LoginPage),           typeof(Views.LoginPage));
+        Routing.RegisterRoute(nameof(Views.RegisterPage),        typeof(Views.RegisterPage));
+        Routing.RegisterRoute(nameof(Views.ForgotPasswordPage),  typeof(Views.ForgotPasswordPage));
 
         // GDPR e Onboarding
         Routing.RegisterRoute(nameof(Views.GdprConsentPage), typeof(Views.GdprConsentPage));
@@ -66,15 +67,18 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(nameof(Views.BusinessOpeningHoursPage), typeof(Views.BusinessOpeningHoursPage));
 
         // Profile extras
-        Routing.RegisterRoute(nameof(Views.EmojiPickerPage),   typeof(Views.EmojiPickerPage));
-        Routing.RegisterRoute(nameof(Views.ManageDataPage),    typeof(Views.ManageDataPage));
-        Routing.RegisterRoute(nameof(Views.AvailabilityPage),  typeof(Views.AvailabilityPage));
+        Routing.RegisterRoute(nameof(Views.EmojiPickerPage),        typeof(Views.EmojiPickerPage));
+        Routing.RegisterRoute(nameof(Views.ManageDataPage),         typeof(Views.ManageDataPage));
+        Routing.RegisterRoute(nameof(Views.AvailabilityPage),       typeof(Views.AvailabilityPage));
+        Routing.RegisterRoute(nameof(Views.EmployeeDashboardPage),  typeof(Views.EmployeeDashboardPage));
+        Routing.RegisterRoute(nameof(Views.AttendanceHistoryPage),  typeof(Views.AttendanceHistoryPage));
     }
 
     public void ConfigureForRole(bool isAdmin)
     {
         if (!isAdmin)
         {
+            // Rimuovi tab admin
             if (MainTabBar.Items.Contains(DashboardTab))
                 MainTabBar.Items.Remove(DashboardTab);
             if (MainTabBar.Items.Contains(TeamTab))
@@ -82,10 +86,15 @@ public partial class AppShell : Shell
         }
         else
         {
+            // Ripristina tab admin
             if (!MainTabBar.Items.Contains(DashboardTab))
                 MainTabBar.Items.Insert(0, DashboardTab);
             if (!MainTabBar.Items.Contains(TeamTab))
                 MainTabBar.Items.Insert(1, TeamTab);
+
+            // Rimuovi tab employee-only
+            if (MainTabBar.Items.Contains(EmployeeDashboardTab))
+                MainTabBar.Items.Remove(EmployeeDashboardTab);
         }
     }
 }

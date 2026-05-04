@@ -13,4 +13,5 @@ public interface IUserRepository
     Task<User> AddAsync(User user, CancellationToken ct = default);
     Task<User> UpdateAsync(User user, CancellationToken ct = default);
     Task<System.Collections.Generic.IReadOnlyList<User>> GetActiveUsersWithValidRefreshTokenAsync(CancellationToken ct = default);
+    Task<System.Collections.Generic.IReadOnlyList<User>> GetUsersWithValidResetTokenAsync(CancellationToken ct = default);
 }

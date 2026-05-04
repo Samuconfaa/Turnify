@@ -11,4 +11,6 @@ public interface IAuthService
     Task<bool> RegisterCompanyAsync(Company company, User adminUser, CancellationToken ct = default);
     Task<(string AccessToken, string RefreshToken)?> RefreshTokenAsync(string refreshToken, CancellationToken ct = default);
     Task<bool> LogoutAsync(int userId, CancellationToken ct = default);
+    Task<bool> ForgotPasswordAsync(string email, CancellationToken ct = default);
+    Task<bool> ResetPasswordAsync(string token, string newPassword, CancellationToken ct = default);
 }

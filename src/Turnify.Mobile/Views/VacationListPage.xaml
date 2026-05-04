@@ -407,6 +407,22 @@
                                TextColor="{StaticResource Success}"/>
                     </Border>
 
+                    <!-- Motivo (opzionale) -->
+                    <Label Text="MOTIVO (OPZIONALE)" FontSize="11" FontAttributes="Bold"
+                           TextColor="{StaticResource OnSurfaceVariant}"
+                           Margin="0,0,0,8"/>
+                    <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
+                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                            Margin="0,0,0,20">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                        <Editor Text="{Binding NewReason}"
+                                Placeholder="Descrivi brevemente il motivo…"
+                                PlaceholderColor="{StaticResource OnSurfaceVariant}"
+                                AutoSize="TextChanges"
+                                MinimumHeightRequest="80"
+                                Margin="12,8"/>
+                    </Border>
+
                     <Button Text="Invia Richiesta"
                             Command="{Binding SubmitRequestCommand}"
                             BackgroundColor="{StaticResource Primary}"

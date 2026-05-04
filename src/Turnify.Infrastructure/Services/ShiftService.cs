@@ -110,6 +110,53 @@ public class ShiftService : IShiftService
         return result;
     }
 
+    public async Task<IReadOnlyList<Shift>> CreateRecurringShiftsAsync(
+        Shift baseShift, int weeks, CancellationToken ct = default)
+    {
+        var groupId  = new Random().Next(100_000, 999_999);
+        var created  = new List<Shift>();
+
+        for (int w = 0; w < weeks; w++)
+        {
+            var shift = new Shift
+            {
+                CompanyId        = baseShift.CompanyId,
+                EmployeeId       = baseShift.EmployeeId,
+                StartTime        = baseShift.StartTime.AddDays(7 * w),
+                EndTime          = baseShift.EndTime.AddDays(7 * w),
+                Label            = baseShift.Label,
+                Note             = baseShift.Note,
+                Status           = ShiftStatus.Scheduled,
+                IsRecurring      = true,
+                RecurringGroupId = groupId,
+                CreatedByUserId  = baseShift.CreatedByUserId
+            };
+
+            var hasOverlap = await _shiftRepository.HasOverlapAsync(
+                shift.EmployeeId, shift.StartTime, shift.EndTime, null, ct);
+            if (hasOverlap) continue;
+
+            bool hasVacationConflict;
+            try { await CheckVacationConflictAsync(shift.EmployeeId, shift.StartTime, shift.EndTime, null, ct); hasVacationConflict = false; }
+            catch { hasVacationConflict = true; }
+            if (hasVacationConflict) continue;
+
+            var result = await _shiftRepository.AddAsync(shift, ct);
+            created.Add(result);
+        }
+
+        if (created.Count > 0)
+        {
+            await NotifyEmployeeAsync(
+                baseShift.EmployeeId,
+                "📅 Turni ricorrenti assegnati",
+                $"Sono stati assegnati {created.Count} turni ricorrenti a partire dal {baseShift.StartTime.ToLocalTime():dd/MM/yyyy}.",
+                "Shift", created[0].Id, ct);
+        }
+
+        return created;
+    }
+
     // ── Metodi privati ────────────────────────────────────────────
 
     private async Task CheckVacationConflictAsync(

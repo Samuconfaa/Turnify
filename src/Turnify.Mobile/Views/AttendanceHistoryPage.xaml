@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
+             x:Class="Turnify.Mobile.Views.AttendanceHistoryPage"
+             x:DataType="vm:AttendanceHistoryViewModel"
+             Title="{Binding Title}"
+             BackgroundColor="{StaticResource Background}">
+
+    <Grid RowDefinitions="Auto,Auto,*">
+
+        <!-- Header navigazione mese -->
+        <Border Grid.Row="0"
+                BackgroundColor="{StaticResource Surface}"
+                Stroke="{StaticResource OutlineVariant}" StrokeThickness="0"
+                Padding="16,12">
+            <Border.Shadow>
+                <Shadow Brush="#000000" Offset="0,1" Radius="4" Opacity="0.06"/>
+            </Border.Shadow>
+            <Grid ColumnDefinitions="44,*,44">
+                <Button Grid.Column="0" Text="‹"
+                        Command="{Binding PreviousMonthCommand}"
+                        BackgroundColor="Transparent"
+                        TextColor="{StaticResource Primary}"
+                        FontSize="24" Padding="0"
+                        HeightRequest="44"/>
+                <Label Grid.Column="1"
+                       Text="{Binding MonthLabel}"
+                       FontSize="16" FontAttributes="Bold"
+                       TextColor="{StaticResource OnBackground}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+                <Button Grid.Column="2" Text="›"
+                        Command="{Binding NextMonthCommand}"
+                        BackgroundColor="Transparent"
+                        TextColor="{StaticResource Primary}"
+                        FontSize="24" Padding="0"
+                        HeightRequest="44"/>
+            </Grid>
+        </Border>
+
+        <!-- Riepilogo mese -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,*" Padding="16,12" ColumnSpacing="12">
+            <Border Grid.Column="0"
+                    BackgroundColor="{StaticResource Surface}"
+                    Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                    Padding="14,12">
+                <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                <VerticalStackLayout Spacing="2">
+                    <Label Text="📅" FontSize="20"/>
+                    <Label Text="{Binding DaysWorked, StringFormat='{0} giorni'}"
+                           FontSize="20" FontAttributes="Bold"
+                           TextColor="{StaticResource OnBackground}"/>
+                    <Label Text="Giorni lavorati" FontSize="11"
+                           TextColor="{StaticResource OnSurfaceVariant}"/>
+                </VerticalStackLayout>
+            </Border>
+            <Border Grid.Column="1"
+                    BackgroundColor="{StaticResource Surface}"
+                    Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                    Padding="14,12">
+                <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                <VerticalStackLayout Spacing="2">
+                    <Label Text="⏱️" FontSize="20"/>
+                    <Label Text="{Binding TotalHours, StringFormat='{0:F1} h'}"
+                           FontSize="20" FontAttributes="Bold"
+                           TextColor="{StaticResource OnBackground}"/>
+                    <Label Text="Ore totali" FontSize="11"
+                           TextColor="{StaticResource OnSurfaceVariant}"/>
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+
+        <!-- Lista presenze -->
+        <RefreshView Grid.Row="2"
+                     Command="{Binding LoadDataCommand}"
+                     IsRefreshing="{Binding IsBusy}">
+            <CollectionView ItemsSource="{Binding Entries}"
+                            Margin="16,0,16,16">
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center"
+                                         Spacing="8" Margin="0,40,0,0">
+                        <Label Text="📭" FontSize="48" HorizontalOptions="Center"/>
+                        <Label Text="Nessuna presenza registrata" FontSize="15"
+                               TextColor="{StaticResource OnSurfaceVariant}"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:AttendanceEntryDto">
+                        <Border BackgroundColor="{StaticResource Surface}"
+                                Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                                Padding="16,14" Margin="0,0,0,10">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                                <!-- Icona stato -->
+                                <Border Grid.Column="0"
+                                        BackgroundColor="{Binding IsComplete, Converter={StaticResource BoolToShiftColorConverter}}"
+                                        HeightRequest="40" WidthRequest="40">
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                                    <Label Text="✓" FontSize="18" FontAttributes="Bold"
+                                           TextColor="White"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"/>
+                                </Border>
+                                <!-- Info -->
+                                <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                    <Label Text="{Binding DayLabel}"
+                                           FontSize="13" FontAttributes="Bold"
+                                           TextColor="{StaticResource OnBackground}"/>
+                                    <Label Text="{Binding TimeDisplay}"
+                                           FontSize="12"
+                                           TextColor="{StaticResource OnSurfaceVariant}"/>
+                                </VerticalStackLayout>
+                                <!-- Ore -->
+                                <Label Grid.Column="2"
+                                       Text="{Binding HoursLabel}"
+                                       FontSize="14" FontAttributes="Bold"
+                                       TextColor="{StaticResource Primary}"
+                                       VerticalOptions="Center"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+    </Grid>
+</ContentPage>

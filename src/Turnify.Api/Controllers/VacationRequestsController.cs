@@ -68,6 +68,8 @@ public class VacationRequestsController : ControllerBase
     }
 
     private bool IsAdmin() => User.IsInRole(UserRole.Admin.ToString());
+    private bool IsManagerOrAdmin() =>
+        User.IsInRole(UserRole.Admin.ToString()) || User.IsInRole(UserRole.Manager.ToString());
 
     [HttpGet]
     public async Task<IActionResult> GetVacationRequests(
@@ -79,7 +81,7 @@ public class VacationRequestsController : ControllerBase
         var companyId = GetCompanyId();
         IReadOnlyList<VacationRequest> requests;
 
-        if (IsAdmin())
+        if (IsManagerOrAdmin())
             requests = await _vacationService.GetVacationRequestsAsync(companyId, ct);
         else
             requests = await _vacationService.GetVacationRequestsByEmployeeAsync(GetUserId(), ct);
@@ -153,7 +155,7 @@ public class VacationRequestsController : ControllerBase
     public async Task<IActionResult> UpdateVacationRequest(
         int id, [FromBody] UpdateVacationRequestInput input, CancellationToken ct)
     {
-        if (!IsAdmin()) return Forbid();
+        if (!IsManagerOrAdmin()) return Forbid();
 
         var vr = await _vacationService.GetVacationRequestByIdAsync(id, ct);
         if (vr == null) return NotFound();
@@ -187,7 +189,7 @@ public class VacationRequestsController : ControllerBase
     public async Task<IActionResult> Approve(
         int id, [FromBody] ApproveRejectInput input, CancellationToken ct)
     {
-        if (!IsAdmin()) return Forbid();
+        if (!IsManagerOrAdmin()) return Forbid();
         var vr = await _vacationService.GetVacationRequestByIdAsync(id, ct);
         if (vr == null) return NotFound();
         if (vr.CompanyId != GetCompanyId()) return StatusCode(403);
@@ -200,7 +202,7 @@ public class VacationRequestsController : ControllerBase
     public async Task<IActionResult> Reject(
         int id, [FromBody] ApproveRejectInput input, CancellationToken ct)
     {
-        if (!IsAdmin()) return Forbid();
+        if (!IsManagerOrAdmin()) return Forbid();
         var vr = await _vacationService.GetVacationRequestByIdAsync(id, ct);
         if (vr == null) return NotFound();
         if (vr.CompanyId != GetCompanyId()) return StatusCode(403);
@@ -217,7 +219,7 @@ public class VacationRequestsController : ControllerBase
         if (vr == null) return NotFound();
         if (vr.CompanyId != GetCompanyId()) return StatusCode(403);
 
-        if (!IsAdmin() && vr.Status != VacationRequestStatus.Pending)
+        if (!IsManagerOrAdmin() && vr.Status != VacationRequestStatus.Pending)
             return BadRequest(new { message = "Puoi annullare solo richieste in attesa." });
 
         var ok = await _vacationService.DeleteVacationRequestAsync(id, ct);

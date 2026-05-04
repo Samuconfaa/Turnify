@@ -70,7 +70,14 @@ public partial class LoginViewModel : BaseViewModel
 
             // Accesso normale
             Application.Current!.Windows[0].Page = new AppShell(isAdmin);
-            await Shell.Current.GoToAsync(isAdmin ? "//Dashboard" : "//Shifts");
+            if (isAdmin)
+                await Shell.Current.GoToAsync("//Dashboard");
+            else
+                await Shell.Current.GoToAsync(nameof(Views.EmployeeDashboardPage));
+        }
+        catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+        {
+            ErrorMessage = "Troppi tentativi. Riprova tra qualche minuto.";
         }
         catch (HttpRequestException)
         {
@@ -104,7 +111,9 @@ public partial class LoginViewModel : BaseViewModel
 
     [RelayCommand]
     private async Task GoToRegisterAsync()
-    {
-        await Shell.Current.GoToAsync(nameof(Views.RegisterPage));
-    }
+        => await Shell.Current.GoToAsync(nameof(Views.RegisterPage));
+
+    [RelayCommand]
+    private async Task GoToForgotPasswordAsync()
+        => await Shell.Current.GoToAsync(nameof(Views.ForgotPasswordPage));
 }

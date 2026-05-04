@@ -42,6 +42,8 @@ public class ShiftsController : ControllerBase
     }
 
     private bool IsAdmin() => User.IsInRole(UserRole.Admin.ToString());
+    private bool IsManagerOrAdmin() =>
+        User.IsInRole(UserRole.Admin.ToString()) || User.IsInRole(UserRole.Manager.ToString());
 
     [HttpGet]
     public async Task<IActionResult> GetShifts(
@@ -99,10 +101,93 @@ public class ShiftsController : ControllerBase
         return Ok(new { data = paged, total = shifts.Count, page, pageSize });
     }
 
+    [HttpPost("recurring")]
+    public async Task<IActionResult> CreateRecurringShifts(
+        [FromBody] CreateRecurringShiftsRequest request, CancellationToken ct)
+    {
+        if (!IsManagerOrAdmin())
+            return StatusCode(403, new { message = "Solo admin e manager possono creare turni ricorrenti." });
+
+        var companyId = GetCompanyId();
+        if (companyId == 0) return Unauthorized();
+
+        if (request.Weeks < 1 || request.Weeks > 52)
+            return BadRequest(new { message = "Il numero di settimane deve essere compreso tra 1 e 52." });
+
+        var employee = await _employeeRepository.GetByIdAsync(request.EmployeeId, ct);
+        if (employee == null || employee.CompanyId != companyId)
+            return StatusCode(403, new { message = "Il dipendente non appartiene a questa azienda." });
+
+        var baseShift = new Shift
+        {
+            CompanyId       = companyId,
+            EmployeeId      = request.EmployeeId,
+            StartTime       = request.StartTime,
+            EndTime         = request.EndTime,
+            Label           = request.Label ?? string.Empty,
+            Note            = request.Note  ?? string.Empty,
+            CreatedByUserId = GetUserId()
+        };
+
+        var created = await _shiftService.CreateRecurringShiftsAsync(baseShift, request.Weeks, ct);
+        return Ok(new { created = created.Count, shifts = created.Select(MapToDto) });
+    }
+
+    [HttpGet("export.ics")]
+    public async Task<IActionResult> ExportIcal(
+        [FromQuery] DateTime? from, [FromQuery] DateTime? to, CancellationToken ct)
+    {
+        var companyId = GetCompanyId();
+        if (companyId == 0) return Unauthorized();
+
+        var start = from ?? DateTime.UtcNow.Date;
+        var end   = to   ?? start.AddDays(90);
+
+        IReadOnlyList<Shift> shifts;
+        if (IsManagerOrAdmin())
+        {
+            shifts = await _shiftService.GetShiftsAsync(companyId, start, end, ct);
+        }
+        else
+        {
+            var userId   = GetUserId();
+            var employee = await _employeeRepository.GetByUserIdAsync(userId, ct);
+            if (employee == null) return Ok();
+            shifts = await _shiftService.GetShiftsByEmployeeAsync(employee.Id, start, end, ct);
+        }
+
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine("BEGIN:VCALENDAR");
+        sb.AppendLine("VERSION:2.0");
+        sb.AppendLine("PRODID:-//Turnify//Turnify//IT");
+        sb.AppendLine("CALSCALE:GREGORIAN");
+        sb.AppendLine("METHOD:PUBLISH");
+
+        foreach (var s in shifts)
+        {
+            sb.AppendLine("BEGIN:VEVENT");
+            sb.AppendLine($"UID:shift-{s.Id}@turnify.it");
+            sb.AppendLine($"DTSTART:{s.StartTime:yyyyMMddTHHmmssZ}");
+            sb.AppendLine($"DTEND:{s.EndTime:yyyyMMddTHHmmssZ}");
+            sb.AppendLine($"SUMMARY:{(string.IsNullOrEmpty(s.Label) ? "Turno di lavoro" : s.Label)}");
+            if (!string.IsNullOrEmpty(s.Note))
+                sb.AppendLine($"DESCRIPTION:{s.Note}");
+            sb.AppendLine($"DTSTAMP:{DateTime.UtcNow:yyyyMMddTHHmmssZ}");
+            sb.AppendLine("END:VEVENT");
+        }
+
+        sb.AppendLine("END:VCALENDAR");
+
+        return File(
+            System.Text.Encoding.UTF8.GetBytes(sb.ToString()),
+            "text/calendar; charset=utf-8",
+            "turni.ics");
+    }
+
     [HttpPost]
     public async Task<IActionResult> CreateShift([FromBody] CreateShiftRequest request, CancellationToken ct)
     {
-        if (!IsAdmin())
+        if (!IsManagerOrAdmin())
             return StatusCode(403, new { message = "Solo gli amministratori possono creare turni." });
 
         var companyId = GetCompanyId();
@@ -157,7 +242,7 @@ public class ShiftsController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateShift(int id, [FromBody] UpdateShiftRequest request, CancellationToken ct)
     {
-        if (!IsAdmin())
+        if (!IsManagerOrAdmin())
             return StatusCode(403, new { message = "Solo gli amministratori possono modificare turni." });
 
         var shift = await _shiftService.GetShiftByIdAsync(id, ct);
@@ -186,7 +271,7 @@ public class ShiftsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteShift(int id, CancellationToken ct)
     {
-        if (!IsAdmin())
+        if (!IsManagerOrAdmin())
             return StatusCode(403, new { message = "Solo gli amministratori possono eliminare turni." });
 
         var shift = await _shiftService.GetShiftByIdAsync(id, ct);

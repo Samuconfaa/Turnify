@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Turnify.Core.Interfaces.Repositories;
 using Turnify.Core.Interfaces.Services;
 using Turnify.Core.Models;
 using Turnify.Infrastructure.Data;
@@ -13,10 +14,12 @@ namespace Turnify.Infrastructure.Services;
 public class DashboardService : IDashboardService
 {
     private readonly TurnifyDbContext _context;
+    private readonly IAttendanceRepository _attendanceRepository;
 
-    public DashboardService(TurnifyDbContext context)
+    public DashboardService(TurnifyDbContext context, IAttendanceRepository attendanceRepository)
     {
-        _context = context;
+        _context              = context;
+        _attendanceRepository = attendanceRepository;
     }
 
     public async Task<DashboardSummary> GetSummaryAsync(int companyId, DateTime? from, DateTime? to, CancellationToken ct = default)
@@ -102,5 +105,58 @@ public class DashboardService : IDashboardService
             .ToList();
 
         return result;
+    }
+
+    public async Task<EmployeeDashboardSummary> GetEmployeeSummaryAsync(
+        int employeeId, int companyId, CancellationToken ct = default)
+    {
+        var now     = DateTime.UtcNow;
+        var today   = now.Date;
+        var weekEnd = today.AddDays(7);
+
+        // Prossimo turno
+        var nextShift = await _context.Shifts
+            .Where(s => s.EmployeeId == employeeId && s.StartTime >= now && s.Status != ShiftStatus.Cancelled)
+            .OrderBy(s => s.StartTime)
+            .FirstOrDefaultAsync(ct);
+
+        // Ferie usate quest'anno
+        var yearStart = new DateTime(now.Year, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        var vacUsed = await _context.VacationRequests
+            .Where(v => v.EmployeeId == employeeId &&
+                        v.Status == VacationRequestStatus.Approved &&
+                        v.StartDate >= yearStart)
+            .SumAsync(v => (int?)v.TotalDays ?? 0, ct);
+
+        var vacPending = await _context.VacationRequests
+            .CountAsync(v => v.EmployeeId == employeeId && v.Status == VacationRequestStatus.Pending, ct);
+
+        // Timbratura oggi
+        var todayLog = await _attendanceRepository.GetTodayByEmployeeAsync(employeeId, ct);
+
+        // Ore lavorate questo mese (da attendanceLogs)
+        var monthStart = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+        var monthLogs  = await _attendanceRepository.GetByEmployeeInRangeAsync(employeeId, monthStart, now, ct);
+        var hoursMonth = monthLogs
+            .Where(l => l.CheckOutTime.HasValue)
+            .Sum(l => (decimal)(l.CheckOutTime!.Value - l.CheckInTime).TotalHours);
+
+        // Ore schedulare questa settimana
+        var weekShifts = await _context.Shifts
+            .Where(s => s.EmployeeId == employeeId && s.StartTime >= today && s.StartTime < weekEnd)
+            .ToListAsync(ct);
+        var hoursWeek = weekShifts.Sum(s => (decimal)(s.EndTime - s.StartTime).TotalHours);
+
+        return new EmployeeDashboardSummary
+        {
+            NextShift                = nextShift,
+            VacationDaysUsedThisYear = vacUsed,
+            PendingVacationRequests  = vacPending,
+            IsCheckedInToday         = todayLog != null && todayLog.CheckOutTime == null,
+            TodayCheckIn             = todayLog?.CheckInTime,
+            TodayCheckOut            = todayLog?.CheckOutTime,
+            HoursWorkedThisMonth     = Math.Round(hoursMonth, 1),
+            HoursScheduledThisWeek   = Math.Round(hoursWeek, 1)
+        };
     }
 }

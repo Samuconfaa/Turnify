@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.Tasks;
 using Turnify.Core.Interfaces.Services;
 using Turnify.Core.Models;
@@ -22,6 +23,7 @@ public class AuthController : ControllerBase
 
     [HttpPost("login")]
     [AllowAnonymous]
+    [EnableRateLimiting("auth")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken ct)
     {
         var result = await _authService.LoginAsync(request.Email, request.Password, ct);
@@ -66,6 +68,25 @@ public class AuthController : ControllerBase
         return Ok();
     }
 
+    [HttpPost("forgot-password")]
+    [AllowAnonymous]
+    [EnableRateLimiting("auth")]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request, CancellationToken ct)
+    {
+        await _authService.ForgotPasswordAsync(request.Email, ct);
+        return Ok(new { message = "Se l'email è registrata, riceverai le istruzioni per il reset." });
+    }
+
+    [HttpPost("reset-password")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request, CancellationToken ct)
+    {
+        var success = await _authService.ResetPasswordAsync(request.Token, request.NewPassword, ct);
+        if (!success)
+            return BadRequest(new { message = "Token non valido o scaduto." });
+        return Ok(new { message = "Password reimpostata con successo." });
+    }
+
     [HttpPost("logout")]
     [Authorize]
     public async Task<IActionResult> Logout(CancellationToken ct)
@@ -106,4 +127,15 @@ public class TokenResponse
 {
     public string AccessToken { get; set; } = string.Empty;
     public string RefreshToken { get; set; } = string.Empty;
+}
+
+public class ForgotPasswordRequest
+{
+    public string Email { get; set; } = string.Empty;
+}
+
+public class ResetPasswordRequest
+{
+    public string Token { get; set; } = string.Empty;
+    public string NewPassword { get; set; } = string.Empty;
 }

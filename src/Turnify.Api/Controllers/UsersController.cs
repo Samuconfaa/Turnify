@@ -12,7 +12,7 @@ public record ChangePasswordRequest(string CurrentPassword, string NewPassword);
 [ApiController]
 [Route("api/users")]
 [Authorize]
-public class UsersController : ControllerBase
+public partial class UsersController : ControllerBase
 {
     private readonly IUserRepository _userRepository;
     private readonly IEmployeeRepository _employeeRepository;

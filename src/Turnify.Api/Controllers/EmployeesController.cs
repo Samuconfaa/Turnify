@@ -201,7 +201,7 @@ public class EmployeesController : ControllerBase
 
         employee.FirstName    = request.FirstName;
         employee.LastName     = request.LastName;
-        employee.Email        = request.Email;
+        employee.Email        = request.Email ?? string.Empty;
         employee.Phone        = request.Phone;
         employee.Role         = request.Role;
         employee.ContractType = contractType;

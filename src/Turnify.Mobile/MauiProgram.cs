@@ -79,8 +79,6 @@ public static class MauiProgram
         builder.Services.AddTransient<ReportsViewModel>();
         builder.Services.AddTransient<EmployeeReportsViewModel>();
         builder.Services.AddTransient<EmojiPickerViewModel>();
-        builder.Services.AddTransient<AdminInvitesViewModel>();
-        builder.Services.AddTransient<InviteCodeViewModel>();
         builder.Services.AddTransient<ShiftSwapsViewModel>();
         builder.Services.AddTransient<ShiftSwapRequestViewModel>();
 
@@ -110,8 +108,6 @@ public static class MauiProgram
         builder.Services.AddTransient<ChangePasswordPage>();
         builder.Services.AddTransient<ReportsPage>();
         builder.Services.AddTransient<EmployeeReportsPage>();
-        builder.Services.AddTransient<AdminInvitesPage>();
-        builder.Services.AddTransient<InviteCodePage>();
         builder.Services.AddTransient<ShiftSwapsPage>();
         builder.Services.AddTransient<ShiftSwapRequestPage>();
 

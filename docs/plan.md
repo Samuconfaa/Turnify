@@ -456,7 +456,7 @@ Turnify/
 4. `StaleDataBanner` — componente XAML riusabile che appare quando `IsStale = true` e permette refresh manuale
 5. `IsStale` / `HasStaleWarning` aggiunti a `BaseViewModel`
 
-**Status:** pianificata
+**Status:** completata
 
 ---
 

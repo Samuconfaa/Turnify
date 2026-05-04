@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Storage;
+using Turnify.Mobile.Services;
 
 namespace Turnify.Mobile.ViewModels;
 
@@ -114,9 +115,12 @@ public partial class ShiftCalendarViewModel : BaseViewModel
         }
     }
 
-    public ShiftCalendarViewModel(IHttpClientFactory httpClientFactory)
+    private readonly ICacheService _cache;
+
+    public ShiftCalendarViewModel(IHttpClientFactory httpClientFactory, ICacheService cache)
     {
         _httpClient = httpClientFactory.CreateClient("TurnifyApi");
+        _cache = cache;
         Title = "Turni";
         var today = DateTime.Today;
         int diff  = (7 + (today.DayOfWeek - DayOfWeek.Monday)) % 7;
@@ -204,13 +208,24 @@ public partial class ShiftCalendarViewModel : BaseViewModel
     [RelayCommand]
     public async Task LoadShiftsAsync()
     {
-        if (IsBusy) return;
         HasError = false;
         ErrorMessage = string.Empty;
-        try
+
+        var cacheKey = CacheKeys.ShiftsWeek(CurrentWeekStart);
+        var cached   = await _cache.GetAsync<List<ShiftDto>>(cacheKey);
+        if (cached != null)
+        {
+            Shifts = new ObservableCollection<ShiftDto>(cached);
+            HasData = cached.Count > 0;
+            IsEmptyState = cached.Count == 0;
+        }
+        else
         {
             IsBusy = true;
+        }
 
+        try
+        {
             var from    = CurrentWeekStart.Date;
             var to      = CurrentWeekStart.Date.AddDays(7);
             var fromStr = Uri.EscapeDataString(from.ToString("yyyy-MM-ddTHH:mm:ssZ"));
@@ -219,6 +234,7 @@ public partial class ShiftCalendarViewModel : BaseViewModel
             var shiftResult = await _httpClient.GetFromJsonAsync<ShiftListResponse>(
                 $"api/shifts?from={fromStr}&to={toStr}&pageSize=200");
             var shiftList = shiftResult?.Data ?? new List<ShiftDto>();
+            await _cache.SetAsync(cacheKey, shiftList, TimeSpan.FromMinutes(5));
             Shifts = new ObservableCollection<ShiftDto>(shiftList);
 
             if (IsAdmin)
@@ -233,39 +249,44 @@ public partial class ShiftCalendarViewModel : BaseViewModel
 
             HasData      = shiftList.Count > 0;
             IsEmptyState = shiftList.Count == 0;
+            IsStale      = false;
         }
+        catch (HttpRequestException) when (cached != null) { IsStale = true; }
         catch (HttpRequestException)
         {
-            HasData = false;
-            IsEmptyState = false;
-            HasError = true;
+            HasData = false; IsEmptyState = false; HasError = true;
             ErrorMessage = "Errore di connessione al server.";
         }
         catch (System.Text.Json.JsonException ex)
         {
-            HasData = false;
-            IsEmptyState = false;
-            HasError = true;
+            HasData = false; IsEmptyState = false; HasError = true;
             ErrorMessage = "Risposta del server non valida.";
             _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(ShiftCalendarViewModel));
         }
         catch (TaskCanceledException)
         {
-            HasData = false;
-            IsEmptyState = false;
-            HasError = true;
+            HasData = false; IsEmptyState = false; HasError = true;
             ErrorMessage = "Richiesta scaduta. Riprova.";
         }
         catch (Exception ex)
         {
-            HasData = false;
-            IsEmptyState = false;
-            HasError = true;
+            HasData = false; IsEmptyState = false; HasError = true;
             ErrorMessage = "Errore imprevisto. Riprova.";
             _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(ShiftCalendarViewModel));
         }
         finally { IsBusy = false; }
     }
+
+    [RelayCommand]
+    public async Task RefreshAsync()
+    {
+        await _cache.InvalidateAsync(CacheKeys.ShiftsWeek(CurrentWeekStart));
+        IsStale = false;
+        await LoadShiftsAsync();
+    }
+
+    public async Task InvalidateWeekCacheAsync(DateTime weekStart)
+        => await _cache.InvalidateAsync(CacheKeys.ShiftsWeek(weekStart));
 
     private void BuildEmployeeRows(
         List<ShiftDto> shifts,

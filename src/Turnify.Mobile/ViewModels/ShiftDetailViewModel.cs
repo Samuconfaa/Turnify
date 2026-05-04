@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
+using Turnify.Mobile.Services;
 
 namespace Turnify.Mobile.ViewModels;
 
@@ -54,9 +55,12 @@ public partial class ShiftDetailViewModel : BaseViewModel
     public bool IsEmployee  => Preferences.Default.Get("user_role_cached", string.Empty) != "Admin";
     public bool CanProposeSwap => IsEditMode && IsEmployee;
 
-    public ShiftDetailViewModel(IHttpClientFactory httpClientFactory)
+    private readonly ICacheService _cache;
+
+    public ShiftDetailViewModel(IHttpClientFactory httpClientFactory, ICacheService cache)
     {
         _httpClient = httpClientFactory.CreateClient("TurnifyApi");
+        _cache = cache;
         Title = "Nuovo Turno";
     }
 
@@ -196,6 +200,7 @@ public partial class ShiftDetailViewModel : BaseViewModel
 
             if (response.IsSuccessStatusCode)
             {
+                await _cache.InvalidateAsync(CacheKeys.ShiftsWeek(ShiftDate));
                 // Crea copie ricorrenti nelle settimane successive
                 if (IsCreateMode && RepeatWeeks > 0)
                 {
@@ -270,6 +275,7 @@ public partial class ShiftDetailViewModel : BaseViewModel
         {
             IsBusy = true;
             await _httpClient.DeleteAsync($"api/shifts/{ShiftId}");
+            await _cache.InvalidateAsync(CacheKeys.ShiftsWeek(ShiftDate));
             await Shell.Current.GoToAsync("..");
         }
         catch (HttpRequestException) { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione al server.", "OK"); }

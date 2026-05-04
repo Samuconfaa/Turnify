@@ -13,6 +13,7 @@ public class TurnifyDbContext : DbContext
 
     public DbSet<User> Users => Set<User>();
     public DbSet<Company> Companies => Set<Company>();
+    public DbSet<Business> Businesses => Set<Business>();
     public DbSet<Employee> Employees => Set<Employee>();
     public DbSet<Shift> Shifts => Set<Shift>();
     public DbSet<VacationRequest> VacationRequests => Set<VacationRequest>();
@@ -37,6 +38,10 @@ public class TurnifyDbContext : DbContext
         modelBuilder.Entity<Company>()
             .HasIndex(c => c.Slug)
             .IsUnique();
+
+        // Businesses
+        modelBuilder.Entity<Business>()
+            .HasIndex(b => b.CompanyId);
 
         // Employees
         modelBuilder.Entity<Employee>()

@@ -69,6 +69,53 @@ namespace Turnify.Infrastructure.Migrations
                     b.ToTable("AttendanceLogs");
                 });
 
+            modelBuilder.Entity("Turnify.Core.Models.Business", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("BusinessType")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("OpeningHours")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("Businesses");
+                });
+
             modelBuilder.Entity("Turnify.Core.Models.Company", b =>
                 {
                     b.Property<int>("Id")
@@ -133,6 +180,9 @@ namespace Turnify.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("BusinessId")
+                        .HasColumnType("int");
 
                     b.Property<int>("CompanyId")
                         .HasColumnType("int");

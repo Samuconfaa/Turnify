@@ -44,7 +44,11 @@
             <!-- Footer -->
             <HorizontalStackLayout HorizontalOptions="Center" Margin="0,16,0,0" Spacing="4">
                 <Label Text="Non hai un account?" FontSize="14" TextColor="{StaticResource OnSurfaceVariant}" VerticalOptions="Center" />
-                <Label Text="Registra la tua azienda" FontSize="14" TextColor="{StaticResource Primary}" TextDecorations="Underline" FontAttributes="Bold" VerticalOptions="Center" />
+                <Label Text="Registra la tua azienda" FontSize="14" TextColor="{StaticResource Primary}" TextDecorations="Underline" FontAttributes="Bold" VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToRegisterCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
             </HorizontalStackLayout>
         </VerticalStackLayout>
     </ScrollView>

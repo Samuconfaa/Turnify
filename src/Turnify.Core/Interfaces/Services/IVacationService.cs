@@ -14,5 +14,6 @@ public interface IVacationService
     Task<VacationRequest> CreateVacationRequestAsync(VacationRequest request, CancellationToken ct = default);
     Task<bool> ApproveVacationRequestAsync(int requestId, int reviewerUserId, string? note, CancellationToken ct = default);
     Task<bool> RejectVacationRequestAsync(int requestId, int reviewerUserId, string? note, CancellationToken ct = default);
+    Task<bool> UpdateVacationStatusAsync(int requestId, VacationRequest updated, CancellationToken ct = default);
     Task<bool> DeleteVacationRequestAsync(int id, CancellationToken ct = default);
 }

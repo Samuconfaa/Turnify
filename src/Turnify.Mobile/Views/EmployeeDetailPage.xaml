@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
+             x:Class="Turnify.Mobile.Views.EmployeeDetailPage"
+             x:DataType="vm:EmployeeDetailViewModel"
+             Title="{Binding Title}"
+             BackgroundColor="{StaticResource Background}">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="14" Padding="20">
+
+            <!-- Nome -->
+            <Label Text="Nome *" FontSize="13"
+                   TextColor="{StaticResource OnSurfaceVariant}" Margin="2,0,0,0"/>
+            <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="0">
+                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                <Entry Text="{Binding FirstName}" Placeholder="Es. Mario"
+                       HeightRequest="50" Margin="14,0" BackgroundColor="Transparent"/>
+            </Border>
+
+            <!-- Cognome -->
+            <Label Text="Cognome *" FontSize="13"
+                   TextColor="{StaticResource OnSurfaceVariant}" Margin="2,0,0,0"/>
+            <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="0">
+                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                <Entry Text="{Binding LastName}" Placeholder="Es. Rossi"
+                       HeightRequest="50" Margin="14,0" BackgroundColor="Transparent"/>
+            </Border>
+
+            <!-- Email -->
+            <Label Text="Email *" FontSize="13"
+                   TextColor="{StaticResource OnSurfaceVariant}" Margin="2,0,0,0"/>
+            <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="0">
+                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                <Entry Text="{Binding Email}" Placeholder="mario.rossi@example.com"
+                       Keyboard="Email"
+                       HeightRequest="50" Margin="14,0" BackgroundColor="Transparent"/>
+            </Border>
+
+            <!-- Telefono -->
+            <Label Text="Telefono" FontSize="13"
+                   TextColor="{StaticResource OnSurfaceVariant}" Margin="2,0,0,0"/>
+            <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="0">
+                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                <Entry Text="{Binding Phone}" Placeholder="+39 333 1234567"
+                       Keyboard="Telephone"
+                       HeightRequest="50" Margin="14,0" BackgroundColor="Transparent"/>
+            </Border>
+
+            <!-- Ruolo in azienda -->
+            <Label Text="Ruolo in azienda" FontSize="13"
+                   TextColor="{StaticResource OnSurfaceVariant}" Margin="2,0,0,0"/>
+            <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="0">
+                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                <Entry Text="{Binding JobRole}" Placeholder="Es. Cameriere, Cuoco..."
+                       HeightRequest="50" Margin="14,0" BackgroundColor="Transparent"/>
+            </Border>
+
+            <!-- Tipo contratto -->
+            <Label Text="Tipo contratto" FontSize="13"
+                   TextColor="{StaticResource OnSurfaceVariant}" Margin="2,0,0,0"/>
+            <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="0">
+                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                <Picker ItemsSource="{Binding ContractTypesDisplay}"
+                        SelectedIndex="0"
+                        SelectedIndexChanged="OnContractTypeChanged"
+                        Margin="10,0"/>
+            </Border>
+
+            <!-- Ore settimanali -->
+            <Label Text="Ore settimanali" FontSize="13"
+                   TextColor="{StaticResource OnSurfaceVariant}" Margin="2,0,0,0"/>
+            <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="0">
+                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                <Entry Text="{Binding WeeklyHours}" Placeholder="40"
+                       Keyboard="Numeric"
+                       HeightRequest="50" Margin="14,0" BackgroundColor="Transparent"/>
+            </Border>
+
+            <!-- Attività -->
+            <Grid ColumnDefinitions="*,Auto" Margin="2,6,0,0">
+                <Label Grid.Column="0" Text="Attività di appartenenza"
+                       FontSize="13" TextColor="{StaticResource OnSurfaceVariant}"
+                       VerticalOptions="Center"/>
+                <Label Grid.Column="1" Text="+ Crea attività"
+                       FontSize="13" TextColor="{StaticResource Primary}"
+                       TextDecorations="Underline" VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoCreateBusinessCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </Grid>
+            <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="0">
+                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                <Picker ItemsSource="{Binding Businesses}"
+                        ItemDisplayBinding="{Binding Name}"
+                        SelectedItem="{Binding SelectedBusiness}"
+                        Title="Seleziona attività (opzionale)"
+                        Margin="10,0"/>
+            </Border>
+
+            <!-- Password (solo creazione) -->
+            <VerticalStackLayout IsVisible="{Binding IsCreateMode}" Spacing="4" Margin="0,6,0,0">
+                <Label Text="Password temporanea *" FontSize="13"
+                       TextColor="{StaticResource OnSurfaceVariant}" Margin="2,0,0,0"/>
+                <Border Stroke="{StaticResource Primary}" StrokeThickness="1.5" Padding="0">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                    <Entry Text="{Binding Password}" Placeholder="Es. TempPass123!"
+                           HeightRequest="50" Margin="14,0" BackgroundColor="Transparent"/>
+                </Border>
+                <Label Text="Comunica questa password al dipendente per il primo accesso."
+                       FontSize="12" TextColor="{StaticResource OnSurfaceVariant}"
+                       Margin="2,2,0,0"/>
+            </VerticalStackLayout>
+
+            <!-- Bottoni -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,16,0,0">
+                <Button Grid.Column="0" Text="Disattiva"
+                        Command="{Binding DeleteCommand}"
+                        IsVisible="{Binding IsEditMode}"
+                        BackgroundColor="Transparent"
+                        TextColor="{StaticResource Error}"
+                        BorderColor="{StaticResource Error}"
+                        BorderWidth="1" CornerRadius="10" HeightRequest="50"/>
+                <Button Grid.Column="1" Text="Salva"
+                        Command="{Binding SaveCommand}"
+                        BackgroundColor="{StaticResource Primary}"
+                        TextColor="White" CornerRadius="10" HeightRequest="50"
+                        FontAttributes="Bold">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button"
+                                     Binding="{Binding IsCreateMode}" Value="True">
+                            <Setter Property="Grid.ColumnSpan" Value="2"/>
+                            <Setter Property="Grid.Column" Value="0"/>
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
+            </Grid>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                               HorizontalOptions="Center" Color="{StaticResource Primary}"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

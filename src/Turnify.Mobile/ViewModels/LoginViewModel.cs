@@ -1,8 +1,11 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Storage;
 using Turnify.Core.Interfaces.Services;
 
 namespace Turnify.Mobile.ViewModels;
@@ -31,10 +34,8 @@ public partial class LoginViewModel : BaseViewModel
         Title = "Login";
     }
 
-    private bool CanLogin()
-    {
-        return !string.IsNullOrWhiteSpace(Email) && !string.IsNullOrWhiteSpace(Password);
-    }
+    private bool CanLogin() =>
+        !string.IsNullOrWhiteSpace(Email) && !string.IsNullOrWhiteSpace(Password);
 
     [RelayCommand(CanExecute = nameof(CanLogin))]
     private async Task LoginAsync()
@@ -47,31 +48,58 @@ public partial class LoginViewModel : BaseViewModel
             var result = await _authService.LoginAsync(Email, Password);
             if (result != null)
             {
-                // Qui in futuro leggeremo i claims dal JWT per impostare il ruolo (es. Admin o Dipendente)
-                // Per ora simuliamo
-                if (Application.Current?.MainPage is AppShell shell)
-                {
-                    shell.ConfigureForRole(isAdmin: true); 
-                }
-                
-                await Shell.Current.GoToAsync("//Dashboard");
+                // Decode JWT to get the real role
+                bool isAdmin = ExtractIsAdminFromToken(result.Value.AccessToken);
+
+                // Save role in SecureStorage so other ViewModels can use it
+                await SecureStorage.Default.SetAsync("user_role", isAdmin ? "Admin" : "Employee");
+
+                // Rebuild AppShell with correct tabs for the role
+                Application.Current!.MainPage = new AppShell(isAdmin);
+
+                await Shell.Current.GoToAsync(isAdmin ? "//Dashboard" : "//Shifts");
             }
             else
             {
-                ErrorMessage = "Credenziali non valide";
+                ErrorMessage = "Credenziali non valide. Verifica email e password.";
             }
         }
         catch (HttpRequestException)
         {
-            ErrorMessage = "Errore di connessione";
+            ErrorMessage = "Errore di connessione al server.";
         }
         catch (System.Exception)
         {
-            ErrorMessage = "Errore di connessione";
+            ErrorMessage = "Si è verificato un errore. Riprova.";
         }
         finally
         {
             IsBusy = false;
         }
+    }
+
+    private static bool ExtractIsAdminFromToken(string token)
+    {
+        try
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jwt = handler.ReadJwtToken(token);
+            var role = jwt.Claims
+                .FirstOrDefault(c =>
+                    c.Type == "role" ||
+                    c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")
+                ?.Value;
+            return role == "Admin";
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task GoToRegisterAsync()
+    {
+        await Shell.Current.GoToAsync(nameof(Views.RegisterPage));
     }
 }

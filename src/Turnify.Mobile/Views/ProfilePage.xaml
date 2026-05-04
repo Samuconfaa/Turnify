@@ -5,48 +5,224 @@
              x:Class="Turnify.Mobile.Views.ProfilePage"
              Title="Profilo"
              BackgroundColor="{StaticResource Background}">
+
     <ScrollView>
-        <VerticalStackLayout Spacing="24" Padding="16">
-            <VerticalStackLayout Spacing="8" HorizontalOptions="Center" Margin="0,16,0,0">
-                <Frame BackgroundColor="{StaticResource PrimaryContainer}" CornerRadius="40" HeightRequest="80" WidthRequest="80" Padding="0" HorizontalOptions="Center">
-                    <Label Text="MB" FontSize="24" FontAttributes="Bold" TextColor="{StaticResource OnPrimaryContainer}" HorizontalOptions="Center" VerticalOptions="Center" />
-                </Frame>
-                <Label Text="Mario Rossi" FontSize="24" FontAttributes="Bold" TextColor="{StaticResource OnBackground}" HorizontalOptions="Center" />
-                <Label Text="mario.rossi@example.com" FontSize="14" TextColor="{StaticResource OnSurfaceVariant}" HorizontalOptions="Center" />
-                <Frame BackgroundColor="#E6F4EA" BorderColor="#CEEAD6" CornerRadius="16" Padding="12,4" HorizontalOptions="Center" Margin="0,4,0,0">
-                    <Label Text="Dipendente" FontSize="12" FontAttributes="Bold" TextColor="{StaticResource Success}" />
-                </Frame>
+        <VerticalStackLayout Spacing="24" Padding="16,0,16,40">
+
+            <!-- AVATAR -->
+            <VerticalStackLayout Spacing="10" HorizontalOptions="Center" Margin="0,24,0,0">
+
+                <!-- Avatar tap area -->
+                <Grid HorizontalOptions="Center">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding PickAvatarCommand}"/>
+                    </Grid.GestureRecognizers>
+
+                    <!-- Photo avatar -->
+                    <Border HeightRequest="96" WidthRequest="96"
+                            HorizontalOptions="Center"
+                            IsVisible="{Binding ShowPhoto}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="48"/>
+                        </Border.StrokeShape>
+                        <Image Source="{Binding AvatarPhoto}"
+                               Aspect="AspectFill"
+                               HeightRequest="96" WidthRequest="96"/>
+                    </Border>
+
+                    <!-- Emoji avatar -->
+                    <Border BackgroundColor="{StaticResource PrimaryContainer}"
+                            HeightRequest="96" WidthRequest="96"
+                            HorizontalOptions="Center"
+                            IsVisible="{Binding ShowEmoji}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="48"/>
+                        </Border.StrokeShape>
+                        <Label Text="{Binding AvatarEmoji}"
+                               FontSize="48"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"/>
+                    </Border>
+
+                    <!-- Initials avatar (default) -->
+                    <Border BackgroundColor="{StaticResource PrimaryContainer}"
+                            HeightRequest="96" WidthRequest="96"
+                            HorizontalOptions="Center"
+                            IsVisible="{Binding ShowInitials}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="48"/>
+                        </Border.StrokeShape>
+                        <Label Text="{Binding ComputedInitials}"
+                               FontSize="34" FontAttributes="Bold"
+                               TextColor="{StaticResource Primary}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"/>
+                    </Border>
+
+                    <!-- Edit badge -->
+                    <Border BackgroundColor="{StaticResource Primary}"
+                            HeightRequest="28" WidthRequest="28"
+                            HorizontalOptions="End"
+                            VerticalOptions="End"
+                            Margin="0,0,2,2">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="14"/>
+                        </Border.StrokeShape>
+                        <Label Text="✏️" FontSize="13"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"/>
+                    </Border>
+                </Grid>
+
+                <Label Text="{Binding FullName}"
+                       FontSize="22" FontAttributes="Bold"
+                       TextColor="{StaticResource OnBackground}"
+                       HorizontalOptions="Center"/>
+
+                <Label Text="{Binding Email}"
+                       FontSize="14"
+                       TextColor="{StaticResource OnSurfaceVariant}"
+                       HorizontalOptions="Center"/>
+
+                <Border BackgroundColor="{StaticResource PrimaryContainer}"
+                        HorizontalOptions="Center" Padding="14,5">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="20"/>
+                    </Border.StrokeShape>
+                    <Label Text="{Binding RoleDisplay}"
+                           FontSize="13" FontAttributes="Bold"
+                           TextColor="{StaticResource Primary}"/>
+                </Border>
             </VerticalStackLayout>
 
-            <VerticalStackLayout Spacing="16">
-                <Label Text="IMPOSTAZIONI ACCOUNT" FontSize="14" FontAttributes="Bold" TextColor="{StaticResource OnSurfaceVariant}" Margin="4,0,0,0" />
-                
-                <Frame BackgroundColor="{StaticResource Surface}" BorderColor="{StaticResource Outline}" HasShadow="True" Padding="0" CornerRadius="12" IsClippedToBounds="True">
+            <!-- ACCOUNT SETTINGS -->
+            <VerticalStackLayout Spacing="0">
+                <Label Text="IMPOSTAZIONI ACCOUNT"
+                       FontSize="11" FontAttributes="Bold"
+                       TextColor="{StaticResource OnSurfaceVariant}"
+                       Margin="4,0,0,10"/>
+                <Border BackgroundColor="{StaticResource Surface}"
+                        Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="0">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
                     <VerticalStackLayout>
-                        <Grid ColumnDefinitions="Auto, *, Auto" Padding="16">
-                            <Label Grid.Column="0" Text="👤" FontSize="20" VerticalOptions="Center" Margin="0,0,12,0" />
-                            <Label Grid.Column="1" Text="Modifica Profilo" FontSize="16" TextColor="{StaticResource OnBackground}" VerticalOptions="Center" />
-                            <Label Grid.Column="2" Text="➔" FontSize="16" TextColor="{StaticResource Outline}" VerticalOptions="Center" />
-                        </Grid>
-                        <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" />
-                        
-                        <Grid ColumnDefinitions="Auto, *, Auto" Padding="16">
-                            <Label Grid.Column="0" Text="🔒" FontSize="20" VerticalOptions="Center" Margin="0,0,12,0" />
-                            <Label Grid.Column="1" Text="Cambia Password" FontSize="16" TextColor="{StaticResource OnBackground}" VerticalOptions="Center" />
-                            <Label Grid.Column="2" Text="➔" FontSize="16" TextColor="{StaticResource Outline}" VerticalOptions="Center" />
-                        </Grid>
-                        <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" />
 
-                        <Grid ColumnDefinitions="Auto, *, Auto" Padding="16">
-                            <Label Grid.Column="0" Text="🔔" FontSize="20" VerticalOptions="Center" Margin="0,0,12,0" />
-                            <Label Grid.Column="1" Text="Notifiche" FontSize="16" TextColor="{StaticResource OnBackground}" VerticalOptions="Center" />
-                            <Label Grid.Column="2" Text="➔" FontSize="16" TextColor="{StaticResource Outline}" VerticalOptions="Center" />
+                        <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,14">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding PickAvatarCommand}"/>
+                            </Grid.GestureRecognizers>
+                            <Label Grid.Column="0" Text="🖼️" FontSize="20"
+                                   VerticalOptions="Center" Margin="0,0,14,0"/>
+                            <Label Grid.Column="1" Text="Cambia foto profilo"
+                                   FontSize="15" TextColor="{StaticResource OnBackground}"
+                                   VerticalOptions="Center"/>
+                            <Label Grid.Column="2" Text="›" FontSize="22"
+                                   TextColor="{StaticResource OnSurfaceVariant}"
+                                   VerticalOptions="Center"/>
                         </Grid>
+
+                        <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}"/>
+
+                        <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,14">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ChangePasswordCommand}"/>
+                            </Grid.GestureRecognizers>
+                            <Label Grid.Column="0" Text="🔒" FontSize="20"
+                                   VerticalOptions="Center" Margin="0,0,14,0"/>
+                            <Label Grid.Column="1" Text="Cambia Password"
+                                   FontSize="15" TextColor="{StaticResource OnBackground}"
+                                   VerticalOptions="Center"/>
+                            <Label Grid.Column="2" Text="›" FontSize="22"
+                                   TextColor="{StaticResource OnSurfaceVariant}"
+                                   VerticalOptions="Center"/>
+                        </Grid>
+
                     </VerticalStackLayout>
-                </Frame>
+                </Border>
             </VerticalStackLayout>
 
-            <Button Text="Logout" BackgroundColor="Transparent" TextColor="{StaticResource Error}" BorderColor="{StaticResource Error}" BorderWidth="1" CornerRadius="8" FontAttributes="Bold" Margin="0,24,0,0" />
+            <!-- ADMIN ONLY -->
+            <VerticalStackLayout Spacing="0" IsVisible="{Binding IsAdmin}">
+                <Label Text="GESTIONE ATTIVITÀ"
+                       FontSize="11" FontAttributes="Bold"
+                       TextColor="{StaticResource OnSurfaceVariant}"
+                       Margin="4,0,0,10"/>
+                <Border BackgroundColor="{StaticResource Surface}"
+                        Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="0">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                    <VerticalStackLayout>
+
+                        <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,14">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ManageBusinessesCommand}"/>
+                            </Grid.GestureRecognizers>
+                            <Label Grid.Column="0" Text="🏪" FontSize="20"
+                                   VerticalOptions="Center" Margin="0,0,14,0"/>
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                <Label Text="Le mie attività"
+                                       FontSize="15" TextColor="{StaticResource OnBackground}"/>
+                                <Label Text="Crea e gestisci le attività aziendali"
+                                       FontSize="12" TextColor="{StaticResource OnSurfaceVariant}"/>
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2" Text="›" FontSize="22"
+                                   TextColor="{StaticResource OnSurfaceVariant}"
+                                   VerticalOptions="Center"/>
+                        </Grid>
+
+                        <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}"/>
+
+                        <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,14">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ManageOpeningHoursCommand}"/>
+                            </Grid.GestureRecognizers>
+                            <Label Grid.Column="0" Text="🕐" FontSize="20"
+                                   VerticalOptions="Center" Margin="0,0,14,0"/>
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                <Label Text="Orari di Apertura"
+                                       FontSize="15" TextColor="{StaticResource OnBackground}"/>
+                                <Label Text="Configura apertura/chiusura per ogni giorno"
+                                       FontSize="12" TextColor="{StaticResource OnSurfaceVariant}"/>
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2" Text="›" FontSize="22"
+                                   TextColor="{StaticResource OnSurfaceVariant}"
+                                   VerticalOptions="Center"/>
+                        </Grid>
+
+                        <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}"/>
+
+                        <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,14">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnTeamTapped"/>
+                            </Grid.GestureRecognizers>
+                            <Label Grid.Column="0" Text="👥" FontSize="20"
+                                   VerticalOptions="Center" Margin="0,0,14,0"/>
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                <Label Text="Gestisci Team"
+                                       FontSize="15" TextColor="{StaticResource OnBackground}"/>
+                                <Label Text="Aggiungi o modifica i dipendenti"
+                                       FontSize="12" TextColor="{StaticResource OnSurfaceVariant}"/>
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2" Text="›" FontSize="22"
+                                   TextColor="{StaticResource OnSurfaceVariant}"
+                                   VerticalOptions="Center"/>
+                        </Grid>
+
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+
+            <Button Text="Esci dall'account"
+                    Command="{Binding LogoutCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="{StaticResource Error}"
+                    BorderColor="{StaticResource Error}"
+                    BorderWidth="1.5" CornerRadius="10"
+                    FontAttributes="Bold" HeightRequest="50"
+                    Margin="0,8,0,0"/>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}"
+                               HorizontalOptions="Center"
+                               Color="{StaticResource Primary}"/>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

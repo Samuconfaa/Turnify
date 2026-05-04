@@ -19,4 +19,5 @@ public class Employee
     public string Notes { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
+    public int? BusinessId { get; set; }
 }

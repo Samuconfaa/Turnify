@@ -16,6 +16,10 @@
             <ShellContent ContentTemplate="{DataTemplate views:DashboardPage}" />
         </Tab>
         
+        <Tab Title="Team" x:Name="TeamTab" Route="Team">
+            <ShellContent ContentTemplate="{DataTemplate views:EmployeeListPage}" />
+        </Tab>
+        
         <!-- Shared tabs -->
         <Tab Title="Turni" x:Name="ShiftsTab" Route="Shifts">
             <ShellContent ContentTemplate="{DataTemplate views:ShiftCalendarPage}" />

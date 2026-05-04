@@ -2,6 +2,31 @@
 
 ---
 
+## Prompt 37
+
+### Data
+2026-05-04
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Rinominare i file iterazioni in `docs/iterations/` con suffisso descrittivo e aggiornare README e tag git
+
+### Prompt
+> Rinomina tutti i file in `docs/iterations/` con suffisso descrittivo (es. `it-01.md` → `it-01-bootstrap.md`), aggiorna `docs/iterations/README.md` con i nuovi nomi e la lista iterazioni Turnify, aggiorna eventuali riferimenti in `docs/plan.md` e `docs/prompt-log.md`, poi commit con messaggio `docs: rinomina file iterazioni con suffisso descrittivo`.
+
+### Output utile
+14 file rinominati via `git mv`. `README.md` in `docs/iterations/` riscritto con lista corretta per Turnify (era ancora con nomi BookScout). Nessun riferimento `.md` da aggiornare in `plan.md` o `prompt-log.md` (i riferimenti presenti sono dentro testo di prompt, non link).
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Naming convention allineata ai tag git già creati (`it-01-backend-core`, ecc.) e alla convenzione richiesta.
+
+---
+
 ## Prompt 01
 
 ### Data

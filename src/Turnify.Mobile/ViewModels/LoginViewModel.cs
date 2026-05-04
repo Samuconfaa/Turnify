@@ -84,7 +84,7 @@ public partial class LoginViewModel : BaseViewModel
             }
             else
             {
-                result = await _authService.LoginAsync(Email, Password);
+                result = await _authService.LoginAsync(Email.Trim(), Password);
                 if (result == null)
                 {
                     ErrorMessage = "Credenziali non valide. Verifica email e password.";

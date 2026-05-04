@@ -21,7 +21,6 @@ public class TurnifyDbContext : DbContext
     public DbSet<AttendanceLog> AttendanceLogs => Set<AttendanceLog>();
     public DbSet<DeviceToken> DeviceTokens => Set<DeviceToken>();
     public DbSet<AppErrorLog> AppErrorLogs => Set<AppErrorLog>();
-    public DbSet<Invite> Invites => Set<Invite>();
     public DbSet<ShiftSwapRequest> ShiftSwapRequests => Set<ShiftSwapRequest>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -245,14 +245,6 @@ public partial class ProfileViewModel : BaseViewModel
         => await Shell.Current.GoToAsync(nameof(Views.ChangePasswordPage));
 
     [RelayCommand]
-    private async Task GoToInvitesAsync()
-        => await Shell.Current.GoToAsync(nameof(Views.AdminInvitesPage));
-
-    [RelayCommand]
-    private async Task GoToInviteCodeAsync()
-        => await Shell.Current.GoToAsync(nameof(Views.InviteCodePage));
-
-    [RelayCommand]
     private async Task GoToShiftSwapsAsync()
         => await Shell.Current.GoToAsync(nameof(Views.ShiftSwapsPage));
 

@@ -1,11 +1,13 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
 
 namespace Turnify.Mobile.ViewModels;
@@ -51,6 +53,17 @@ public class VacationRequestDto
         "Approved" => "#E6F4EA", "Rejected" => "#FCE8E6",
         "Pending"  => "#FEF3C7", _ => "#F3F4F6"
     };
+    public string StripColor => Status switch
+    {
+        "Approved" => "#16A34A", "Rejected" => "#BA1A1A",
+        "Pending"  => "#F59E0B", _ => "#94A3B8"
+    };
+    public string TypeEmoji => Type switch
+    {
+        "Holiday"   => "🏖️",
+        "SickLeave" => "🤒",
+        _           => "⏱️"
+    };
     public bool IsPending  => Status == "Pending";
     public bool IsApproved => Status == "Approved";
     public string Initials
@@ -81,15 +94,41 @@ public partial class VacationListViewModel : BaseViewModel
     [ObservableProperty] private string _filterStatus = "All";
 
     // Form fields
-    [ObservableProperty] private DateTime _newStartDate = DateTime.Today;
-    [ObservableProperty] private DateTime _newEndDate   = DateTime.Today.AddDays(1);
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(NewDaysPreview))]
+    private DateTime _newStartDate = DateTime.Today;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(NewDaysPreview))]
+    private DateTime _newEndDate = DateTime.Today.AddDays(1);
     [ObservableProperty] private string   _newReason    = string.Empty;
     [ObservableProperty] private string   _newType      = "Holiday";
+    [ObservableProperty] private int      _newTypeIndex;
+    [ObservableProperty] private int      _filterIndex;
+
+    public string NewDaysPreview
+    {
+        get
+        {
+            if (NewEndDate < NewStartDate) return "⚠️ La data fine è precedente all'inizio";
+            var days = CountBusinessDays(NewStartDate, NewEndDate);
+            return days == 1 ? "1 giorno lavorativo" : $"{days} giorni lavorativi";
+        }
+    }
 
     public string[] VacationTypes        { get; } = { "Holiday", "PaidLeave", "SickLeave", "UnpaidLeave" };
     public string[] VacationTypesDisplay { get; } = { "Ferie", "Permesso Pagato", "Malattia", "Permesso Non Pagato" };
     public string[] FilterOptions        { get; } = { "Tutte", "In Attesa", "Approvate", "Rifiutate" };
     public string[] FilterValues         { get; } = { "All", "Pending", "Approved", "Rejected" };
+
+    partial void OnNewTypeIndexChanged(int value) =>
+        NewType = VacationTypes.ElementAtOrDefault(value) ?? "Holiday";
+
+    partial void OnFilterIndexChanged(int value)
+    {
+        SetFilterByIndex(value);
+        LoadRequestsCommand.Execute(null);
+    }
 
     public VacationListViewModel(IHttpClientFactory httpClientFactory)
     {
@@ -142,10 +181,10 @@ public partial class VacationListViewModel : BaseViewModel
     [RelayCommand]
     private void ShowNewRequestForm()
     {
-        NewStartDate = DateTime.Today;
-        NewEndDate   = DateTime.Today.AddDays(1);
-        NewReason    = string.Empty;
-        NewType      = "Holiday";
+        NewStartDate  = DateTime.Today;
+        NewEndDate    = DateTime.Today.AddDays(1);
+        NewReason     = string.Empty;
+        NewTypeIndex  = 0;
         IsFormVisible = true;
     }
 
@@ -153,11 +192,18 @@ public partial class VacationListViewModel : BaseViewModel
     private void HideForm() => IsFormVisible = false;
 
     [RelayCommand]
+    private void SetFilterIndex(string indexStr)
+    {
+        if (int.TryParse(indexStr, out var i))
+            FilterIndex = i;
+    }
+
+    [RelayCommand]
     private async Task SubmitRequestAsync()
     {
         if (NewEndDate < NewStartDate)
         {
-            await Shell.Current.DisplayAlert("Errore", "La data di fine deve essere dopo la data di inizio.", "OK");
+            await Shell.Current.DisplayAlertAsync("Errore", "La data di fine deve essere dopo la data di inizio.", "OK");
             return;
         }
         if (_myEmployeeId == 0)
@@ -171,7 +217,7 @@ public partial class VacationListViewModel : BaseViewModel
         }
         if (_myEmployeeId == 0)
         {
-            await Shell.Current.DisplayAlert("Errore", "Impossibile identificare il profilo dipendente. Riprova.", "OK");
+            await Shell.Current.DisplayAlertAsync("Errore", "Impossibile identificare il profilo dipendente. Riprova.", "OK");
             return;
         }
         try
@@ -191,14 +237,14 @@ public partial class VacationListViewModel : BaseViewModel
             {
                 IsFormVisible = false;
                 await LoadRequestsAsync();
-                await Shell.Current.DisplayAlert("Inviata", "Richiesta inviata all'amministratore.", "OK");
+                await Shell.Current.DisplayAlertAsync("Inviata", "Richiesta inviata all'amministratore.", "OK");
             }
             else
             {
-                await Shell.Current.DisplayAlert("Errore", $"Errore {(int)response.StatusCode}.", "OK");
+                await Shell.Current.DisplayAlertAsync("Errore", $"Errore {(int)response.StatusCode}.", "OK");
             }
         }
-        catch (Exception ex) { await Shell.Current.DisplayAlert("Errore", ex.Message, "OK"); }
+        catch (Exception ex) { await Shell.Current.DisplayAlertAsync("Errore", ex.Message, "OK"); }
         finally { IsBusy = false; }
     }
 
@@ -215,7 +261,7 @@ public partial class VacationListViewModel : BaseViewModel
     private async Task DeleteRequestAsync(VacationRequestDto request)
     {
         if (!IsAdmin || request == null) return;
-        bool confirm = await Shell.Current.DisplayAlert(
+        bool confirm = await Shell.Current.DisplayAlertAsync(
             "Elimina richiesta",
             $"Vuoi eliminare la richiesta di {request.EmployeeName}?",
             "Sì, elimina", "Annulla");
@@ -226,9 +272,9 @@ public partial class VacationListViewModel : BaseViewModel
             if (r.IsSuccessStatusCode)
                 await LoadRequestsAsync();
             else
-                await Shell.Current.DisplayAlert("Errore", "Impossibile eliminare la richiesta.", "OK");
+                await Shell.Current.DisplayAlertAsync("Errore", "Impossibile eliminare la richiesta.", "OK");
         }
-        catch { await Shell.Current.DisplayAlert("Errore", "Errore di connessione.", "OK"); }
+        catch { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione.", "OK"); }
     }
 
     [RelayCommand]
@@ -264,7 +310,7 @@ public partial class VacationListViewModel : BaseViewModel
     private async Task CancelRequestAsync(VacationRequestDto request)
     {
         if (request == null || request.Status != "Pending") return;
-        bool confirm = await Shell.Current.DisplayAlert("Annulla richiesta", "Vuoi annullare?", "Sì", "No");
+        bool confirm = await Shell.Current.DisplayAlertAsync("Annulla richiesta", "Vuoi annullare?", "Sì", "No");
         if (!confirm) return;
         try
         {

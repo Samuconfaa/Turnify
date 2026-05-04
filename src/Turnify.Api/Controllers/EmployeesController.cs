@@ -24,6 +24,11 @@ public class CreateEmployeeRequest
     public string Password { get; set; } = string.Empty;
 }
 
+public class UpdateAvailabilityRequest
+{
+    public string? AvailableDays { get; set; }
+}
+
 public class UpdateEmployeeRequest
 {
     public string FirstName { get; set; } = string.Empty;
@@ -192,6 +197,25 @@ public class EmployeesController : ControllerBase
         }
 
         return Ok(MapToDto(employee));
+    }
+
+    [HttpGet("me/availability")]
+    public async Task<IActionResult> GetMyAvailability(CancellationToken ct)
+    {
+        var employee = await _employeeRepository.GetByUserIdAsync(GetUserId(), ct);
+        if (employee == null) return NotFound();
+        return Ok(new { availableDays = employee.AvailableDays });
+    }
+
+    [HttpPut("me/availability")]
+    public async Task<IActionResult> UpdateMyAvailability(
+        [FromBody] UpdateAvailabilityRequest request, CancellationToken ct)
+    {
+        var employee = await _employeeRepository.GetByUserIdAsync(GetUserId(), ct);
+        if (employee == null) return NotFound();
+        employee.AvailableDays = request.AvailableDays ?? "1,2,3,4,5";
+        await _employeeRepository.UpdateAsync(employee, ct);
+        return Ok(new { availableDays = employee.AvailableDays });
     }
 
     [HttpDelete("{id}")]

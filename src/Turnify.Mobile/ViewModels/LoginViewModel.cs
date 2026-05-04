@@ -63,13 +63,13 @@ public partial class LoginViewModel : BaseViewModel
             // Admin al primo accesso → mostra onboarding wizard
             if (isAdmin && OnboardingViewModel.NeedsOnboarding())
             {
-                Application.Current!.MainPage = new AppShell(isAdmin: true, startRoute: "Login");
+                Application.Current!.Windows[0].Page = new AppShell(isAdmin: true, startRoute: "Login");
                 await Shell.Current.GoToAsync(nameof(Views.OnboardingPage));
                 return;
             }
 
             // Accesso normale
-            Application.Current!.MainPage = new AppShell(isAdmin);
+            Application.Current!.Windows[0].Page = new AppShell(isAdmin);
             await Shell.Current.GoToAsync(isAdmin ? "//Dashboard" : "//Shifts");
         }
         catch (HttpRequestException)

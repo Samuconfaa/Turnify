@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
@@ -20,7 +21,7 @@ public class EmployeeListDto
     public string ContractType { get; set; } = string.Empty;
     public bool IsActive { get; set; }
     public int? BusinessId { get; set; }
-    
+
     public string FullName => $"{FirstName} {LastName}";
     public string Initials => $"{FirstName?.FirstOrDefault()}{LastName?.FirstOrDefault()}".ToUpper();
     public string StatusText => IsActive ? "Attivo" : "Inattivo";
@@ -35,6 +36,7 @@ public class BusinessItemDto
 public partial class EmployeeListViewModel : BaseViewModel
 {
     private readonly HttpClient _httpClient;
+    private List<EmployeeListDto> _allEmployees = new();
 
     public ObservableCollection<EmployeeListDto> Employees { get; } = new();
     public ObservableCollection<BusinessItemDto> Businesses { get; } = new();
@@ -42,10 +44,33 @@ public partial class EmployeeListViewModel : BaseViewModel
     [ObservableProperty]
     private BusinessItemDto? _selectedBusiness;
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasEmployees))]
+    private string _searchQuery = string.Empty;
+
+    public bool HasEmployees => Employees.Count > 0;
+
     public EmployeeListViewModel(IHttpClientFactory httpClientFactory)
     {
         Title = "Team";
         _httpClient = httpClientFactory.CreateClient("TurnifyApi");
+    }
+
+    partial void OnSearchQueryChanged(string value) => ApplyFilter();
+
+    private void ApplyFilter()
+    {
+        var q = SearchQuery?.Trim();
+        var filtered = string.IsNullOrEmpty(q)
+            ? _allEmployees
+            : _allEmployees.Where(e =>
+                e.FullName.Contains(q, StringComparison.OrdinalIgnoreCase) ||
+                e.Email.Contains(q, StringComparison.OrdinalIgnoreCase) ||
+                e.Role.Contains(q, StringComparison.OrdinalIgnoreCase)).ToList();
+
+        Employees.Clear();
+        foreach (var e in filtered) Employees.Add(e);
+        OnPropertyChanged(nameof(HasEmployees));
     }
 
     [RelayCommand]
@@ -71,21 +96,20 @@ public partial class EmployeeListViewModel : BaseViewModel
 
             string url = "api/employees";
             if (SelectedBusiness != null && SelectedBusiness.Id > 0)
-            {
                 url += $"?businessId={SelectedBusiness.Id}";
-            }
 
             var emps = await _httpClient.GetFromJsonAsync<EmployeeListDto[]>(url);
-            Employees.Clear();
-            if (emps != null)
-            {
-                foreach (var e in emps) Employees.Add(e);
-            }
+            _allEmployees = emps?.ToList() ?? new List<EmployeeListDto>();
+            ApplyFilter();
         }
-        catch (Exception)
+        catch (HttpRequestException ex)
         {
-            if (App.Current?.MainPage != null)
-                await App.Current.MainPage.DisplayAlert("Errore", "Impossibile caricare i dipendenti.", "OK");
+            var code = ex.StatusCode.HasValue ? $" (HTTP {(int)ex.StatusCode})" : string.Empty;
+            await Shell.Current.DisplayAlertAsync("Errore", $"Impossibile caricare i dipendenti{code}.", "OK");
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlertAsync("Errore", ex.Message, "OK");
         }
         finally
         {

@@ -61,8 +61,9 @@ public static class MauiProgram
         builder.Services.AddTransient<BusinessListViewModel>();
         builder.Services.AddTransient<BusinessDetailViewModel>();
         builder.Services.AddTransient<BusinessOpeningHoursViewModel>();
-        builder.Services.AddTransient<OnboardingViewModel>();   // nuovo — wizard
-        builder.Services.AddTransient<GdprConsentViewModel>();  // nuovo — GDPR
+        builder.Services.AddTransient<OnboardingViewModel>();
+        builder.Services.AddTransient<GdprConsentViewModel>();
+        builder.Services.AddTransient<AvailabilityViewModel>();
 
         // ── Views ───────────────────────────────────────────────────
         builder.Services.AddTransient<LoginPage>();
@@ -80,8 +81,9 @@ public static class MauiProgram
         builder.Services.AddTransient<BusinessListPage>();
         builder.Services.AddTransient<BusinessDetailPage>();
         builder.Services.AddTransient<BusinessOpeningHoursPage>();
-        builder.Services.AddTransient<OnboardingPage>();        // nuovo — wizard
-        builder.Services.AddTransient<GdprConsentPage>();       // nuovo — GDPR
+        builder.Services.AddTransient<OnboardingPage>();
+        builder.Services.AddTransient<GdprConsentPage>();
+        builder.Services.AddTransient<AvailabilityPage>();
 
         return builder.Build();
     }

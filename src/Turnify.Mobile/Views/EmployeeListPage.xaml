@@ -4,89 +4,174 @@
              xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
              x:Class="Turnify.Mobile.Views.EmployeeListPage"
              x:DataType="vm:EmployeeListViewModel"
-             Title="{Binding Title}">
+             Title="Team"
+             BackgroundColor="{StaticResource Background}">
 
-    <Grid RowDefinitions="Auto, *">
-        
-        <!-- Toolbar & Filters -->
-        <Border Grid.Row="0" BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Outline}" Padding="16" Margin="16,16,16,8">
-            <Border.StrokeShape>
-                <RoundRectangle CornerRadius="12" />
-            </Border.StrokeShape>
-            <Grid ColumnDefinitions="*, Auto">
-                <Picker Grid.Column="0" 
-                        ItemsSource="{Binding Businesses}" 
-                        ItemDisplayBinding="{Binding Name}" 
-                        SelectedItem="{Binding SelectedBusiness}" 
-                        Title="Filtra per attività..." />
-                
-                <Button Grid.Column="1" 
-                        Text="+" 
-                        Command="{Binding AddEmployeeCommand}"
-                        WidthRequest="40" HeightRequest="40"
-                        CornerRadius="20" Padding="0"
-                        VerticalOptions="Center" />
-            </Grid>
-        </Border>
+    <Grid RowDefinitions="Auto,*">
 
-        <!-- Employee List -->
-        <RefreshView Grid.Row="1" Command="{Binding LoadDataCommand}" IsRefreshing="{Binding IsBusy}">
-            <CollectionView ItemsSource="{Binding Employees}" Margin="16,0,16,16">
+        <!-- ── Search + Filter ───────────────────────────────── -->
+        <VerticalStackLayout Grid.Row="0" Spacing="8" Padding="16,12,16,4">
+
+            <!-- Search bar -->
+            <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
+                    Stroke="{StaticResource OutlineVariant}" StrokeThickness="1">
+                <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                <SearchBar Text="{Binding SearchQuery}"
+                           Placeholder="Cerca per nome, ruolo..."
+                           HeightRequest="48"
+                           BackgroundColor="Transparent"
+                           CancelButtonColor="{StaticResource Primary}"
+                           TextColor="{StaticResource OnBackground}"
+                           PlaceholderColor="{StaticResource Outline}"/>
+            </Border>
+
+            <!-- Business filter -->
+            <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
+                    Stroke="{StaticResource OutlineVariant}" StrokeThickness="1">
+                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                <Picker ItemsSource="{Binding Businesses}"
+                        ItemDisplayBinding="{Binding Name}"
+                        SelectedItem="{Binding SelectedBusiness}"
+                        Title="Tutte le attività"
+                        TextColor="{StaticResource OnBackground}"
+                        TitleColor="{StaticResource Outline}"
+                        Margin="16,0"/>
+            </Border>
+        </VerticalStackLayout>
+
+        <!-- ── Employee List ──────────────────────────────────── -->
+        <RefreshView Grid.Row="1"
+                     Command="{Binding LoadDataCommand}"
+                     IsRefreshing="{Binding IsBusy}">
+            <CollectionView ItemsSource="{Binding Employees}"
+                            Margin="0,4,0,0">
+
                 <CollectionView.EmptyView>
-                    <Label Text="Nessun dipendente trovato." HorizontalOptions="Center" VerticalOptions="Center" TextColor="Gray" />
+                    <VerticalStackLayout HorizontalOptions="Center"
+                                         Margin="32,52,32,0" Spacing="14">
+                        <Label Text="👥" FontSize="52" HorizontalOptions="Center"/>
+                        <Label Text="Nessun dipendente ancora"
+                               FontSize="17" FontAttributes="Bold"
+                               TextColor="{StaticResource OnBackground}"
+                               HorizontalOptions="Center"/>
+                        <Label Text="Aggiungi il tuo primo dipendente per iniziare a gestire i turni e le presenze."
+                               FontSize="14" TextColor="{StaticResource OnSurfaceVariant}"
+                               HorizontalOptions="Center" HorizontalTextAlignment="Center"
+                               Margin="8,0"/>
+                        <Button Text="Aggiungi dipendente"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EmployeeListViewModel}}, Path=AddEmployeeCommand}"
+                                BackgroundColor="{StaticResource Primary}"
+                                TextColor="White"
+                                CornerRadius="12" HeightRequest="48"
+                                FontSize="15" FontAttributes="Bold"
+                                HorizontalOptions="Center"
+                                Padding="24,0"/>
+                    </VerticalStackLayout>
                 </CollectionView.EmptyView>
+
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="vm:EmployeeListDto">
-                        <Border BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Outline}" Padding="16" Margin="0,0,0,12">
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="12" />
-                            </Border.StrokeShape>
+                        <Border BackgroundColor="{StaticResource Surface}"
+                                Stroke="#E2E8F0" StrokeThickness="1"
+                                Margin="16,0,16,8">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
                             <Border.GestureRecognizers>
-                                <TapGestureRecognizer 
+                                <TapGestureRecognizer
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EmployeeListViewModel}}, Path=EditEmployeeCommand}"
-                                    CommandParameter="{Binding .}" />
+                                    CommandParameter="{Binding .}"/>
                             </Border.GestureRecognizers>
 
-                            <Grid ColumnDefinitions="Auto, *, Auto">
+                            <Grid ColumnDefinitions="Auto,*,Auto"
+                                  Padding="12" ColumnSpacing="12">
+
                                 <!-- Avatar -->
-                                <Border Grid.Column="0" BackgroundColor="{StaticResource SurfaceContainerHigh}" HeightRequest="50" WidthRequest="50" Margin="0,0,16,0" VerticalOptions="Center">
-                                    <Border.StrokeShape>
-                                        <RoundRectangle CornerRadius="25" />
-                                    </Border.StrokeShape>
-                                    <Label Text="{Binding Initials}" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource OnSurfaceVariant}" HorizontalOptions="Center" VerticalOptions="Center" />
+                                <Border Grid.Column="0"
+                                        BackgroundColor="{StaticResource PrimaryFixed}"
+                                        Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                                        HeightRequest="48" WidthRequest="48"
+                                        VerticalOptions="Center">
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="24"/></Border.StrokeShape>
+                                    <Label Text="{Binding Initials}"
+                                           FontSize="15" FontAttributes="Bold"
+                                           TextColor="{StaticResource Primary}"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"/>
                                 </Border>
 
                                 <!-- Info -->
-                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
-                                    <Label Text="{Binding FullName}" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource OnBackground}" />
-                                    <Label Text="{Binding Role}" FontSize="14" TextColor="{StaticResource OnSurfaceVariant}" />
+                                <VerticalStackLayout Grid.Column="1"
+                                                     VerticalOptions="Center" Spacing="3">
+                                    <Label Text="{Binding FullName}"
+                                           FontSize="15" FontAttributes="Bold"
+                                           TextColor="{StaticResource OnBackground}"/>
+                                    <HorizontalStackLayout Spacing="5">
+                                        <Label Text="{Binding Role}"
+                                               FontSize="13"
+                                               TextColor="{StaticResource OnSurfaceVariant}"/>
+                                        <Label Text="·" FontSize="13"
+                                               TextColor="{StaticResource OutlineVariant}"
+                                               IsVisible="{Binding ContractType, Converter={StaticResource StringNotEmptyConverter}}"/>
+                                        <Border BackgroundColor="{StaticResource SurfaceContainerHigh}"
+                                                Stroke="Transparent" Padding="6,2"
+                                                VerticalOptions="Center"
+                                                IsVisible="{Binding ContractType, Converter={StaticResource StringNotEmptyConverter}}">
+                                            <Border.StrokeShape><RoundRectangle CornerRadius="4"/></Border.StrokeShape>
+                                            <Label Text="{Binding ContractType}"
+                                                   FontSize="10" FontAttributes="Bold"
+                                                   TextColor="{StaticResource OnSurfaceVariant}"/>
+                                        </Border>
+                                    </HorizontalStackLayout>
                                 </VerticalStackLayout>
 
-                                <!-- Status -->
-                                <Border Grid.Column="2" BackgroundColor="#E6F4EA" Stroke="#CEEAD6" Padding="8,4" VerticalOptions="Center">
-                                    <Border.StrokeShape>
-                                        <RoundRectangle CornerRadius="16" />
-                                    </Border.StrokeShape>
+                                <!-- Status badge -->
+                                <Border Grid.Column="2"
+                                        BackgroundColor="#ECFDF5"
+                                        Stroke="#D1FAE5" StrokeThickness="1"
+                                        Padding="8,4"
+                                        VerticalOptions="Center">
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
                                     <Border.Triggers>
-                                        <DataTrigger TargetType="Border" Binding="{Binding IsActive}" Value="False">
-                                            <Setter Property="BackgroundColor" Value="#FCE8E6" />
-                                            <Setter Property="Stroke" Value="#FAD2CF" />
+                                        <DataTrigger TargetType="Border"
+                                                     Binding="{Binding IsActive}" Value="False">
+                                            <Setter Property="BackgroundColor" Value="{StaticResource SurfaceContainerHigh}"/>
+                                            <Setter Property="Stroke" Value="{StaticResource OutlineVariant}"/>
                                         </DataTrigger>
                                     </Border.Triggers>
-                                    <Label Text="{Binding StatusText}" FontSize="12" TextColor="{StaticResource Success}">
+                                    <Label Text="{Binding StatusText}"
+                                           FontSize="10" FontAttributes="Bold"
+                                           TextColor="{StaticResource Success}">
                                         <Label.Triggers>
-                                            <DataTrigger TargetType="Label" Binding="{Binding IsActive}" Value="False">
-                                                <Setter Property="TextColor" Value="{StaticResource Error}" />
+                                            <DataTrigger TargetType="Label"
+                                                         Binding="{Binding IsActive}" Value="False">
+                                                <Setter Property="TextColor" Value="{StaticResource Outline}"/>
                                             </DataTrigger>
                                         </Label.Triggers>
                                     </Label>
                                 </Border>
+
                             </Grid>
                         </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </RefreshView>
-    </Grid>
 
+        <!-- Add FAB -->
+        <Border Grid.Row="1"
+                BackgroundColor="{StaticResource Primary}"
+                Stroke="Transparent"
+                HeightRequest="56" WidthRequest="56"
+                HorizontalOptions="End" VerticalOptions="End"
+                Margin="0,0,20,20"
+                ZIndex="10">
+            <Border.StrokeShape><RoundRectangle CornerRadius="28"/></Border.StrokeShape>
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding AddEmployeeCommand}"/>
+            </Border.GestureRecognizers>
+            <Label Text="+" FontSize="28" FontAttributes="Bold"
+                   TextColor="White"
+                   HorizontalOptions="Center" VerticalOptions="Center"/>
+        </Border>
+
+    </Grid>
 </ContentPage>

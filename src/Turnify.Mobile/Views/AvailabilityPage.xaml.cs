@@ -3,9 +3,9 @@ using Turnify.Mobile.ViewModels;
 
 namespace Turnify.Mobile.Views;
 
-public partial class EmployeeDetailPage : ContentPage
+public partial class AvailabilityPage : ContentPage
 {
-    public EmployeeDetailPage(EmployeeDetailViewModel viewModel)
+    public AvailabilityPage(AvailabilityViewModel viewModel)
     {
         InitializeComponent();
         BindingContext = viewModel;
@@ -14,7 +14,7 @@ public partial class EmployeeDetailPage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        if (BindingContext is EmployeeDetailViewModel vm)
-            vm.LoadDataCommand.Execute(null);
+        if (BindingContext is AvailabilityViewModel vm)
+            vm.LoadCommand.Execute(null);
     }
 }

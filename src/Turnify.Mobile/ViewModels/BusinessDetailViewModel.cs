@@ -76,7 +76,7 @@ public partial class BusinessDetailViewModel : BaseViewModel
     {
         if (string.IsNullOrWhiteSpace(Name))
         {
-            await Shell.Current.DisplayAlert("Errore", "Il nome dell'attività è obbligatorio.", "OK");
+            await Shell.Current.DisplayAlertAsync("Errore", "Il nome dell'attività è obbligatorio.", "OK");
             return;
         }
         try
@@ -103,10 +103,10 @@ public partial class BusinessDetailViewModel : BaseViewModel
             }
             else
             {
-                await Shell.Current.DisplayAlert("Errore", "Impossibile salvare l'attività.", "OK");
+                await Shell.Current.DisplayAlertAsync("Errore", "Impossibile salvare l'attività.", "OK");
             }
         }
-        catch { await Shell.Current.DisplayAlert("Errore", "Errore di connessione.", "OK"); }
+        catch { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione.", "OK"); }
         finally { IsBusy = false; }
     }
 
@@ -114,7 +114,7 @@ public partial class BusinessDetailViewModel : BaseViewModel
     private async Task DeleteAsync()
     {
         if (!IsEditMode) return;
-        bool confirm = await Shell.Current.DisplayAlert(
+        bool confirm = await Shell.Current.DisplayAlertAsync(
             "Disattiva attività", $"Vuoi disattivare '{Name}'?", "Sì", "Annulla");
         if (!confirm) return;
         try

@@ -86,6 +86,38 @@
                         HeightRequest="80" Margin="10,4"/>
             </Border>
 
+            <!-- Ricorrenza (solo creazione) -->
+            <VerticalStackLayout Spacing="6" IsVisible="{Binding IsCreateMode}">
+                <Label Text="Ripeti turno (settimane successive)" FontSize="13"
+                       TextColor="{StaticResource OnSurfaceVariant}" Margin="2,6,0,0"/>
+                <Border Stroke="{StaticResource Outline}" StrokeThickness="1" Padding="12,8">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                    <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="8">
+                        <Label Grid.Column="0" Text="{Binding RepeatLabel}"
+                               FontSize="14" TextColor="{StaticResource OnBackground}"
+                               VerticalOptions="Center"/>
+                        <Button Grid.Column="1" Text="−"
+                                Clicked="OnRepeatDecrement"
+                                BackgroundColor="{StaticResource SurfaceContainer}"
+                                TextColor="{StaticResource OnBackground}"
+                                WidthRequest="40" HeightRequest="40"
+                                CornerRadius="20" Padding="0" FontSize="18"/>
+                        <Label Grid.Column="2" Text="{Binding RepeatWeeks}"
+                               FontSize="16" FontAttributes="Bold"
+                               TextColor="{StaticResource Primary}"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center"
+                               MinimumWidthRequest="28"/>
+                        <Button Grid.Column="3" Text="+"
+                                Clicked="OnRepeatIncrement"
+                                BackgroundColor="{StaticResource Primary}"
+                                TextColor="White"
+                                WidthRequest="40" HeightRequest="40"
+                                CornerRadius="20" Padding="0" FontSize="18"/>
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+
             <!-- Bottoni -->
             <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,12,0,0">
                 <Button Grid.Column="0" Text="Elimina"

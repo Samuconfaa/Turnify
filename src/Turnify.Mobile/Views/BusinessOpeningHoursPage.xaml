@@ -23,7 +23,8 @@
                 <CollectionView ItemsSource="{Binding Days}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="viewmodels:DayScheduleItemViewModel">
-                            <Frame Padding="15" Margin="0,5" CornerRadius="8" HasShadow="False" BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#333333}">
+                            <Border Padding="15" Margin="0,5" Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#333333}">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
                                 <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto" RowSpacing="10">
                                     
                                     <!-- Day Name and Toggle -->
@@ -52,7 +53,7 @@
                                         </Label.Triggers>
                                     </Label>
                                 </Grid>
-                            </Frame>
+                            </Border>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>

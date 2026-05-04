@@ -55,15 +55,13 @@ public partial class RegisterViewModel : BaseViewModel
             string.IsNullOrWhiteSpace(AdminEmail) ||
             string.IsNullOrWhiteSpace(AdminPassword))
         {
-            if (App.Current?.MainPage != null)
-                await App.Current.MainPage.DisplayAlert("Errore", "Compila tutti i campi.", "OK");
+            await Shell.Current.DisplayAlertAsync("Errore", "Compila tutti i campi.", "OK");
             return;
         }
 
         if (AdminPassword != ConfirmPassword)
         {
-            if (App.Current?.MainPage != null)
-                await App.Current.MainPage.DisplayAlert("Errore", "Le password non coincidono.", "OK");
+            await Shell.Current.DisplayAlertAsync("Errore", "Le password non coincidono.", "OK");
             return;
         }
 
@@ -83,21 +81,17 @@ public partial class RegisterViewModel : BaseViewModel
 
             if (response.IsSuccessStatusCode)
             {
-                if (App.Current?.MainPage != null)
-                    await App.Current.MainPage.DisplayAlert("Successo", "Azienda registrata correttamente! Ora puoi accedere.", "OK");
-                
+                await Shell.Current.DisplayAlertAsync("Successo", "Azienda registrata correttamente! Ora puoi accedere.", "OK");
                 await Shell.Current.GoToAsync("..");
             }
             else
             {
-                if (App.Current?.MainPage != null)
-                    await App.Current.MainPage.DisplayAlert("Errore", "Registrazione fallita. Potrebbe esistere già un'azienda con lo stesso Slug o Email.", "OK");
+                await Shell.Current.DisplayAlertAsync("Errore", "Registrazione fallita. Potrebbe esistere già un'azienda con lo stesso Slug o Email.", "OK");
             }
         }
         catch (Exception)
         {
-            if (App.Current?.MainPage != null)
-                await App.Current.MainPage.DisplayAlert("Errore", "Impossibile contattare il server.", "OK");
+            await Shell.Current.DisplayAlertAsync("Errore", "Impossibile contattare il server.", "OK");
         }
         finally
         {

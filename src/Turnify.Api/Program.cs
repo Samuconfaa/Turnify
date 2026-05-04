@@ -153,7 +153,6 @@ builder.Services.AddScoped<IBusinessRepository,    BusinessRepository>();
 builder.Services.AddScoped<IDeviceTokenRepository,  DeviceTokenRepository>();
 builder.Services.AddScoped<IAttendanceRepository,   AttendanceRepository>();
 builder.Services.AddScoped<IAppErrorLogRepository,  AppErrorLogRepository>();
-builder.Services.AddScoped<IInviteRepository,       InviteRepository>();
 builder.Services.AddScoped<IShiftSwapRepository,    ShiftSwapRepository>();
 
 var app = builder.Build();

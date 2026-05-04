@@ -9,4 +9,10 @@ public partial class BaseViewModel : ObservableObject
 
     [ObservableProperty]
     private string _title = string.Empty;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasStaleWarning))]
+    private bool _isStale;
+
+    public bool HasStaleWarning => IsStale;
 }

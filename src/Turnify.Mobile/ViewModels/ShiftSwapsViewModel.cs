@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -8,12 +9,14 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
+using Turnify.Mobile.Services;
 
 namespace Turnify.Mobile.ViewModels;
 
 public partial class ShiftSwapsViewModel : BaseViewModel
 {
     private readonly HttpClient _httpClient;
+    private readonly ICacheService _cache;
 
     [ObservableProperty] private bool _hasError;
     [ObservableProperty] private string _errorMessage = string.Empty;
@@ -24,9 +27,10 @@ public partial class ShiftSwapsViewModel : BaseViewModel
 
     public ObservableCollection<SwapDto> Swaps { get; } = new();
 
-    public ShiftSwapsViewModel(IHttpClientFactory httpClientFactory)
+    public ShiftSwapsViewModel(IHttpClientFactory httpClientFactory, ICacheService cache)
     {
         _httpClient = httpClientFactory.CreateClient("TurnifyApi");
+        _cache = cache;
         IsAdmin = Preferences.Default.Get("user_role_cached", string.Empty) == "Admin";
         Title = "Scambi Turni";
     }
@@ -34,9 +38,11 @@ public partial class ShiftSwapsViewModel : BaseViewModel
     public async Task OnAppearingAsync() => await LoadAsync();
 
     [RelayCommand]
-    private async Task RefreshAsync()
+    public async Task RefreshAsync()
     {
         IsRefreshing = true;
+        await _cache.InvalidateAsync(CacheKeys.ShiftSwaps);
+        IsStale = false;
         await LoadAsync();
         IsRefreshing = false;
     }
@@ -45,16 +51,32 @@ public partial class ShiftSwapsViewModel : BaseViewModel
     {
         HasError = false;
         ErrorMessage = string.Empty;
-        try
+
+        var cached = await _cache.GetAsync<List<SwapDto>>(CacheKeys.ShiftSwaps);
+        if (cached != null)
         {
-            IsBusy = true;
-            var list = await _httpClient.GetFromJsonAsync<SwapDto[]>("api/shift-swaps");
             Swaps.Clear();
-            if (list != null)
-                foreach (var s in list) Swaps.Add(s);
+            foreach (var s in cached) Swaps.Add(s);
             HasData = Swaps.Count > 0;
             IsEmptyState = Swaps.Count == 0;
         }
+        else
+        {
+            IsBusy = true;
+        }
+
+        try
+        {
+            var list = await _httpClient.GetFromJsonAsync<SwapDto[]>("api/shift-swaps");
+            var fresh = list?.ToList() ?? new List<SwapDto>();
+            await _cache.SetAsync(CacheKeys.ShiftSwaps, fresh, TimeSpan.FromMinutes(5));
+            Swaps.Clear();
+            foreach (var s in fresh) Swaps.Add(s);
+            HasData = Swaps.Count > 0;
+            IsEmptyState = Swaps.Count == 0;
+            IsStale = false;
+        }
+        catch (HttpRequestException) when (cached != null) { IsStale = true; }
         catch (HttpRequestException) { HasError = true; ErrorMessage = "Errore di connessione al server."; }
         catch (System.Text.Json.JsonException ex)
         {
@@ -108,9 +130,14 @@ public partial class ShiftSwapsViewModel : BaseViewModel
             IsBusy = true;
             var r = await _httpClient.PutAsJsonAsync($"api/shift-swaps/{swap.Id}/{action}", new { });
             if (r.IsSuccessStatusCode)
+            {
+                await _cache.InvalidateAsync(CacheKeys.ShiftSwaps);
                 await LoadAsync();
+            }
             else
+            {
                 await Shell.Current.DisplayAlertAsync("Errore", "Operazione non riuscita.", "OK");
+            }
         }
         catch (HttpRequestException) { await Shell.Current.DisplayAlertAsync("Errore", "Errore di connessione.", "OK"); }
         finally { IsBusy = false; }

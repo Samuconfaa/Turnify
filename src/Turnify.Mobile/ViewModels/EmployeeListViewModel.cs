@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Turnify.Mobile.Services;
 using Turnify.Mobile.Views;
 
 namespace Turnify.Mobile.ViewModels;
@@ -37,6 +38,7 @@ public class BusinessItemDto
 public partial class EmployeeListViewModel : BaseViewModel
 {
     private readonly HttpClient _httpClient;
+    private readonly ICacheService _cache;
     private List<EmployeeListDto> _allEmployees = new();
 
     public ObservableCollection<EmployeeListDto> Employees { get; } = new();
@@ -56,10 +58,11 @@ public partial class EmployeeListViewModel : BaseViewModel
 
     public bool HasEmployees => Employees.Count > 0;
 
-    public EmployeeListViewModel(IHttpClientFactory httpClientFactory)
+    public EmployeeListViewModel(IHttpClientFactory httpClientFactory, ICacheService cache)
     {
         Title = "Team";
         _httpClient = httpClientFactory.CreateClient("TurnifyApi");
+        _cache = cache;
     }
 
     partial void OnSearchQueryChanged(string value) => ApplyFilter();
@@ -82,14 +85,24 @@ public partial class EmployeeListViewModel : BaseViewModel
     [RelayCommand]
     public async Task LoadDataAsync()
     {
-        if (IsBusy) return;
-
         HasError = false;
         ErrorMessage = string.Empty;
-        try
+
+        var cached = await _cache.GetAsync<List<EmployeeListDto>>(CacheKeys.Employees);
+        if (cached != null)
+        {
+            _allEmployees = cached;
+            ApplyFilter();
+            HasData = _allEmployees.Count > 0;
+            IsEmptyState = _allEmployees.Count == 0;
+        }
+        else
         {
             IsBusy = true;
+        }
 
+        try
+        {
             if (Businesses.Count == 0)
             {
                 var businesses = await _httpClient.GetFromJsonAsync<BusinessItemDto[]>("api/businesses");
@@ -108,30 +121,30 @@ public partial class EmployeeListViewModel : BaseViewModel
 
             var emps = await _httpClient.GetFromJsonAsync<EmployeeListDto[]>(url);
             _allEmployees = emps?.ToList() ?? new List<EmployeeListDto>();
+            await _cache.SetAsync(CacheKeys.Employees, _allEmployees, TimeSpan.FromMinutes(30));
             ApplyFilter();
-            HasData      = _allEmployees.Count > 0;
+            HasData = _allEmployees.Count > 0;
             IsEmptyState = _allEmployees.Count == 0;
+            IsStale = false;
+        }
+        catch (HttpRequestException) when (cached != null)
+        {
+            IsStale = true;
         }
         catch (HttpRequestException)
         {
-            HasData = false;
-            IsEmptyState = false;
-            HasError = true;
+            HasData = false; IsEmptyState = false; HasError = true;
             ErrorMessage = "Errore di connessione al server.";
         }
         catch (JsonException ex)
         {
-            HasData = false;
-            IsEmptyState = false;
-            HasError = true;
+            HasData = false; IsEmptyState = false; HasError = true;
             ErrorMessage = "Risposta del server non valida.";
             _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(EmployeeListViewModel));
         }
         catch (TaskCanceledException)
         {
-            HasData = false;
-            IsEmptyState = false;
-            HasError = true;
+            HasData = false; IsEmptyState = false; HasError = true;
             ErrorMessage = "Richiesta scaduta. Riprova.";
         }
         finally
@@ -139,6 +152,17 @@ public partial class EmployeeListViewModel : BaseViewModel
             IsBusy = false;
         }
     }
+
+    [RelayCommand]
+    public async Task RefreshAsync()
+    {
+        await _cache.InvalidateAsync(CacheKeys.Employees);
+        IsStale = false;
+        await LoadDataAsync();
+    }
+
+    public async Task InvalidateEmployeeCacheAsync()
+        => await _cache.InvalidateAsync(CacheKeys.Employees);
 
     async partial void OnSelectedBusinessChanged(BusinessItemDto? value)
     {

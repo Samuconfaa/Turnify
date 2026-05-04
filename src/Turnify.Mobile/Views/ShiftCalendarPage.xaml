@@ -2,12 +2,15 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
+             xmlns:comp="clr-namespace:Turnify.Mobile.Views.Components"
              x:Class="Turnify.Mobile.Views.ShiftCalendarPage"
              x:Name="page"
              Title="Turni"
              BackgroundColor="{StaticResource Background}">
 
-    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*">
+    <Grid RowDefinitions="Auto,*">
+        <comp:StaleDataBanner Grid.Row="0"/>
+        <Grid Grid.Row="1" RowDefinitions="Auto,Auto,Auto,Auto,Auto,*">
 
         <!-- ── Week navigation ──────────────────────────────── -->
         <Border Grid.Row="0"
@@ -598,5 +601,6 @@
                            IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
                            HorizontalOptions="Center" VerticalOptions="Center"
                            Color="{StaticResource Primary}" ZIndex="10"/>
+        </Grid>
     </Grid>
 </ContentPage>

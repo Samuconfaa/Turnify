@@ -79,10 +79,13 @@ public partial class ProfileViewModel : BaseViewModel
         }
     }
 
-    public ProfileViewModel(IHttpClientFactory httpClientFactory, IAppNavigationService appNavigation)
+    private readonly ICacheService _cache;
+
+    public ProfileViewModel(IHttpClientFactory httpClientFactory, IAppNavigationService appNavigation, ICacheService cache)
     {
         _httpClient    = httpClientFactory.CreateClient("TurnifyApi");
         _appNavigation = appNavigation;
+        _cache         = cache;
         Title          = "Profilo";
         WeakReferenceMessenger.Default.Register<EmojiSelectedMessage>(this, (_, msg) => SetEmoji(msg.Emoji));
     }
@@ -112,39 +115,39 @@ public partial class ProfileViewModel : BaseViewModel
     {
         HasError = false;
         ErrorMessage = string.Empty;
-        IsBusy = true;
+
+        var cached = await _cache.GetAsync<UserMeResponse>(CacheKeys.Profile);
+        if (cached != null)
+        {
+            ApplyProfile(cached);
+        }
+        else
+        {
+            IsBusy = true;
+        }
+
         try
         {
             var user = await _httpClient.GetFromJsonAsync<UserMeResponse>("api/users/me");
-            if (user == null)
+            if (user == null) { HasData = false; IsEmptyState = true; return; }
+            await _cache.SetAsync(CacheKeys.Profile, user, TimeSpan.FromMinutes(30));
+            ApplyProfile(user);
+            IsStale = false;
+        }
+        catch (HttpRequestException) when (cached != null)
+        {
+            IsStale = true;
+            var storedRole = await SecureStorage.Default.GetAsync("user_role");
+            if (!string.IsNullOrEmpty(storedRole))
             {
-                HasData = false;
-                IsEmptyState = true;
-                return;
-            }
-            Email     = user.Email     ?? string.Empty;
-            FirstName = user.FirstName ?? string.Empty;
-            LastName  = user.LastName  ?? string.Empty;
-            Role      = user.Role      ?? string.Empty;
-            IsAdmin     = Role == "Admin";
-            RoleDisplay = IsAdmin ? "Amministratore" : "Dipendente";
-            OnPropertyChanged(nameof(FullName));
-            OnPropertyChanged(nameof(ComputedInitials));
-            HasData      = true;
-            IsEmptyState = false;
-
-            // Sync emoji from server (server wins over local Preferences)
-            if (!string.IsNullOrEmpty(user.AvatarEmoji))
-            {
-                AvatarEmoji = user.AvatarEmoji;
-                Preferences.Default.Set("avatar_emoji", user.AvatarEmoji);
+                Role = storedRole;
+                IsAdmin = storedRole == "Admin";
+                RoleDisplay = IsAdmin ? "Amministratore" : "Dipendente";
             }
         }
         catch (HttpRequestException)
         {
-            HasData = false;
-            IsEmptyState = false;
-            HasError = true;
+            HasData = false; IsEmptyState = false; HasError = true;
             ErrorMessage = "Errore di connessione al server.";
             var storedRole = await SecureStorage.Default.GetAsync("user_role");
             if (!string.IsNullOrEmpty(storedRole))
@@ -156,20 +159,43 @@ public partial class ProfileViewModel : BaseViewModel
         }
         catch (JsonException ex)
         {
-            HasData = false;
-            IsEmptyState = false;
-            HasError = true;
+            HasData = false; IsEmptyState = false; HasError = true;
             ErrorMessage = "Risposta del server non valida.";
             _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(ProfileViewModel));
         }
         catch (TaskCanceledException)
         {
-            HasData = false;
-            IsEmptyState = false;
-            HasError = true;
+            HasData = false; IsEmptyState = false; HasError = true;
             ErrorMessage = "Richiesta scaduta. Riprova.";
         }
         finally { IsBusy = false; }
+    }
+
+    [RelayCommand]
+    public async Task RefreshAsync()
+    {
+        await _cache.InvalidateAsync(CacheKeys.Profile);
+        IsStale = false;
+        await LoadProfileAsync();
+    }
+
+    private void ApplyProfile(UserMeResponse user)
+    {
+        Email     = user.Email     ?? string.Empty;
+        FirstName = user.FirstName ?? string.Empty;
+        LastName  = user.LastName  ?? string.Empty;
+        Role      = user.Role      ?? string.Empty;
+        IsAdmin     = Role == "Admin";
+        RoleDisplay = IsAdmin ? "Amministratore" : "Dipendente";
+        OnPropertyChanged(nameof(FullName));
+        OnPropertyChanged(nameof(ComputedInitials));
+        HasData      = true;
+        IsEmptyState = false;
+        if (!string.IsNullOrEmpty(user.AvatarEmoji))
+        {
+            AvatarEmoji = user.AvatarEmoji;
+            Preferences.Default.Set("avatar_emoji", user.AvatarEmoji);
+        }
     }
 
     // ── Avatar commands ────────────────────────────────────────────
@@ -311,6 +337,7 @@ public partial class ProfileViewModel : BaseViewModel
         SecureStorage.Default.Remove("jwt_token");
         SecureStorage.Default.Remove("refresh_token");
         SecureStorage.Default.Remove("user_role");
+        await _cache.InvalidateAllAsync();
         await _appNavigation.NavigateToShellAsync(isAdmin: false, startRoute: "Login");
     }
 

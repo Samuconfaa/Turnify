@@ -2,13 +2,16 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
+             xmlns:comp="clr-namespace:Turnify.Mobile.Views.Components"
              x:Class="Turnify.Mobile.Views.ProfilePage"
              x:DataType="vm:ProfileViewModel"
              Title="Profilo"
              Shell.NavBarIsVisible="False"
              BackgroundColor="{StaticResource Background}">
 
-    <Grid RowDefinitions="300,*">
+    <Grid RowDefinitions="Auto,*">
+        <comp:StaleDataBanner Grid.Row="0"/>
+        <Grid Grid.Row="1" RowDefinitions="300,*">
 
         <!-- ── Hero ──────────────────────────────────────── -->
         <Grid Grid.Row="0" BackgroundColor="{StaticResource Navy}">
@@ -326,5 +329,6 @@
                 </VerticalStackLayout>
             </Border>
         </ScrollView>
+        </Grid>
     </Grid>
 </ContentPage>

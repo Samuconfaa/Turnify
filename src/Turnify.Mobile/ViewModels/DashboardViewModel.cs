@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Storage;
+using Turnify.Mobile.Services;
 
 namespace Turnify.Mobile.ViewModels;
 
@@ -86,6 +87,7 @@ public class CoverageDay
 public partial class DashboardViewModel : BaseViewModel
 {
     private readonly HttpClient _httpClient;
+    private readonly ICacheService _cache;
 
     [ObservableProperty] private int _totalEmployees;
     [ObservableProperty] private int _shiftsThisWeek;
@@ -101,48 +103,39 @@ public partial class DashboardViewModel : BaseViewModel
     public ObservableCollection<DashboardPendingVacationDto> PendingRequests { get; } = new();
     public ObservableCollection<CoverageDay> WeeklyCoverage { get; } = new();
 
-    public DashboardViewModel(IHttpClientFactory httpClientFactory)
+    public DashboardViewModel(IHttpClientFactory httpClientFactory, ICacheService cache)
     {
         Title = "Dashboard";
         _httpClient = httpClientFactory.CreateClient("TurnifyApi");
+        _cache = cache;
         IsAdmin = Preferences.Default.Get("user_role_cached", string.Empty) == "Admin";
     }
 
     [RelayCommand]
     public async Task LoadDataAsync()
     {
-        if (IsBusy) return;
-
         HasError = false;
         ErrorMessage = string.Empty;
 
-        try
+        var cached = await _cache.GetAsync<DashboardSummaryDto>(CacheKeys.Dashboard);
+        if (cached != null)
+        {
+            ApplySummary(cached);
+        }
+        else
         {
             IsBusy = true;
+        }
 
+        try
+        {
             var summary = await _httpClient.GetFromJsonAsync<DashboardSummaryDto>("api/dashboard/summary");
-
             if (summary != null)
             {
-                TotalEmployees = summary.TotalEmployees;
-                ShiftsThisWeek = summary.ShiftsThisWeek;
-                PendingVacations = summary.PendingVacations;
-                TotalHoursScheduled = summary.TotalHoursScheduled;
-
-                ShiftsToday.Clear();
-                foreach (var s in summary.ShiftsToday)
-                    ShiftsToday.Add(s);
-
-                PendingRequests.Clear();
-                foreach (var r in summary.PendingRequests)
-                    PendingRequests.Add(r);
-
-                bool empty = TotalEmployees == 0 && ShiftsThisWeek == 0;
-                HasData = !empty;
-                IsEmptyState = empty;
-
-                if (IsAdmin)
-                    await LoadCoverageAsync();
+                await _cache.SetAsync(CacheKeys.Dashboard, summary, TimeSpan.FromMinutes(5));
+                ApplySummary(summary);
+                IsStale = false;
+                if (IsAdmin) await LoadCoverageAsync();
             }
             else
             {
@@ -152,37 +145,62 @@ public partial class DashboardViewModel : BaseViewModel
         }
         catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
         {
-            HasData = false;
-            IsEmptyState = false;
-            HasError = true;
+            HasData = false; IsEmptyState = false; HasError = true;
             ErrorMessage = "Troppi tentativi. Riprova tra qualche minuto.";
+        }
+        catch (HttpRequestException) when (cached != null)
+        {
+            IsStale = true;
         }
         catch (HttpRequestException)
         {
-            HasData = false;
-            IsEmptyState = false;
-            HasError = true;
+            HasData = false; IsEmptyState = false; HasError = true;
             ErrorMessage = "Errore di connessione al server.";
         }
         catch (System.Text.Json.JsonException ex)
         {
-            HasData = false;
-            IsEmptyState = false;
-            HasError = true;
+            HasData = false; IsEmptyState = false; HasError = true;
             ErrorMessage = "Risposta del server non valida.";
             _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(DashboardViewModel));
         }
         catch (TaskCanceledException)
         {
-            HasData = false;
-            IsEmptyState = false;
-            HasError = true;
+            HasData = false; IsEmptyState = false; HasError = true;
             ErrorMessage = "Richiesta scaduta. Riprova.";
         }
         finally
         {
             IsBusy = false;
         }
+    }
+
+    [RelayCommand]
+    public async Task RefreshAsync()
+    {
+        await _cache.InvalidateAsync(CacheKeys.Dashboard);
+        IsStale = false;
+        await LoadDataAsync();
+    }
+
+    public async Task InvalidateDashboardCacheAsync()
+        => await _cache.InvalidateAsync(CacheKeys.Dashboard);
+
+    private void ApplySummary(DashboardSummaryDto summary)
+    {
+        TotalEmployees      = summary.TotalEmployees;
+        ShiftsThisWeek      = summary.ShiftsThisWeek;
+        PendingVacations    = summary.PendingVacations;
+        TotalHoursScheduled = summary.TotalHoursScheduled;
+
+        ShiftsToday.Clear();
+        foreach (var s in summary.ShiftsToday) ShiftsToday.Add(s);
+
+        PendingRequests.Clear();
+        foreach (var r in summary.PendingRequests) PendingRequests.Add(r);
+
+        bool empty = TotalEmployees == 0 && ShiftsThisWeek == 0;
+        HasData      = !empty;
+        IsEmptyState = empty;
     }
 
     private async Task LoadCoverageAsync()

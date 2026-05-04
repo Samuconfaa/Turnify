@@ -444,6 +444,22 @@ Turnify/
 
 ---
 
+### Iterazione 14 — Caching locale e aggiornamento in background
+**Data:** 2026-05-04
+
+**Obiettivo:** eliminare i tempi di caricamento percepiti dall'utente mostrando dati cached immediatamente e aggiornando in background con il pattern stale-while-revalidate.
+
+**Deliverable:**
+1. `ICacheService` / `CacheService` — persistenza locale via SQLite, TTL configurabile per chiave, thread-safe
+2. Pattern stale-while-revalidate in `EmployeesViewModel`, `DashboardViewModel`, `ShiftCalendarViewModel`, `ProfileViewModel`, `ShiftSwapsViewModel`
+3. Invalidazione cache selettiva su mutazioni (create/update/delete turni, dipendenti, ferie, scambi) e completa al logout
+4. `StaleDataBanner` — componente XAML riusabile che appare quando `IsStale = true` e permette refresh manuale
+5. `IsStale` / `HasStaleWarning` aggiunti a `BaseViewModel`
+
+**Status:** completata
+
+---
+
 ## Rischi tecnici
 
 Derivati da problemi tecnici reali osservati durante lo sviluppo e la verifica:

@@ -854,6 +854,31 @@ Login funzionante confermato da curl su `https://samuconfa.it/turnify/api/auth/l
 
 ---
 
+## Prompt 36
+
+### Data
+2026-05-04
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Implementare l'iterazione 14 completa: caching locale SQLite con pattern stale-while-revalidate su tutti i ViewModel principali, banner UI per dati non aggiornati
+
+### Prompt
+> Implementare `ICacheService` + `CacheService` (SQLite, TTL, SemaphoreSlim, System.Text.Json) e `CacheKeys.cs`. Aggiungere `IsStale`/`HasStaleWarning` a `BaseViewModel`. Applicare pattern stale-while-revalidate a `EmployeeListViewModel`, `DashboardViewModel`, `ShiftCalendarViewModel`, `ProfileViewModel`, `ShiftSwapsViewModel`. Aggiungere invalidazione cache su mutazioni in `ShiftDetailViewModel` (save/delete) e `ShiftSwapsViewModel` (respond). Aggiungere `InvalidateAllAsync` al logout in `ProfileViewModel`. Registrare `ICacheService` come Singleton in `MauiProgram.cs`. Creare componente `StaleDataBanner.xaml` (ContentView, binding `HasStaleWarning`, `RefreshCommand`). Aggiungere il banner a `DashboardPage.xaml`, `ShiftCalendarPage.xaml`, `ShiftSwapsPage.xaml`, `EmployeeListPage.xaml`, `ProfilePage.xaml`.
+
+### Output utile
+4 nuovi file: `ICacheService.cs`, `CacheService.cs`, `CacheKeys.cs`, `StaleDataBanner.xaml` + `.xaml.cs`. Modificati: `BaseViewModel.cs`, 5 ViewModel con stale-while-revalidate, `ShiftDetailViewModel.cs`, `MauiProgram.cs`, 5 XAML page con banner.
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Tutti i deliverable dell'iterazione 14 implementati secondo il piano. Pattern uniforme su tutti i ViewModel interessati.
+
+---
+
 ## Prompt 34
 
 ### Data

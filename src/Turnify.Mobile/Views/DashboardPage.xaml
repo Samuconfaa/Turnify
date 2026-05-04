@@ -2,12 +2,15 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
+             xmlns:comp="clr-namespace:Turnify.Mobile.Views.Components"
              x:Class="Turnify.Mobile.Views.DashboardPage"
              x:DataType="vm:DashboardViewModel"
              Title="Dashboard"
              BackgroundColor="{StaticResource Background}">
 
-    <RefreshView Command="{Binding LoadDataCommand}" IsRefreshing="{Binding IsBusy}">
+    <Grid RowDefinitions="Auto,*">
+        <comp:StaleDataBanner Grid.Row="0"/>
+        <RefreshView Grid.Row="1" Command="{Binding LoadDataCommand}" IsRefreshing="{Binding IsBusy}">
         <ScrollView>
             <VerticalStackLayout Spacing="0" Padding="0,0,0,36">
 
@@ -377,4 +380,5 @@
             </VerticalStackLayout>
         </ScrollView>
     </RefreshView>
+    </Grid>
 </ContentPage>

@@ -2,6 +2,57 @@
 
 ---
 
+## Prompt 39
+
+### Data
+2026-05-04
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Fix crash e mancato caricamento della pagina Team (`EmployeeListPage`) dopo introduzione del caching SQLite
+
+### Prompt
+> Aggiungere `sqlite-net-pcl` al `.csproj` di `Turnify.Mobile` (mancante dopo it-14). Correggere il crash nella pagina Team causato da: (1) doppia chiamata concorrente a `LoadDataAsync()` generata da `OnSelectedBusinessChanged` scattato durante il caricamento iniziale dei business; (2) `_cache.GetAsync` fuori dal try/catch che, in caso di eccezione SQLite, propagava attraverso `async partial void OnSelectedBusinessChanged` crashando l'app. Fix: aggiungere flag `_suppressBusinessChanged` per bloccare il re-trigger durante l'assegnazione di `SelectedBusiness = Businesses[0]`; wrappare `_cache.GetAsync` in try/catch isolato.
+
+### Output utile
+- `Turnify.Mobile.csproj`: aggiunto `<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />`
+- `EmployeeListViewModel.cs`: aggiunto campo `_suppressBusinessChanged`; `OnSelectedBusinessChanged` controlla il flag prima di richiamare `LoadDataAsync`; `_cache.GetAsync` wrappato in try/catch standalone
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Build 0 errori confermata. I due bug identificati (doppia chiamata + eccezione non catchata in async void) spiegano sia il mancato caricamento sia il crash.
+
+---
+
+## Prompt 38
+
+### Data
+2026-05-04
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Fix errori di compilazione SQLite in Turnify.Mobile (6 errori: SQLiteAsyncConnection, TableAttribute, PrimaryKey, ecc.)
+
+### Prompt
+> Aggiungere il package NuGet `sqlite-net-pcl` al progetto `Turnify.Mobile` per risolvere i 6 errori di compilazione relativi ai tipi SQLite (`SQLiteAsyncConnection`, `TableAttribute`, `PrimaryKey`, ecc.) introdotti dall'iterazione it-14 (caching locale).
+
+### Output utile
+- `Turnify.Mobile.csproj`: aggiunto `<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />`
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Restore e build confermati senza errori.
+
+---
+
 ## Prompt 37
 
 ### Data

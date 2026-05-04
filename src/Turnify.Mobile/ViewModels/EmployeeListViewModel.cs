@@ -40,6 +40,7 @@ public partial class EmployeeListViewModel : BaseViewModel
     private readonly HttpClient _httpClient;
     private readonly ICacheService _cache;
     private List<EmployeeListDto> _allEmployees = new();
+    private bool _suppressBusinessChanged;
 
     public ObservableCollection<EmployeeListDto> Employees { get; } = new();
     public ObservableCollection<BusinessItemDto> Businesses { get; } = new();
@@ -88,7 +89,10 @@ public partial class EmployeeListViewModel : BaseViewModel
         HasError = false;
         ErrorMessage = string.Empty;
 
-        var cached = await _cache.GetAsync<List<EmployeeListDto>>(CacheKeys.Employees);
+        List<EmployeeListDto>? cached = null;
+        try { cached = await _cache.GetAsync<List<EmployeeListDto>>(CacheKeys.Employees); }
+        catch { /* cache non disponibile, prosegui senza */ }
+
         if (cached != null)
         {
             _allEmployees = cached;
@@ -101,9 +105,9 @@ public partial class EmployeeListViewModel : BaseViewModel
             IsBusy = true;
         }
 
-        try
+        if (Businesses.Count == 0)
         {
-            if (Businesses.Count == 0)
+            try
             {
                 var businesses = await _httpClient.GetFromJsonAsync<BusinessItemDto[]>("api/businesses");
                 if (businesses != null)
@@ -111,10 +115,20 @@ public partial class EmployeeListViewModel : BaseViewModel
                     Businesses.Clear();
                     Businesses.Add(new BusinessItemDto { Id = 0, Name = "Tutte le attività" });
                     foreach (var b in businesses) Businesses.Add(b);
-                    SelectedBusiness = Businesses[0];
                 }
             }
+            catch { /* filter opzionale, prosegui */ }
 
+            if (Businesses.Count == 0)
+                Businesses.Add(new BusinessItemDto { Id = 0, Name = "Tutte le attività" });
+
+            _suppressBusinessChanged = true;
+            SelectedBusiness = Businesses[0];
+            _suppressBusinessChanged = false;
+        }
+
+        try
+        {
             string url = "api/employees";
             if (SelectedBusiness != null && SelectedBusiness.Id > 0)
                 url += $"?businessId={SelectedBusiness.Id}";
@@ -166,6 +180,7 @@ public partial class EmployeeListViewModel : BaseViewModel
 
     async partial void OnSelectedBusinessChanged(BusinessItemDto? value)
     {
+        if (_suppressBusinessChanged) return;
         await LoadDataAsync();
     }
 

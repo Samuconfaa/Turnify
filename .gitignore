@@ -314,3 +314,6 @@ ModelManifest.xml
 *.pfx
 *.publishsettings
 orleans.codegen.cs
+
+# User specific config
+appsettings.Development.json

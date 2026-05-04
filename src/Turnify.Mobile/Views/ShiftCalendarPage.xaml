@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
+             x:Class="Turnify.Mobile.Views.ShiftCalendarPage"
+             Title="I Miei Turni"
+             BackgroundColor="{StaticResource Background}">
+    <ScrollView>
+        <VerticalStackLayout Spacing="16" Padding="16">
+            <Label Text="Giugno 2024" FontSize="24" FontAttributes="Bold" TextColor="{StaticResource OnBackground}" Margin="0,8,0,16" />
+            
+            <Frame BackgroundColor="{StaticResource Surface}" BorderColor="{StaticResource Outline}" HasShadow="True" Padding="0" CornerRadius="12" IsClippedToBounds="True">
+                <Grid ColumnDefinitions="4, *" RowDefinitions="Auto">
+                    <BoxView Grid.Column="0" BackgroundColor="{StaticResource Success}" />
+                    <Grid Grid.Column="1" ColumnDefinitions="*, Auto" Padding="16">
+                        <VerticalStackLayout Grid.Column="0">
+                            <Label Text="Oggi" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource OnBackground}" />
+                            <Label Text="8:00 - 16:00 · Sala" FontSize="14" TextColor="{StaticResource OnSurfaceVariant}" Margin="0,4,0,0" />
+                        </VerticalStackLayout>
+                        <Frame Grid.Column="1" BackgroundColor="#E6F4EA" BorderColor="#CEEAD6" CornerRadius="16" Padding="8,4" VerticalOptions="Center">
+                            <Label Text="Confermato" FontSize="12" TextColor="{StaticResource Success}" />
+                        </Frame>
+                    </Grid>
+                </Grid>
+            </Frame>
+
+            <Frame BackgroundColor="{StaticResource Surface}" BorderColor="{StaticResource Outline}" HasShadow="True" Padding="0" CornerRadius="12" IsClippedToBounds="True">
+                <Grid ColumnDefinitions="4, *" RowDefinitions="Auto">
+                    <BoxView Grid.Column="0" BackgroundColor="{StaticResource Primary}" />
+                    <Grid Grid.Column="1" ColumnDefinitions="*, Auto" Padding="16">
+                        <VerticalStackLayout Grid.Column="0">
+                            <Label Text="Domani" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource OnBackground}" />
+                            <Label Text="16:00 - 00:00 · Cucina" FontSize="14" TextColor="{StaticResource OnSurfaceVariant}" Margin="0,4,0,0" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Grid>
+            </Frame>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

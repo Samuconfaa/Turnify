@@ -6,29 +6,30 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Turnify.Core.Interfaces.Repositories;
 using Turnify.Core.Interfaces.Services;
 using Turnify.Core.Models;
-using Turnify.Infrastructure.Data;
 
 namespace Turnify.Infrastructure.Services;
 
 public class AuthService : IAuthService
 {
-    private readonly TurnifyDbContext _context;
+    private readonly IUserRepository _userRepository;
+    private readonly ICompanyRepository _companyRepository;
     private readonly IConfiguration _config;
 
-    public AuthService(TurnifyDbContext context, IConfiguration config)
+    public AuthService(IUserRepository userRepository, ICompanyRepository companyRepository, IConfiguration config)
     {
-        _context = context;
+        _userRepository = userRepository;
+        _companyRepository = companyRepository;
         _config = config;
     }
 
     public async Task<(string AccessToken, string RefreshToken)?> LoginAsync(string email, string password, CancellationToken ct = default)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email, ct);
+        var user = await _userRepository.GetByEmailAsync(email, ct);
         if (user == null || !user.IsActive) return null;
 
         if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHash)) return null;
@@ -40,17 +41,17 @@ public class AuthService : IAuthService
         user.RefreshTokenHash = BCrypt.Net.BCrypt.HashPassword(refreshToken);
         user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(_config.GetValue<int>("Jwt:RefreshTokenExpiryDays"));
 
-        await _context.SaveChangesAsync(ct);
+        await _userRepository.UpdateAsync(user, ct);
 
         return (token, refreshToken);
     }
 
     public async Task<(string AccessToken, string RefreshToken)?> RefreshTokenAsync(string refreshToken, CancellationToken ct = default)
     {
-        var users = await _context.Users.Where(u => u.RefreshTokenExpiryTime > DateTime.UtcNow).ToListAsync(ct);
+        var users = await _userRepository.GetActiveUsersWithValidRefreshTokenAsync(ct);
         var user = users.FirstOrDefault(u => u.RefreshTokenHash != null && BCrypt.Net.BCrypt.Verify(refreshToken, u.RefreshTokenHash));
         
-        if (user == null || !user.IsActive) return null;
+        if (user == null) return null;
 
         var newAccessToken = GenerateJwtToken(user);
         var newRefreshToken = GenerateRefreshToken();
@@ -58,45 +59,45 @@ public class AuthService : IAuthService
         user.RefreshTokenHash = BCrypt.Net.BCrypt.HashPassword(newRefreshToken);
         user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(_config.GetValue<int>("Jwt:RefreshTokenExpiryDays"));
 
-        await _context.SaveChangesAsync(ct);
+        await _userRepository.UpdateAsync(user, ct);
 
         return (newAccessToken, newRefreshToken);
     }
 
     public async Task<bool> RegisterCompanyAsync(Company company, User adminUser, CancellationToken ct = default)
     {
-        var existingCompany = await _context.Companies.AnyAsync(c => c.Slug == company.Slug, ct);
+        var existingCompany = await _companyRepository.ExistsBySlugAsync(company.Slug, ct);
         if (existingCompany) return false;
 
-        var existingUser = await _context.Users.AnyAsync(u => u.Email == adminUser.Email, ct);
-        if (existingUser) return false;
+        var existingUser = await _userRepository.ExistsByEmailAsync(adminUser.Email, ct);
+        if (existingUser) throw new InvalidOperationException("Email già in uso.");
 
         company.CreatedAt = DateTime.UtcNow;
         company.UpdatedAt = DateTime.UtcNow;
         company.IsActive = true;
-        _context.Companies.Add(company);
-        await _context.SaveChangesAsync(ct); // Save to get CompanyId
+        
+        var createdCompany = await _companyRepository.AddAsync(company, ct);
 
-        adminUser.CompanyId = company.Id;
+        adminUser.CompanyId = createdCompany.Id;
         adminUser.PasswordHash = BCrypt.Net.BCrypt.HashPassword(adminUser.PasswordHash);
         adminUser.Role = UserRole.Admin;
         adminUser.IsActive = true;
         adminUser.CreatedAt = DateTime.UtcNow;
         adminUser.UpdatedAt = DateTime.UtcNow;
-        _context.Users.Add(adminUser);
+        
+        await _userRepository.AddAsync(adminUser, ct);
 
-        await _context.SaveChangesAsync(ct);
         return true;
     }
 
     public async Task<bool> LogoutAsync(int userId, CancellationToken ct = default)
     {
-        var user = await _context.Users.FindAsync(new object[] { userId }, ct);
+        var user = await _userRepository.GetByIdAsync(userId, ct);
         if (user != null)
         {
             user.RefreshTokenHash = null;
             user.RefreshTokenExpiryTime = null;
-            await _context.SaveChangesAsync(ct);
+            await _userRepository.UpdateAsync(user, ct);
             return true;
         }
         return false;

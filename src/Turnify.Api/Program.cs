@@ -10,6 +10,9 @@ using Turnify.Core.Interfaces.Services;
 using Turnify.Core.Interfaces.Repositories;
 using Turnify.Infrastructure.Services;
 using Turnify.Infrastructure.Repositories;
+using DotNetEnv;
+
+Env.TraversePath().Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,6 +65,7 @@ builder.Services.AddScoped<IShiftService, ShiftService>();
 builder.Services.AddScoped<IVacationService, VacationService>();
 builder.Services.AddScoped<IShiftRepository, ShiftRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<IVacationRepository, VacationRepository>();
 
 var app = builder.Build();

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
+             x:Class="Turnify.Mobile.Views.VacationListPage"
+             Title="Ferie e Permessi"
+             BackgroundColor="{StaticResource Background}">
+    <ScrollView>
+        <VerticalStackLayout Spacing="16" Padding="16">
+            <Button Text="+ Richiedi Ferie" BackgroundColor="{StaticResource Primary}" TextColor="{StaticResource OnPrimary}" CornerRadius="8" FontAttributes="Bold" Margin="0,8,0,16" />
+
+            <Label Text="Storico Richieste" FontSize="20" FontAttributes="Bold" TextColor="{StaticResource OnBackground}" />
+
+            <Frame BackgroundColor="{StaticResource Surface}" BorderColor="{StaticResource Outline}" HasShadow="True" Padding="16" CornerRadius="12">
+                <VerticalStackLayout Spacing="8">
+                    <Grid ColumnDefinitions="*, Auto">
+                        <Label Grid.Column="0" Text="1 - 14 Agosto 2024" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource OnBackground}" />
+                        <Frame Grid.Column="1" BackgroundColor="#FEF3C7" BorderColor="#FDE68A" CornerRadius="16" Padding="8,4">
+                            <Label Text="In Attesa" FontSize="12" TextColor="#B45309" />
+                        </Frame>
+                    </Grid>
+                    <Label Text="Vacanze estive" FontSize="14" TextColor="{StaticResource OnSurfaceVariant}" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <Frame BackgroundColor="{StaticResource Surface}" BorderColor="{StaticResource Outline}" HasShadow="True" Padding="16" CornerRadius="12">
+                <VerticalStackLayout Spacing="8">
+                    <Grid ColumnDefinitions="*, Auto">
+                        <Label Grid.Column="0" Text="25 Dicembre 2023" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource OnBackground}" />
+                        <Frame Grid.Column="1" BackgroundColor="#E6F4EA" BorderColor="#CEEAD6" CornerRadius="16" Padding="8,4">
+                            <Label Text="Approvata" FontSize="12" TextColor="{StaticResource Success}" />
+                        </Frame>
+                    </Grid>
+                    <Label Text="Festa di Natale" FontSize="14" TextColor="{StaticResource OnSurfaceVariant}" />
+                </VerticalStackLayout>
+            </Frame>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

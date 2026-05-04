@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
+             x:Class="Turnify.Mobile.Views.NotificationsPage"
+             Title="Notifiche"
+             BackgroundColor="{StaticResource Background}">
+    <ScrollView>
+        <VerticalStackLayout Spacing="16" Padding="16">
+            <Label Text="Oggi" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource OnBackground}" Margin="0,8,0,0" />
+
+            <Frame BackgroundColor="{StaticResource SurfaceContainerLowest}" BorderColor="{StaticResource OutlineVariant}" HasShadow="True" Padding="16" CornerRadius="12">
+                <Grid ColumnDefinitions="Auto, *">
+                    <Label Grid.Column="0" Text="✅" FontSize="20" VerticalOptions="Center" Margin="0,0,12,0" />
+                    <VerticalStackLayout Grid.Column="1">
+                        <Label Text="Ferie approvate" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource OnBackground}" />
+                        <Label Text="La tua richiesta per il 1 Agosto è stata approvata." FontSize="14" TextColor="{StaticResource OnSurfaceVariant}" Margin="0,2,0,0" />
+                        <Label Text="2 ore fa" FontSize="12" TextColor="{StaticResource Outline}" Margin="0,4,0,0" />
+                    </VerticalStackLayout>
+                </Grid>
+            </Frame>
+
+            <Frame BackgroundColor="{StaticResource Surface}" BorderColor="{StaticResource Outline}" HasShadow="True" Padding="16" CornerRadius="12">
+                <Grid ColumnDefinitions="Auto, *">
+                    <Label Grid.Column="0" Text="📅" FontSize="20" VerticalOptions="Center" Margin="0,0,12,0" />
+                    <VerticalStackLayout Grid.Column="1">
+                        <Label Text="Nuovo turno assegnato" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource OnBackground}" />
+                        <Label Text="Sei stato assegnato al turno Sala per domani." FontSize="14" TextColor="{StaticResource OnSurfaceVariant}" Margin="0,2,0,0" />
+                        <Label Text="5 ore fa" FontSize="12" TextColor="{StaticResource Outline}" Margin="0,4,0,0" />
+                    </VerticalStackLayout>
+                </Grid>
+            </Frame>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

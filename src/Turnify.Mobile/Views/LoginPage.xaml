@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
+             x:Class="Turnify.Mobile.Views.LoginPage"
+             Title="{Binding Title}"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{StaticResource Background}">
+    <ScrollView>
+        <VerticalStackLayout Spacing="24" Padding="24" VerticalOptions="Center" HorizontalOptions="Fill" MaximumWidthRequest="400">
+            <!-- Header -->
+            <VerticalStackLayout Spacing="8" HorizontalOptions="Center" Margin="0,0,0,16">
+                <Frame BackgroundColor="{StaticResource PrimaryContainer}" CornerRadius="12" HeightRequest="64" WidthRequest="64" Padding="0" HorizontalOptions="Center" HasShadow="True" BorderColor="{StaticResource OutlineVariant}">
+                    <!-- Placeholder icon -->
+                    <Label Text="📅" FontSize="32" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Frame>
+                <Label Text="Turnify" FontSize="30" FontAttributes="Bold" TextColor="{StaticResource Primary}" HorizontalOptions="Center" />
+                <Label Text="Gestisci il tuo team" FontSize="16" TextColor="{StaticResource OnSurfaceVariant}" HorizontalOptions="Center" />
+            </VerticalStackLayout>
+
+            <!-- Form -->
+            <Frame BackgroundColor="{StaticResource SurfaceContainerLowest}" BorderColor="{StaticResource OutlineVariant}" HasShadow="True" CornerRadius="12" Padding="16">
+                <VerticalStackLayout Spacing="16">
+                    <Label Text="{Binding ErrorMessage}" TextColor="{StaticResource Error}" IsVisible="{Binding HasError}" HorizontalOptions="Center" />
+
+                    <Frame Padding="0" BorderColor="{StaticResource OutlineVariant}" CornerRadius="8" BackgroundColor="{StaticResource SurfaceContainer}" HasShadow="False">
+                        <Entry Text="{Binding Email}" Placeholder="Email" Keyboard="Email" HeightRequest="52" Margin="16,0" TextColor="{StaticResource OnBackground}" PlaceholderColor="{StaticResource Outline}" BackgroundColor="Transparent" />
+                    </Frame>
+
+                    <Frame Padding="0" BorderColor="{StaticResource OutlineVariant}" CornerRadius="8" BackgroundColor="{StaticResource SurfaceContainer}" HasShadow="False">
+                        <Entry Text="{Binding Password}" Placeholder="Password" IsPassword="True" HeightRequest="52" Margin="16,0" TextColor="{StaticResource OnBackground}" PlaceholderColor="{StaticResource Outline}" BackgroundColor="Transparent" />
+                    </Frame>
+
+                    <Label Text="Password dimenticata?" TextDecorations="Underline" TextColor="{StaticResource Primary}" FontSize="12" HorizontalOptions="Center" Margin="0,8,0,0">
+                        <!-- Command placeholder -->
+                    </Label>
+
+                    <Button Text="Accedi" Command="{Binding LoginCommand}" BackgroundColor="{StaticResource Primary}" TextColor="{StaticResource OnPrimary}" HeightRequest="52" CornerRadius="8" FontAttributes="Bold" Margin="0,8,0,0" />
+                </VerticalStackLayout>
+            </Frame>
+            
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" HorizontalOptions="Center" Color="{StaticResource Primary}" />
+
+            <!-- Footer -->
+            <HorizontalStackLayout HorizontalOptions="Center" Margin="0,16,0,0" Spacing="4">
+                <Label Text="Non hai un account?" FontSize="14" TextColor="{StaticResource OnSurfaceVariant}" VerticalOptions="Center" />
+                <Label Text="Registra la tua azienda" FontSize="14" TextColor="{StaticResource Primary}" TextDecorations="Underline" FontAttributes="Bold" VerticalOptions="Center" />
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -42,4 +42,16 @@ public class UserRepository : IUserRepository
         await _context.SaveChangesAsync(ct);
         return user;
     }
+
+    public Task<bool> ExistsByEmailAsync(string email, CancellationToken ct = default)
+    {
+        return _context.Users.AnyAsync(u => u.Email == email, ct);
+    }
+
+    public async Task<System.Collections.Generic.IReadOnlyList<User>> GetActiveUsersWithValidRefreshTokenAsync(CancellationToken ct = default)
+    {
+        return await _context.Users
+            .Where(u => u.IsActive && u.RefreshTokenExpiryTime > System.DateTime.UtcNow)
+            .ToListAsync(ct);
+    }
 }

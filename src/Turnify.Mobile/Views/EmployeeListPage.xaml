@@ -6,94 +6,97 @@
              x:Class="Turnify.Mobile.Views.EmployeeListPage"
              x:DataType="vm:EmployeeListViewModel"
              Title="Team"
+             Shell.NavBarIsVisible="False"
              BackgroundColor="{StaticResource Background}">
 
-    <Grid RowDefinitions="Auto,*">
+    <Grid RowDefinitions="Auto,Auto,*">
         <comp:StaleDataBanner Grid.Row="0"/>
-        <Grid Grid.Row="1" RowDefinitions="Auto,*">
 
-        <!-- ── Header + Search ──────────────────────────── -->
-        <VerticalStackLayout Grid.Row="0" Spacing="10" Padding="20,18,20,10">
-            <Label Text="Team"
-                   FontSize="26" FontAttributes="Bold" FontFamily="PJSXBold"
-                   TextColor="{StaticResource OnBackground}"
-                   CharacterSpacing="-0.8"/>
+        <!-- ── Gradient header ──────────────────────────────── -->
+        <Grid Grid.Row="1" Padding="20,54,20,16" MinimumHeightRequest="80">
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="{StaticResource HeaderGradientStart}" Offset="0"/>
+                    <GradientStop Color="{StaticResource HeaderGradientEnd}" Offset="1"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+            <VerticalStackLayout Spacing="12">
+                <Label Text="Team" FontSize="26" FontAttributes="Bold" FontFamily="PJSXBold"
+                       TextColor="White" CharacterSpacing="-0.8"/>
+                <!-- Search bar -->
+                <Border BackgroundColor="{StaticResource Surface}" Stroke="Transparent">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="13"/></Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow Brush="#000000" Offset="0,2" Radius="8" Opacity="0.08"/>
+                    </Border.Shadow>
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="0">
+                        <Image Grid.Column="0" Source="search.png" HeightRequest="18" WidthRequest="18"
+                               VerticalOptions="Center" Margin="14,0,0,0"/>
+                        <SearchBar Grid.Column="1" Text="{Binding SearchQuery}"
+                                   Placeholder="Cerca per nome, ruolo…"
+                                   HeightRequest="48" BackgroundColor="Transparent"
+                                   CancelButtonColor="{StaticResource Primary}"
+                                   TextColor="{StaticResource OnBackground}"
+                                   PlaceholderColor="{StaticResource Outline}"
+                                   FontFamily="PJSReg"/>
+                    </Grid>
+                </Border>
+                <!-- Business filter -->
+                <Border BackgroundColor="{StaticResource Surface}" Stroke="Transparent">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="13"/></Border.StrokeShape>
+                    <Picker ItemsSource="{Binding Businesses}"
+                            ItemDisplayBinding="{Binding Name}"
+                            SelectedItem="{Binding SelectedBusiness}"
+                            Title="Tutte le attività"
+                            TextColor="{StaticResource OnBackground}"
+                            TitleColor="{StaticResource Outline}"
+                            FontFamily="PJSReg" Margin="16,0"/>
+                </Border>
+            </VerticalStackLayout>
+        </Grid>
 
-            <!-- Search bar -->
-            <Border BackgroundColor="{StaticResource Surface}"
-                    Stroke="{StaticResource OutlineVariant}" StrokeThickness="1.5">
-                <Border.StrokeShape><RoundRectangle CornerRadius="13"/></Border.StrokeShape>
-                <SearchBar Text="{Binding SearchQuery}"
-                           Placeholder="Cerca per nome, ruolo…"
-                           HeightRequest="48"
-                           BackgroundColor="Transparent"
-                           CancelButtonColor="{StaticResource Primary}"
-                           TextColor="{StaticResource OnBackground}"
-                           PlaceholderColor="{StaticResource Outline}"
-                           FontFamily="PJSReg"/>
-            </Border>
-
-            <!-- Business filter -->
-            <Border BackgroundColor="{StaticResource Surface}"
-                    Stroke="{StaticResource OutlineVariant}" StrokeThickness="1.5">
-                <Border.StrokeShape><RoundRectangle CornerRadius="13"/></Border.StrokeShape>
-                <Picker ItemsSource="{Binding Businesses}"
-                        ItemDisplayBinding="{Binding Name}"
-                        SelectedItem="{Binding SelectedBusiness}"
-                        Title="Tutte le attività"
-                        TextColor="{StaticResource OnBackground}"
-                        TitleColor="{StaticResource Outline}"
-                        FontFamily="PJSReg"
-                        Margin="16,0"/>
-            </Border>
-        </VerticalStackLayout>
-
-        <!-- ── Employee List ─────────────────────────────── -->
-        <RefreshView Grid.Row="1"
-                     Command="{Binding LoadDataCommand}"
-                     IsRefreshing="{Binding IsBusy}">
-            <CollectionView ItemsSource="{Binding Employees}" Margin="0,2,0,0">
+        <!-- ── Employee list ─────────────────────────────── -->
+        <RefreshView Grid.Row="2" Command="{Binding LoadDataCommand}" IsRefreshing="{Binding IsBusy}">
+            <CollectionView ItemsSource="{Binding Employees}" Margin="0,8,0,0">
 
                 <CollectionView.EmptyView>
-                    <VerticalStackLayout HorizontalOptions="Center"
-                                         Margin="32,52,32,0" Spacing="14">
+                    <VerticalStackLayout HorizontalOptions="Center" Margin="32,52,32,0" Spacing="14">
                         <Border BackgroundColor="{StaticResource Surface}"
-                                HeightRequest="68" WidthRequest="68"
-                                HorizontalOptions="Center">
+                                HeightRequest="68" WidthRequest="68" HorizontalOptions="Center">
                             <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
-                            <Label Text="👥" FontSize="34"
+                            <Image Source="users-group.png" HeightRequest="34" WidthRequest="34"
                                    HorizontalOptions="Center" VerticalOptions="Center"/>
                         </Border>
-                        <Label Text="Nessun dipendente ancora"
-                               FontSize="17" FontAttributes="Bold" FontFamily="PJSBold"
-                               TextColor="{StaticResource OnBackground}"
+                        <Label Text="Nessun dipendente ancora" FontSize="17" FontAttributes="Bold"
+                               FontFamily="PJSBold" TextColor="{StaticResource OnBackground}"
                                HorizontalOptions="Center"/>
                         <Label Text="Aggiungi il tuo primo dipendente per iniziare a gestire i turni."
                                FontSize="14" FontFamily="PJSReg"
                                TextColor="{StaticResource OnSurfaceVariant}"
-                               HorizontalOptions="Center" HorizontalTextAlignment="Center"
-                               Margin="8,0"/>
+                               HorizontalOptions="Center" HorizontalTextAlignment="Center" Margin="8,0"/>
                         <Button Text="Aggiungi dipendente"
                                 Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EmployeeListViewModel}}, Path=AddEmployeeCommand}"
                                 Style="{StaticResource PrimaryButton}"
-                                HorizontalOptions="Center"
-                                Padding="24,0" WidthRequest="240"/>
+                                HorizontalOptions="Center" Padding="24,0" WidthRequest="240"/>
                     </VerticalStackLayout>
                 </CollectionView.EmptyView>
 
                 <CollectionView.Footer>
                     <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
-                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1.5"
+                            Stroke="{StaticResource Primary}" StrokeThickness="1.5"
                             StrokeDashArray="6,4"
                             Padding="16,20" Margin="20,0,20,12">
                         <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding CreateEmployeeCommand}"/>
                         </Border.GestureRecognizers>
-                        <Label Text="Aggiungi un utente"
-                               FontSize="15" FontAttributes="Bold" FontFamily="PJSBold"
-                               TextColor="{StaticResource OnSurfaceVariant}"
-                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                        <HorizontalStackLayout HorizontalOptions="Center" Spacing="8">
+                            <Image Source="plus-circle.png" HeightRequest="20" WidthRequest="20"
+                                   VerticalOptions="Center"/>
+                            <Label Text="Aggiungi un utente" FontSize="15" FontAttributes="Bold"
+                                   FontFamily="PJSBold" TextColor="{StaticResource Primary}"
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
                     </Border>
                 </CollectionView.Footer>
 
@@ -102,9 +105,9 @@
                         <Border BackgroundColor="{StaticResource Surface}"
                                 Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
                                 Margin="20,0,20,8">
-                            <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
+                            <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
                             <Border.Shadow>
-                                <Shadow Brush="#000000" Offset="0,4" Radius="14" Opacity="0.06"/>
+                                <Shadow Brush="#000000" Offset="0,4" Radius="14" Opacity="0.05"/>
                             </Border.Shadow>
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer
@@ -112,13 +115,10 @@
                                     CommandParameter="{Binding .}"/>
                             </Border.GestureRecognizers>
 
-                            <Grid ColumnDefinitions="Auto,*,Auto"
-                                  Padding="14,14" ColumnSpacing="14">
+                            <Grid ColumnDefinitions="Auto,*,Auto" Padding="14,14" ColumnSpacing="14">
                                 <!-- Avatar -->
-                                <Border Grid.Column="0"
-                                        BackgroundColor="{StaticResource PrimaryLight}"
-                                        Stroke="Transparent"
-                                        HeightRequest="48" WidthRequest="48"
+                                <Border Grid.Column="0" BackgroundColor="{StaticResource PrimaryContainer}"
+                                        Stroke="Transparent" HeightRequest="48" WidthRequest="48"
                                         VerticalOptions="Center">
                                     <Border.StrokeShape><RoundRectangle CornerRadius="24"/></Border.StrokeShape>
                                     <Border.Triggers>
@@ -126,9 +126,9 @@
                                             <Setter Property="BackgroundColor" Value="{StaticResource SurfaceContainerLow}"/>
                                         </DataTrigger>
                                     </Border.Triggers>
-                                    <Label Text="{Binding Initials}"
-                                           FontSize="15" FontAttributes="Bold" FontFamily="PJSBold"
-                                           TextColor="{StaticResource Primary}"
+                                    <Label Text="{Binding Initials}" FontSize="15"
+                                           FontAttributes="Bold" FontFamily="PJSBold"
+                                           TextColor="{StaticResource OnPrimaryContainer}"
                                            HorizontalOptions="Center" VerticalOptions="Center">
                                         <Label.Triggers>
                                             <DataTrigger TargetType="Label" Binding="{Binding IsActive}" Value="False">
@@ -139,54 +139,54 @@
                                 </Border>
 
                                 <!-- Info -->
-                                <VerticalStackLayout Grid.Column="1"
-                                                     VerticalOptions="Center" Spacing="4">
-                                    <Label Text="{Binding FullName}"
-                                           FontSize="14" FontAttributes="Bold" FontFamily="PJSBold"
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="4">
+                                    <Label Text="{Binding FullName}" FontSize="14"
+                                           FontAttributes="Bold" FontFamily="PJSBold"
                                            TextColor="{StaticResource OnBackground}"/>
                                     <HorizontalStackLayout Spacing="8">
-                                        <Label Text="{Binding Role}"
-                                               FontSize="12" FontFamily="PJSReg"
+                                        <Label Text="{Binding Role}" FontSize="12" FontFamily="PJSReg"
                                                TextColor="{StaticResource OnSurfaceVariant}"/>
                                         <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
-                                                Stroke="Transparent" Padding="7,3"
-                                                VerticalOptions="Center"
+                                                Stroke="Transparent" Padding="7,3" VerticalOptions="Center"
                                                 IsVisible="{Binding ContractType, Converter={StaticResource StringNotEmptyConverter}}">
                                             <Border.StrokeShape><RoundRectangle CornerRadius="5"/></Border.StrokeShape>
-                                            <Label Text="{Binding ContractType}"
-                                                   FontSize="10" FontAttributes="Bold" FontFamily="PJSBold"
+                                            <Label Text="{Binding ContractType}" FontSize="10"
+                                                   FontAttributes="Bold" FontFamily="PJSBold"
                                                    TextColor="{StaticResource OnSurfaceVariant}"/>
                                         </Border>
                                     </HorizontalStackLayout>
                                 </VerticalStackLayout>
 
-                                <!-- Status badge -->
-                                <Border Grid.Column="2"
-                                        BackgroundColor="{StaticResource SuccessLight}"
-                                        Stroke="Transparent" Padding="9,5"
-                                        VerticalOptions="Center">
-                                    <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
-                                    <Border.Triggers>
-                                        <DataTrigger TargetType="Border" Binding="{Binding IsActive}" Value="False">
-                                            <Setter Property="BackgroundColor" Value="{StaticResource SurfaceContainerLow}"/>
-                                        </DataTrigger>
-                                    </Border.Triggers>
-                                    <Label Text="{Binding StatusText}"
-                                           FontSize="10" FontAttributes="Bold" FontFamily="PJSBold"
-                                           TextColor="{StaticResource SuccessText}">
-                                        <Label.Triggers>
-                                            <DataTrigger TargetType="Label" Binding="{Binding IsActive}" Value="False">
-                                                <Setter Property="TextColor" Value="{StaticResource Outline}"/>
+                                <!-- Chevron + status -->
+                                <Grid Grid.Column="2" RowDefinitions="Auto,Auto" ColumnDefinitions="Auto"
+                                      RowSpacing="6" VerticalOptions="Center">
+                                    <Border Grid.Row="0" BackgroundColor="{StaticResource SuccessLight}"
+                                            Stroke="Transparent" Padding="9,5">
+                                        <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                                        <Border.Triggers>
+                                            <DataTrigger TargetType="Border" Binding="{Binding IsActive}" Value="False">
+                                                <Setter Property="BackgroundColor" Value="{StaticResource SurfaceContainerLow}"/>
                                             </DataTrigger>
-                                        </Label.Triggers>
-                                    </Label>
-                                </Border>
+                                        </Border.Triggers>
+                                        <Label Text="{Binding StatusText}" FontSize="10"
+                                               FontAttributes="Bold" FontFamily="PJSBold"
+                                               TextColor="{StaticResource SuccessText}">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding IsActive}" Value="False">
+                                                    <Setter Property="TextColor" Value="{StaticResource Outline}"/>
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                    </Border>
+                                    <Image Grid.Row="1" Source="chevron-right.png"
+                                           HeightRequest="16" WidthRequest="16"
+                                           HorizontalOptions="Center"/>
+                                </Grid>
                             </Grid>
                         </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </RefreshView>
-        </Grid>
     </Grid>
 </ContentPage>

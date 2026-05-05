@@ -2,6 +2,37 @@
 
 ---
 
+## Prompt 42
+
+### Data
+2026-05-05
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Eseguire iterazione 15: aggiornare `Colors.xaml` con palette Tropic Burst e convertire 6 pagine XAML da HTML Stitch, sostituendo tutte le emoji con asset icona PNG.
+
+### Prompt
+> Eseguire tutti i TASK dell'iterazione 15: aggiornare `Colors.xaml` con i token Tropic Burst (primary `#006948`, header gradient `#064E3B`→`#115E59`, surface scale MD3, KPI colors); convertire `LoginPage`, `DashboardPage`, `EmployeeDashboardPage`, `EmployeeListPage`, `ProfilePage` da HTML Stitch in XAML MAUI preservando tutti i binding ViewModel; aggiornare `ShiftCalendarPage` (color-only: `Navy`→`Primary`). Nessuna modifica ai ViewModel, `x:DataType` su ogni View, nessuna emoji nei file convertiti.
+
+### Output utile
+- `Colors.xaml`: token Tropic Burst, MD3 surface scale, KPI colors, stili PrimaryButton/OutlineButton, fix typo `#BCCAC0` e `#FFDAD6`
+- `LoginPage.xaml`: hero gradient verticale, bottom sheet arrotondato, mode toggle pill, shadow smeraldo su CTA
+- `DashboardPage.xaml`: gradient header orizzontale, 4 KPI card con SolidColorBrush + Shadow colorata, icone PNG
+- `EmployeeDashboardPage.xaml`: greeting header, hero card Primary, 3 quick actions TertiaryContainer/PrimaryContainer/SecondaryContainer, icone PNG
+- `EmployeeListPage.xaml`: gradient header, search bar con search.png, avatar PrimaryContainer, add card dashed Primary
+- `ProfilePage.xaml`: gradient hero HeaderGradientStart→Secondary, badge edit-pencil.png, tutte le righe settings con Image Source
+- `ShiftCalendarPage.xaml`: 4 occorrenze `Navy`→`Primary` (FAB, toggle Dipendenti, toggle Giorno, bottone Uscita)
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Tutte le pagine convertite compilano senza modifiche ai ViewModel; i binding restano invariati. TASKs 2/8/10/11 rimandati perché mancano HTML Stitch per VacationList/Notifications/Onboarding e gli asset icona vanno scaricati manualmente.
+
+---
+
 ## Prompt 41
 
 ### Data

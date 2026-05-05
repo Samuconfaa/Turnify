@@ -56,7 +56,7 @@
                 </Border>
                 <!-- Add FAB (admin) -->
                 <Border Grid.Column="4"
-                        BackgroundColor="{StaticResource Navy}"
+                        BackgroundColor="{StaticResource Primary}"
                         Stroke="Transparent"
                         IsVisible="{Binding IsAdmin}"
                         HeightRequest="36" WidthRequest="36"
@@ -90,7 +90,7 @@
                     </Border.GestureRecognizers>
                     <Border.Triggers>
                         <DataTrigger TargetType="Border" Binding="{Binding IsEmployeeMode}" Value="True">
-                            <Setter Property="BackgroundColor" Value="{StaticResource Navy}"/>
+                            <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
                             <Setter Property="Stroke" Value="Transparent"/>
                         </DataTrigger>
                         <DataTrigger TargetType="Border" Binding="{Binding IsEmployeeMode}" Value="False">
@@ -119,7 +119,7 @@
                     </Border.GestureRecognizers>
                     <Border.Triggers>
                         <DataTrigger TargetType="Border" Binding="{Binding IsDayMode}" Value="True">
-                            <Setter Property="BackgroundColor" Value="{StaticResource Navy}"/>
+                            <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
                             <Setter Property="Stroke" Value="Transparent"/>
                         </DataTrigger>
                         <DataTrigger TargetType="Border" Binding="{Binding IsDayMode}" Value="False">
@@ -228,7 +228,7 @@
                     <Button Grid.Column="2" Text="Uscita"
                             Command="{Binding CheckOutCommand}"
                             IsVisible="{Binding CanCheckOut}"
-                            BackgroundColor="{StaticResource Navy}"
+                            BackgroundColor="{StaticResource Primary}"
                             TextColor="White" CornerRadius="11"
                             HeightRequest="40" Padding="14,0"
                             FontSize="13" FontAttributes="Bold" FontFamily="PJSBold"/>

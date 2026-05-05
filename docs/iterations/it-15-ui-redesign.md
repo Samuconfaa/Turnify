@@ -311,9 +311,23 @@ Fonte consigliata: scaricare da [Heroicons](https://heroicons.com) o [Phosphor I
 
 # File creati/modificati
 
-In corso — aggiornare a completamento di ogni TASK.
+## Completati
+- `src/Turnify.Mobile/Resources/Styles/Colors.xaml` — TASK 1: palette Tropic Burst, token MD3 surface scale, KPI colors, stili PrimaryButton/OutlineButton aggiornati
+- `src/Turnify.Mobile/Views/LoginPage.xaml` — TASK 3: hero gradient, bottom sheet, mode toggle pill, FieldBorder aggiornato
+- `src/Turnify.Mobile/Views/DashboardPage.xaml` — TASK 4: gradient header, 4 KPI card solide colorate, icone PNG, Shell.NavBarIsVisible=False
+- `src/Turnify.Mobile/Views/EmployeeDashboardPage.xaml` — TASK 5: gradient header, hero card Primary, 3 quick actions colorate, icone PNG
+- `src/Turnify.Mobile/Views/ShiftCalendarPage.xaml` — TASK 6: color-only update (Navy→Primary su FAB, toggle attivo, bottone Uscita)
+- `src/Turnify.Mobile/Views/EmployeeListPage.xaml` — TASK 7: gradient header, search bar con search.png, avatar PrimaryContainer, add card dashed
+- `src/Turnify.Mobile/Views/ProfilePage.xaml` — TASK 9: gradient hero HeaderGradientStart→Secondary, tutte le emoji sostituite con Image Source
+
+## Non completati (nessun HTML Stitch disponibile)
+- TASK 2 — asset icone PNG/SVG (26 file da scaricare da Heroicons/Phosphor)
+- TASK 8 — `VacationListPage.xaml`
+- TASK 10 — `NotificationsPage.xaml`
+- TASK 11 — `OnboardingPage.xaml`
 
 # Prompt principali utilizzati
 
 - Prompt 40 — creazione branch `redesign-ui`, spec Stitch, proposta palette Tropic Burst
 - Prompt 41 — pianificazione iterazione 15
+- Prompt 42 — esecuzione iterazione 15: conversione XAML 6 pagine + Colors.xaml

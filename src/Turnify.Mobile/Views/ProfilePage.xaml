@@ -21,16 +21,6 @@
                     <GradientStop Color="{StaticResource Secondary}" Offset="1"/>
                 </LinearGradientBrush>
             </Grid.Background>
-            <!-- Decorative blobs -->
-            <BoxView Color="{StaticResource PrimaryFixed}" Opacity="0.10"
-                     HeightRequest="180" WidthRequest="180" CornerRadius="90"
-                     HorizontalOptions="Start" VerticalOptions="Start"
-                     Margin="-40,-40,0,0"/>
-            <BoxView Color="{StaticResource PrimaryFixedDim}" Opacity="0.08"
-                     HeightRequest="130" WidthRequest="130" CornerRadius="65"
-                     HorizontalOptions="End" VerticalOptions="End"
-                     Margin="0,0,-30,-30"/>
-
             <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center"
                                  Spacing="8" Margin="0,24,0,0">
                 <!-- Avatar -->

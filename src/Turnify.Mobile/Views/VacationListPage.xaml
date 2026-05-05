@@ -164,7 +164,7 @@
                                 HeightRequest="68" WidthRequest="68"
                                 HorizontalOptions="Center">
                             <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
-                            <Image Source="beach-umbrella.png" HeightRequest="34" WidthRequest="34"
+                            <Image Source="beach-umbrella.svg" HeightRequest="34" WidthRequest="34"
                                    HorizontalOptions="Center" VerticalOptions="Center"/>
                         </Border>
                         <Label Text="Nessuna richiesta"

@@ -30,7 +30,7 @@
                         <Shadow Brush="#000000" Offset="0,2" Radius="8" Opacity="0.08"/>
                     </Border.Shadow>
                     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="0">
-                        <Image Grid.Column="0" Source="search.png" HeightRequest="18" WidthRequest="18"
+                        <Image Grid.Column="0" Source="search.svg" HeightRequest="18" WidthRequest="18"
                                VerticalOptions="Center" Margin="14,0,0,0"/>
                         <SearchBar Grid.Column="1" Text="{Binding SearchQuery}"
                                    Placeholder="Cerca per nome, ruolo…"
@@ -64,7 +64,7 @@
                         <Border BackgroundColor="{StaticResource Surface}"
                                 HeightRequest="68" WidthRequest="68" HorizontalOptions="Center">
                             <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
-                            <Image Source="users-group.png" HeightRequest="34" WidthRequest="34"
+                            <Image Source="users-group.svg" HeightRequest="34" WidthRequest="34"
                                    HorizontalOptions="Center" VerticalOptions="Center"/>
                         </Border>
                         <Label Text="Nessun dipendente ancora" FontSize="17" FontAttributes="Bold"
@@ -91,7 +91,7 @@
                             <TapGestureRecognizer Command="{Binding CreateEmployeeCommand}"/>
                         </Border.GestureRecognizers>
                         <HorizontalStackLayout HorizontalOptions="Center" Spacing="8">
-                            <Image Source="plus-circle.png" HeightRequest="20" WidthRequest="20"
+                            <Image Source="plus-circle.svg" HeightRequest="20" WidthRequest="20"
                                    VerticalOptions="Center"/>
                             <Label Text="Aggiungi un utente" FontSize="15" FontAttributes="Bold"
                                    FontFamily="PJSBold" TextColor="{StaticResource Primary}"
@@ -178,7 +178,7 @@
                                             </Label.Triggers>
                                         </Label>
                                     </Border>
-                                    <Image Grid.Row="1" Source="chevron-right.png"
+                                    <Image Grid.Row="1" Source="chevron-right.svg"
                                            HeightRequest="16" WidthRequest="16"
                                            HorizontalOptions="Center"/>
                                 </Grid>

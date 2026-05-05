@@ -28,7 +28,7 @@
                         StrokeThickness="1" HeightRequest="42" WidthRequest="42"
                         VerticalOptions="Center">
                     <Border.StrokeShape><RoundRectangle CornerRadius="21"/></Border.StrokeShape>
-                    <Image Source="bell.png" HeightRequest="20" WidthRequest="20"
+                    <Image Source="bell.svg" HeightRequest="20" WidthRequest="20"
                            HorizontalOptions="Center" VerticalOptions="Center"/>
                 </Border>
             </Grid>
@@ -85,7 +85,7 @@
                                 BackgroundColor="#FFFFFF1F" Stroke="Transparent"
                                 HeightRequest="52" WidthRequest="52" VerticalOptions="Start">
                             <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
-                            <Image Source="briefcase.png" HeightRequest="28" WidthRequest="28"
+                            <Image Source="briefcase.svg" HeightRequest="28" WidthRequest="28"
                                    HorizontalOptions="Center" VerticalOptions="Center"/>
                         </Border>
                         <Label Grid.Row="1" Grid.Column="0"
@@ -121,7 +121,7 @@
                             <Border BackgroundColor="#FFFFFF1F" Stroke="Transparent"
                                     HeightRequest="44" WidthRequest="44" HorizontalOptions="Center">
                                 <Border.StrokeShape><RoundRectangle CornerRadius="22"/></Border.StrokeShape>
-                                <Image Source="vacation-request.png" HeightRequest="22" WidthRequest="22"
+                                <Image Source="vacation-request.svg" HeightRequest="22" WidthRequest="22"
                                        HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Border>
                             <Label Text="Richiedi ferie" FontSize="11" FontFamily="PJSSemi"
@@ -137,7 +137,7 @@
                             <Border BackgroundColor="#FFFFFF1F" Stroke="Transparent"
                                     HeightRequest="44" WidthRequest="44" HorizontalOptions="Center">
                                 <Border.StrokeShape><RoundRectangle CornerRadius="22"/></Border.StrokeShape>
-                                <Image Source="fingerprint.png" HeightRequest="22" WidthRequest="22"
+                                <Image Source="fingerprint.svg" HeightRequest="22" WidthRequest="22"
                                        HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Border>
                             <Label Text="Timbratura" FontSize="11" FontFamily="PJSSemi"
@@ -153,7 +153,7 @@
                             <Border BackgroundColor="#FFFFFF1F" Stroke="Transparent"
                                     HeightRequest="44" WidthRequest="44" HorizontalOptions="Center">
                                 <Border.StrokeShape><RoundRectangle CornerRadius="22"/></Border.StrokeShape>
-                                <Image Source="calendar-edit.png" HeightRequest="22" WidthRequest="22"
+                                <Image Source="calendar-edit.svg" HeightRequest="22" WidthRequest="22"
                                        HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Border>
                             <Label Text="Disponibilità" FontSize="11" FontFamily="PJSSemi"
@@ -210,7 +210,7 @@
                             <Shadow Brush="#000000" Offset="0,4" Radius="14" Opacity="0.06"/>
                         </Border.Shadow>
                         <VerticalStackLayout Spacing="4">
-                            <Image Source="clock-timer.png" HeightRequest="22" WidthRequest="22"
+                            <Image Source="clock-timer.svg" HeightRequest="22" WidthRequest="22"
                                    HorizontalOptions="Start" Margin="0,0,0,4"/>
                             <Label Text="{Binding HoursThisWeek, StringFormat='{0:F1} h'}"
                                    FontSize="22" FontAttributes="Bold" FontFamily="PJSXBold"
@@ -227,7 +227,7 @@
                             <Shadow Brush="#000000" Offset="0,4" Radius="14" Opacity="0.06"/>
                         </Border.Shadow>
                         <VerticalStackLayout Spacing="4">
-                            <Image Source="report.png" HeightRequest="22" WidthRequest="22"
+                            <Image Source="report.svg" HeightRequest="22" WidthRequest="22"
                                    HorizontalOptions="Start" Margin="0,0,0,4"/>
                             <Label Text="{Binding HoursThisMonth, StringFormat='{0:F1} h'}"
                                    FontSize="22" FontAttributes="Bold" FontFamily="PJSXBold"
@@ -291,7 +291,7 @@
                         <Border Grid.Column="0" BackgroundColor="{StaticResource SurfaceContainerLow}"
                                 HeightRequest="38" WidthRequest="38" Stroke="Transparent">
                             <Border.StrokeShape><RoundRectangle CornerRadius="11"/></Border.StrokeShape>
-                            <Image Source="calendar-dot.png" HeightRequest="18" WidthRequest="18"
+                            <Image Source="calendar-dot.svg" HeightRequest="18" WidthRequest="18"
                                    HorizontalOptions="Center" VerticalOptions="Center"/>
                         </Border>
                         <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">

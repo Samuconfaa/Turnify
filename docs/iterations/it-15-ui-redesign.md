@@ -320,10 +320,12 @@ Fonte consigliata: scaricare da [Heroicons](https://heroicons.com) o [Phosphor I
 - `src/Turnify.Mobile/Views/EmployeeListPage.xaml` — TASK 7: gradient header, search bar con search.png, avatar PrimaryContainer, add card dashed
 - `src/Turnify.Mobile/Views/ProfilePage.xaml` — TASK 9: gradient hero HeaderGradientStart→Secondary, tutte le emoji sostituite con Image Source
 
-## Non completati (nessun HTML Stitch disponibile)
+## Completati in seguito (da redesign2)
+- `src/Turnify.Mobile/Views/VacationListPage.xaml` — TASK 8: gradient header, filter chips (fix DataTrigger), card con left bar StripColor, bottom sheet nuova richiesta
+- `src/Turnify.Mobile/Views/NotificationsPage.xaml` — TASK 10: gradient header con badge non lette, card con BackgroundColor binding, unread dot Ellipse
+
+## Non completati
 - TASK 2 — asset icone PNG/SVG (26 file da scaricare da Heroicons/Phosphor)
-- TASK 8 — `VacationListPage.xaml`
-- TASK 10 — `NotificationsPage.xaml`
 - TASK 11 — `OnboardingPage.xaml`
 
 # Prompt principali utilizzati

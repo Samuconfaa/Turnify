@@ -2,6 +2,32 @@
 
 ---
 
+## Prompt 43
+
+### Data
+2026-05-05
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Convertire `VacationListPage.xaml` e `NotificationsPage.xaml` in XAML Tropic Burst a partire dagli HTML Stitch in `new-ui/redesign2/`.
+
+### Prompt
+> Leggere i file HTML in `new-ui/redesign2/` (ferie_e_permessi_admin, nuova_richiesta_ferie, notifiche) e convertirli in XAML MAUI preservando tutti i binding ViewModel esistenti. Applicare: gradient header `HeaderGradientStart→HeaderGradientEnd`, filter chips con DataTrigger solo per stato attivo (fix pattern Value=False), card con left bar `StripColor`, bottom sheet nuova richiesta, badge `UnreadCount` nel header notifiche, `Shell.NavBarIsVisible=False`.
+
+### Output utile
+- `VacationListPage.xaml`: gradient header con "+ Richiedi" pill (employee), 4 filter chip con DataTrigger singolo (solo `Value=active`), card SwipeView con left bar StripColor, bottom sheet overlay `IsFormVisible`, tutti i binding preservati
+- `NotificationsPage.xaml`: gradient header con badge `PrimaryLight`/`Primary` per unread count, "Segna tutte lette" white link, card con `BackgroundColor` binding, icon circle `PrimaryLight`, unread dot Ellipse, `Shell.NavBarIsVisible=False`
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Struttura XAML conforme al pattern delle altre pagine già convertite; DataTrigger pattern corretto (solo Value=True) applicato anche ai filter chip per evitare il bug del toggle.
+
+---
+
 ## Prompt 42
 
 ### Data

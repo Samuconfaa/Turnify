@@ -85,15 +85,15 @@ Turnify/
 ---
 
 ## Screenshots
-
+ 
 | Login | Dashboard Admin | Calendario Turni |
 |---|---|---|
 | ![Login](assets/screenshots/login.png) | ![Dashboard](assets/screenshots/dashboard.png) | ![Calendario](assets/screenshots/calendar.png) |
-
-| Profilo |
-|---|
-| ![Profilo](assets/screenshots/profile.png) |
-
+ 
+| Dashboard Dipendente | Ferie | Profilo |
+|---|---|---|
+| ![Employee](assets/screenshots/employee-dashboard.png) | ![Ferie](assets/screenshots/vacations.png) | ![Profilo](assets/screenshots/profile.png) |
+ 
 ---
 
 ## Prerequisiti

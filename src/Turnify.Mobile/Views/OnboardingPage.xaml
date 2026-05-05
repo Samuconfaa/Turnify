@@ -9,17 +9,20 @@
 
     <Grid RowDefinitions="56,*,Auto">
 
-        <!-- Header bar -->
-        <Border Grid.Row="0"
-                BackgroundColor="{StaticResource Surface}"
-                Stroke="{StaticResource OutlineVariant}" StrokeThickness="0,0,0,1">
-            <Border.StrokeShape><RoundRectangle CornerRadius="0"/></Border.StrokeShape>
+        <!-- ── Header bar ────────────────────────────────────── -->
+        <Grid Grid.Row="0">
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="{StaticResource HeaderGradientStart}" Offset="0"/>
+                    <GradientStop Color="{StaticResource HeaderGradientEnd}" Offset="1"/>
+                </LinearGradientBrush>
+            </Grid.Background>
             <Grid ColumnDefinitions="56,*,56" Padding="0">
                 <Button Grid.Column="0" Text="‹"
                         Command="{Binding PreviousStepCommand}"
                         IsVisible="{Binding IsStep1, Converter={StaticResource InverseBoolConverter}}"
                         BackgroundColor="Transparent"
-                        TextColor="{StaticResource OnSurfaceVariant}"
+                        TextColor="#FFFFFFCC"
                         FontSize="24" FontFamily="PJSBold"
                         Padding="0"/>
 
@@ -28,39 +31,33 @@
                                        HorizontalOptions="Center"
                                        VerticalOptions="Center"
                                        Spacing="8">
-                    <Border HeightRequest="8" WidthRequest="8">
+                    <Border HeightRequest="8" WidthRequest="8"
+                            BackgroundColor="#FFFFFF55" Stroke="Transparent">
                         <Border.StrokeShape><RoundRectangle CornerRadius="4"/></Border.StrokeShape>
                         <Border.Triggers>
                             <DataTrigger TargetType="Border" Binding="{Binding Step1Dot}" Value="True">
-                                <Setter Property="BackgroundColor" Value="{StaticResource Navy}"/>
+                                <Setter Property="BackgroundColor" Value="White"/>
                                 <Setter Property="WidthRequest" Value="22"/>
-                            </DataTrigger>
-                            <DataTrigger TargetType="Border" Binding="{Binding Step1Dot}" Value="False">
-                                <Setter Property="BackgroundColor" Value="{StaticResource OutlineVariant}"/>
                             </DataTrigger>
                         </Border.Triggers>
                     </Border>
-                    <Border HeightRequest="8" WidthRequest="8">
+                    <Border HeightRequest="8" WidthRequest="8"
+                            BackgroundColor="#FFFFFF55" Stroke="Transparent">
                         <Border.StrokeShape><RoundRectangle CornerRadius="4"/></Border.StrokeShape>
                         <Border.Triggers>
                             <DataTrigger TargetType="Border" Binding="{Binding Step2Dot}" Value="True">
-                                <Setter Property="BackgroundColor" Value="{StaticResource Navy}"/>
+                                <Setter Property="BackgroundColor" Value="White"/>
                                 <Setter Property="WidthRequest" Value="22"/>
-                            </DataTrigger>
-                            <DataTrigger TargetType="Border" Binding="{Binding Step2Dot}" Value="False">
-                                <Setter Property="BackgroundColor" Value="{StaticResource OutlineVariant}"/>
                             </DataTrigger>
                         </Border.Triggers>
                     </Border>
-                    <Border HeightRequest="8" WidthRequest="8">
+                    <Border HeightRequest="8" WidthRequest="8"
+                            BackgroundColor="#FFFFFF55" Stroke="Transparent">
                         <Border.StrokeShape><RoundRectangle CornerRadius="4"/></Border.StrokeShape>
                         <Border.Triggers>
                             <DataTrigger TargetType="Border" Binding="{Binding Step3Dot}" Value="True">
-                                <Setter Property="BackgroundColor" Value="{StaticResource Navy}"/>
+                                <Setter Property="BackgroundColor" Value="White"/>
                                 <Setter Property="WidthRequest" Value="22"/>
-                            </DataTrigger>
-                            <DataTrigger TargetType="Border" Binding="{Binding Step3Dot}" Value="False">
-                                <Setter Property="BackgroundColor" Value="{StaticResource OutlineVariant}"/>
                             </DataTrigger>
                         </Border.Triggers>
                     </Border>
@@ -69,23 +66,22 @@
                 <Label Grid.Column="2"
                        Text="Salta"
                        FontSize="14" FontAttributes="Bold" FontFamily="PJSSemi"
-                       TextColor="{StaticResource Primary}"
+                       TextColor="#FFFFFFCC"
                        HorizontalOptions="Center" VerticalOptions="Center">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding SkipOnboardingCommand}"/>
                     </Label.GestureRecognizers>
                 </Label>
             </Grid>
-        </Border>
+        </Grid>
 
-        <!-- Step content -->
+        <!-- ── Step content ──────────────────────────────────── -->
         <ScrollView Grid.Row="1">
             <VerticalStackLayout Spacing="0">
 
                 <!-- ── STEP 1 – Benvenuto ── -->
                 <VerticalStackLayout IsVisible="{Binding IsStep1}"
                                      Spacing="24" Padding="20,36,20,20">
-                    <!-- Hero card -->
                     <Border BackgroundColor="{StaticResource Surface}"
                             Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
                             Padding="24">
@@ -95,10 +91,13 @@
                         </Border.Shadow>
                         <VerticalStackLayout Spacing="24">
                             <!-- Logo badge -->
-                            <Border BackgroundColor="{StaticResource Navy}"
+                            <Border BackgroundColor="{StaticResource Primary}"
                                     HeightRequest="80" WidthRequest="80"
                                     HorizontalOptions="Center">
                                 <Border.StrokeShape><RoundRectangle CornerRadius="24"/></Border.StrokeShape>
+                                <Border.Shadow>
+                                    <Shadow Brush="{StaticResource Primary}" Offset="0,4" Radius="16" Opacity="0.35"/>
+                                </Border.Shadow>
                                 <Label Text="T"
                                        FontSize="36" FontAttributes="Bold" FontFamily="PJSXBold"
                                        TextColor="White"
@@ -125,7 +124,7 @@
                                         <Border BackgroundColor="{StaticResource PrimaryLight}"
                                                 HeightRequest="36" WidthRequest="36" Stroke="Transparent">
                                             <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                                            <Label Text="📅" FontSize="18"
+                                            <Image Source="calendar-check.png" HeightRequest="20" WidthRequest="20"
                                                    HorizontalOptions="Center" VerticalOptions="Center"/>
                                         </Border>
                                         <VerticalStackLayout Spacing="2" VerticalOptions="Center">
@@ -146,7 +145,7 @@
                                         <Border BackgroundColor="{StaticResource SuccessLight}"
                                                 HeightRequest="36" WidthRequest="36" Stroke="Transparent">
                                             <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                                            <Label Text="👥" FontSize="18"
+                                            <Image Source="users-group.png" HeightRequest="20" WidthRequest="20"
                                                    HorizontalOptions="Center" VerticalOptions="Center"/>
                                         </Border>
                                         <VerticalStackLayout Spacing="2" VerticalOptions="Center">
@@ -291,7 +290,7 @@
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- Footer buttons -->
+        <!-- ── Footer buttons ────────────────────────────────── -->
         <Grid Grid.Row="2" BackgroundColor="{StaticResource Background}"
               Padding="20,12,20,32">
 
@@ -299,7 +298,11 @@
             <VerticalStackLayout IsVisible="{Binding IsStep1}" Spacing="10">
                 <Button Text="Inizia →"
                         Command="{Binding GoToStep2Command}"
-                        Style="{StaticResource PrimaryButton}"/>
+                        Style="{StaticResource PrimaryButton}">
+                    <Button.Shadow>
+                        <Shadow Brush="{StaticResource Primary}" Offset="0,4" Radius="16" Opacity="0.30"/>
+                    </Button.Shadow>
+                </Button>
                 <Button Text="Salta per ora"
                         Command="{Binding SkipOnboardingCommand}"
                         BackgroundColor="Transparent"
@@ -312,13 +315,21 @@
             <Button IsVisible="{Binding IsStep2}"
                     Text="Avanti →"
                     Command="{Binding SaveBusinessAndContinueCommand}"
-                    Style="{StaticResource PrimaryButton}"/>
+                    Style="{StaticResource PrimaryButton}">
+                <Button.Shadow>
+                    <Shadow Brush="{StaticResource Primary}" Offset="0,4" Radius="16" Opacity="0.30"/>
+                </Button.Shadow>
+            </Button>
 
             <!-- Step 3 -->
             <VerticalStackLayout IsVisible="{Binding IsStep3}" Spacing="10">
                 <Button Text="Completa configurazione"
                         Command="{Binding SaveEmployeeAndCompleteCommand}"
-                        Style="{StaticResource PrimaryButton}"/>
+                        Style="{StaticResource PrimaryButton}">
+                    <Button.Shadow>
+                        <Shadow Brush="{StaticResource Primary}" Offset="0,4" Radius="16" Opacity="0.30"/>
+                    </Button.Shadow>
+                </Button>
                 <Button Text="Aggiungi dopo"
                         Command="{Binding SkipEmployeeCommand}"
                         BackgroundColor="Transparent"

@@ -324,9 +324,10 @@ Fonte consigliata: scaricare da [Heroicons](https://heroicons.com) o [Phosphor I
 - `src/Turnify.Mobile/Views/VacationListPage.xaml` — TASK 8: gradient header, filter chips (fix DataTrigger), card con left bar StripColor, bottom sheet nuova richiesta
 - `src/Turnify.Mobile/Views/NotificationsPage.xaml` — TASK 10: gradient header con badge non lette, card con BackgroundColor binding, unread dot Ellipse
 
+- `src/Turnify.Mobile/Views/OnboardingPage.xaml` — TASK 11: header bar gradient, progress dot fix DataTrigger, Navy→Primary logo badge, emoji→Image Source
+
 ## Non completati
 - TASK 2 — asset icone PNG/SVG (26 file da scaricare da Heroicons/Phosphor)
-- TASK 11 — `OnboardingPage.xaml`
 
 # Prompt principali utilizzati
 

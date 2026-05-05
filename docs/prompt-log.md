@@ -2,6 +2,31 @@
 
 ---
 
+## Prompt 41
+
+### Data
+2026-05-05
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Pianificare iterazione 15: conversione HTML → XAML dei layout generati da Google Stitch con applicazione della palette Tropic Burst all'app mobile.
+
+### Prompt
+> Preparare il file `docs/iterations/it-15-ui-redesign.md` seguendo il template delle 14 iterazioni precedenti. L'iterazione deve documentare il flusso: lettura file HTML da `new-ui/`, conversione in XAML MAUI, aggiornamento `Colors.xaml` con token Tropic Burst, aggiunta asset icona PNG/SVG in `Resources/Images/`, sostituzione delle 9 pagine principali. Nessuna modifica ai ViewModel. Commit sul branch `redesign-ui`.
+
+### Output utile
+- `docs/iterations/it-15-ui-redesign.md`: 11 TASK documentati (Colors.xaml, asset icone, LoginPage, DashboardPage, EmployeeDashboardPage, ShiftCalendarPage, EmployeeListPage, VacationListPage, ProfilePage, NotificationsPage, OnboardingPage), regole obbligatorie MAUI, lista completa file da creare/modificare, output atteso
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Piano pronto per procedere TASK per TASK man mano che l'utente porta i file HTML da Stitch.
+
+---
+
 ## Prompt 40
 
 ### Data

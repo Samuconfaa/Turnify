@@ -121,7 +121,7 @@
                             <Border BackgroundColor="#FFFFFF1F" Stroke="Transparent"
                                     HeightRequest="44" WidthRequest="44" HorizontalOptions="Center">
                                 <Border.StrokeShape><RoundRectangle CornerRadius="22"/></Border.StrokeShape>
-                                <Image Source="vacation-request.svg" HeightRequest="22" WidthRequest="22"
+                                <Image Source="vacation_request.svg" HeightRequest="22" WidthRequest="22"
                                        HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Border>
                             <Label Text="Richiedi ferie" FontSize="11" FontFamily="PJSSemi"
@@ -153,7 +153,7 @@
                             <Border BackgroundColor="#FFFFFF1F" Stroke="Transparent"
                                     HeightRequest="44" WidthRequest="44" HorizontalOptions="Center">
                                 <Border.StrokeShape><RoundRectangle CornerRadius="22"/></Border.StrokeShape>
-                                <Image Source="calendar-edit.svg" HeightRequest="22" WidthRequest="22"
+                                <Image Source="calendar_edit.svg" HeightRequest="22" WidthRequest="22"
                                        HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Border>
                             <Label Text="Disponibilità" FontSize="11" FontFamily="PJSSemi"
@@ -210,7 +210,7 @@
                             <Shadow Brush="#000000" Offset="0,4" Radius="14" Opacity="0.06"/>
                         </Border.Shadow>
                         <VerticalStackLayout Spacing="4">
-                            <Image Source="clock-timer.svg" HeightRequest="22" WidthRequest="22"
+                            <Image Source="clock_timer.svg" HeightRequest="22" WidthRequest="22"
                                    HorizontalOptions="Start" Margin="0,0,0,4"/>
                             <Label Text="{Binding HoursThisWeek, StringFormat='{0:F1} h'}"
                                    FontSize="22" FontAttributes="Bold" FontFamily="PJSXBold"
@@ -291,7 +291,7 @@
                         <Border Grid.Column="0" BackgroundColor="{StaticResource SurfaceContainerLow}"
                                 HeightRequest="38" WidthRequest="38" Stroke="Transparent">
                             <Border.StrokeShape><RoundRectangle CornerRadius="11"/></Border.StrokeShape>
-                            <Image Source="calendar-dot.svg" HeightRequest="18" WidthRequest="18"
+                            <Image Source="calendar_dot.svg" HeightRequest="18" WidthRequest="18"
                                    HorizontalOptions="Center" VerticalOptions="Center"/>
                         </Border>
                         <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">

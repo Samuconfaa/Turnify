@@ -124,7 +124,7 @@
                                         <Border BackgroundColor="{StaticResource PrimaryLight}"
                                                 HeightRequest="36" WidthRequest="36" Stroke="Transparent">
                                             <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                                            <Image Source="calendar-check.svg" HeightRequest="20" WidthRequest="20"
+                                            <Image Source="calendar_check.svg" HeightRequest="20" WidthRequest="20"
                                                    HorizontalOptions="Center" VerticalOptions="Center"/>
                                         </Border>
                                         <VerticalStackLayout Spacing="2" VerticalOptions="Center">
@@ -145,7 +145,7 @@
                                         <Border BackgroundColor="{StaticResource SuccessLight}"
                                                 HeightRequest="36" WidthRequest="36" Stroke="Transparent">
                                             <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                                            <Image Source="users-group.svg" HeightRequest="20" WidthRequest="20"
+                                            <Image Source="users_group.svg" HeightRequest="20" WidthRequest="20"
                                                    HorizontalOptions="Center" VerticalOptions="Center"/>
                                         </Border>
                                         <VerticalStackLayout Spacing="2" VerticalOptions="Center">

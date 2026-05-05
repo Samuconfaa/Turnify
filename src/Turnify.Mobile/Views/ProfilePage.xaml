@@ -61,7 +61,7 @@
                         <Border.Shadow>
                             <Shadow Brush="#000000" Offset="0,2" Radius="8" Opacity="0.18"/>
                         </Border.Shadow>
-                        <Image Source="edit-pencil.svg" HeightRequest="14" WidthRequest="14"
+                        <Image Source="edit_pencil.svg" HeightRequest="14" WidthRequest="14"
                                HorizontalOptions="Center" VerticalOptions="Center"/>
                     </Border>
                 </Grid>
@@ -104,7 +104,7 @@
                                     <Border Grid.Column="0" BackgroundColor="{StaticResource SecondaryContainer}"
                                             HeightRequest="36" WidthRequest="36" Stroke="Transparent" Margin="0,0,14,0">
                                         <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                                        <Image Source="arrows-swap.svg" HeightRequest="18" WidthRequest="18"
+                                        <Image Source="arrows_swap.svg" HeightRequest="18" WidthRequest="18"
                                                HorizontalOptions="Center" VerticalOptions="Center"/>
                                     </Border>
                                     <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
@@ -114,7 +114,7 @@
                                                FontSize="11" FontFamily="PJSReg"
                                                TextColor="{StaticResource Outline}"/>
                                     </VerticalStackLayout>
-                                    <Image Grid.Column="2" Source="chevron-right.svg"
+                                    <Image Grid.Column="2" Source="chevron_right.svg"
                                            HeightRequest="16" WidthRequest="16" VerticalOptions="Center"/>
                                 </Grid>
                                 <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}"
@@ -134,7 +134,7 @@
                                     <Label Grid.Column="1" Text="Cambia foto profilo"
                                            FontSize="14" FontFamily="PJSSemi"
                                            TextColor="{StaticResource OnBackground}" VerticalOptions="Center"/>
-                                    <Image Grid.Column="2" Source="chevron-right.svg"
+                                    <Image Grid.Column="2" Source="chevron_right.svg"
                                            HeightRequest="16" WidthRequest="16" VerticalOptions="Center"/>
                                 </Grid>
                                 <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="16,0"/>
@@ -152,7 +152,7 @@
                                     <Label Grid.Column="1" Text="Cambia Password"
                                            FontSize="14" FontFamily="PJSSemi"
                                            TextColor="{StaticResource OnBackground}" VerticalOptions="Center"/>
-                                    <Image Grid.Column="2" Source="chevron-right.svg"
+                                    <Image Grid.Column="2" Source="chevron_right.svg"
                                            HeightRequest="16" WidthRequest="16" VerticalOptions="Center"/>
                                 </Grid>
                             </VerticalStackLayout>
@@ -185,7 +185,7 @@
                                         <Label Text="Crea e gestisci sedi" FontSize="11" FontFamily="PJSReg"
                                                TextColor="{StaticResource Outline}"/>
                                     </VerticalStackLayout>
-                                    <Image Grid.Column="2" Source="chevron-right.svg"
+                                    <Image Grid.Column="2" Source="chevron_right.svg"
                                            HeightRequest="16" WidthRequest="16" VerticalOptions="Center"/>
                                 </Grid>
                                 <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="16,0"/>
@@ -197,7 +197,7 @@
                                     <Border Grid.Column="0" BackgroundColor="{StaticResource SecondaryContainer}"
                                             HeightRequest="36" WidthRequest="36" Stroke="Transparent" Margin="0,0,14,0">
                                         <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                                        <Image Source="clock-timer.svg" HeightRequest="18" WidthRequest="18"
+                                        <Image Source="clock_timer.svg" HeightRequest="18" WidthRequest="18"
                                                HorizontalOptions="Center" VerticalOptions="Center"/>
                                     </Border>
                                     <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
@@ -206,7 +206,7 @@
                                         <Label Text="Configura apertura/chiusura" FontSize="11" FontFamily="PJSReg"
                                                TextColor="{StaticResource Outline}"/>
                                     </VerticalStackLayout>
-                                    <Image Grid.Column="2" Source="chevron-right.svg"
+                                    <Image Grid.Column="2" Source="chevron_right.svg"
                                            HeightRequest="16" WidthRequest="16" VerticalOptions="Center"/>
                                 </Grid>
                                 <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="16,0"/>
@@ -227,7 +227,7 @@
                                         <Label Text="Aggiungi o modifica dipendenti" FontSize="11"
                                                FontFamily="PJSReg" TextColor="{StaticResource Outline}"/>
                                     </VerticalStackLayout>
-                                    <Image Grid.Column="2" Source="chevron-right.svg"
+                                    <Image Grid.Column="2" Source="chevron_right.svg"
                                            HeightRequest="16" WidthRequest="16" VerticalOptions="Center"/>
                                 </Grid>
                                 <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="16,0"/>
@@ -239,7 +239,7 @@
                                     <Border Grid.Column="0" BackgroundColor="{StaticResource SecondaryContainer}"
                                             HeightRequest="36" WidthRequest="36" Stroke="Transparent" Margin="0,0,14,0">
                                         <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                                        <Image Source="arrows-swap.svg" HeightRequest="18" WidthRequest="18"
+                                        <Image Source="arrows_swap.svg" HeightRequest="18" WidthRequest="18"
                                                HorizontalOptions="Center" VerticalOptions="Center"/>
                                     </Border>
                                     <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
@@ -248,7 +248,7 @@
                                         <Label Text="Gestisci proposte di scambio" FontSize="11"
                                                FontFamily="PJSReg" TextColor="{StaticResource Outline}"/>
                                     </VerticalStackLayout>
-                                    <Image Grid.Column="2" Source="chevron-right.svg"
+                                    <Image Grid.Column="2" Source="chevron_right.svg"
                                            HeightRequest="16" WidthRequest="16" VerticalOptions="Center"/>
                                 </Grid>
                                 <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="16,0"/>
@@ -269,7 +269,7 @@
                                         <Label Text="Ore pianificate per periodo" FontSize="11"
                                                FontFamily="PJSReg" TextColor="{StaticResource Outline}"/>
                                     </VerticalStackLayout>
-                                    <Image Grid.Column="2" Source="chevron-right.svg"
+                                    <Image Grid.Column="2" Source="chevron_right.svg"
                                            HeightRequest="16" WidthRequest="16" VerticalOptions="Center"/>
                                 </Grid>
                                 <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="16,0"/>
@@ -290,7 +290,7 @@
                                         <Label Text="Esporta ore e presenze in CSV" FontSize="11"
                                                FontFamily="PJSReg" TextColor="{StaticResource Outline}"/>
                                     </VerticalStackLayout>
-                                    <Image Grid.Column="2" Source="chevron-right.svg"
+                                    <Image Grid.Column="2" Source="chevron_right.svg"
                                            HeightRequest="16" WidthRequest="16" VerticalOptions="Center"/>
                                 </Grid>
                             </VerticalStackLayout>

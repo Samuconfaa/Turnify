@@ -71,7 +71,7 @@
                                    FontSize="30" FontAttributes="Bold" FontFamily="PJSXBold"
                                    TextColor="White" CharacterSpacing="-1"/>
                             <Image Grid.Row="0" Grid.Column="1"
-                                   Source="users-group.svg" HeightRequest="28" WidthRequest="28"
+                                   Source="users_group.svg" HeightRequest="28" WidthRequest="28"
                                    VerticalOptions="Start"/>
                             <Label Grid.Row="1" Grid.ColumnSpan="2"
                                    Text="Dipendenti" FontSize="11" FontFamily="PJSSemi"
@@ -97,7 +97,7 @@
                                    FontSize="30" FontAttributes="Bold" FontFamily="PJSXBold"
                                    TextColor="White" CharacterSpacing="-1"/>
                             <Image Grid.Row="0" Grid.Column="1"
-                                   Source="calendar-check.svg" HeightRequest="28" WidthRequest="28"
+                                   Source="calendar_check.svg" HeightRequest="28" WidthRequest="28"
                                    VerticalOptions="Start"/>
                             <Label Grid.Row="1" Grid.ColumnSpan="2"
                                    Text="Turni" FontSize="11" FontFamily="PJSSemi"
@@ -123,7 +123,7 @@
                                    FontSize="30" FontAttributes="Bold" FontFamily="PJSXBold"
                                    TextColor="White" CharacterSpacing="-1"/>
                             <Image Grid.Row="0" Grid.Column="1"
-                                   Source="beach-umbrella.svg" HeightRequest="28" WidthRequest="28"
+                                   Source="beach_umbrella.svg" HeightRequest="28" WidthRequest="28"
                                    VerticalOptions="Start"/>
                             <Label Grid.Row="1" Grid.ColumnSpan="2"
                                    Text="Ferie" FontSize="11" FontFamily="PJSSemi"
@@ -149,7 +149,7 @@
                                    FontSize="30" FontAttributes="Bold" FontFamily="PJSXBold"
                                    TextColor="White" CharacterSpacing="-1"/>
                             <Image Grid.Row="0" Grid.Column="1"
-                                   Source="clock-timer.svg" HeightRequest="28" WidthRequest="28"
+                                   Source="clock_timer.svg" HeightRequest="28" WidthRequest="28"
                                    VerticalOptions="Start"/>
                             <Label Grid.Row="1" Grid.ColumnSpan="2"
                                    Text="Ore" FontSize="11" FontFamily="PJSSemi"

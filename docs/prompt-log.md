@@ -2,6 +2,32 @@
 
 ---
 
+## Prompt 40
+
+### Data
+2026-05-05
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Creare un nuovo branch `redesign-ui` e generare le specifiche di redesign UI per Google Stitch con nuova palette colorata e icone reali al posto delle emoji.
+
+### Prompt
+> Creare branch `redesign-ui`. Generare cartella `new-ui/` nella root con file markdown di specifiche da passare a Google Stitch per ridisegnare la UI dell'app mobile Turnify. Requisiti: design molto più colorato rispetto alla versione attuale (navy/beige), icone come asset PNG/SVG reali (non emoji), proposta di palette cromatica con scelta utente. Palette scelta: "Tropic Burst" — primary `#059669` (verde smeraldo), accent `#FBBF24` (giallo dorato), danger `#F43F5E` (corallo), info `#0EA5E9`, background `#F0FDF4`, header gradient `#064E3B` → `#0F766E`. Specifiche per: LoginPage, DashboardPage, EmployeeDashboardPage, ShiftCalendarPage, EmployeeListPage, VacationListPage, ProfilePage, NotificationsPage, OnboardingPage.
+
+### Output utile
+- Branch `redesign-ui` creato
+- `new-ui/stitch-spec.md`: specifiche complete con token colore, tipografia, componenti globali (button, card, input, chip, tab bar), specifiche per 9 schermate, lista completa di 26 asset icona con descrizione, linee guida animazioni, griglia spaziatura, tabella comparativa vs design v2
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Specifica completa e pronta per essere incollata in Google Stitch. Palette Tropic Burst confermata dall'utente tra 5 proposte.
+
+---
+
 ## Prompt 39
 
 ### Data

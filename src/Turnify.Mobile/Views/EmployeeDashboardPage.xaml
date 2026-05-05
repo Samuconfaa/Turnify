@@ -5,37 +5,51 @@
              x:Class="Turnify.Mobile.Views.EmployeeDashboardPage"
              x:DataType="vm:EmployeeDashboardViewModel"
              Title="{Binding Title}"
+             Shell.NavBarIsVisible="False"
              BackgroundColor="{StaticResource Background}">
 
-    <RefreshView Command="{Binding LoadDataCommand}" IsRefreshing="{Binding IsBusy}">
-        <ScrollView>
-            <VerticalStackLayout Spacing="0" Padding="20,18,20,36">
+    <Grid RowDefinitions="Auto,*">
 
-                <!-- Greeting -->
-                <Label Text="Ciao,"
-                       FontSize="13" FontFamily="PJSReg"
-                       TextColor="{StaticResource Outline}"
-                       Margin="2,0,0,0"/>
-                <Label Text="{Binding Title}"
-                       FontSize="26" FontAttributes="Bold" FontFamily="PJSXBold"
-                       TextColor="{StaticResource OnBackground}"
-                       CharacterSpacing="-0.8"
-                       Margin="2,2,0,20"/>
+        <!-- ── Gradient header ──────────────────────────────── -->
+        <Grid Grid.Row="0" Padding="20,54,20,20" MinimumHeightRequest="100">
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="{StaticResource HeaderGradientStart}" Offset="0"/>
+                    <GradientStop Color="{StaticResource HeaderGradientEnd}" Offset="1"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+            <Grid ColumnDefinitions="*,Auto">
+                <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
+                    <Label Text="Ciao," FontSize="13" FontFamily="PJSReg" TextColor="#FFFFFF80"/>
+                    <Label Text="{Binding Title}" FontSize="24" FontAttributes="Bold"
+                           FontFamily="PJSXBold" TextColor="White" CharacterSpacing="-0.6"/>
+                </VerticalStackLayout>
+                <Border Grid.Column="1" BackgroundColor="#FFFFFF1A" Stroke="#FFFFFF22"
+                        StrokeThickness="1" HeightRequest="42" WidthRequest="42"
+                        VerticalOptions="Center">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="21"/></Border.StrokeShape>
+                    <Image Source="bell.svg" HeightRequest="20" WidthRequest="20"
+                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <!-- ── Scrollable content ───────────────────────────── -->
+        <RefreshView Grid.Row="1" Command="{Binding LoadDataCommand}" IsRefreshing="{Binding IsBusy}">
+        <ScrollView>
+            <VerticalStackLayout Spacing="0" Padding="20,16,20,36">
 
                 <!-- Error -->
                 <Border BackgroundColor="{StaticResource ErrorLight}"
                         Stroke="{StaticResource Error}" StrokeThickness="1"
-                        Padding="14,10" Margin="0,0,0,16"
-                        IsVisible="{Binding HasError}">
+                        Padding="14,10" Margin="0,0,0,16" IsVisible="{Binding HasError}">
                     <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                    <Label Text="{Binding ErrorMessage}"
-                           FontSize="13" FontFamily="PJSSemi"
+                    <Label Text="{Binding ErrorMessage}" FontSize="13" FontFamily="PJSSemi"
                            TextColor="{StaticResource ErrorText}"/>
                 </Border>
 
-                <!-- Section label -->
-                <Label Text="PROSSIMO TURNO" Style="{StaticResource SectionLabel}"
-                       Margin="2,0,0,10"/>
+                <!-- ── Hero: prossimo turno ────────────────── -->
+                <Label Text="PROSSIMO TURNO" Style="{StaticResource SectionLabel}" Margin="2,0,0,10"/>
 
                 <!-- No next shift -->
                 <Border IsVisible="{Binding NoNextShift}"
@@ -45,8 +59,7 @@
                     <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
                     <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
                         <Label Text="—" FontSize="32" FontAttributes="Bold" FontFamily="PJSXBold"
-                               TextColor="{StaticResource Outline}"
-                               HorizontalOptions="Center"/>
+                               TextColor="{StaticResource Outline}" HorizontalOptions="Center"/>
                         <Label Text="Nessun turno in programma"
                                FontSize="15" FontFamily="PJSSemi"
                                TextColor="{StaticResource OnSurfaceVariant}"
@@ -54,59 +67,107 @@
                     </VerticalStackLayout>
                 </Border>
 
-                <!-- Next shift hero card -->
-                <Border IsVisible="{Binding HasNextShift}"
-                        Stroke="Transparent"
-                        Margin="0,0,0,20">
+                <!-- Next shift hero card — solid Primary green -->
+                <Border IsVisible="{Binding HasNextShift}" Stroke="Transparent" Margin="0,0,0,20">
                     <Border.StrokeShape><RoundRectangle CornerRadius="24"/></Border.StrokeShape>
                     <Border.Background>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                            <GradientStop Color="{StaticResource Navy}" Offset="0"/>
-                            <GradientStop Color="#1A2B5A" Offset="1"/>
-                        </LinearGradientBrush>
+                        <SolidColorBrush Color="{StaticResource Primary}"/>
                     </Border.Background>
                     <Border.Shadow>
-                        <Shadow Brush="#000000" Offset="0,8" Radius="28" Opacity="0.22"/>
+                        <Shadow Brush="{StaticResource Primary}" Offset="0,8" Radius="28" Opacity="0.30"/>
                     </Border.Shadow>
-                    <Grid Padding="22,20" RowDefinitions="Auto,Auto,Auto,Auto">
-                        <Label Grid.Row="0"
+                    <Grid Padding="22,20" ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto">
+                        <Label Grid.Row="0" Grid.Column="0"
                                Text="{Binding NextShift.WhenText}"
                                FontSize="11" FontAttributes="Bold" FontFamily="PJSBold"
-                               TextColor="#FFFFFF70"
-                               CharacterSpacing="1"
-                               Margin="0,0,0,4"/>
-                        <Label Grid.Row="1"
+                               TextColor="#FFFFFF70" CharacterSpacing="1" Margin="0,0,0,4"/>
+                        <Border Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
+                                BackgroundColor="#FFFFFF1F" Stroke="Transparent"
+                                HeightRequest="52" WidthRequest="52" VerticalOptions="Start">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                            <Image Source="briefcase.svg" HeightRequest="28" WidthRequest="28"
+                                   HorizontalOptions="Center" VerticalOptions="Center"/>
+                        </Border>
+                        <Label Grid.Row="1" Grid.Column="0"
                                Text="{Binding NextShift.DisplayTime}"
                                FontSize="36" FontAttributes="Bold" FontFamily="PJSXBold"
-                               TextColor="White"
-                               CharacterSpacing="-1.5"
-                               LineHeight="1.1"/>
-                        <Label Grid.Row="2"
+                               TextColor="White" CharacterSpacing="-1.5" LineHeight="1.1"/>
+                        <Label Grid.Row="2" Grid.ColumnSpan="2"
                                Text="{Binding NextShift.DisplayLabel}"
                                FontSize="13" FontFamily="PJSReg"
-                               TextColor="#FFFFFF60"
-                               Margin="0,6,0,16"/>
-                        <!-- Duration pill -->
-                        <Border Grid.Row="3"
-                                BackgroundColor="#FFFFFF0F"
-                                Stroke="#FFFFFF1A" StrokeThickness="1"
-                                Padding="14,10"
-                                HorizontalOptions="Start">
+                               TextColor="#FFFFFF60" Margin="0,6,0,16"/>
+                        <Border Grid.Row="3" Grid.ColumnSpan="2"
+                                BackgroundColor="#FFFFFF0F" Stroke="#FFFFFF1A" StrokeThickness="1"
+                                Padding="14,10" HorizontalOptions="Start">
                             <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
                             <Label Text="{Binding NextShift.DurationLabel}"
-                                   FontSize="12" FontFamily="PJSSemi"
-                                   TextColor="#FFFFFFCC"/>
+                                   FontSize="12" FontFamily="PJSSemi" TextColor="#FFFFFFCC"/>
                         </Border>
                     </Grid>
                 </Border>
 
-                <!-- Timbratura oggi -->
+                <!-- ── Azioni rapide ──────────────────────── -->
+                <Label Text="AZIONI RAPIDE" Style="{StaticResource SectionLabel}"
+                       Margin="2,0,0,10"/>
+                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10" Margin="0,0,0,20">
+                    <!-- Richiedi ferie — coral -->
+                    <Border Grid.Column="0" BackgroundColor="{StaticResource TertiaryContainer}"
+                            Stroke="Transparent" Padding="12,16">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding GoToVacationsCommand}"/>
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                            <Border BackgroundColor="#FFFFFF1F" Stroke="Transparent"
+                                    HeightRequest="44" WidthRequest="44" HorizontalOptions="Center">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="22"/></Border.StrokeShape>
+                                <Image Source="vacation_request.svg" HeightRequest="22" WidthRequest="22"
+                                       HorizontalOptions="Center" VerticalOptions="Center"/>
+                            </Border>
+                            <Label Text="Richiedi ferie" FontSize="11" FontFamily="PJSSemi"
+                                   TextColor="{StaticResource OnTertiaryContainer}"
+                                   HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <!-- Timbratura — verde -->
+                    <Border Grid.Column="1" BackgroundColor="{StaticResource PrimaryContainer}"
+                            Stroke="Transparent" Padding="12,16">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                        <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                            <Border BackgroundColor="#FFFFFF1F" Stroke="Transparent"
+                                    HeightRequest="44" WidthRequest="44" HorizontalOptions="Center">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="22"/></Border.StrokeShape>
+                                <Image Source="fingerprint.svg" HeightRequest="22" WidthRequest="22"
+                                       HorizontalOptions="Center" VerticalOptions="Center"/>
+                            </Border>
+                            <Label Text="Timbratura" FontSize="11" FontFamily="PJSSemi"
+                                   TextColor="{StaticResource OnPrimaryContainer}"
+                                   HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <!-- Disponibilità — teal -->
+                    <Border Grid.Column="2" BackgroundColor="{StaticResource SecondaryContainer}"
+                            Stroke="Transparent" Padding="12,16">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                        <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                            <Border BackgroundColor="#FFFFFF1F" Stroke="Transparent"
+                                    HeightRequest="44" WidthRequest="44" HorizontalOptions="Center">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="22"/></Border.StrokeShape>
+                                <Image Source="calendar_edit.svg" HeightRequest="22" WidthRequest="22"
+                                       HorizontalOptions="Center" VerticalOptions="Center"/>
+                            </Border>
+                            <Label Text="Disponibilità" FontSize="11" FontFamily="PJSSemi"
+                                   TextColor="{StaticResource OnSecondaryContainer}"
+                                   HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+
+                <!-- ── Timbratura oggi ────────────────────── -->
                 <Label Text="TIMBRATURA OGGI" Style="{StaticResource SectionLabel}"
                        Margin="2,0,0,10"/>
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,0,0,20">
-                    <!-- Entrata -->
-                    <Border Grid.Column="0"
-                            BackgroundColor="{StaticResource Surface}"
+                    <Border Grid.Column="0" BackgroundColor="{StaticResource Surface}"
                             Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
                             Padding="16,14">
                         <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
@@ -114,19 +175,14 @@
                             <Shadow Brush="#000000" Offset="0,4" Radius="14" Opacity="0.06"/>
                         </Border.Shadow>
                         <VerticalStackLayout Spacing="6">
-                            <Label Text="ENTRATA"
-                                   FontSize="10" FontAttributes="Bold" FontFamily="PJSBold"
-                                   TextColor="{StaticResource SuccessText}"
-                                   CharacterSpacing="0.8"/>
+                            <Label Text="ENTRATA" FontSize="10" FontAttributes="Bold" FontFamily="PJSBold"
+                                   TextColor="{StaticResource SuccessText}" CharacterSpacing="0.8"/>
                             <Label Text="{Binding CheckInDisplay, TargetNullValue='– : –'}"
                                    FontSize="28" FontAttributes="Bold" FontFamily="PJSXBold"
-                                   TextColor="{StaticResource Success}"
-                                   CharacterSpacing="-1"/>
+                                   TextColor="{StaticResource Success}" CharacterSpacing="-1"/>
                         </VerticalStackLayout>
                     </Border>
-                    <!-- Uscita -->
-                    <Border Grid.Column="1"
-                            BackgroundColor="{StaticResource Surface}"
+                    <Border Grid.Column="1" BackgroundColor="{StaticResource Surface}"
                             Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
                             Padding="16,14">
                         <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
@@ -134,24 +190,19 @@
                             <Shadow Brush="#000000" Offset="0,4" Radius="14" Opacity="0.06"/>
                         </Border.Shadow>
                         <VerticalStackLayout Spacing="6">
-                            <Label Text="USCITA"
-                                   FontSize="10" FontAttributes="Bold" FontFamily="PJSBold"
-                                   TextColor="{StaticResource WarningText}"
-                                   CharacterSpacing="0.8"/>
+                            <Label Text="USCITA" FontSize="10" FontAttributes="Bold" FontFamily="PJSBold"
+                                   TextColor="{StaticResource WarningText}" CharacterSpacing="0.8"/>
                             <Label Text="{Binding CheckOutDisplay, TargetNullValue='– : –'}"
                                    FontSize="28" FontAttributes="Bold" FontFamily="PJSXBold"
-                                   TextColor="{StaticResource Warning}"
-                                   CharacterSpacing="-1"/>
+                                   TextColor="{StaticResource Warning}" CharacterSpacing="-1"/>
                         </VerticalStackLayout>
                     </Border>
                 </Grid>
 
-                <!-- Riepilogo -->
-                <Label Text="RIEPILOGO" Style="{StaticResource SectionLabel}"
-                       Margin="2,0,0,10"/>
+                <!-- ── Riepilogo ore ───────────────────────── -->
+                <Label Text="RIEPILOGO" Style="{StaticResource SectionLabel}" Margin="2,0,0,10"/>
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,0,0,20">
-                    <Border Grid.Column="0"
-                            BackgroundColor="{StaticResource Surface}"
+                    <Border Grid.Column="0" BackgroundColor="{StaticResource Surface}"
                             Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
                             Padding="16,14">
                         <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
@@ -159,18 +210,16 @@
                             <Shadow Brush="#000000" Offset="0,4" Radius="14" Opacity="0.06"/>
                         </Border.Shadow>
                         <VerticalStackLayout Spacing="4">
-                            <Label Text="⏰" FontSize="20" Margin="0,0,0,4"/>
+                            <Image Source="clock_timer.svg" HeightRequest="22" WidthRequest="22"
+                                   HorizontalOptions="Start" Margin="0,0,0,4"/>
                             <Label Text="{Binding HoursThisWeek, StringFormat='{0:F1} h'}"
                                    FontSize="22" FontAttributes="Bold" FontFamily="PJSXBold"
-                                   TextColor="{StaticResource OnBackground}"
-                                   CharacterSpacing="-0.8"/>
-                            <Label Text="Questa settimana"
-                                   FontSize="11" FontFamily="PJSReg"
+                                   TextColor="{StaticResource OnBackground}" CharacterSpacing="-0.8"/>
+                            <Label Text="Questa settimana" FontSize="11" FontFamily="PJSReg"
                                    TextColor="{StaticResource Outline}"/>
                         </VerticalStackLayout>
                     </Border>
-                    <Border Grid.Column="1"
-                            BackgroundColor="{StaticResource Surface}"
+                    <Border Grid.Column="1" BackgroundColor="{StaticResource Surface}"
                             Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
                             Padding="16,14">
                         <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
@@ -178,21 +227,19 @@
                             <Shadow Brush="#000000" Offset="0,4" Radius="14" Opacity="0.06"/>
                         </Border.Shadow>
                         <VerticalStackLayout Spacing="4">
-                            <Label Text="📊" FontSize="20" Margin="0,0,0,4"/>
+                            <Image Source="report.svg" HeightRequest="22" WidthRequest="22"
+                                   HorizontalOptions="Start" Margin="0,0,0,4"/>
                             <Label Text="{Binding HoursThisMonth, StringFormat='{0:F1} h'}"
                                    FontSize="22" FontAttributes="Bold" FontFamily="PJSXBold"
-                                   TextColor="{StaticResource OnBackground}"
-                                   CharacterSpacing="-0.8"/>
-                            <Label Text="Questo mese"
-                                   FontSize="11" FontFamily="PJSReg"
+                                   TextColor="{StaticResource OnBackground}" CharacterSpacing="-0.8"/>
+                            <Label Text="Questo mese" FontSize="11" FontFamily="PJSReg"
                                    TextColor="{StaticResource Outline}"/>
                         </VerticalStackLayout>
                     </Border>
                 </Grid>
 
-                <!-- Ferie -->
-                <Label Text="FERIE" Style="{StaticResource SectionLabel}"
-                       Margin="2,0,0,10"/>
+                <!-- ── Ferie ──────────────────────────────── -->
+                <Label Text="FERIE" Style="{StaticResource SectionLabel}" Margin="2,0,0,10"/>
                 <Border BackgroundColor="{StaticResource Surface}"
                         Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
                         Padding="18,16" Margin="0,0,0,12">
@@ -205,8 +252,7 @@
                             <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
                                 <Label Text="{Binding VacationDaysRemaining}"
                                        FontSize="28" FontAttributes="Bold" FontFamily="PJSXBold"
-                                       TextColor="{StaticResource Primary}"
-                                       CharacterSpacing="-1"/>
+                                       TextColor="{StaticResource Primary}" CharacterSpacing="-1"/>
                                 <Label Text="{Binding VacationDaysAllowed, StringFormat='/ {0} giorni'}"
                                        FontSize="13" FontFamily="PJSReg"
                                        TextColor="{StaticResource Outline}"
@@ -220,12 +266,10 @@
                                    TextColor="{StaticResource Warning}"
                                    IsVisible="{Binding PendingVacations, Converter={StaticResource IntIsZeroConverter}, ConverterParameter='invert'}"/>
                         </VerticalStackLayout>
-                        <Button Grid.Column="1"
-                                Text="Vedi"
+                        <Button Grid.Column="1" Text="Vedi"
                                 Command="{Binding GoToVacationsCommand}"
-                                BackgroundColor="{StaticResource Navy}"
-                                TextColor="White"
-                                CornerRadius="11"
+                                BackgroundColor="{StaticResource Primary}"
+                                TextColor="White" CornerRadius="11"
                                 HeightRequest="38" Padding="16,0"
                                 FontSize="13" FontAttributes="Bold" FontFamily="PJSBold"
                                 VerticalOptions="Center"/>
@@ -244,30 +288,25 @@
                         <TapGestureRecognizer Command="{Binding GoToHistoryCommand}"/>
                     </Border.GestureRecognizers>
                     <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
-                        <Border Grid.Column="0"
-                                BackgroundColor="{StaticResource SurfaceContainerLow}"
-                                HeightRequest="38" WidthRequest="38"
-                                Stroke="Transparent">
+                        <Border Grid.Column="0" BackgroundColor="{StaticResource SurfaceContainerLow}"
+                                HeightRequest="38" WidthRequest="38" Stroke="Transparent">
                             <Border.StrokeShape><RoundRectangle CornerRadius="11"/></Border.StrokeShape>
-                            <Label Text="📋" FontSize="18"
+                            <Image Source="calendar_dot.svg" HeightRequest="18" WidthRequest="18"
                                    HorizontalOptions="Center" VerticalOptions="Center"/>
                         </Border>
                         <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
-                            <Label Text="Storico presenze"
-                                   FontSize="14" FontAttributes="Bold" FontFamily="PJSBold"
-                                   TextColor="{StaticResource OnBackground}"/>
+                            <Label Text="Storico presenze" FontSize="14" FontAttributes="Bold"
+                                   FontFamily="PJSBold" TextColor="{StaticResource OnBackground}"/>
                             <Label Text="Visualizza tutti i check-in e le ore lavorate"
-                                   FontSize="12" FontFamily="PJSReg"
-                                   TextColor="{StaticResource Outline}"/>
+                                   FontSize="12" FontFamily="PJSReg" TextColor="{StaticResource Outline}"/>
                         </VerticalStackLayout>
-                        <Label Grid.Column="2" Text="›" FontSize="20"
-                               FontFamily="PJSBold"
-                               TextColor="{StaticResource Outline}"
-                               VerticalOptions="Center"/>
+                        <Label Grid.Column="2" Text="›" FontSize="20" FontFamily="PJSBold"
+                               TextColor="{StaticResource Outline}" VerticalOptions="Center"/>
                     </Grid>
                 </Border>
 
             </VerticalStackLayout>
         </ScrollView>
-    </RefreshView>
+        </RefreshView>
+    </Grid>
 </ContentPage>

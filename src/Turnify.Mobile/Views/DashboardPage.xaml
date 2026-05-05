@@ -6,166 +6,158 @@
              x:Class="Turnify.Mobile.Views.DashboardPage"
              x:DataType="vm:DashboardViewModel"
              Title="Dashboard"
+             Shell.NavBarIsVisible="False"
              BackgroundColor="{StaticResource Background}">
 
-    <Grid RowDefinitions="Auto,*">
+    <Grid RowDefinitions="Auto,Auto,*">
         <comp:StaleDataBanner Grid.Row="0"/>
-        <RefreshView Grid.Row="1" Command="{Binding LoadDataCommand}" IsRefreshing="{Binding IsBusy}">
+
+        <!-- ── Gradient header ──────────────────────────────── -->
+        <Grid Grid.Row="1" Padding="20,18,20,20" MinimumHeightRequest="72">
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="{StaticResource HeaderGradientStart}" Offset="0"/>
+                    <GradientStop Color="{StaticResource HeaderGradientEnd}" Offset="1"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+            <Grid ColumnDefinitions="*,Auto">
+                <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
+                    <Label Text="{Binding WeekLabel}" FontSize="12" FontFamily="PJSReg"
+                           TextColor="#FFFFFF70"/>
+                    <Label Text="Dashboard" FontSize="26" FontAttributes="Bold" FontFamily="PJSXBold"
+                           TextColor="White" CharacterSpacing="-0.8"/>
+                </VerticalStackLayout>
+                <!-- Bell button -->
+                <Border Grid.Column="1" BackgroundColor="#FFFFFF1A" Stroke="#FFFFFF22"
+                        StrokeThickness="1" HeightRequest="42" WidthRequest="42"
+                        VerticalOptions="Center">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="21"/></Border.StrokeShape>
+                    <Image Source="bell.svg" HeightRequest="20" WidthRequest="20"
+                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <!-- ── Scrollable content ───────────────────────────── -->
+        <RefreshView Grid.Row="2" Command="{Binding LoadDataCommand}" IsRefreshing="{Binding IsBusy}">
         <ScrollView>
             <VerticalStackLayout Spacing="0" Padding="0,0,0,36">
-
-                <!-- ── Header ─────────────────────────────────── -->
-                <Grid ColumnDefinitions="*,Auto" Padding="20,18,20,0">
-                    <VerticalStackLayout Grid.Column="0" Spacing="2">
-                        <Label Text="Mercoledì, 30 Aprile"
-                               FontSize="13" FontFamily="PJSReg"
-                               TextColor="{StaticResource Outline}"/>
-                        <Label Text="Dashboard"
-                               FontSize="26" FontAttributes="Bold" FontFamily="PJSXBold"
-                               TextColor="{StaticResource OnBackground}"
-                               CharacterSpacing="-0.8"/>
-                    </VerticalStackLayout>
-                    <Border Grid.Column="1"
-                            BackgroundColor="{StaticResource Surface}"
-                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
-                            HeightRequest="42" WidthRequest="42"
-                            VerticalOptions="Center">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="21"/></Border.StrokeShape>
-                        <Border.Shadow>
-                            <Shadow Brush="#000000" Offset="0,2" Radius="8" Opacity="0.07"/>
-                        </Border.Shadow>
-                        <!-- Bell icon placeholder -->
-                        <Label Text="🔔" FontSize="18"
-                               HorizontalOptions="Center" VerticalOptions="Center"/>
-                    </Border>
-                </Grid>
 
                 <!-- Error banner -->
                 <Border BackgroundColor="{StaticResource ErrorLight}"
                         Stroke="{StaticResource Error}" StrokeThickness="1"
-                        Padding="14,10" Margin="20,14,20,0"
-                        IsVisible="{Binding HasError}">
+                        Padding="14,10" Margin="20,16,20,0" IsVisible="{Binding HasError}">
                     <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                    <Label Text="{Binding ErrorMessage}"
-                           FontSize="13" FontFamily="PJSSemi"
+                    <Label Text="{Binding ErrorMessage}" FontSize="13" FontFamily="PJSSemi"
                            TextColor="{StaticResource ErrorText}"/>
                 </Border>
 
                 <!-- ── KPI 2×2 ────────────────────────────────── -->
                 <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto"
-                      ColumnSpacing="10" RowSpacing="10"
-                      Padding="20,16,20,0">
+                      ColumnSpacing="10" RowSpacing="10" Padding="20,16,20,0">
 
-                    <!-- Dipendenti -->
-                    <Border Grid.Row="0" Grid.Column="0"
-                            BackgroundColor="{StaticResource Surface}"
-                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
-                            Padding="16">
+                    <!-- Dipendenti — verde -->
+                    <Border Grid.Row="0" Grid.Column="0" Stroke="Transparent" Padding="16">
                         <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                        <Border.Background>
+                            <SolidColorBrush Color="{StaticResource Primary}"/>
+                        </Border.Background>
                         <Border.Shadow>
-                            <Shadow Brush="#000000" Offset="0,4" Radius="16" Opacity="0.06"/>
+                            <Shadow Brush="{StaticResource Primary}" Offset="0,8" Radius="20" Opacity="0.25"/>
                         </Border.Shadow>
-                        <VerticalStackLayout Spacing="0">
-                            <Border BackgroundColor="{StaticResource PrimaryLight}"
-                                    HeightRequest="38" WidthRequest="38"
-                                    Stroke="Transparent" Margin="0,0,0,14">
-                                <Border.StrokeShape><RoundRectangle CornerRadius="11"/></Border.StrokeShape>
-                                <Label Text="👥" FontSize="18"
-                                       HorizontalOptions="Center" VerticalOptions="Center"/>
-                            </Border>
-                            <Label Text="{Binding TotalEmployees}"
+                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+                            <Label Grid.Row="0" Grid.Column="0"
+                                   Text="{Binding TotalEmployees}"
                                    FontSize="30" FontAttributes="Bold" FontFamily="PJSXBold"
-                                   TextColor="{StaticResource OnBackground}"
-                                   CharacterSpacing="-1" Margin="0,0,0,4"/>
-                            <Label Text="Dipendenti" FontSize="11" FontFamily="PJSSemi"
-                                   TextColor="{StaticResource Outline}"/>
-                            <Label Text="attivi" FontSize="11" FontFamily="PJSReg"
-                                   TextColor="{StaticResource Outline}"/>
-                        </VerticalStackLayout>
+                                   TextColor="White" CharacterSpacing="-1"/>
+                            <Image Grid.Row="0" Grid.Column="1"
+                                   Source="users_group.svg" HeightRequest="28" WidthRequest="28"
+                                   VerticalOptions="Start"/>
+                            <Label Grid.Row="1" Grid.ColumnSpan="2"
+                                   Text="Dipendenti" FontSize="11" FontFamily="PJSSemi"
+                                   TextColor="#FFFFFFCC" Margin="0,6,0,0"/>
+                            <Label Grid.Row="2" Grid.ColumnSpan="2"
+                                   Text="in turno" FontSize="11" FontFamily="PJSReg"
+                                   TextColor="#FFFFFF80"/>
+                        </Grid>
                     </Border>
 
-                    <!-- Turni -->
-                    <Border Grid.Row="0" Grid.Column="1"
-                            BackgroundColor="{StaticResource Surface}"
-                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
-                            Padding="16">
+                    <!-- Turni — ambra -->
+                    <Border Grid.Row="0" Grid.Column="1" Stroke="Transparent" Padding="16">
                         <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                        <Border.Background>
+                            <SolidColorBrush Color="{StaticResource KpiAmber}"/>
+                        </Border.Background>
                         <Border.Shadow>
-                            <Shadow Brush="#000000" Offset="0,4" Radius="16" Opacity="0.06"/>
+                            <Shadow Brush="{StaticResource KpiAmber}" Offset="0,8" Radius="20" Opacity="0.25"/>
                         </Border.Shadow>
-                        <VerticalStackLayout Spacing="0">
-                            <Border BackgroundColor="{StaticResource SuccessLight}"
-                                    HeightRequest="38" WidthRequest="38"
-                                    Stroke="Transparent" Margin="0,0,0,14">
-                                <Border.StrokeShape><RoundRectangle CornerRadius="11"/></Border.StrokeShape>
-                                <Label Text="📅" FontSize="18"
-                                       HorizontalOptions="Center" VerticalOptions="Center"/>
-                            </Border>
-                            <Label Text="{Binding ShiftsThisWeek}"
+                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+                            <Label Grid.Row="0" Grid.Column="0"
+                                   Text="{Binding ShiftsThisWeek}"
                                    FontSize="30" FontAttributes="Bold" FontFamily="PJSXBold"
-                                   TextColor="{StaticResource OnBackground}"
-                                   CharacterSpacing="-1" Margin="0,0,0,4"/>
-                            <Label Text="Turni" FontSize="11" FontFamily="PJSSemi"
-                                   TextColor="{StaticResource Outline}"/>
-                            <Label Text="questa settimana" FontSize="11" FontFamily="PJSReg"
-                                   TextColor="{StaticResource Outline}"/>
-                        </VerticalStackLayout>
+                                   TextColor="White" CharacterSpacing="-1"/>
+                            <Image Grid.Row="0" Grid.Column="1"
+                                   Source="calendar_check.svg" HeightRequest="28" WidthRequest="28"
+                                   VerticalOptions="Start"/>
+                            <Label Grid.Row="1" Grid.ColumnSpan="2"
+                                   Text="Turni" FontSize="11" FontFamily="PJSSemi"
+                                   TextColor="#FFFFFFCC" Margin="0,6,0,0"/>
+                            <Label Grid.Row="2" Grid.ColumnSpan="2"
+                                   Text="questa settimana" FontSize="11" FontFamily="PJSReg"
+                                   TextColor="#FFFFFF80"/>
+                        </Grid>
                     </Border>
 
-                    <!-- Ferie -->
-                    <Border Grid.Row="1" Grid.Column="0"
-                            BackgroundColor="{StaticResource Surface}"
-                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
-                            Padding="16">
+                    <!-- Ferie — corallo/error -->
+                    <Border Grid.Row="1" Grid.Column="0" Stroke="Transparent" Padding="16">
                         <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                        <Border.Background>
+                            <SolidColorBrush Color="{StaticResource Error}"/>
+                        </Border.Background>
                         <Border.Shadow>
-                            <Shadow Brush="#000000" Offset="0,4" Radius="16" Opacity="0.06"/>
+                            <Shadow Brush="{StaticResource Error}" Offset="0,8" Radius="20" Opacity="0.25"/>
                         </Border.Shadow>
-                        <VerticalStackLayout Spacing="0">
-                            <Border BackgroundColor="{StaticResource WarningLight}"
-                                    HeightRequest="38" WidthRequest="38"
-                                    Stroke="Transparent" Margin="0,0,0,14">
-                                <Border.StrokeShape><RoundRectangle CornerRadius="11"/></Border.StrokeShape>
-                                <Label Text="🏖️" FontSize="18"
-                                       HorizontalOptions="Center" VerticalOptions="Center"/>
-                            </Border>
-                            <Label Text="{Binding PendingVacations}"
+                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+                            <Label Grid.Row="0" Grid.Column="0"
+                                   Text="{Binding PendingVacations}"
                                    FontSize="30" FontAttributes="Bold" FontFamily="PJSXBold"
-                                   TextColor="{StaticResource OnBackground}"
-                                   CharacterSpacing="-1" Margin="0,0,0,4"/>
-                            <Label Text="Ferie" FontSize="11" FontFamily="PJSSemi"
-                                   TextColor="{StaticResource Outline}"/>
-                            <Label Text="in attesa" FontSize="11" FontFamily="PJSReg"
-                                   TextColor="{StaticResource Outline}"/>
-                        </VerticalStackLayout>
+                                   TextColor="White" CharacterSpacing="-1"/>
+                            <Image Grid.Row="0" Grid.Column="1"
+                                   Source="beach_umbrella.svg" HeightRequest="28" WidthRequest="28"
+                                   VerticalOptions="Start"/>
+                            <Label Grid.Row="1" Grid.ColumnSpan="2"
+                                   Text="Ferie" FontSize="11" FontFamily="PJSSemi"
+                                   TextColor="#FFFFFFCC" Margin="0,6,0,0"/>
+                            <Label Grid.Row="2" Grid.ColumnSpan="2"
+                                   Text="in attesa" FontSize="11" FontFamily="PJSReg"
+                                   TextColor="#FFFFFF80"/>
+                        </Grid>
                     </Border>
 
-                    <!-- Ore -->
-                    <Border Grid.Row="1" Grid.Column="1"
-                            BackgroundColor="{StaticResource Surface}"
-                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
-                            Padding="16">
+                    <!-- Ore — sky blue -->
+                    <Border Grid.Row="1" Grid.Column="1" Stroke="Transparent" Padding="16">
                         <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                        <Border.Background>
+                            <SolidColorBrush Color="{StaticResource KpiBlue}"/>
+                        </Border.Background>
                         <Border.Shadow>
-                            <Shadow Brush="#000000" Offset="0,4" Radius="16" Opacity="0.06"/>
+                            <Shadow Brush="{StaticResource KpiBlue}" Offset="0,8" Radius="20" Opacity="0.25"/>
                         </Border.Shadow>
-                        <VerticalStackLayout Spacing="0">
-                            <Border BackgroundColor="{StaticResource PurpleLight}"
-                                    HeightRequest="38" WidthRequest="38"
-                                    Stroke="Transparent" Margin="0,0,0,14">
-                                <Border.StrokeShape><RoundRectangle CornerRadius="11"/></Border.StrokeShape>
-                                <Label Text="⏱️" FontSize="18"
-                                       HorizontalOptions="Center" VerticalOptions="Center"/>
-                            </Border>
-                            <Label Text="{Binding TotalHoursScheduled, StringFormat='{0:0}h'}"
+                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+                            <Label Grid.Row="0" Grid.Column="0"
+                                   Text="{Binding TotalHoursScheduled, StringFormat='{0:0}h'}"
                                    FontSize="30" FontAttributes="Bold" FontFamily="PJSXBold"
-                                   TextColor="{StaticResource OnBackground}"
-                                   CharacterSpacing="-1" Margin="0,0,0,4"/>
-                            <Label Text="Ore" FontSize="11" FontFamily="PJSSemi"
-                                   TextColor="{StaticResource Outline}"/>
-                            <Label Text="questa settimana" FontSize="11" FontFamily="PJSReg"
-                                   TextColor="{StaticResource Outline}"/>
-                        </VerticalStackLayout>
+                                   TextColor="White" CharacterSpacing="-1"/>
+                            <Image Grid.Row="0" Grid.Column="1"
+                                   Source="clock_timer.svg" HeightRequest="28" WidthRequest="28"
+                                   VerticalOptions="Start"/>
+                            <Label Grid.Row="1" Grid.ColumnSpan="2"
+                                   Text="Ore" FontSize="11" FontFamily="PJSSemi"
+                                   TextColor="#FFFFFFCC" Margin="0,6,0,0"/>
+                            <Label Grid.Row="2" Grid.ColumnSpan="2"
+                                   Text="questa settimana" FontSize="11" FontFamily="PJSReg"
+                                   TextColor="#FFFFFF80"/>
+                        </Grid>
                     </Border>
                 </Grid>
 
@@ -174,15 +166,13 @@
                                      HorizontalOptions="Center"
                                      Margin="32,48,32,0" Spacing="12">
                     <Border BackgroundColor="{StaticResource Surface}"
-                            HeightRequest="72" WidthRequest="72"
-                            HorizontalOptions="Center">
+                            HeightRequest="72" WidthRequest="72" HorizontalOptions="Center">
                         <Border.StrokeShape><RoundRectangle CornerRadius="22"/></Border.StrokeShape>
-                        <Label Text="🏪" FontSize="36"
+                        <Image Source="building.svg" HeightRequest="36" WidthRequest="36"
                                HorizontalOptions="Center" VerticalOptions="Center"/>
                     </Border>
-                    <Label Text="Nessun dato ancora"
-                           FontSize="18" FontAttributes="Bold" FontFamily="PJSBold"
-                           TextColor="{StaticResource OnBackground}"
+                    <Label Text="Nessun dato ancora" FontSize="18" FontAttributes="Bold"
+                           FontFamily="PJSBold" TextColor="{StaticResource OnBackground}"
                            HorizontalOptions="Center"/>
                     <Label Text="Aggiungi dipendenti e crea turni dal menu Team e Turni."
                            FontSize="14" FontFamily="PJSReg"
@@ -190,7 +180,7 @@
                            HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
                 </VerticalStackLayout>
 
-                <!-- ── Turni oggi ──────────────────────────────── -->
+                <!-- ── Turni oggi ─────────────────────────────── -->
                 <VerticalStackLayout Spacing="10" Padding="20,28,20,0"
                                      IsVisible="{Binding IsEmptyState, Converter={StaticResource InverseBoolConverter}}">
                     <Label Text="TURNI OGGI" Style="{StaticResource SectionLabel}"/>
@@ -202,8 +192,7 @@
                                     Padding="16">
                                 <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
                                 <Label Text="Nessun turno programmato per oggi."
-                                       FontFamily="PJSReg"
-                                       TextColor="{StaticResource OnSurfaceVariant}"
+                                       FontFamily="PJSReg" TextColor="{StaticResource OnSurfaceVariant}"
                                        HorizontalOptions="Center"/>
                             </Border>
                         </CollectionView.EmptyView>
@@ -217,35 +206,29 @@
                                         <Shadow Brush="#000000" Offset="0,2" Radius="10" Opacity="0.05"/>
                                     </Border.Shadow>
                                     <Grid ColumnDefinitions="4,Auto,*,Auto" Padding="0,12,14,12" ColumnSpacing="12">
-                                        <BoxView Grid.Column="0"
-                                                 BackgroundColor="{StaticResource Primary}"
+                                        <BoxView Grid.Column="0" BackgroundColor="{StaticResource Primary}"
                                                  VerticalOptions="Fill" CornerRadius="4,0,0,4"/>
-                                        <!-- Avatar -->
-                                        <Border Grid.Column="1"
-                                                BackgroundColor="{StaticResource PrimaryLight}"
-                                                HeightRequest="38" WidthRequest="38"
-                                                Stroke="Transparent">
+                                        <Border Grid.Column="1" BackgroundColor="{StaticResource PrimaryLight}"
+                                                HeightRequest="38" WidthRequest="38" Stroke="Transparent">
                                             <Border.StrokeShape><RoundRectangle CornerRadius="19"/></Border.StrokeShape>
-                                            <Label Text="{Binding Initials}"
-                                                   FontSize="13" FontAttributes="Bold" FontFamily="PJSBold"
+                                            <Label Text="{Binding Initials}" FontSize="13"
+                                                   FontAttributes="Bold" FontFamily="PJSBold"
                                                    TextColor="{StaticResource Primary}"
                                                    HorizontalOptions="Center" VerticalOptions="Center"/>
                                         </Border>
                                         <VerticalStackLayout Grid.Column="2" Spacing="3" VerticalOptions="Center">
-                                            <Label Text="{Binding EmployeeName}"
-                                                   FontSize="14" FontAttributes="Bold" FontFamily="PJSBold"
+                                            <Label Text="{Binding EmployeeName}" FontSize="14"
+                                                   FontAttributes="Bold" FontFamily="PJSBold"
                                                    TextColor="{StaticResource OnBackground}"/>
-                                            <Label Text="{Binding DisplayTime}"
-                                                   FontSize="12" FontFamily="PJSReg"
+                                            <Label Text="{Binding DisplayTime}" FontSize="12"
+                                                   FontFamily="PJSReg"
                                                    TextColor="{StaticResource OnSurfaceVariant}"/>
                                         </VerticalStackLayout>
-                                        <Border Grid.Column="3"
-                                                BackgroundColor="{StaticResource SuccessLight}"
-                                                Stroke="Transparent" Padding="10,5"
-                                                VerticalOptions="Center">
+                                        <Border Grid.Column="3" BackgroundColor="{StaticResource SuccessLight}"
+                                                Stroke="Transparent" Padding="10,5" VerticalOptions="Center">
                                             <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
-                                            <Label Text="{Binding Status}"
-                                                   FontSize="10" FontAttributes="Bold" FontFamily="PJSBold"
+                                            <Label Text="{Binding Status}" FontSize="10"
+                                                   FontAttributes="Bold" FontFamily="PJSBold"
                                                    TextColor="{StaticResource SuccessText}"/>
                                         </Border>
                                     </Grid>
@@ -255,7 +238,7 @@
                     </CollectionView>
                 </VerticalStackLayout>
 
-                <!-- ── Ferie in attesa ────────────────────────── -->
+                <!-- ── Ferie in attesa ───────────────────────── -->
                 <VerticalStackLayout Spacing="10" Padding="20,24,20,0"
                                      IsVisible="{Binding IsEmptyState, Converter={StaticResource InverseBoolConverter}}">
                     <HorizontalStackLayout Spacing="8">
@@ -265,8 +248,8 @@
                                 Stroke="Transparent" Padding="8,3"
                                 IsVisible="{Binding PendingVacations, Converter={StaticResource IntIsZeroConverter}, ConverterParameter=invert}">
                             <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                            <Label Text="{Binding PendingVacations}"
-                                   FontSize="10" FontAttributes="Bold" FontFamily="PJSBold"
+                            <Label Text="{Binding PendingVacations}" FontSize="10"
+                                   FontAttributes="Bold" FontFamily="PJSBold"
                                    TextColor="{StaticResource WarningText}"/>
                         </Border>
                     </HorizontalStackLayout>
@@ -277,8 +260,7 @@
                                     Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
                                     Padding="16">
                                 <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
-                                <Label Text="Nessuna richiesta in attesa."
-                                       FontFamily="PJSReg"
+                                <Label Text="Nessuna richiesta in attesa." FontFamily="PJSReg"
                                        TextColor="{StaticResource OnSurfaceVariant}"
                                        HorizontalOptions="Center"/>
                             </Border>
@@ -294,51 +276,43 @@
                                     </Border.Shadow>
                                     <VerticalStackLayout Spacing="14">
                                         <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
-                                            <Border Grid.Column="0"
-                                                    BackgroundColor="{StaticResource PrimaryLight}"
-                                                    HeightRequest="44" WidthRequest="44"
-                                                    Stroke="Transparent">
+                                            <Border Grid.Column="0" BackgroundColor="{StaticResource PrimaryLight}"
+                                                    HeightRequest="44" WidthRequest="44" Stroke="Transparent">
                                                 <Border.StrokeShape><RoundRectangle CornerRadius="22"/></Border.StrokeShape>
-                                                <Label Text="{Binding Initials}"
-                                                       FontSize="15" FontAttributes="Bold" FontFamily="PJSBold"
+                                                <Label Text="{Binding Initials}" FontSize="15"
+                                                       FontAttributes="Bold" FontFamily="PJSBold"
                                                        TextColor="{StaticResource Primary}"
                                                        HorizontalOptions="Center" VerticalOptions="Center"/>
                                             </Border>
-                                            <VerticalStackLayout Grid.Column="1"
-                                                                 VerticalOptions="Center" Spacing="3">
-                                                <Label Text="{Binding EmployeeName}"
-                                                       FontSize="14" FontAttributes="Bold" FontFamily="PJSBold"
+                                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="3">
+                                                <Label Text="{Binding EmployeeName}" FontSize="14"
+                                                       FontAttributes="Bold" FontFamily="PJSBold"
                                                        TextColor="{StaticResource OnBackground}"/>
-                                                <Label Text="{Binding DisplayDate}"
-                                                       FontSize="12" FontFamily="PJSReg"
+                                                <Label Text="{Binding DisplayDate}" FontSize="12"
+                                                       FontFamily="PJSReg"
                                                        TextColor="{StaticResource OnSurfaceVariant}"/>
                                             </VerticalStackLayout>
-                                            <Border Grid.Column="2"
-                                                    BackgroundColor="{StaticResource WarningLight}"
-                                                    Stroke="Transparent" Padding="10,5"
-                                                    VerticalOptions="Center">
+                                            <Border Grid.Column="2" BackgroundColor="{StaticResource WarningLight}"
+                                                    Stroke="Transparent" Padding="10,5" VerticalOptions="Center">
                                                 <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
-                                                <Label Text="In attesa"
-                                                       FontSize="10" FontAttributes="Bold" FontFamily="PJSBold"
+                                                <Label Text="In attesa" FontSize="10"
+                                                       FontAttributes="Bold" FontFamily="PJSBold"
                                                        TextColor="{StaticResource WarningText}"/>
                                             </Border>
                                         </Grid>
                                         <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                                            <Button Grid.Column="0"
-                                                    Text="Rifiuta"
+                                            <Button Grid.Column="0" Text="Rifiuta"
                                                     Command="{Binding Source={RelativeSource AncestorType={x:Type vm:DashboardViewModel}}, Path=RejectVacationCommand}"
                                                     CommandParameter="{Binding .}"
                                                     BackgroundColor="Transparent"
                                                     TextColor="{StaticResource Error}"
                                                     BorderColor="{StaticResource OutlineVariant}"
-                                                    BorderWidth="1.5"
-                                                    CornerRadius="11" HeightRequest="42"
+                                                    BorderWidth="1.5" CornerRadius="11" HeightRequest="42"
                                                     FontSize="13" FontFamily="PJSBold" FontAttributes="Bold"/>
-                                            <Button Grid.Column="1"
-                                                    Text="Approva"
+                                            <Button Grid.Column="1" Text="Approva"
                                                     Command="{Binding Source={RelativeSource AncestorType={x:Type vm:DashboardViewModel}}, Path=ApproveVacationCommand}"
                                                     CommandParameter="{Binding .}"
-                                                    BackgroundColor="{StaticResource Success}"
+                                                    BackgroundColor="{StaticResource Primary}"
                                                     TextColor="White"
                                                     CornerRadius="11" HeightRequest="42"
                                                     FontSize="13" FontFamily="PJSBold" FontAttributes="Bold"/>
@@ -350,14 +324,11 @@
                     </CollectionView>
                 </VerticalStackLayout>
 
-                <!-- ── Copertura settimana (solo admin) ─────────── -->
+                <!-- ── Copertura settimana ───────────────────── -->
                 <VerticalStackLayout Spacing="10" Padding="20,16,20,0"
                                      IsVisible="{Binding IsAdmin}">
-                    <Label Text="COPERTURA QUESTA SETTIMANA"
-                           FontSize="11" FontFamily="PJSSemi" CharacterSpacing="1.2"
-                           TextColor="{StaticResource Outline}"/>
-                    <CollectionView ItemsSource="{Binding WeeklyCoverage}"
-                                    ItemsLayout="HorizontalList">
+                    <Label Text="COPERTURA QUESTA SETTIMANA" Style="{StaticResource SectionLabel}"/>
+                    <CollectionView ItemsSource="{Binding WeeklyCoverage}" ItemsLayout="HorizontalList">
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="vm:CoverageDay">
                                 <Border Padding="10,10" Margin="0,0,8,0"
@@ -365,7 +336,8 @@
                                         Stroke="Transparent" WidthRequest="72">
                                     <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
                                     <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
-                                        <Label Text="{Binding Icon}" FontSize="18" HorizontalOptions="Center"/>
+                                        <Image Source="{Binding Icon}" HeightRequest="20" WidthRequest="20"
+                                               HorizontalOptions="Center"/>
                                         <Label Text="{Binding DayLabel}" FontFamily="PJSSemi" FontSize="12"
                                                TextColor="{Binding TextColor}" HorizontalOptions="Center"/>
                                         <Label Text="{Binding DateLabel}" FontFamily="PJSReg" FontSize="11"
@@ -379,6 +351,6 @@
 
             </VerticalStackLayout>
         </ScrollView>
-    </RefreshView>
+        </RefreshView>
     </Grid>
 </ContentPage>

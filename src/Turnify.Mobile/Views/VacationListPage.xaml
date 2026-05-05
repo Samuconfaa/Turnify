@@ -5,93 +5,82 @@
              x:Class="Turnify.Mobile.Views.VacationListPage"
              x:DataType="vm:VacationListViewModel"
              Title="Ferie e Permessi"
+             Shell.NavBarIsVisible="False"
              BackgroundColor="{StaticResource Background}">
 
     <Grid RowDefinitions="Auto,Auto,Auto,*">
 
-        <!-- ── Header ────────────────────────────────────── -->
-        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Padding="20,18,20,0">
-            <VerticalStackLayout Grid.Column="0" Spacing="2">
-                <Label Text="Ferie"
+        <!-- ── Gradient header ──────────────────────────────── -->
+        <Grid Grid.Row="0" Padding="20,54,20,16" MinimumHeightRequest="80">
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="{StaticResource HeaderGradientStart}" Offset="0"/>
+                    <GradientStop Color="{StaticResource HeaderGradientEnd}" Offset="1"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+            <Grid ColumnDefinitions="*,Auto">
+                <Label Grid.Column="0" Text="Ferie e Permessi"
                        FontSize="26" FontAttributes="Bold" FontFamily="PJSXBold"
-                       TextColor="{StaticResource OnBackground}"
-                       CharacterSpacing="-0.8"/>
-                <Label Text="e Permessi"
-                       FontSize="13" FontFamily="PJSReg"
-                       TextColor="{StaticResource Outline}"/>
-            </VerticalStackLayout>
-            <!-- Employee: new request -->
-            <Border Grid.Column="1"
-                    BackgroundColor="{StaticResource Navy}"
-                    Stroke="Transparent" Padding="16,10"
-                    IsVisible="{Binding IsAdmin, Converter={StaticResource InverseBoolConverter}}"
-                    VerticalOptions="Center">
-                <Border.StrokeShape><RoundRectangle CornerRadius="22"/></Border.StrokeShape>
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding ShowNewRequestFormCommand}"/>
-                </Border.GestureRecognizers>
-                <Label Text="+ Richiedi"
-                       FontSize="13" FontAttributes="Bold" FontFamily="PJSBold"
-                       TextColor="White"/>
-            </Border>
+                       TextColor="White" CharacterSpacing="-0.8"
+                       VerticalOptions="Center"/>
+                <!-- Employee: + Richiedi button -->
+                <Border Grid.Column="1"
+                        BackgroundColor="{StaticResource PrimaryMid}"
+                        Stroke="#FFFFFF33" StrokeThickness="1"
+                        Padding="16,10"
+                        IsVisible="{Binding IsAdmin, Converter={StaticResource InverseBoolConverter}}"
+                        VerticalOptions="Center">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="22"/></Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ShowNewRequestFormCommand}"/>
+                    </Border.GestureRecognizers>
+                    <Label Text="+ Richiedi"
+                           FontSize="13" FontAttributes="Bold" FontFamily="PJSBold"
+                           TextColor="White"/>
+                </Border>
+            </Grid>
         </Grid>
 
-        <!-- ── Filter chips ──────────────────────────────── -->
+        <!-- ── Filter chips ──────────────────────────────────── -->
         <ScrollView Grid.Row="1"
                     Orientation="Horizontal"
                     HorizontalScrollBarVisibility="Never"
                     Padding="20,12,20,0">
             <HorizontalStackLayout Spacing="8">
                 <!-- Tutte -->
-                <Border Padding="14,8">
+                <Border Padding="14,8"
+                        BackgroundColor="{StaticResource SurfaceContainerLow}"
+                        Stroke="{StaticResource OutlineVariant}" StrokeThickness="1.5">
                     <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding SetFilterIndexCommand}" CommandParameter="0"/>
                     </Border.GestureRecognizers>
                     <Border.Triggers>
                         <DataTrigger TargetType="Border" Binding="{Binding FilterIndex}" Value="0">
-                            <Setter Property="BackgroundColor" Value="{StaticResource Navy}"/>
+                            <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
                             <Setter Property="Stroke" Value="Transparent"/>
                         </DataTrigger>
-                        <DataTrigger TargetType="Border" Binding="{Binding FilterIndex}" Value="1">
-                            <Setter Property="BackgroundColor" Value="{StaticResource Surface}"/>
-                            <Setter Property="Stroke" Value="{StaticResource OutlineVariant}"/>
-                        </DataTrigger>
-                        <DataTrigger TargetType="Border" Binding="{Binding FilterIndex}" Value="2">
-                            <Setter Property="BackgroundColor" Value="{StaticResource Surface}"/>
-                            <Setter Property="Stroke" Value="{StaticResource OutlineVariant}"/>
-                        </DataTrigger>
-                        <DataTrigger TargetType="Border" Binding="{Binding FilterIndex}" Value="3">
-                            <Setter Property="BackgroundColor" Value="{StaticResource Surface}"/>
-                            <Setter Property="Stroke" Value="{StaticResource OutlineVariant}"/>
-                        </DataTrigger>
                     </Border.Triggers>
-                    <Label Text="Tutte" FontSize="12" FontAttributes="Bold" FontFamily="PJSBold">
+                    <Label Text="Tutte" FontSize="12" FontAttributes="Bold" FontFamily="PJSBold"
+                           TextColor="{StaticResource OnSurfaceVariant}">
                         <Label.Triggers>
                             <DataTrigger TargetType="Label" Binding="{Binding FilterIndex}" Value="0">
                                 <Setter Property="TextColor" Value="White"/>
-                            </DataTrigger>
-                            <DataTrigger TargetType="Label" Binding="{Binding FilterIndex}" Value="1">
-                                <Setter Property="TextColor" Value="{StaticResource OnSurfaceVariant}"/>
-                            </DataTrigger>
-                            <DataTrigger TargetType="Label" Binding="{Binding FilterIndex}" Value="2">
-                                <Setter Property="TextColor" Value="{StaticResource OnSurfaceVariant}"/>
-                            </DataTrigger>
-                            <DataTrigger TargetType="Label" Binding="{Binding FilterIndex}" Value="3">
-                                <Setter Property="TextColor" Value="{StaticResource OnSurfaceVariant}"/>
                             </DataTrigger>
                         </Label.Triggers>
                     </Label>
                 </Border>
                 <!-- In Attesa -->
-                <Border Stroke="{StaticResource OutlineVariant}" StrokeThickness="1.5" Padding="14,8">
+                <Border Padding="14,8"
+                        BackgroundColor="{StaticResource SurfaceContainerLow}"
+                        Stroke="{StaticResource OutlineVariant}" StrokeThickness="1.5">
                     <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding SetFilterIndexCommand}" CommandParameter="1"/>
                     </Border.GestureRecognizers>
                     <Border.Triggers>
                         <DataTrigger TargetType="Border" Binding="{Binding FilterIndex}" Value="1">
-                            <Setter Property="BackgroundColor" Value="{StaticResource Navy}"/>
+                            <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
                             <Setter Property="Stroke" Value="Transparent"/>
                         </DataTrigger>
                     </Border.Triggers>
@@ -105,14 +94,16 @@
                     </Label>
                 </Border>
                 <!-- Approvate -->
-                <Border Stroke="{StaticResource OutlineVariant}" StrokeThickness="1.5" Padding="14,8">
+                <Border Padding="14,8"
+                        BackgroundColor="{StaticResource SurfaceContainerLow}"
+                        Stroke="{StaticResource OutlineVariant}" StrokeThickness="1.5">
                     <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding SetFilterIndexCommand}" CommandParameter="2"/>
                     </Border.GestureRecognizers>
                     <Border.Triggers>
                         <DataTrigger TargetType="Border" Binding="{Binding FilterIndex}" Value="2">
-                            <Setter Property="BackgroundColor" Value="{StaticResource Navy}"/>
+                            <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
                             <Setter Property="Stroke" Value="Transparent"/>
                         </DataTrigger>
                     </Border.Triggers>
@@ -126,14 +117,16 @@
                     </Label>
                 </Border>
                 <!-- Rifiutate -->
-                <Border Stroke="{StaticResource OutlineVariant}" StrokeThickness="1.5" Padding="14,8">
+                <Border Padding="14,8"
+                        BackgroundColor="{StaticResource SurfaceContainerLow}"
+                        Stroke="{StaticResource OutlineVariant}" StrokeThickness="1.5">
                     <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding SetFilterIndexCommand}" CommandParameter="3"/>
                     </Border.GestureRecognizers>
                     <Border.Triggers>
                         <DataTrigger TargetType="Border" Binding="{Binding FilterIndex}" Value="3">
-                            <Setter Property="BackgroundColor" Value="{StaticResource Navy}"/>
+                            <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
                             <Setter Property="Stroke" Value="Transparent"/>
                         </DataTrigger>
                     </Border.Triggers>
@@ -160,19 +153,18 @@
                    TextColor="{StaticResource ErrorText}"/>
         </Border>
 
-        <!-- ── List ──────────────────────────────────────── -->
+        <!-- ── List ──────────────────────────────────────────── -->
         <RefreshView Grid.Row="3"
                      Command="{Binding LoadRequestsCommand}"
                      IsRefreshing="{Binding IsBusy}">
             <CollectionView ItemsSource="{Binding Requests}" Margin="0,8,0,4">
                 <CollectionView.EmptyView>
-                    <VerticalStackLayout HorizontalOptions="Center"
-                                         Margin="0,52,0,0" Spacing="12">
+                    <VerticalStackLayout HorizontalOptions="Center" Margin="0,52,0,0" Spacing="12">
                         <Border BackgroundColor="{StaticResource Surface}"
                                 HeightRequest="68" WidthRequest="68"
                                 HorizontalOptions="Center">
                             <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
-                            <Label Text="🏖️" FontSize="34"
+                            <Image Source="beach_umbrella.svg" HeightRequest="34" WidthRequest="34"
                                    HorizontalOptions="Center" VerticalOptions="Center"/>
                         </Border>
                         <Label Text="Nessuna richiesta"
@@ -221,9 +213,9 @@
                                              Color="{Binding StripColor}"
                                              VerticalOptions="Fill"
                                              CornerRadius="5,0,0,5"/>
-                                    <VerticalStackLayout Grid.Column="1"
-                                                         Spacing="10" Padding="14,14">
-                                        <!-- Employee (admin only) -->
+                                    <VerticalStackLayout Grid.Column="1" Spacing="10" Padding="14,14">
+
+                                        <!-- Employee avatar (admin only) -->
                                         <HorizontalStackLayout Spacing="12"
                                             IsVisible="{Binding Source={RelativeSource AncestorType={x:Type vm:VacationListViewModel}}, Path=IsAdmin}">
                                             <Border BackgroundColor="{StaticResource PrimaryLight}"
@@ -241,7 +233,7 @@
                                                    VerticalOptions="Center"/>
                                         </HorizontalStackLayout>
 
-                                        <!-- Type + status -->
+                                        <!-- Type + status chip -->
                                         <Grid ColumnDefinitions="*,Auto">
                                             <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
                                                 <Label Text="{Binding TypeDisplay}"
@@ -291,7 +283,7 @@
                                                     CommandParameter="{Binding .}"
                                                     BackgroundColor="Transparent"
                                                     TextColor="{StaticResource Primary}"
-                                                    BorderColor="{StaticResource PrimaryMid}"
+                                                    BorderColor="{StaticResource Primary}"
                                                     BorderWidth="1.5" CornerRadius="9"
                                                     HeightRequest="38" FontSize="12"
                                                     FontAttributes="Bold" FontFamily="PJSBold"/>
@@ -349,7 +341,7 @@
                            HorizontalOptions="Center" VerticalOptions="Center"
                            Color="{StaticResource Primary}"/>
 
-        <!-- New request bottom sheet overlay -->
+        <!-- ── New request bottom sheet overlay ──────────────── -->
         <Grid Grid.RowSpan="4"
               IsVisible="{Binding IsFormVisible}"
               BackgroundColor="#80000000">
@@ -362,18 +354,13 @@
                     <Shadow Brush="#000000" Offset="0,-4" Radius="24" Opacity="0.14"/>
                 </Border.Shadow>
                 <VerticalStackLayout Spacing="0">
-                    <!-- Handle -->
                     <BoxView BackgroundColor="{StaticResource OutlineVariant}"
-                             HeightRequest="4" WidthRequest="40"
-                             CornerRadius="2"
-                             HorizontalOptions="Center"
-                             Margin="0,14,0,22"/>
+                             HeightRequest="4" WidthRequest="40" CornerRadius="2"
+                             HorizontalOptions="Center" Margin="0,14,0,22"/>
                     <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,20">
-                        <Label Grid.Column="0"
-                               Text="Nuova Richiesta"
+                        <Label Grid.Column="0" Text="Nuova Richiesta"
                                FontSize="20" FontAttributes="Bold" FontFamily="PJSXBold"
-                               TextColor="{StaticResource OnBackground}"
-                               CharacterSpacing="-0.5"/>
+                               TextColor="{StaticResource OnBackground}" CharacterSpacing="-0.5"/>
                         <Button Grid.Column="1" Text="✕"
                                 Command="{Binding HideFormCommand}"
                                 BackgroundColor="Transparent"
@@ -385,8 +372,7 @@
                     <Border Style="{StaticResource FieldBorder}" Margin="0,0,0,16">
                         <Picker ItemsSource="{Binding VacationTypesDisplay}"
                                 SelectedIndex="{Binding NewTypeIndex}"
-                                FontFamily="PJSReg"
-                                Margin="16,0"/>
+                                FontFamily="PJSReg" Margin="16,0"/>
                     </Border>
 
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,0,0,16">
@@ -426,7 +412,11 @@
 
                     <Button Text="Invia Richiesta"
                             Command="{Binding SubmitRequestCommand}"
-                            Style="{StaticResource PrimaryButton}"/>
+                            Style="{StaticResource PrimaryButton}">
+                        <Button.Shadow>
+                            <Shadow Brush="{StaticResource Primary}" Offset="0,4" Radius="16" Opacity="0.30"/>
+                        </Button.Shadow>
+                    </Button>
                 </VerticalStackLayout>
             </Border>
         </Grid>

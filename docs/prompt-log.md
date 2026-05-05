@@ -2,6 +2,114 @@
 
 ---
 
+## Prompt 43
+
+### Data
+2026-05-05
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Convertire `VacationListPage.xaml` e `NotificationsPage.xaml` in XAML Tropic Burst a partire dagli HTML Stitch in `new-ui/redesign2/`.
+
+### Prompt
+> Leggere i file HTML in `new-ui/redesign2/` (ferie_e_permessi_admin, nuova_richiesta_ferie, notifiche) e convertirli in XAML MAUI preservando tutti i binding ViewModel esistenti. Applicare: gradient header `HeaderGradientStart→HeaderGradientEnd`, filter chips con DataTrigger solo per stato attivo (fix pattern Value=False), card con left bar `StripColor`, bottom sheet nuova richiesta, badge `UnreadCount` nel header notifiche, `Shell.NavBarIsVisible=False`.
+
+### Output utile
+- `VacationListPage.xaml`: gradient header con "+ Richiedi" pill (employee), 4 filter chip con DataTrigger singolo (solo `Value=active`), card SwipeView con left bar StripColor, bottom sheet overlay `IsFormVisible`, tutti i binding preservati
+- `NotificationsPage.xaml`: gradient header con badge `PrimaryLight`/`Primary` per unread count, "Segna tutte lette" white link, card con `BackgroundColor` binding, icon circle `PrimaryLight`, unread dot Ellipse, `Shell.NavBarIsVisible=False`
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Struttura XAML conforme al pattern delle altre pagine già convertite; DataTrigger pattern corretto (solo Value=True) applicato anche ai filter chip per evitare il bug del toggle.
+
+---
+
+## Prompt 42
+
+### Data
+2026-05-05
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Eseguire iterazione 15: aggiornare `Colors.xaml` con palette Tropic Burst e convertire 6 pagine XAML da HTML Stitch, sostituendo tutte le emoji con asset icona PNG.
+
+### Prompt
+> Eseguire tutti i TASK dell'iterazione 15: aggiornare `Colors.xaml` con i token Tropic Burst (primary `#006948`, header gradient `#064E3B`→`#115E59`, surface scale MD3, KPI colors); convertire `LoginPage`, `DashboardPage`, `EmployeeDashboardPage`, `EmployeeListPage`, `ProfilePage` da HTML Stitch in XAML MAUI preservando tutti i binding ViewModel; aggiornare `ShiftCalendarPage` (color-only: `Navy`→`Primary`). Nessuna modifica ai ViewModel, `x:DataType` su ogni View, nessuna emoji nei file convertiti.
+
+### Output utile
+- `Colors.xaml`: token Tropic Burst, MD3 surface scale, KPI colors, stili PrimaryButton/OutlineButton, fix typo `#BCCAC0` e `#FFDAD6`
+- `LoginPage.xaml`: hero gradient verticale, bottom sheet arrotondato, mode toggle pill, shadow smeraldo su CTA
+- `DashboardPage.xaml`: gradient header orizzontale, 4 KPI card con SolidColorBrush + Shadow colorata, icone PNG
+- `EmployeeDashboardPage.xaml`: greeting header, hero card Primary, 3 quick actions TertiaryContainer/PrimaryContainer/SecondaryContainer, icone PNG
+- `EmployeeListPage.xaml`: gradient header, search bar con search.png, avatar PrimaryContainer, add card dashed Primary
+- `ProfilePage.xaml`: gradient hero HeaderGradientStart→Secondary, badge edit-pencil.png, tutte le righe settings con Image Source
+- `ShiftCalendarPage.xaml`: 4 occorrenze `Navy`→`Primary` (FAB, toggle Dipendenti, toggle Giorno, bottone Uscita)
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Tutte le pagine convertite compilano senza modifiche ai ViewModel; i binding restano invariati. TASKs 2/8/10/11 rimandati perché mancano HTML Stitch per VacationList/Notifications/Onboarding e gli asset icona vanno scaricati manualmente.
+
+---
+
+## Prompt 41
+
+### Data
+2026-05-05
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Pianificare iterazione 15: conversione HTML → XAML dei layout generati da Google Stitch con applicazione della palette Tropic Burst all'app mobile.
+
+### Prompt
+> Preparare il file `docs/iterations/it-15-ui-redesign.md` seguendo il template delle 14 iterazioni precedenti. L'iterazione deve documentare il flusso: lettura file HTML da `new-ui/`, conversione in XAML MAUI, aggiornamento `Colors.xaml` con token Tropic Burst, aggiunta asset icona PNG/SVG in `Resources/Images/`, sostituzione delle 9 pagine principali. Nessuna modifica ai ViewModel. Commit sul branch `redesign-ui`.
+
+### Output utile
+- `docs/iterations/it-15-ui-redesign.md`: 11 TASK documentati (Colors.xaml, asset icone, LoginPage, DashboardPage, EmployeeDashboardPage, ShiftCalendarPage, EmployeeListPage, VacationListPage, ProfilePage, NotificationsPage, OnboardingPage), regole obbligatorie MAUI, lista completa file da creare/modificare, output atteso
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Piano pronto per procedere TASK per TASK man mano che l'utente porta i file HTML da Stitch.
+
+---
+
+## Prompt 40
+
+### Data
+2026-05-05
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Creare un nuovo branch `redesign-ui` e generare le specifiche di redesign UI per Google Stitch con nuova palette colorata e icone reali al posto delle emoji.
+
+### Prompt
+> Creare branch `redesign-ui`. Generare cartella `new-ui/` nella root con file markdown di specifiche da passare a Google Stitch per ridisegnare la UI dell'app mobile Turnify. Requisiti: design molto più colorato rispetto alla versione attuale (navy/beige), icone come asset PNG/SVG reali (non emoji), proposta di palette cromatica con scelta utente. Palette scelta: "Tropic Burst" — primary `#059669` (verde smeraldo), accent `#FBBF24` (giallo dorato), danger `#F43F5E` (corallo), info `#0EA5E9`, background `#F0FDF4`, header gradient `#064E3B` → `#0F766E`. Specifiche per: LoginPage, DashboardPage, EmployeeDashboardPage, ShiftCalendarPage, EmployeeListPage, VacationListPage, ProfilePage, NotificationsPage, OnboardingPage.
+
+### Output utile
+- Branch `redesign-ui` creato
+- `new-ui/stitch-spec.md`: specifiche complete con token colore, tipografia, componenti globali (button, card, input, chip, tab bar), specifiche per 9 schermate, lista completa di 26 asset icona con descrizione, linee guida animazioni, griglia spaziatura, tabella comparativa vs design v2
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Specifica completa e pronta per essere incollata in Google Stitch. Palette Tropic Burst confermata dall'utente tra 5 proposte.
+
+---
+
 ## Prompt 39
 
 ### Data

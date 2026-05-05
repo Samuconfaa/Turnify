@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Turnify - Notifiche</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&amp;family=Plus+Jakarta+Sans:ital,wght@0,700;0,800;1,900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "header-gradient-end": "#115E59",
+                    "warning": "#7A5900",
+                    "secondary-container": "#99EFE5",
+                    "on-tertiary-container": "#ffc6c2",
+                    "surface-container-highest": "#e0e4df",
+                    "primary-fixed-dim": "#83d7ae",
+                    "on-secondary-fixed": "#00201b",
+                    "secondary": "#006b5e",
+                    "on-surface": "#181d1a",
+                    "on-primary-fixed-variant": "#005237",
+                    "secondary-fixed": "#9ff2e1",
+                    "success-light": "#DDFBE8",
+                    "on-error": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "surface-bright": "#f7faf5",
+                    "surface-container-low": "#f1f5ef",
+                    "primary-fixed": "#9ff4ca",
+                    "error-text": "#BA1A1A",
+                    "unread-surface": "#F0FDF4",
+                    "warning-light": "#FFEFD5",
+                    "primary-light": "#D1FAE5",
+                    "error": "#BA1A1A",
+                    "on-tertiary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "outline-variant": "#BEC9BD",
+                    "secondary-fixed-dim": "#83d5c5",
+                    "outline": "#6F796E",
+                    "tertiary-fixed-dim": "#ffb3ae",
+                    "primary-container": "#006948",
+                    "on-background": "#191C1A",
+                    "on-secondary-fixed-variant": "#005046",
+                    "header-gradient-start": "#064E3B",
+                    "error-light": "#FFDAD6",
+                    "on-primary-container": "#91e5bc",
+                    "surface-tint": "#076c4b",
+                    "inverse-primary": "#83d7ae",
+                    "on-tertiary-fixed-variant": "#77302e",
+                    "background": "#f7faf5",
+                    "primary": "#004f35",
+                    "on-secondary-container": "#0b6f62",
+                    "surface-container": "#E9EFE9",
+                    "on-tertiary-fixed": "#3d0507",
+                    "success-text": "#1B6C37",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-variant": "#e0e4df",
+                    "on-primary": "#ffffff",
+                    "on-primary-fixed": "#002114",
+                    "surface-container-high": "#e5e9e4",
+                    "on-secondary": "#ffffff",
+                    "surface-dim": "#d7dbd6",
+                    "on-surface-variant": "#3f4943",
+                    "success": "#1B6C37",
+                    "tertiary": "#732d2b",
+                    "inverse-surface": "#2d312e",
+                    "surface": "#F5FBF5",
+                    "tertiary-container": "#914441",
+                    "tertiary-fixed": "#ffdad7",
+                    "warning-text": "#7A5900",
+                    "inverse-on-surface": "#eef2ed"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-side": "12px",
+                    "card-gap": "10px",
+                    "header-padding-top": "54px",
+                    "header-padding-side": "20px",
+                    "form-spacing": "16px"
+            },
+            "fontFamily": {
+                    "sheet-title": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "caption": [
+                            "Inter"
+                    ],
+                    "header-title": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "body-sm": [
+                            "Inter"
+                    ],
+                    "section-label": [
+                            "Inter"
+                    ],
+                    "button-text": [
+                            "Inter"
+                    ],
+                    "body-md": [
+                            "Inter"
+                    ],
+                    "notification-title": [
+                            "Inter"
+                    ]
+            },
+            "fontSize": {
+                    "sheet-title": [
+                            "20px",
+                            {
+                                    "fontWeight": "800"
+                            }
+                    ],
+                    "caption": [
+                            "11px",
+                            {
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "header-title": [
+                            "26px",
+                            {
+                                    "letterSpacing": "-0.8px",
+                                    "fontWeight": "800"
+                            }
+                    ],
+                    "body-sm": [
+                            "13px",
+                            {
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "section-label": [
+                            "10px",
+                            {
+                                    "letterSpacing": "0.8px",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "button-text": [
+                            "13px",
+                            {
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-md": [
+                            "14px",
+                            {
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "notification-title": [
+                            "14px",
+                            {
+                                    "fontWeight": "700"
+                            }
+                    ]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background min-h-screen text-on-background selection:bg-primary-light selection:text-primary">
+<!-- Custom Header for Notifications Page -->
+<header class="bg-gradient-to-r from-header-gradient-start to-header-gradient-end pt-header-padding-top pb-6 px-header-padding-side w-full shadow-[0_4px_14px_rgba(0,0,0,0.06)] rounded-b-xl relative z-10">
+<div class="flex justify-between items-center mb-4 text-on-primary">
+<button aria-label="Go back" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-colors tap-highlight-transparent active:scale-95">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">arrow_back</span>
+</button>
+<button class="font-button-text text-button-text text-primary-fixed hover:opacity-80 transition-opacity tap-highlight-transparent active:scale-95">
+                Segna tutte lette
+            </button>
+</div>
+<div class="flex items-end gap-3">
+<h1 class="font-header-title text-header-title text-on-primary leading-none">Notifiche</h1>
+<div class="bg-primary-light text-primary-container font-button-text text-caption px-2.5 py-1 rounded-full mb-1">
+                3 non lette
+            </div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="py-6 flex flex-col gap-card-gap">
+<!-- Unread Card 1: Shift Assigned -->
+<article class="bg-unread-surface mx-container-side rounded-xl p-4 flex gap-4 items-start shadow-[0_4px_14px_rgba(0,0,0,0.06)] relative border border-primary-light/50 tap-highlight-transparent active:scale-[0.98] transition-transform cursor-pointer">
+<div class="absolute top-4 right-4 w-2 h-2 bg-primary rounded-full"></div>
+<div class="flex-shrink-0 w-10 h-10 bg-primary-light rounded-full flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined">calendar_month</span>
+</div>
+<div class="flex flex-col gap-1 pr-6 w-full">
+<h2 class="font-notification-title text-notification-title text-on-surface">Turno assegnato</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Ti è stato assegnato un nuovo turno. Domenica 11 mag, 09:00-17:00.</p>
+<span class="font-caption text-caption text-outline mt-1">2 ore fa</span>
+</div>
+</article>
+<!-- Unread Card 2: Vacation Approved -->
+<article class="bg-unread-surface mx-container-side rounded-xl p-4 flex gap-4 items-start shadow-[0_4px_14px_rgba(0,0,0,0.06)] relative border border-primary-light/50 tap-highlight-transparent active:scale-[0.98] transition-transform cursor-pointer">
+<div class="absolute top-4 right-4 w-2 h-2 bg-primary rounded-full"></div>
+<div class="flex-shrink-0 w-10 h-10 bg-success-light rounded-full flex items-center justify-center text-success-text">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+<div class="flex flex-col gap-1 pr-6 w-full">
+<h2 class="font-notification-title text-notification-title text-on-surface">Ferie approvate</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">La tua richiesta di ferie per il 15-20 Agosto è stata approvata.</p>
+<span class="font-caption text-caption text-outline mt-1">Ieri</span>
+</div>
+</article>
+<!-- Unread Card 3: Vacation Rejected -->
+<article class="bg-unread-surface mx-container-side rounded-xl p-4 flex gap-4 items-start shadow-[0_4px_14px_rgba(0,0,0,0.06)] relative border border-primary-light/50 tap-highlight-transparent active:scale-[0.98] transition-transform cursor-pointer">
+<div class="absolute top-4 right-4 w-2 h-2 bg-primary rounded-full"></div>
+<div class="flex-shrink-0 w-10 h-10 bg-error-light rounded-full flex items-center justify-center text-error-text">
+<span class="material-symbols-outlined">cancel</span>
+</div>
+<div class="flex flex-col gap-1 pr-6 w-full">
+<h2 class="font-notification-title text-notification-title text-on-surface">Ferie rifiutate</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Non è stato possibile approvare le tue ferie. Consulta l'app per i dettagli.</p>
+<span class="font-caption text-caption text-outline mt-1">Ieri</span>
+</div>
+</article>
+<!-- Read Card 4: Shift Swap -->
+<article class="bg-surface mx-container-side rounded-xl p-4 flex gap-4 items-start shadow-[0_4px_14px_rgba(0,0,0,0.06)] border border-surface-variant/50 tap-highlight-transparent active:scale-[0.98] transition-transform cursor-pointer opacity-80 hover:opacity-100">
+<div class="flex-shrink-0 w-10 h-10 bg-secondary-container rounded-full flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined">swap_horiz</span>
+</div>
+<div class="flex flex-col gap-1 pr-2 w-full">
+<h2 class="font-notification-title text-notification-title text-on-surface">Scambio turno</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Marco Rossi ha accettato la tua richiesta di scambio turno.</p>
+<span class="font-caption text-caption text-outline mt-1">3 giorni fa</span>
+</div>
+</article>
+<!-- Read Card 5: Generic Notification -->
+<article class="bg-surface mx-container-side rounded-xl p-4 flex gap-4 items-start shadow-[0_4px_14px_rgba(0,0,0,0.06)] border border-surface-variant/50 tap-highlight-transparent active:scale-[0.98] transition-transform cursor-pointer opacity-80 hover:opacity-100">
+<div class="flex-shrink-0 w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">notifications</span>
+</div>
+<div class="flex flex-col gap-1 pr-2 w-full">
+<h2 class="font-notification-title text-notification-title text-on-surface">Aggiornamento sistema</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">L'app Turnify è stata aggiornata con nuove funzionalità per la gestione dei team.</p>
+<span class="font-caption text-caption text-outline mt-1">1 settimana fa</span>
+</div>
+</article>
+</main>
+</body></html>

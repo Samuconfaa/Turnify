@@ -1,18 +1,4 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!--
-  ╔══════════════════════════════════════════════════════════════╗
-  ║  Turnify — Design System v2  ·  Colors & Base Resources      ║
-  ║                                                              ║
-  ║  FONT SETUP (MauiProgram.cs):                                ║
-  ║    fonts.AddFont("PlusJakartaSans-Regular.ttf",   "PJSReg"); ║
-  ║    fonts.AddFont("PlusJakartaSans-Medium.ttf",    "PJSMed"); ║
-  ║    fonts.AddFont("PlusJakartaSans-SemiBold.ttf",  "PJSSemi");║
-  ║    fonts.AddFont("PlusJakartaSans-Bold.ttf",      "PJSBold");║
-  ║    fonts.AddFont("PlusJakartaSans-ExtraBold.ttf", "PJSXBold")║
-  ║                                                              ║
-  ║  Download: fonts.google.com/specimen/Plus+Jakarta+Sans       ║
-  ╚══════════════════════════════════════════════════════════════╝
--->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
@@ -30,52 +16,79 @@
     <Color x:Key="Magenta">#D600AA</Color>
     <Color x:Key="MidnightBlue">#190649</Color>
     <Color x:Key="OffBlack">#1F1F1F</Color>
-    <Color x:Key="PrimaryDark">#2348C0</Color>
-    <Color x:Key="PrimaryDarkText">#C5CEF8</Color>
-    <Color x:Key="Secondary">#5B8DEF</Color>
+    <Color x:Key="PrimaryDark">#005137</Color>
+    <Color x:Key="PrimaryDarkText">#68DBA9</Color>
+    <Color x:Key="Secondary">#006A63</Color>
 
-    <!-- ── Core palette ──────────────────────────────────────── -->
-    <Color x:Key="Navy">#0F1629</Color>
-    <Color x:Key="Primary">#3B5BDB</Color>
-    <Color x:Key="PrimaryLight">#EEF1FE</Color>
-    <Color x:Key="PrimaryMid">#C5CEF8</Color>
+    <!-- ── Tropic Burst — Core palette ──────────────────────── -->
+    <Color x:Key="Navy">#064E3B</Color>
+    <Color x:Key="Primary">#006948</Color>
+    <Color x:Key="PrimaryLight">#D1FAE5</Color>
+    <Color x:Key="PrimaryMid">#00855D</Color>
 
-    <Color x:Key="Success">#0D7A4E</Color>
-    <Color x:Key="SuccessLight">#E6F7EF</Color>
-    <Color x:Key="SuccessText">#065F38</Color>
+    <!-- Header gradient endpoints -->
+    <Color x:Key="HeaderGradientStart">#064E3B</Color>
+    <Color x:Key="HeaderGradientEnd">#115E59</Color>
+
+    <!-- MD3 surface scale -->
+    <Color x:Key="Background">#F5FBF5</Color>
+    <Color x:Key="Surface">#FFFFFF</Color>
+    <Color x:Key="SurfaceContainerLowest">#FFFFFF</Color>
+    <Color x:Key="SurfaceContainerLow">#EFF5EF</Color>
+    <Color x:Key="SurfaceContainerHigh">#E4EAE4</Color>
+    <Color x:Key="SurfaceContainer">#E9EFE9</Color>
+    <Color x:Key="SurfaceVariant">#DEE4DE</Color>
+
+    <!-- Text -->
+    <Color x:Key="OnBackground">#171D19</Color>
+    <Color x:Key="OnSurfaceVariant">#3D4A42</Color>
+    <Color x:Key="Outline">#6D7A72</Color>
+    <Color x:Key="OutlineVariant">#BCCAC0</Color>
+
+    <!-- Primary container -->
+    <Color x:Key="PrimaryContainer">#00855D</Color>
+    <Color x:Key="OnPrimaryContainer">#F5FFF7</Color>
+    <Color x:Key="InversePrimary">#68DBA9</Color>
+    <Color x:Key="PrimaryFixed">#85F8C4</Color>
+    <Color x:Key="PrimaryFixedDim">#68DBA9</Color>
+
+    <!-- Secondary / teal -->
+    <Color x:Key="SecondaryContainer">#99EFE5</Color>
+    <Color x:Key="OnSecondaryContainer">#006F67</Color>
+
+    <!-- Tertiary / coral -->
+    <Color x:Key="Tertiary">#9B3E3B</Color>
+    <Color x:Key="TertiaryContainer">#BA5551</Color>
+    <Color x:Key="OnTertiaryContainer">#FFFBFF</Color>
+
+    <!-- Semantic states -->
+    <Color x:Key="Success">#006948</Color>
+    <Color x:Key="SuccessLight">#D1FAE5</Color>
+    <Color x:Key="SuccessText">#005137</Color>
 
     <Color x:Key="Warning">#B45309</Color>
     <Color x:Key="WarningLight">#FEF3C7</Color>
     <Color x:Key="WarningText">#92400E</Color>
 
-    <Color x:Key="Error">#C42B1C</Color>
-    <Color x:Key="ErrorLight">#FDECEA</Color>
-    <Color x:Key="ErrorText">#9B1E12</Color>
+    <Color x:Key="Error">#BA1A1A</Color>
+    <Color x:Key="ErrorLight">#FFDAD6</Color>
+    <Color x:Key="ErrorText">#93000A</Color>
 
-    <Color x:Key="Purple">#6D4ADB</Color>
-    <Color x:Key="PurpleLight">#F0EDFF</Color>
+    <!-- KPI card solid colors -->
+    <Color x:Key="KpiAmber">#F59E0B</Color>
+    <Color x:Key="KpiBlue">#0284C7</Color>
 
-    <!-- ── Neutral surfaces ───────────────────────────────────── -->
-    <Color x:Key="Background">#EDEAE5</Color>
-    <Color x:Key="Surface">#FFFFFF</Color>
-    <Color x:Key="SurfaceContainerLow">#F5F3EE</Color>
-    <Color x:Key="SurfaceContainerHigh">#EDEAE5</Color>
-
-    <!-- ── Text ───────────────────────────────────────────────── -->
-    <Color x:Key="OnBackground">#0F1629</Color>
-    <Color x:Key="OnSurfaceVariant">#5C6275</Color>
-    <Color x:Key="Outline">#9BA3B5</Color>
-    <Color x:Key="OutlineVariant">#E3E1DB</Color>
-
-    <!-- ── Legacy aliases (backward compat) ──────────────────── -->
+    <!-- Legacy aliases kept for backward compat -->
+    <Color x:Key="Purple">#006A63</Color>
+    <Color x:Key="PurpleLight">#99EFE5</Color>
     <Color x:Key="OnPrimary">White</Color>
-    <Color x:Key="PrimaryContainer">#EEF1FE</Color>
-    <Color x:Key="PrimaryFixed">#EEF1FE</Color>
-    <Color x:Key="SecondaryContainer">#EEF1FE</Color>
-    <Color x:Key="OnSecondaryContainer">#3B5BDB</Color>
-    <Color x:Key="ErrorContainer">#FDECEA</Color>
-    <Color x:Key="OnErrorContainer">#9B1E12</Color>
-    <Color x:Key="SuccessContainer">#E6F7EF</Color>
+    <Color x:Key="PrimaryContainer2">#EEF1FE</Color>
+    <Color x:Key="PrimaryFixed2">#EEF1FE</Color>
+    <Color x:Key="SecondaryContainer2">#EEF1FE</Color>
+    <Color x:Key="OnSecondaryContainer2">#006948</Color>
+    <Color x:Key="ErrorContainer">#FFDAD6</Color>
+    <Color x:Key="OnErrorContainer">#93000A</Color>
+    <Color x:Key="SuccessContainer">#D1FAE5</Color>
 
     <!-- ── Global styles ─────────────────────────────────────── -->
     <Style TargetType="ContentPage" ApplyToDerivedTypes="True">
@@ -84,7 +97,7 @@
 
     <Style x:Key="FieldBorder" TargetType="Border">
         <Setter Property="BackgroundColor" Value="{StaticResource SurfaceContainerLow}"/>
-        <Setter Property="Stroke" Value="{StaticResource OutlineVariant}"/>
+        <Setter Property="Stroke" Value="#A7F3D0"/>
         <Setter Property="StrokeThickness" Value="1.5"/>
         <Setter Property="StrokeShape" Value="RoundRectangle 13"/>
     </Style>
@@ -97,7 +110,7 @@
     </Style>
 
     <Style x:Key="PrimaryButton" TargetType="Button">
-        <Setter Property="BackgroundColor" Value="{StaticResource Navy}"/>
+        <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
         <Setter Property="TextColor" Value="White"/>
         <Setter Property="CornerRadius" Value="14"/>
         <Setter Property="HeightRequest" Value="52"/>
@@ -108,9 +121,9 @@
 
     <Style x:Key="OutlineButton" TargetType="Button">
         <Setter Property="BackgroundColor" Value="Transparent"/>
-        <Setter Property="BorderColor" Value="{StaticResource OutlineVariant}"/>
+        <Setter Property="BorderColor" Value="{StaticResource Primary}"/>
         <Setter Property="BorderWidth" Value="1.5"/>
-        <Setter Property="TextColor" Value="{StaticResource OnBackground}"/>
+        <Setter Property="TextColor" Value="{StaticResource Primary}"/>
         <Setter Property="CornerRadius" Value="14"/>
         <Setter Property="HeightRequest" Value="52"/>
         <Setter Property="FontSize" Value="15"/>
@@ -142,13 +155,13 @@
     <Style x:Key="SectionLabel" TargetType="Label">
         <Setter Property="FontSize" Value="10"/>
         <Setter Property="FontAttributes" Value="Bold"/>
-        <Setter Property="TextColor" Value="{StaticResource Outline}"/>
-        <Setter Property="CharacterSpacing" Value="1.1"/>
+        <Setter Property="TextColor" Value="{StaticResource Primary}"/>
+        <Setter Property="CharacterSpacing" Value="1.2"/>
         <Setter Property="FontFamily" Value="PJSBold"/>
     </Style>
 
     <Style x:Key="HeadingLabel" TargetType="Label">
-        <Setter Property="FontSize" Value="24"/>
+        <Setter Property="FontSize" Value="26"/>
         <Setter Property="FontAttributes" Value="Bold"/>
         <Setter Property="TextColor" Value="{StaticResource OnBackground}"/>
         <Setter Property="CharacterSpacing" Value="-0.5"/>

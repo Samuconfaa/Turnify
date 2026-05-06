@@ -2,6 +2,40 @@
 
 ---
 
+## Prompt 47
+
+### Data
+2026-05-06
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Sostituire il toggle Admin/Dipendente in `LoginPage` con una nuova pagina di selezione ruolo (`RoleSelectionPage`) che diventa il punto d'ingresso dell'app.
+
+### Prompt
+> Creare `RoleSelectionPage.xaml` + `RoleSelectionViewModel.cs` + `RoleSelectionPage.xaml.cs` (Opzione A) come prima schermata dell'app. La pagina mostra due card cliccabili (Admin/Manager con icona 💼 e sfondo `PrimaryContainer`; Dipendente con icona 👤 e sfondo `SecondaryContainer`), ciascuna con titolo, descrizione e freccia, che navigano via `Shell.GoToAsync($"LoginPage?isEmployee=false|true")`. Rimuovere il toggle da `LoginPage.xaml` (linee 70-130 con DataTrigger). `LoginViewModel` implementa `IQueryAttributable` per ricevere il parametro `isEmployee`; aggiungere `LoginTitle` calcolato e `GoBackCommand`. `LoginPage.xaml.cs` implementa `IQueryAttributable` e delega al ViewModel. `AppShell.xaml`: primo `ShellItem` diventa `Route="RoleSelection"` con `RoleSelectionPage`. `AppShell.xaml.cs`: aggiornare switch aggiungendo `case "Login"` per navigazione diretta; default `"RoleSelection"` è no-op. `App.xaml.cs`: `startRoute` default da `"Login"` a `"RoleSelection"`. `MauiProgram.cs`: registrare `RoleSelectionViewModel` e `RoleSelectionPage`.
+
+### Output utile
+- `RoleSelectionViewModel.cs` (nuovo): `GoToAdminLoginCommand`, `GoToEmployeeLoginCommand`, `GoToRegisterCommand`
+- `RoleSelectionPage.xaml` (nuovo): hero gradient identico a `LoginPage`, due card ruolo, divider oppure, pulsante registra
+- `RoleSelectionPage.xaml.cs` (nuovo): code-behind minimo
+- `LoginViewModel.cs`: rimossi `SelectAdminModeCommand`/`SelectEmployeeModeCommand`; aggiunti `IQueryAttributable.ApplyQueryAttributes`, `LoginTitle`, `GoBackCommand`
+- `LoginPage.xaml`: rimosso toggle (61 righe); aggiunto back button "‹ Cambia ruolo"; titolo dinamico da `LoginTitle`
+- `LoginPage.xaml.cs`: implementa `IQueryAttributable`, delega al ViewModel
+- `AppShell.xaml`: `ShellItem Route="RoleSelection"` con `RoleSelectionPage`
+- `AppShell.xaml.cs`: `case "Login"` + `default "RoleSelection"`; `RegisterRoute` per `RoleSelectionPage`
+- `App.xaml.cs`: `startRoute: "RoleSelection"`
+- `MauiProgram.cs`: `RoleSelectionViewModel` e `RoleSelectionPage` registrati
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Seguita architettura XMAUI: zero logica nel code-behind (solo forward a VM), `IQueryAttributable` implementata nella page e delegata al ViewModel, nessun DataTrigger per il toggle rimosso.
+
+---
+
 ## Prompt 46
 
 ### Data

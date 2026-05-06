@@ -10,7 +10,7 @@ public partial class AppShell : Shell
     /// <summary>
     /// startRoute: "GdprFirst" | "Login" | "Onboarding" | "Main"
     /// </summary>
-    public AppShell(bool isAdmin = false, string startRoute = "Login")
+    public AppShell(bool isAdmin = false, string startRoute = "RoleSelection")
     {
         InitializeComponent();
         RegisterAllRoutes();
@@ -37,8 +37,11 @@ public partial class AppShell : Shell
                 case "Main":
                     await Shell.Current.GoToAsync(isAdmin ? "//Dashboard" : "//EmployeeDashboard");
                     break;
-                default: // "Login"
-                    // La LoginPage è già la prima tab/route dello shell
+                case "Login":
+                    await Shell.Current.GoToAsync(nameof(Views.LoginPage));
+                    break;
+                default: // "RoleSelection"
+                    // RoleSelectionPage è già la prima ShellItem — nessuna navigazione necessaria
                     break;
             }
         });
@@ -47,6 +50,7 @@ public partial class AppShell : Shell
     private void RegisterAllRoutes()
     {
         // Auth
+        Routing.RegisterRoute(nameof(Views.RoleSelectionPage),   typeof(Views.RoleSelectionPage));
         Routing.RegisterRoute(nameof(Views.LoginPage),           typeof(Views.LoginPage));
         Routing.RegisterRoute(nameof(Views.RegisterPage),        typeof(Views.RegisterPage));
         Routing.RegisterRoute(nameof(Views.ForgotPasswordPage),  typeof(Views.ForgotPasswordPage));

@@ -56,6 +56,7 @@ public static class MauiProgram
         .AddHttpMessageHandler<AuthDelegatingHandler>();
 
         // ── ViewModels ──────────────────────────────────────────────
+        builder.Services.AddTransient<RoleSelectionViewModel>();
         builder.Services.AddTransient<LoginViewModel>();
         builder.Services.AddTransient<RegisterViewModel>();
         builder.Services.AddTransient<DashboardViewModel>();
@@ -84,6 +85,7 @@ public static class MauiProgram
         builder.Services.AddTransient<ShiftSwapRequestViewModel>();
 
         // ── Views ───────────────────────────────────────────────────
+        builder.Services.AddTransient<RoleSelectionPage>();
         builder.Services.AddTransient<LoginPage>();
         builder.Services.AddTransient<RegisterPage>();
         builder.Services.AddTransient<DashboardPage>();

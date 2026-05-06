@@ -6,8 +6,8 @@
     xmlns:views="clr-namespace:Turnify.Mobile.Views"
     Title="Turnify">
 
-    <ShellItem Route="Login" FlyoutItemIsVisible="False">
-        <ShellContent ContentTemplate="{DataTemplate views:LoginPage}" />
+    <ShellItem Route="RoleSelection" FlyoutItemIsVisible="False">
+        <ShellContent ContentTemplate="{DataTemplate views:RoleSelectionPage}" />
     </ShellItem>
 
     <TabBar Route="Main" x:Name="MainTabBar">

@@ -294,7 +294,6 @@ namespace Turnify.Infrastructure.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("FirstName")
@@ -340,7 +339,8 @@ namespace Turnify.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.HasIndex("CompanyId", "Email")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("`Email` IS NOT NULL AND `Email` != ''");
 
                     b.ToTable("Employees");
                 });

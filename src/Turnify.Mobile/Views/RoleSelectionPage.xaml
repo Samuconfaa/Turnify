@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
+             x:Class="Turnify.Mobile.Views.RoleSelectionPage"
+             x:DataType="vm:RoleSelectionViewModel"
+             Title="{Binding Title}"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{StaticResource HeaderGradientStart}">
+
+    <Grid RowDefinitions="220,*">
+
+        <!-- ── Hero ──────────────────────────────────────────── -->
+        <Grid Grid.Row="0">
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="{StaticResource HeaderGradientStart}" Offset="0"/>
+                    <GradientStop Color="{StaticResource Primary}" Offset="1"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+            <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center"
+                                 Spacing="8" Margin="0,0,0,16">
+                <Border BackgroundColor="#FFFFFF1A"
+                        Stroke="#FFFFFF22" StrokeThickness="1.5"
+                        HeightRequest="68" WidthRequest="68"
+                        HorizontalOptions="Center">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow Brush="#000000" Offset="0,4" Radius="16" Opacity="0.3"/>
+                    </Border.Shadow>
+                    <Label Text="T" FontSize="30" FontAttributes="Bold" FontFamily="PJSXBold"
+                           TextColor="White" HorizontalOptions="Center" VerticalOptions="Center"/>
+                </Border>
+                <Label Text="Turnify" FontSize="28" FontAttributes="Bold" FontFamily="PJSXBold"
+                       TextColor="White" HorizontalOptions="Center" CharacterSpacing="-0.8"/>
+                <Label Text="Gestisci il tuo team, ovunque" FontSize="14" FontFamily="PJSReg"
+                       TextColor="#FFFFFF70" HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+        </Grid>
+
+        <!-- ── Bottom sheet ───────────────────────────────────── -->
+        <Border Grid.Row="1" BackgroundColor="{StaticResource Surface}"
+                Stroke="Transparent" Margin="0,-28,0,0">
+            <Border.StrokeShape><RoundRectangle CornerRadius="28,28,0,0"/></Border.StrokeShape>
+            <Border.Shadow>
+                <Shadow Brush="#000000" Offset="0,-4" Radius="24" Opacity="0.10"/>
+            </Border.Shadow>
+
+            <ScrollView>
+                <VerticalStackLayout Spacing="16" Padding="24,32,24,48">
+
+                    <!-- Drag handle -->
+                    <BoxView HeightRequest="5" WidthRequest="44" CornerRadius="3"
+                             BackgroundColor="{StaticResource SurfaceVariant}"
+                             HorizontalOptions="Center" Margin="0,-16,0,0"/>
+
+                    <Label Text="Benvenuto" FontSize="22" FontAttributes="Bold" FontFamily="PJSXBold"
+                           TextColor="{StaticResource OnBackground}" CharacterSpacing="-0.5"
+                           HorizontalOptions="Center"/>
+                    <Label Text="Come vuoi accedere?" FontSize="14" FontFamily="PJSReg"
+                           TextColor="{StaticResource Outline}" HorizontalOptions="Center"
+                           Margin="0,-8,0,4"/>
+
+                    <!-- Card Admin -->
+                    <Border BackgroundColor="{StaticResource SurfaceContainer}"
+                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                            Padding="18,16">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding GoToAdminLoginCommand}"/>
+                        </Border.GestureRecognizers>
+                        <Grid ColumnDefinitions="56,*,28" ColumnSpacing="14" VerticalOptions="Center">
+                            <Border Grid.Column="0" BackgroundColor="{StaticResource PrimaryContainer}"
+                                    Stroke="Transparent" WidthRequest="48" HeightRequest="48"
+                                    HorizontalOptions="Start" VerticalOptions="Center">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                                <Label Text="💼" FontSize="22"
+                                       HorizontalOptions="Center" VerticalOptions="Center"/>
+                            </Border>
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="3">
+                                <Label Text="Admin / Manager" FontSize="15" FontAttributes="Bold"
+                                       FontFamily="PJSBold" TextColor="{StaticResource OnBackground}"/>
+                                <Label Text="Gestisci dipendenti, turni e ferie"
+                                       FontSize="13" FontFamily="PJSReg"
+                                       TextColor="{StaticResource Outline}"/>
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2" Text="›" FontSize="22" FontFamily="PJSBold"
+                                   TextColor="{StaticResource Primary}"
+                                   HorizontalOptions="End" VerticalOptions="Center"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Card Dipendente -->
+                    <Border BackgroundColor="{StaticResource SurfaceContainer}"
+                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                            Padding="18,16">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding GoToEmployeeLoginCommand}"/>
+                        </Border.GestureRecognizers>
+                        <Grid ColumnDefinitions="56,*,28" ColumnSpacing="14" VerticalOptions="Center">
+                            <Border Grid.Column="0" BackgroundColor="{StaticResource SecondaryContainer}"
+                                    Stroke="Transparent" WidthRequest="48" HeightRequest="48"
+                                    HorizontalOptions="Start" VerticalOptions="Center">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                                <Label Text="👤" FontSize="22"
+                                       HorizontalOptions="Center" VerticalOptions="Center"/>
+                            </Border>
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="3">
+                                <Label Text="Dipendente" FontSize="15" FontAttributes="Bold"
+                                       FontFamily="PJSBold" TextColor="{StaticResource OnBackground}"/>
+                                <Label Text="Visualizza turni, ferie e presenze"
+                                       FontSize="13" FontFamily="PJSReg"
+                                       TextColor="{StaticResource Outline}"/>
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2" Text="›" FontSize="22" FontFamily="PJSBold"
+                                   TextColor="{StaticResource Primary}"
+                                   HorizontalOptions="End" VerticalOptions="Center"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Divider -->
+                    <Grid ColumnDefinitions="*,Auto,*" ColumnSpacing="12" Margin="0,4,0,0">
+                        <BoxView Grid.Column="0" HeightRequest="1"
+                                 BackgroundColor="{StaticResource OutlineVariant}" VerticalOptions="Center"/>
+                        <Label Grid.Column="1" Text="oppure" FontSize="12" FontFamily="PJSReg"
+                               TextColor="{StaticResource Outline}"/>
+                        <BoxView Grid.Column="2" HeightRequest="1"
+                                 BackgroundColor="{StaticResource OutlineVariant}" VerticalOptions="Center"/>
+                    </Grid>
+
+                    <Button Text="Registra la tua azienda" Command="{Binding GoToRegisterCommand}"
+                            Style="{StaticResource OutlineButton}"/>
+
+                    <Label FontSize="11" FontFamily="PJSReg" TextColor="{StaticResource Outline}"
+                           HorizontalOptions="Center" HorizontalTextAlignment="Center">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Accedendo, accetti i nostri "/>
+                                <Span Text="Termini di Servizio"
+                                      TextColor="{StaticResource Primary}" FontAttributes="Bold"/>
+                                <Span Text=" e la "/>
+                                <Span Text="Privacy Policy"
+                                      TextColor="{StaticResource Primary}" FontAttributes="Bold"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+
+                </VerticalStackLayout>
+            </ScrollView>
+        </Border>
+
+    </Grid>
+</ContentPage>

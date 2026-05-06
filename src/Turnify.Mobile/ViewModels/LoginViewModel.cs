@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
@@ -11,7 +12,7 @@ using Turnify.Mobile.Services;
 
 namespace Turnify.Mobile.ViewModels;
 
-public partial class LoginViewModel : BaseViewModel
+public partial class LoginViewModel : BaseViewModel, IQueryAttributable
 {
     private readonly IAuthService _authService;
     private readonly IAppNavigationService _appNavigation;
@@ -19,9 +20,11 @@ public partial class LoginViewModel : BaseViewModel
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
     [NotifyPropertyChangedFor(nameof(IsAdminMode))]
+    [NotifyPropertyChangedFor(nameof(LoginTitle))]
     private bool _isEmployeeMode;
 
-    public bool IsAdminMode => !IsEmployeeMode;
+    public bool IsAdminMode  => !IsEmployeeMode;
+    public string LoginTitle => IsEmployeeMode ? "Accedi come Dipendente" : "Accedi come Admin";
 
     // Campi admin
     [ObservableProperty]
@@ -52,6 +55,16 @@ public partial class LoginViewModel : BaseViewModel
         _authService   = authService;
         _appNavigation = appNavigation;
         Title          = "Login";
+    }
+
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        if (query.TryGetValue("isEmployee", out var val))
+            IsEmployeeMode = val?.ToString()?.ToLower() == "true";
+
+        // Reset stato al ritorno sulla pagina
+        ErrorMessage = string.Empty;
+        Password     = string.Empty;
     }
 
     private bool CanLogin()
@@ -94,19 +107,16 @@ public partial class LoginViewModel : BaseViewModel
 
             bool isAdmin = ExtractIsAdminFromToken(result.Value.AccessToken);
 
-            // Salva ruolo e flag sessione per il prossimo avvio
             await SecureStorage.Default.SetAsync("user_role", isAdmin ? "Admin" : "Employee");
-            Preferences.Default.Set("user_role_cached",   isAdmin ? "Admin" : "Employee");
-            Preferences.Default.Set("has_valid_session",  true);
+            Preferences.Default.Set("user_role_cached",  isAdmin ? "Admin" : "Employee");
+            Preferences.Default.Set("has_valid_session", true);
 
-            // Admin al primo accesso → mostra onboarding wizard
             if (isAdmin && OnboardingViewModel.NeedsOnboarding())
             {
                 await _appNavigation.NavigateToShellAsync(isAdmin: true, startRoute: "Onboarding");
                 return;
             }
 
-            // Accesso normale
             await _appNavigation.NavigateToShellAsync(isAdmin, startRoute: "Main");
         }
         catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
@@ -145,10 +155,8 @@ public partial class LoginViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private void SelectAdminMode() => IsEmployeeMode = false;
-
-    [RelayCommand]
-    private void SelectEmployeeMode() => IsEmployeeMode = true;
+    private async Task GoBackAsync()
+        => await Shell.Current.GoToAsync("..");
 
     [RelayCommand]
     private async Task GoToRegisterAsync()

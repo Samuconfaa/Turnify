@@ -1,7 +1,7 @@
 <Solution>
-  <Project Path="Turnify.Api/Turnify.Api.csproj" />
-  <Project Path="Turnify.Core/Turnify.Core.csproj" />
-  <Project Path="Turnify.Infrastructure/Turnify.Infrastructure.csproj" />
   <Project Path="Turnify.Mobile/Turnify.Mobile.csproj" />
   <Project Path="Turnify.Tests/Turnify.Tests.csproj" />
+  <Project Path="Api/Turnify.Api/Turnify.Api.csproj" />
+  <Project Path="Api/Turnify.Core/Turnify.Core.csproj" />
+  <Project Path="Api/Turnify.Infrastructure/Turnify.Infrastructure.csproj" />
 </Solution>

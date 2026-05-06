@@ -26,7 +26,7 @@ public partial class App : Application
         // Parte sempre con Login, poi verifica la sessione in background.
         // Se la sessione è valida, IAppNavigationService naviga a Main senza che
         // l'utente debba reinserire le credenziali.
-        var shell = new AppShell(isAdmin: false, startRoute: "Login");
+        var shell = new AppShell(isAdmin: false, startRoute: "RoleSelection");
 
         shell.Dispatcher.Dispatch(async () =>
         {

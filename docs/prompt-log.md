@@ -2,6 +2,93 @@
 
 ---
 
+## Prompt 47
+
+### Data
+2026-05-06
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Sostituire il toggle Admin/Dipendente in `LoginPage` con una nuova pagina di selezione ruolo (`RoleSelectionPage`) che diventa il punto d'ingresso dell'app.
+
+### Prompt
+> Creare `RoleSelectionPage.xaml` + `RoleSelectionViewModel.cs` + `RoleSelectionPage.xaml.cs` (Opzione A) come prima schermata dell'app. La pagina mostra due card cliccabili (Admin/Manager con icona 💼 e sfondo `PrimaryContainer`; Dipendente con icona 👤 e sfondo `SecondaryContainer`), ciascuna con titolo, descrizione e freccia, che navigano via `Shell.GoToAsync($"LoginPage?isEmployee=false|true")`. Rimuovere il toggle da `LoginPage.xaml` (linee 70-130 con DataTrigger). `LoginViewModel` implementa `IQueryAttributable` per ricevere il parametro `isEmployee`; aggiungere `LoginTitle` calcolato e `GoBackCommand`. `LoginPage.xaml.cs` implementa `IQueryAttributable` e delega al ViewModel. `AppShell.xaml`: primo `ShellItem` diventa `Route="RoleSelection"` con `RoleSelectionPage`. `AppShell.xaml.cs`: aggiornare switch aggiungendo `case "Login"` per navigazione diretta; default `"RoleSelection"` è no-op. `App.xaml.cs`: `startRoute` default da `"Login"` a `"RoleSelection"`. `MauiProgram.cs`: registrare `RoleSelectionViewModel` e `RoleSelectionPage`.
+
+### Output utile
+- `RoleSelectionViewModel.cs` (nuovo): `GoToAdminLoginCommand`, `GoToEmployeeLoginCommand`, `GoToRegisterCommand`
+- `RoleSelectionPage.xaml` (nuovo): hero gradient identico a `LoginPage`, due card ruolo, divider oppure, pulsante registra
+- `RoleSelectionPage.xaml.cs` (nuovo): code-behind minimo
+- `LoginViewModel.cs`: rimossi `SelectAdminModeCommand`/`SelectEmployeeModeCommand`; aggiunti `IQueryAttributable.ApplyQueryAttributes`, `LoginTitle`, `GoBackCommand`
+- `LoginPage.xaml`: rimosso toggle (61 righe); aggiunto back button "‹ Cambia ruolo"; titolo dinamico da `LoginTitle`
+- `LoginPage.xaml.cs`: implementa `IQueryAttributable`, delega al ViewModel
+- `AppShell.xaml`: `ShellItem Route="RoleSelection"` con `RoleSelectionPage`
+- `AppShell.xaml.cs`: `case "Login"` + `default "RoleSelection"`; `RegisterRoute` per `RoleSelectionPage`
+- `App.xaml.cs`: `startRoute: "RoleSelection"`
+- `MauiProgram.cs`: `RoleSelectionViewModel` e `RoleSelectionPage` registrati
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Seguita architettura XMAUI: zero logica nel code-behind (solo forward a VM), `IQueryAttributable` implementata nella page e delegata al ViewModel, nessun DataTrigger per il toggle rimosso.
+
+---
+
+## Prompt 46
+
+### Data
+2026-05-06
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Bugfix: creazione dipendente restituisce errore ma utente viene salvato nel DB; dipendente loggato riceve "errore di connessione al server" su ogni endpoint.
+
+### Prompt
+> In `EmployeesController.CreateEmployee`, `Employee.Email` viene assegnato come `string.Empty` quando non fornito. L'indice unico `(CompanyId, Email)` su `Employees` senza filtro causa `duplicate key` MySQL al secondo dipendente senza email. `UserRepository.AddAsync` viene chiamato prima e fa `SaveChangesAsync` separato, quindi il `User` viene committato anche se poi `EmployeeRepository.AddAsync` fallisce. Il dipendente con `User` ma senza `Employee` può autenticarsi (JWT valido) ma riceve 404 da `api/dashboard/employee-summary` (che cerca `Employee` per `UserId`); `GetFromJsonAsync` lancia `HttpRequestException` su 404, catturato come "Impossibile connettersi al server". Fix: rendere `Employee.Email` nullable, aggiungere filtro all'indice unico, aggiornare `CreateEmployee` e `UpdateEmployee` ad usare null per email vuota, creare migrazione.
+
+### Output utile
+- `Turnify.Core/Models/Employee.cs`: `Email` cambiato da `string` a `string?`
+- `TurnifyDbContext.cs`: aggiunto `.HasFilter("`Email` IS NOT NULL AND `Email` != ''")` all'indice unico Employee
+- `EmployeesController.cs`: `CreateEmployee` e `UpdateEmployee` usano `string.IsNullOrWhiteSpace ? null : email`
+- `AuthService.cs`: guard null su `adminUser.Email` prima di `ExistsByEmailAsync`
+- `TurnifyDbContextModelSnapshot.cs`: aggiornato `IsRequired` rimosso + filtro indice
+- `20260506000000_FixEmployeeEmailNullable.cs`: nuova migrazione (ALTER COLUMN + DROP INDEX + UPDATE + CREATE UNIQUE INDEX filtrato)
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Build 0 errori 0 warning. Causa confermata da ispezione del codice: unique index senza filtro su colonna non nullable assegnata a stringa vuota per default.
+
+## Prompt 45
+
+### Data
+2026-05-06
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Bugfix: la pagina di registrazione azienda mostra sempre "esiste già un'azienda con quella mail o slug" anche con DB vuoto.
+
+### Prompt
+> In `RegisterViewModel.cs`, il branch `else` di `RegisterAsync` mostra un messaggio hardcoded per qualsiasi risposta non-2xx (400 validazione, 409 conflict, 500 server error). Sostituire il messaggio statico con un parser del body della risposta HTTP: per 409 mostrare messaggio fisso di duplicato, per 400 estrarre i messaggi da `ValidationProblemDetails.errors`, per altri codici estrarre `detail` o `title` da `ProblemDetails`, con fallback sul codice HTTP.
+
+### Output utile
+- `RegisterViewModel.cs`: aggiunto metodo `GetErrorMessageAsync` che parsifica il body della risposta (validazione FluentValidation, ProblemDetails), con gestione specifica per 409 Conflict; rimosso messaggio hardcoded fuorviante
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Il messaggio "esiste già un'azienda" appariva per qualsiasi errore API, inclusi i 400 di validazione (slug con maiuscole, password debole). Il fix permette di vedere l'errore reale.
+
+---
+
 ## Prompt 44
 
 ### Data

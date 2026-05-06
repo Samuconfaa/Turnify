@@ -95,8 +95,11 @@ public class AuthService : IAuthService
         var existingCompany = await _companyRepository.ExistsBySlugAsync(company.Slug, ct);
         if (existingCompany) return false;
 
-        var existingUser = await _userRepository.ExistsByEmailAsync(adminUser.Email, ct);
-        if (existingUser) return false;
+        if (!string.IsNullOrWhiteSpace(adminUser.Email))
+        {
+            var existingUser = await _userRepository.ExistsByEmailAsync(adminUser.Email, ct);
+            if (existingUser) return false;
+        }
 
         company.CreatedAt = DateTime.UtcNow;
         company.UpdatedAt = DateTime.UtcNow;

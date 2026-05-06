@@ -1,37 +1,73 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.InMemory.Infrastructure.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Turnify.Infrastructure.Data;
 
 namespace Turnify.Tests.Integration;
 
 public class TurnifyWebFactory : WebApplicationFactory<Program>
 {
+    // Opzioni pre-costruite con database in-memory univoco per questa factory.
+    // Tutti i DbContext (HTTP requests + seed diretti) usano le stesse opzioni
+    // e quindi lo stesso database in-memory.
+    private readonly DbContextOptions<TurnifyDbContext> _dbOptions =
+        new DbContextOptionsBuilder<TurnifyDbContext>()
+            .UseInMemoryDatabase($"TurnifyTest_{Guid.NewGuid():N}")
+            .Options;
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Testing");
 
         builder.ConfigureServices(services =>
         {
-            // Sostituisce il DbContext reale con uno in-memory
-            var descriptor = services.SingleOrDefault(
-                d => d.ServiceType == typeof(DbContextOptions<TurnifyDbContext>));
-            if (descriptor != null)
-                services.Remove(descriptor);
+            // Rimuove TUTTE le registrazioni EF Core legate a TurnifyDbContext
+            // (incluso il DbContext stesso) per ricominciare da zero.
+            var toRemove = services
+                .Where(d =>
+                    d.ServiceType == typeof(TurnifyDbContext) ||
+                    d.ServiceType == typeof(DbContextOptions<TurnifyDbContext>) ||
+                    d.ServiceType == typeof(DbContextOptions) ||
+                    (d.ServiceType.IsGenericType &&
+                     d.ServiceType.GetGenericTypeDefinition() == typeof(IDbContextOptionsConfiguration<>) &&
+                     d.ServiceType.GenericTypeArguments[0] == typeof(TurnifyDbContext)))
+                .ToList();
 
-            services.AddDbContext<TurnifyDbContext>(options =>
-                options.UseInMemoryDatabase("TurnifyIntegrationTest_" + Guid.NewGuid()));
+            foreach (var d in toRemove)
+                services.Remove(d);
 
-            // Configura JWT per i test
-            services.Configure<Microsoft.Extensions.Options.ConfigureNamedOptions<
-                Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerOptions>>(
-                Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme,
-                _ => { });
+            // Re-registra il DbContext come scoped con le opzioni pre-costruite.
+            // Tutti i scope (HTTP requests e GetDb() nei test) usano le stesse
+            // _dbOptions e quindi lo stesso database in-memory.
+            services.AddScoped<TurnifyDbContext>(_ => new TurnifyDbContext(_dbOptions));
 
-            // Crea il database in-memory
-            using var sp = services.BuildServiceProvider();
+            // Sovrascrive i parametri JWT con il segreto di test, che deve coincidere
+            // con quello usato in IntegrationTestBase.GenerateJwt.
+            services.PostConfigure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer           = true,
+                    ValidIssuer              = "TurnifyTest",
+                    ValidateAudience         = true,
+                    ValidAudience            = "TurnifyTestUsers",
+                    ValidateLifetime         = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey         = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes("SuperSecretKeyForIntegrationTestOnly!123")),
+                    ClockSkew                = TimeSpan.Zero
+                };
+            });
+
+            // Crea il database in-memory (schema) prima dell'esecuzione dei test
+            using var sp    = services.BuildServiceProvider();
             using var scope = sp.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<TurnifyDbContext>();
             db.Database.EnsureCreated();

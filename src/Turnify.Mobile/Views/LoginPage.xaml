@@ -54,9 +54,24 @@
                              BackgroundColor="{StaticResource SurfaceVariant}"
                              HorizontalOptions="Center" Margin="0,-16,0,0"/>
 
-                    <Label Text="Accedi" FontSize="22" FontAttributes="Bold" FontFamily="PJSXBold"
-                           TextColor="{StaticResource OnBackground}" CharacterSpacing="-0.5"
-                           HorizontalOptions="Center"/>
+                    <!-- Back button -->
+                    <Label FontSize="13" FontFamily="PJSSemi"
+                           TextColor="{StaticResource Primary}"
+                           HorizontalOptions="Start" Margin="0,-4,0,0">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="‹ "/>
+                                <Span Text="Cambia ruolo"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                    <Label Text="{Binding LoginTitle}" FontSize="22" FontAttributes="Bold"
+                           FontFamily="PJSXBold" TextColor="{StaticResource OnBackground}"
+                           CharacterSpacing="-0.5" HorizontalOptions="Center" Margin="0,-6,0,0"/>
 
                     <!-- Error banner -->
                     <Border BackgroundColor="{StaticResource ErrorLight}"
@@ -65,68 +80,6 @@
                         <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
                         <Label Text="{Binding ErrorMessage}" FontSize="13" FontFamily="PJSSemi"
                                TextColor="{StaticResource ErrorText}"/>
-                    </Border>
-
-                    <!-- Mode toggle -->
-                    <Border BackgroundColor="{StaticResource SurfaceContainer}"
-                            Stroke="Transparent" Padding="4">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="99"/></Border.StrokeShape>
-                        <Grid ColumnDefinitions="*,*" ColumnSpacing="0">
-                            <Border Grid.Column="0" BackgroundColor="Transparent"
-                                    Stroke="Transparent" Padding="0,12">
-                                <Border.StrokeShape><RoundRectangle CornerRadius="99"/></Border.StrokeShape>
-                                <Border.Triggers>
-                                    <DataTrigger TargetType="Border" Binding="{Binding IsAdminMode}" Value="True">
-                                        <Setter Property="BackgroundColor" Value="{StaticResource Surface}"/>
-                                    </DataTrigger>
-                                    <DataTrigger TargetType="Border" Binding="{Binding IsAdminMode}" Value="False">
-                                        <Setter Property="BackgroundColor" Value="Transparent"/>
-                                    </DataTrigger>
-                                </Border.Triggers>
-                                <Border.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding SelectAdminModeCommand}"/>
-                                </Border.GestureRecognizers>
-                                <Label Text="Admin / Manager" FontSize="13" FontAttributes="Bold"
-                                       FontFamily="PJSBold" HorizontalOptions="Center"
-                                       TextColor="{StaticResource OnSurfaceVariant}">
-                                    <Label.Triggers>
-                                        <DataTrigger TargetType="Label" Binding="{Binding IsAdminMode}" Value="True">
-                                            <Setter Property="TextColor" Value="{StaticResource Primary}"/>
-                                        </DataTrigger>
-                                        <DataTrigger TargetType="Label" Binding="{Binding IsAdminMode}" Value="False">
-                                            <Setter Property="TextColor" Value="{StaticResource OnSurfaceVariant}"/>
-                                        </DataTrigger>
-                                    </Label.Triggers>
-                                </Label>
-                            </Border>
-                            <Border Grid.Column="1" BackgroundColor="Transparent"
-                                    Stroke="Transparent" Padding="0,12">
-                                <Border.StrokeShape><RoundRectangle CornerRadius="99"/></Border.StrokeShape>
-                                <Border.Triggers>
-                                    <DataTrigger TargetType="Border" Binding="{Binding IsEmployeeMode}" Value="True">
-                                        <Setter Property="BackgroundColor" Value="{StaticResource Surface}"/>
-                                    </DataTrigger>
-                                    <DataTrigger TargetType="Border" Binding="{Binding IsEmployeeMode}" Value="False">
-                                        <Setter Property="BackgroundColor" Value="Transparent"/>
-                                    </DataTrigger>
-                                </Border.Triggers>
-                                <Border.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding SelectEmployeeModeCommand}"/>
-                                </Border.GestureRecognizers>
-                                <Label Text="Dipendente" FontSize="13" FontAttributes="Bold"
-                                       FontFamily="PJSBold" HorizontalOptions="Center"
-                                       TextColor="{StaticResource OnSurfaceVariant}">
-                                    <Label.Triggers>
-                                        <DataTrigger TargetType="Label" Binding="{Binding IsEmployeeMode}" Value="True">
-                                            <Setter Property="TextColor" Value="{StaticResource Primary}"/>
-                                        </DataTrigger>
-                                        <DataTrigger TargetType="Label" Binding="{Binding IsEmployeeMode}" Value="False">
-                                            <Setter Property="TextColor" Value="{StaticResource OnSurfaceVariant}"/>
-                                        </DataTrigger>
-                                    </Label.Triggers>
-                                </Label>
-                            </Border>
-                        </Grid>
                     </Border>
 
                     <!-- Admin fields -->

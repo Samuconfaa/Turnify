@@ -75,7 +75,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Turnify.Core\Turnify.Core.csproj" />
+	  <ProjectReference Include="..\Api\Turnify.Core\Turnify.Core.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -152,7 +152,7 @@ public class EmployeesController : ControllerBase
             UserId       = createdUser.Id,
             FirstName    = request.FirstName,
             LastName     = request.LastName,
-            Email        = request.Email ?? string.Empty,
+            Email        = string.IsNullOrWhiteSpace(request.Email) ? null : request.Email,
             Phone        = request.Phone ?? string.Empty,
             Role         = request.Role ?? string.Empty,
             ContractType = contractType,
@@ -201,7 +201,7 @@ public class EmployeesController : ControllerBase
 
         employee.FirstName    = request.FirstName;
         employee.LastName     = request.LastName;
-        employee.Email        = request.Email ?? string.Empty;
+        employee.Email        = string.IsNullOrWhiteSpace(request.Email) ? null : request.Email;
         employee.Phone        = request.Phone;
         employee.Role         = request.Role;
         employee.ContractType = contractType;

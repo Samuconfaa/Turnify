@@ -23,9 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Turnify.Api\Turnify.Api.csproj" />
-    <ProjectReference Include="..\Turnify.Core\Turnify.Core.csproj" />
-    <ProjectReference Include="..\Turnify.Infrastructure\Turnify.Infrastructure.csproj" />
+    <ProjectReference Include="..\Api\Turnify.Api\Turnify.Api.csproj" />
+    <ProjectReference Include="..\Api\Turnify.Core\Turnify.Core.csproj" />
+    <ProjectReference Include="..\Api\Turnify.Infrastructure\Turnify.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

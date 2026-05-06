@@ -9,7 +9,7 @@ public class TurnifyDbContextDesignTimeFactory : IDesignTimeDbContextFactory<Tur
     {
         var options = new DbContextOptionsBuilder<TurnifyDbContext>()
             .UseMySql(
-                "Server=localhost;Database=turnify_dev;User=root;Password=placeholder;",
+                "Server=localhost;Database=turnify_nuovo;User=root;Password=placeholder;",
                 new MySqlServerVersion(new Version(8, 0, 0)))
             .Options;
         return new TurnifyDbContext(options);

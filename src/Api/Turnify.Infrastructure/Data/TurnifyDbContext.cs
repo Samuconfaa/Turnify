@@ -48,7 +48,8 @@ public class TurnifyDbContext : DbContext
 
         // Employees
         modelBuilder.Entity<Employee>()
-            .HasIndex(e => new { e.CompanyId, e.Email }).IsUnique();
+            .HasIndex(e => new { e.CompanyId, e.Email }).IsUnique()
+            .HasFilter("`Email` IS NOT NULL AND `Email` != ''");
         modelBuilder.Entity<Employee>()
             .HasIndex(e => e.UserId);
         modelBuilder.Entity<Employee>()

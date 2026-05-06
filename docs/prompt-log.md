@@ -2,6 +2,34 @@
 
 ---
 
+## Prompt 46
+
+### Data
+2026-05-06
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Bugfix: creazione dipendente restituisce errore ma utente viene salvato nel DB; dipendente loggato riceve "errore di connessione al server" su ogni endpoint.
+
+### Prompt
+> In `EmployeesController.CreateEmployee`, `Employee.Email` viene assegnato come `string.Empty` quando non fornito. L'indice unico `(CompanyId, Email)` su `Employees` senza filtro causa `duplicate key` MySQL al secondo dipendente senza email. `UserRepository.AddAsync` viene chiamato prima e fa `SaveChangesAsync` separato, quindi il `User` viene committato anche se poi `EmployeeRepository.AddAsync` fallisce. Il dipendente con `User` ma senza `Employee` può autenticarsi (JWT valido) ma riceve 404 da `api/dashboard/employee-summary` (che cerca `Employee` per `UserId`); `GetFromJsonAsync` lancia `HttpRequestException` su 404, catturato come "Impossibile connettersi al server". Fix: rendere `Employee.Email` nullable, aggiungere filtro all'indice unico, aggiornare `CreateEmployee` e `UpdateEmployee` ad usare null per email vuota, creare migrazione.
+
+### Output utile
+- `Turnify.Core/Models/Employee.cs`: `Email` cambiato da `string` a `string?`
+- `TurnifyDbContext.cs`: aggiunto `.HasFilter("`Email` IS NOT NULL AND `Email` != ''")` all'indice unico Employee
+- `EmployeesController.cs`: `CreateEmployee` e `UpdateEmployee` usano `string.IsNullOrWhiteSpace ? null : email`
+- `AuthService.cs`: guard null su `adminUser.Email` prima di `ExistsByEmailAsync`
+- `TurnifyDbContextModelSnapshot.cs`: aggiornato `IsRequired` rimosso + filtro indice
+- `20260506000000_FixEmployeeEmailNullable.cs`: nuova migrazione (ALTER COLUMN + DROP INDEX + UPDATE + CREATE UNIQUE INDEX filtrato)
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Build 0 errori 0 warning. Causa confermata da ispezione del codice: unique index senza filtro su colonna non nullable assegnata a stringa vuota per default.
+
 ## Prompt 45
 
 ### Data

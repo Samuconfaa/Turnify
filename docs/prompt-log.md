@@ -2,6 +2,31 @@
 
 ---
 
+## Prompt 44
+
+### Data
+2026-05-06
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Bugfix: il toggle Admin/Manager ↔ Dipendente nella LoginPage non aggiorna visivamente la selezione quando si clicca su "Dipendente".
+
+### Prompt
+> In `LoginPage.xaml`, i `DataTrigger` sul toggle role (Admin/Manager vs Dipendente) non eseguono il revert corretto quando la condizione diventa `False`. Il tab Admin è evidenziato all'avvio (IsAdminMode=True); cliccando Dipendente la UI non aggiorna il background né il colore del testo. Aggiungere trigger espliciti `Value="False"` su tutti e 4 gli elementi (2 Border + 2 Label) per forzare il reset del colore/sfondo senza affidarsi al revert automatico di MAUI.
+
+### Output utile
+- `LoginPage.xaml`: aggiunti 4 `DataTrigger` `Value="False"` nel toggle mode (Border Admin, Label Admin, Border Dipendente, Label Dipendente)
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Bug noto di .NET MAUI: quando un DataTrigger è True al momento del binding iniziale, il runtime non salva correttamente il valore "precedente" e non riesce a fare il revert. L'aggiunta del trigger inverso Value=False risolve il problema senza modificare il ViewModel o introdurre converter.
+
+---
+
 ## Prompt 43
 
 ### Data

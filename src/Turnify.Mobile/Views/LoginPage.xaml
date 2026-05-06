@@ -79,6 +79,9 @@
                                     <DataTrigger TargetType="Border" Binding="{Binding IsAdminMode}" Value="True">
                                         <Setter Property="BackgroundColor" Value="{StaticResource Surface}"/>
                                     </DataTrigger>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsAdminMode}" Value="False">
+                                        <Setter Property="BackgroundColor" Value="Transparent"/>
+                                    </DataTrigger>
                                 </Border.Triggers>
                                 <Border.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding SelectAdminModeCommand}"/>
@@ -90,6 +93,9 @@
                                         <DataTrigger TargetType="Label" Binding="{Binding IsAdminMode}" Value="True">
                                             <Setter Property="TextColor" Value="{StaticResource Primary}"/>
                                         </DataTrigger>
+                                        <DataTrigger TargetType="Label" Binding="{Binding IsAdminMode}" Value="False">
+                                            <Setter Property="TextColor" Value="{StaticResource OnSurfaceVariant}"/>
+                                        </DataTrigger>
                                     </Label.Triggers>
                                 </Label>
                             </Border>
@@ -99,6 +105,9 @@
                                 <Border.Triggers>
                                     <DataTrigger TargetType="Border" Binding="{Binding IsEmployeeMode}" Value="True">
                                         <Setter Property="BackgroundColor" Value="{StaticResource Surface}"/>
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsEmployeeMode}" Value="False">
+                                        <Setter Property="BackgroundColor" Value="Transparent"/>
                                     </DataTrigger>
                                 </Border.Triggers>
                                 <Border.GestureRecognizers>
@@ -110,6 +119,9 @@
                                     <Label.Triggers>
                                         <DataTrigger TargetType="Label" Binding="{Binding IsEmployeeMode}" Value="True">
                                             <Setter Property="TextColor" Value="{StaticResource Primary}"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Label" Binding="{Binding IsEmployeeMode}" Value="False">
+                                            <Setter Property="TextColor" Value="{StaticResource OnSurfaceVariant}"/>
                                         </DataTrigger>
                                     </Label.Triggers>
                                 </Label>

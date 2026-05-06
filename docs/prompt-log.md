@@ -2,6 +2,31 @@
 
 ---
 
+## Prompt 45
+
+### Data
+2026-05-06
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Bugfix: la pagina di registrazione azienda mostra sempre "esiste già un'azienda con quella mail o slug" anche con DB vuoto.
+
+### Prompt
+> In `RegisterViewModel.cs`, il branch `else` di `RegisterAsync` mostra un messaggio hardcoded per qualsiasi risposta non-2xx (400 validazione, 409 conflict, 500 server error). Sostituire il messaggio statico con un parser del body della risposta HTTP: per 409 mostrare messaggio fisso di duplicato, per 400 estrarre i messaggi da `ValidationProblemDetails.errors`, per altri codici estrarre `detail` o `title` da `ProblemDetails`, con fallback sul codice HTTP.
+
+### Output utile
+- `RegisterViewModel.cs`: aggiunto metodo `GetErrorMessageAsync` che parsifica il body della risposta (validazione FluentValidation, ProblemDetails), con gestione specifica per 409 Conflict; rimosso messaggio hardcoded fuorviante
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Il messaggio "esiste già un'azienda" appariva per qualsiasi errore API, inclusi i 400 di validazione (slug con maiuscole, password debole). Il fix permette di vedere l'errore reale.
+
+---
+
 ## Prompt 44
 
 ### Data

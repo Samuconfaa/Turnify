@@ -1,6 +1,8 @@
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -86,7 +88,8 @@ public partial class RegisterViewModel : BaseViewModel
             }
             else
             {
-                await Shell.Current.DisplayAlertAsync("Errore", "Registrazione fallita. Potrebbe esistere già un'azienda con lo stesso Slug o Email.", "OK");
+                var errorMessage = await GetErrorMessageAsync(response);
+                await Shell.Current.DisplayAlertAsync("Errore", errorMessage, "OK");
             }
         }
         catch (Exception ex)
@@ -98,6 +101,43 @@ public partial class RegisterViewModel : BaseViewModel
         {
             IsBusy = false;
         }
+    }
+
+    private static async Task<string> GetErrorMessageAsync(HttpResponseMessage response)
+    {
+        if (response.StatusCode == HttpStatusCode.Conflict)
+            return "Esiste già un'azienda con lo stesso slug o un utente con la stessa email.";
+
+        try
+        {
+            var body = await response.Content.ReadAsStringAsync();
+            if (string.IsNullOrWhiteSpace(body))
+                return $"Registrazione fallita ({(int)response.StatusCode}).";
+
+            using var doc = JsonDocument.Parse(body);
+            var root = doc.RootElement;
+
+            // FluentValidation returns { errors: { field: ["msg"] } }
+            if (root.TryGetProperty("errors", out var errors))
+            {
+                var messages = new System.Text.StringBuilder();
+                foreach (var prop in errors.EnumerateObject())
+                    foreach (var msg in prop.Value.EnumerateArray())
+                        messages.AppendLine(msg.GetString());
+                var result = messages.ToString().Trim();
+                if (!string.IsNullOrEmpty(result)) return result;
+            }
+
+            // ProblemDetails { detail: "..." }
+            if (root.TryGetProperty("detail", out var detail) && detail.ValueKind == JsonValueKind.String)
+                return detail.GetString() ?? $"Registrazione fallita ({(int)response.StatusCode}).";
+
+            if (root.TryGetProperty("title", out var title) && title.ValueKind == JsonValueKind.String)
+                return title.GetString() ?? $"Registrazione fallita ({(int)response.StatusCode}).";
+        }
+        catch { }
+
+        return $"Registrazione fallita ({(int)response.StatusCode}).";
     }
 
     [RelayCommand]

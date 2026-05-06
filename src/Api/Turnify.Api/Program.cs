@@ -57,8 +57,23 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var connectionString = builder.Configuration.GetConnectionString("Default");
+
+// AutoDetect apre una connessione al volo per leggere la versione del server.
+// In ambienti di test non c'è un MySQL raggiungibile, quindi usiamo un fallback.
+ServerVersion dbServerVersion;
+try
+{
+    dbServerVersion = !string.IsNullOrWhiteSpace(connectionString)
+        ? ServerVersion.AutoDetect(connectionString)
+        : new MySqlServerVersion(new Version(8, 0, 36));
+}
+catch
+{
+    dbServerVersion = new MySqlServerVersion(new Version(8, 0, 36));
+}
+
 builder.Services.AddDbContext<TurnifyDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+    options.UseMySql(connectionString ?? string.Empty, dbServerVersion));
 
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<TurnifyDbContext>("database");

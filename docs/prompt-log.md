@@ -1151,6 +1151,31 @@ Tutti i task dell'iterazione 12 implementati. SessionService usa decodifica JWT 
 
 ---
 
+## Prompt 34
+
+### Data
+2026-05-01
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Implementare l'iterazione 13 completa: scambio turni, copertura dashboard admin, disponibilità dipendente in calendario
+
+### Prompt
+> "fai la 13 aggiornando plan e prompt log e sincronizzando develop e main" — implementare: (1) backend `ShiftSwapRequest` model + `IShiftSwapRepository` + `ShiftSwapRepository` + `ShiftSwapsController` (GET/POST/PUT peer-accept/peer-reject/admin-approve/admin-reject) con push notification a ogni step; endpoint `GET /api/shifts/coverage` in `ShiftsController`; endpoint `GET /api/employees/{id}/availability` in `EmployeesController`; (2) mobile TASK 1: `ShiftSwapsViewModel` + `ShiftSwapsPage.xaml` (lista scambi con azioni peer/admin), `ShiftSwapRequestViewModel` + `ShiftSwapRequestPage.xaml` (form proposta), `ProposeSwapCommand` + `CanProposeSwap` in `ShiftDetailViewModel`, bottone "Proponi scambio turno" in `ShiftDetailPage.xaml`; (3) mobile TASK 2: `CoverageDay` DTO + `WeeklyCoverage` collection in `DashboardViewModel`, sezione 7-card copertura in `DashboardPage.xaml`; (4) mobile TASK 3: `ApplyAvailabilityAsync` in `ShiftCalendarViewModel` che carica availability per ogni dipendente e marca celle `IsUnavailable`, `AvailabilityDto` DTO, `IsUnavailable` in `DayCell` con colore rosso chiaro; (5) registrazione route e DI; (6) voce "Scambi turno" in `ProfilePage.xaml` per admin e dipendenti.
+
+### Output utile
+Backend (già in precedente sessione): `ShiftSwapRequest.cs`, `IShiftSwapRepository.cs`, `ShiftSwapRepository.cs`, `ShiftSwapsController.cs`, migrazione `20260501100000_AddShiftSwapRequests.cs`, `GET /api/shifts/coverage`, `GET /api/employees/{id}/availability`. Mobile: `ShiftSwapsViewModel.cs`, `ShiftSwapsPage.xaml` + `.cs`, `ShiftSwapRequestViewModel.cs` (già), `ShiftSwapRequestPage.xaml` + `.cs` (già). Modificati: `ShiftDetailViewModel.cs` (CanProposeSwap, ProposeSwapCommand), `ShiftDetailPage.xaml` (bottone scambio), `DashboardViewModel.cs` (CoverageDay, WeeklyCoverage, IsAdmin, LoadCoverageAsync), `DashboardPage.xaml` (sezione copertura settimanale), `ShiftCalendarViewModel.cs` (ApplyAvailabilityAsync, AvailabilityDto, DayCell.IsUnavailable), `MauiProgram.cs` (ShiftSwapsViewModel, ShiftSwapRequestViewModel, ShiftSwapsPage, ShiftSwapRequestPage), `AppShell.xaml.cs` (route ShiftSwapsPage e ShiftSwapRequestPage), `ProfileViewModel.cs` (GoToShiftSwapsCommand), `ProfilePage.xaml` (voci scambi turno admin e dipendente).
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Tutti i deliverable dell'iterazione 13 implementati. Disponibilità calendario usa colore rosso chiaro (#FCA5A5) per celle non disponibili senza turno. Copertura dashboard caricata solo per admin tramite flag IsAdmin da Preferences.
+
+---
+
 ## Prompt 35
 
 ### Data
@@ -1198,29 +1223,4 @@ Accettato integralmente
 
 ### Motivazione
 Tutti i deliverable dell'iterazione 14 implementati secondo il piano. Pattern uniforme su tutti i ViewModel interessati.
-
----
-
-## Prompt 34
-
-### Data
-2026-05-01
-
-### Strumento
-Claude Code
-
-### Obiettivo
-Implementare l'iterazione 13 completa: scambio turni, copertura dashboard admin, disponibilità dipendente in calendario
-
-### Prompt
-> "fai la 13 aggiornando plan e prompt log e sincronizzando develop e main" — implementare: (1) backend `ShiftSwapRequest` model + `IShiftSwapRepository` + `ShiftSwapRepository` + `ShiftSwapsController` (GET/POST/PUT peer-accept/peer-reject/admin-approve/admin-reject) con push notification a ogni step; endpoint `GET /api/shifts/coverage` in `ShiftsController`; endpoint `GET /api/employees/{id}/availability` in `EmployeesController`; (2) mobile TASK 1: `ShiftSwapsViewModel` + `ShiftSwapsPage.xaml` (lista scambi con azioni peer/admin), `ShiftSwapRequestViewModel` + `ShiftSwapRequestPage.xaml` (form proposta), `ProposeSwapCommand` + `CanProposeSwap` in `ShiftDetailViewModel`, bottone "Proponi scambio turno" in `ShiftDetailPage.xaml`; (3) mobile TASK 2: `CoverageDay` DTO + `WeeklyCoverage` collection in `DashboardViewModel`, sezione 7-card copertura in `DashboardPage.xaml`; (4) mobile TASK 3: `ApplyAvailabilityAsync` in `ShiftCalendarViewModel` che carica availability per ogni dipendente e marca celle `IsUnavailable`, `AvailabilityDto` DTO, `IsUnavailable` in `DayCell` con colore rosso chiaro; (5) registrazione route e DI; (6) voce "Scambi turno" in `ProfilePage.xaml` per admin e dipendenti.
-
-### Output utile
-Backend (già in precedente sessione): `ShiftSwapRequest.cs`, `IShiftSwapRepository.cs`, `ShiftSwapRepository.cs`, `ShiftSwapsController.cs`, migrazione `20260501100000_AddShiftSwapRequests.cs`, `GET /api/shifts/coverage`, `GET /api/employees/{id}/availability`. Mobile: `ShiftSwapsViewModel.cs`, `ShiftSwapsPage.xaml` + `.cs`, `ShiftSwapRequestViewModel.cs` (già), `ShiftSwapRequestPage.xaml` + `.cs` (già). Modificati: `ShiftDetailViewModel.cs` (CanProposeSwap, ProposeSwapCommand), `ShiftDetailPage.xaml` (bottone scambio), `DashboardViewModel.cs` (CoverageDay, WeeklyCoverage, IsAdmin, LoadCoverageAsync), `DashboardPage.xaml` (sezione copertura settimanale), `ShiftCalendarViewModel.cs` (ApplyAvailabilityAsync, AvailabilityDto, DayCell.IsUnavailable), `MauiProgram.cs` (ShiftSwapsViewModel, ShiftSwapRequestViewModel, ShiftSwapsPage, ShiftSwapRequestPage), `AppShell.xaml.cs` (route ShiftSwapsPage e ShiftSwapRequestPage), `ProfileViewModel.cs` (GoToShiftSwapsCommand), `ProfilePage.xaml` (voci scambi turno admin e dipendente).
-
-### Decisione presa
-Accettato integralmente
-
-### Motivazione
-Tutti i deliverable dell'iterazione 13 implementati. Disponibilità calendario usa colore rosso chiaro (#FCA5A5) per celle non disponibili senza turno. Copertura dashboard caricata solo per admin tramite flag IsAdmin da Preferences.
 

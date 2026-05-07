@@ -107,9 +107,9 @@ Le piccole imprese gestiscono i turni tramite canali informali (messaggistica, c
 - Separazione totale dei dati tra aziende: ogni query filtra per `CompanyId` estratto dal JWT
 
 ## Criteri di accettazione
-- Un admin può creare un turno ricorrente e vederlo replicato nel calendario per le settimane successive
+- Un admin può creare un turno ricorrente con `RepeatWeeks = N` e verificare che N copie appaiano nel calendario alle settimane successive, ognuna con `IsRecurring = true`
 - Un dipendente può effettuare check-in e il sistema registra timestamp UTC; il check-out aggiorna la stessa riga `AttendanceLog`
-- Una richiesta di ferie inviata da un dipendente appare in stato `Pending` nella lista admin; dopo approvazione lo stato diventa `Approved` per entrambi
+- Una richiesta di ferie inviata da un dipendente appare in stato `Pending` nella tab `VacationList` dell'admin (sezione "In attesa"); dopo approvazione lo stato diventa `Approved` visibile sia nell'admin che nel dipendente
 - Il report CSV scaricato dall'app contiene le righe per l'intervallo date selezionato e viene condiviso tramite il sistema operativo
 - Il login con email errata o password errata restituisce codice HTTP corretto (401), non un errore generico 500
 - Un tentativo di registrazione con email admin già esistente restituisce 409 Conflict
@@ -120,7 +120,7 @@ Le piccole imprese gestiscono i turni tramite canali informali (messaggistica, c
 - **Login dipendente con username inesistente o errato** — gestito in `AuthController`, restituisce 401
 - **Check-in doppio senza check-out** — restituisce 409 Conflict con body `{ "message": "Sei già entrato oggi." }` (`AttendanceController.CheckIn` — controllo `existing != null && existing.CheckOutTime == null`)
 - **Richiesta ferie con data fine antecedente alla data inizio** — validata lato mobile in `ReportsViewModel` (DateRange check); presenza di `CreateVacationRequestValidator` lato API
-- **Token JWT scaduto** — `AuthDelegatingHandler` intercetta le risposte HTTP; comportamento di refresh non determinabile dal codice visionato (non trovato refresh automatico nel handler)
+- **Token JWT scaduto** — `AuthDelegatingHandler` intercetta la risposta 401; tenta refresh token automatico con `SemaphoreSlim` (evita race condition su richieste concorrenti); se il refresh fallisce, cancella sessione e reindirizza al Login
 - **Report su intervallo senza dati** — il server restituisce CSV vuoto con intestazione; gestito come successo nel `ReportsViewModel`
 - **Errore di rete durante operazione** — ogni ViewModel cattura `HttpRequestException` e `TaskCanceledException` con messaggi distinti; gli errori inattesi vengono inviati a `ErrorReporterService`
 - **Errore applicazione non gestito** — `GlobalExceptionMiddleware` cattura tutte le eccezioni non trattate e restituisce risposta JSON uniforme
@@ -140,4 +140,4 @@ Il progetto nella sua forma attuale costituisce un MVP funzionante che include:
 - Flusso completo admin: registrazione azienda → gestione dipendenti → creazione turni (singoli e ricorrenti) → approvazione ferie → consultazione dashboard e report CSV
 - Flusso completo dipendente: login con username → visualizzazione turni → timbratura → richiesta ferie → download report
 - Portale web Next.js (admin-only) con le stesse funzionalità gestionali dell'app
-- 122 test (unit + integrazione) su backend
+- 232 test (unit + integrazione) su backend

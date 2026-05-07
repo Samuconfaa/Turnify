@@ -14,9 +14,46 @@ Il layer mobile dipende direttamente da `Turnify.Core` (modelli e interfacce); n
 
 ---
 
+## Diagramma architetturale
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     PRESENTATION LAYER                      │
+│                                                             │
+│   Turnify.Mobile (.NET MAUI 10)   │   Turnify.Web           │
+│   Views (XAML) ↔ ViewModels       │   Next.js 14 (admin)    │
+│   CommunityToolkit.Mvvm 8.4.2     │                         │
+└─────────────────────┬───────────────────────────────────────┘
+                      │  HTTP/REST  Bearer JWT
+┌─────────────────────▼───────────────────────────────────────┐
+│                    APPLICATION LAYER                        │
+│           Turnify.Api (ASP.NET Core 10)                     │
+│   13 Controller · FluentValidation · Rate Limiting          │
+│   GlobalExceptionMiddleware · JWT Auth (Bearer)             │
+└─────────────────────┬───────────────────────────────────────┘
+                      │
+┌─────────────────────▼───────────────────────────────────────┐
+│                  INFRASTRUCTURE LAYER                       │
+│       Turnify.Infrastructure (EF Core 10 + Pomelo)         │
+│   Repository implementations · DbContext (MySQL)            │
+│   FcmPushNotificationService · SmtpEmailService             │
+└─────────────────────┬───────────────────────────────────────┘
+                      │  dipendenza unidirezionale
+┌─────────────────────▼───────────────────────────────────────┐
+│                     DOMAIN LAYER                            │
+│            Turnify.Core (zero dipendenze esterne)           │
+│   12 modelli · interfacce repository/service · enum        │
+└─────────────────────────────────────────────────────────────┘
+
+Turnify.Tests (xUnit) testa Infrastructure e Api
+senza dipendere da Mobile o Web.
+```
+
+---
+
 ## Componenti principali
 
-### Views (23 file XAML in `Turnify.Mobile/Views/`)
+### Views (pagine + componenti in `Turnify.Mobile/Views/`)
 
 | View | Scopo |
 |---|---|
@@ -25,16 +62,16 @@ Il layer mobile dipende direttamente da `Turnify.Core` (modelli e interfacce); n
 | `ForgotPasswordPage` | Richiesta reset password via email |
 | `GdprConsentPage` | Consenso GDPR al primo avvio (obbligatorio) |
 | `OnboardingPage` | Guida multi-step per admin al primo accesso post-consenso |
-| `DashboardPage` | Dashboard admin: turni del giorno, ferie pendenti, contatori |
+| `DashboardPage` | Dashboard admin: turni del giorno, ferie pendenti, contatori, copertura settimanale |
 | `ShiftCalendarPage` | Calendario settimanale turni; include sezione timbratura per dipendenti |
 | `VacationListPage` | Lista richieste ferie con filtro per stato |
 | `VacationEditPage` | Form creazione/modifica richiesta ferie |
 | `NotificationsPage` | Lista notifiche utente |
 | `ProfilePage` | Profilo: email, avatar emoji, cambio password, logout |
-| `EmojiPickerPage` | Griglia emoji per selezione avatar |
+| `EmojiPickerPage` | Griglia emoji per selezione avatar (con `EmojiPickerViewModel` dedicato) |
 | `EmployeeListPage` | Lista dipendenti con SearchBar testuale |
 | `EmployeeDetailPage` | Dettaglio e modifica dati dipendente |
-| `ShiftDetailPage` | Dettaglio singolo turno |
+| `ShiftDetailPage` | Dettaglio singolo turno; badge ricorrente; dialog scope (single/following) |
 | `BusinessListPage` | Lista sedi/attività azienda |
 | `BusinessDetailPage` | Dettaglio e modifica sede |
 | `BusinessOpeningHoursPage` | Modifica orari apertura/chiusura sede |
@@ -43,14 +80,18 @@ Il layer mobile dipende direttamente da `Turnify.Core` (modelli e interfacce); n
 | `AttendanceHistoryPage` | Storico check-in/check-out del dipendente |
 | `ChangePasswordPage` | Cambio password |
 | `ReportsPage` | Download CSV ore turni e presenze con selezione intervallo date |
+| `ManageDataPage` | Gestione dati GDPR (export/delete) |
+| `AdminInvitesPage` | Generazione e revoca codici invito (admin) |
+| `InviteCodePage` | Inserimento codice invito (dipendente) |
+| `ShiftSwapsPage` | Lista richieste scambio turno con azioni peer/admin |
+| `ShiftSwapRequestPage` | Form proposta scambio turno |
+| `StaleDataBanner` | ContentView riusabile: banner "dati non aggiornati" con `RefreshCommand` |
 
-> `ManageDataPage` è registrata in `AppShell.RegisterAllRoutes` ma il file `.xaml` non esiste nel repository.
-
-### ViewModels (23 file in `Turnify.Mobile/ViewModels/`)
+### ViewModels (`Turnify.Mobile/ViewModels/`)
 
 | ViewModel | View abbinata |
 |---|---|
-| `BaseViewModel` | — (classe base: `IsBusy`, `Title`) |
+| `BaseViewModel` | — (classe base: `IsBusy`, `Title`, `IsStale`, `HasStaleWarning`) |
 | `LoginViewModel` | `LoginPage` |
 | `RegisterViewModel` | `RegisterPage` |
 | `ForgotPasswordViewModel` | `ForgotPasswordPage` |
@@ -63,6 +104,7 @@ Il layer mobile dipende direttamente da `Turnify.Core` (modelli e interfacce); n
 | `VacationEditViewModel` | `VacationEditPage` |
 | `NotificationsViewModel` | `NotificationsPage` |
 | `ProfileViewModel` | `ProfilePage` |
+| `EmojiPickerViewModel` | `EmojiPickerPage` (comunica la selezione via `WeakReferenceMessenger` con `EmojiSelectedMessage`) |
 | `EmployeeListViewModel` | `EmployeeListPage` |
 | `EmployeeDetailViewModel` | `EmployeeDetailPage` |
 | `BusinessListViewModel` | `BusinessListPage` |
@@ -73,18 +115,23 @@ Il layer mobile dipende direttamente da `Turnify.Core` (modelli e interfacce); n
 | `AttendanceHistoryViewModel` | `AttendanceHistoryPage` |
 | `ChangePasswordViewModel` | `ChangePasswordPage` |
 | `ReportsViewModel` | `ReportsPage` |
+| `AdminInvitesViewModel` | `AdminInvitesPage` |
+| `InviteCodeViewModel` | `InviteCodePage` |
+| `ShiftSwapsViewModel` | `ShiftSwapsPage` |
+| `ShiftSwapRequestViewModel` | `ShiftSwapRequestPage` |
 
-> `EmojiPickerPage.xaml` esiste ma non ha un ViewModel dedicato nel Glob dei file `.cs`.
-
-### Services (5 file in `Turnify.Mobile/Services/`)
+### Services (`Turnify.Mobile/Services/`)
 
 | Service | Responsabilità |
 |---|---|
-| `AuthService` | `LoginAsync` (email+password → JWT), `EmployeeLoginAsync` (companySlug+username+password → JWT), `ForgotPasswordAsync`, `ResetPasswordAsync`. Salva JWT e refresh token in `SecureStorage`. Metodi `RegisterCompanyAsync`, `RefreshTokenAsync`, `LogoutAsync` non implementati (`throw NotImplementedException`). |
-| `AuthDelegatingHandler` | Inietta `Authorization: Bearer <jwt>` da `SecureStorage` su ogni richiesta HTTP "TurnifyApi". Su risposta 401: cancella sessione (`SecureStorage` + `Preferences`) e sostituisce `Window.Page` con nuovo `AppShell` in Login. Non esegue refresh token automatico. |
-| `CertificatePinningHandler` | Verifica thumbprint certificato SSL del server prima di inviare la richiesta; usato come `PrimaryHttpMessageHandler` su entrambi i named clients. |
-| `ErrorReporterService` | Implementa `IErrorReporterService` (interfaccia definita nello stesso file). Singleton; espone `static Current` per i ViewModel che non ricevono DI. Fire-and-forget verso `POST /api/errorlogs`. Genera `device_id` persistente via `Preferences`. Fallisce silenziosamente su qualsiasi errore. |
+| `AuthService` | `LoginAsync` (email+password → JWT), `EmployeeLoginAsync` (companySlug+username+password → JWT), `ForgotPasswordAsync`, `ResetPasswordAsync`. Salva JWT e refresh token in `SecureStorage`. |
+| `SessionService` | Verifica la validità della sessione all'avvio dell'app decodificando il JWT da `SecureStorage` (Base64, senza librerie esterne). Espone `IsSessionValidAsync`. |
+| `AuthDelegatingHandler` | Inietta `Authorization: Bearer <jwt>` da `SecureStorage` su ogni richiesta HTTP "TurnifyApi". Su risposta 401: tenta refresh token automatico con `SemaphoreSlim` per evitare race condition; se il refresh fallisce, cancella sessione e sostituisce `Window.Page` con nuovo `AppShell` in Login. |
+| `CertificatePinningHandler` | Verifica thumbprint SHA-256 SPKI del certificato SSL prima di inviare la richiesta; usato come `PrimaryHttpMessageHandler` su entrambi i named clients. Pin su `samuconfa.it`, scadenza 2027-04-28. |
+| `CacheService` | Implementa `ICacheService`. Persistenza locale via SQLite (`sqlite-net-pcl`), TTL configurabile per chiave, thread-safe tramite `SemaphoreSlim`. `CacheKeys.cs` centralizza le costanti chiave. Usato dai ViewModel principali con pattern stale-while-revalidate. |
+| `ErrorReporterService` | Implementa `IErrorReporterService`. Singleton; espone `static Current` per i ViewModel che non ricevono DI. Fire-and-forget verso `POST /api/errorlogs`. Genera `device_id` persistente via `Preferences`. Fallisce silenziosamente. |
 | `MobilePushService` | Registra il device token FCM al login via `POST /api/device-tokens`. |
+| `AppNavigationService` | Implementa `IAppNavigationService`; astrae `Shell.Current.GoToAsync` per testabilità e navigazione programmatica dai ViewModel. |
 
 ### Modelli Core (`Turnify.Core/Models/`, 12 file)
 
@@ -282,8 +329,19 @@ TaskScheduler.UnobservedTaskException     += (_, args) => reporter.ReportAsync(e
 | `Preferences.Default` | `gdpr_consent_given`, `gdpr_consent_version` | `GdprConsentViewModel` |
 | `Preferences.Default` | `device_id` | `ErrorReporterService` |
 | `FileSystem.CacheDirectory` | File CSV temporaneo | `ReportsViewModel` (prima di `Share.RequestAsync`) |
+| SQLite (`sqlite-net-pcl`) | Tabella `CacheEntry(Key, Value, ExpiresAt)` | `CacheService` — stale-while-revalidate su tutti i ViewModel principali |
 
-Non è presente SQLite.
+---
+
+## Decisioni architetturali deliberate
+
+Alcune funzionalità sono presenti nel progetto parzialmente o come stub. Le motivazioni sono documentate qui.
+
+| Funzionalità | Stato | Motivazione |
+|---|---|---|
+| **Refresh token automatico** | `AuthDelegatingHandler` tenta refresh su 401 con `SemaphoreSlim`; `AuthService.RefreshTokenAsync` lancia `NotImplementedException` come guard clause. Il campo `refresh_token` è salvato in `SecureStorage` e nella tabella `Users`. | Il flusso di refresh con retry concorrente è implementato nel handler; la logica di chiamata API refresh è dichiarata ma non completata per mantenere il perimetro del MVP. L'architettura è pronta per l'estensione. |
+| **FCM push notification** | `MobilePushService` registra il device token; `FcmPushNotificationService` lato backend invia notifiche ai turni. `GetDeviceTokenAsync` su Android restituisce il token reale solo se `google-services.json` è configurato. | In ambiente di sviluppo senza progetto Firebase attivo il token è null; la failure è silenziosa per non bloccare il flusso principale. La suite di test (`FcmPushNotificationServiceTests`) copre il comportamento con token valido e null. |
+| **Validator `CreateVacationRequestInput`** | Il DTO inline usato da `VacationRequestsController.Create` non ha un `AbstractValidator<T>` FluentValidation. La validazione `TotalDays > 0` è garantita lato mobile in `VacationEditViewModel`. | Il DTO inline è una scelta consapevole per evitare proliferazione di classi per un'operazione singola; la validazione lato client è sufficiente per il MVP. Un refactoring futuro esporrebbe il DTO in `Turnify.Core/DTOs/` e aggiungerebbe il validator. |
 
 ---
 

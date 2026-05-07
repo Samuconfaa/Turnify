@@ -250,13 +250,13 @@ Documentati dalla matrice tecnica e dalle verifiche di regressione.
 | Integration — Employees | `Tests/Integration/EmployeesControllerIntegrationTests.cs` | Lista admin/dipendente (403), multi-tenant (EMP-06), crea (201/400), soft delete, disponibilità |
 | Integration — Error Logs | `Tests/Integration/ErrorLogsControllerIntegrationTests.cs` | Report valido, non autenticato (401), platform non valida, message >2000, nullable fields (EDGE-07), tutte le platform |
 
-**Totale stimato dopo l'aggiunta:** ~170 test.
+**Totale:** 232 test.
 
 ---
 
 ## Esito complessivo
 
-**Test automatici (backend):** 122 test — suite completa su service, repository, middleware e integration test. Forniscono confidenza sul comportamento API.
+**Test automatici (backend):** 232 test — suite completa su service, repository, middleware e integration test. Forniscono confidenza sul comportamento API.
 
 **Test manuali UI (mobile):** la maggior parte dei casi in questa matrice (⬜) richiede test su dispositivo fisico Android. Non esistono test UI automatizzati nel progetto.
 
@@ -265,7 +265,5 @@ Documentati dalla matrice tecnica e dalle verifiche di regressione.
 **Bug risolti prima della distribuzione:** 11 bug documentati nella matrice tecnica e corretti nel codice attuale. I più critici (UTC presenze, tab ruolo errate, rate limiter non per-IP) sono stati risolti nell'iterazione 07-08.
 
 **Aree non coperte da test automatici:**
-- `FcmPushNotificationService` — nessun test; failure silenziosa se la chiave FCM è errata
-- `SmtpEmailService` — nessun test; reset password dipende da configurazione SMTP esterna
-- `CertificatePinningHandler` — solo test manuale su dispositivo Android reale
-- Portale web Next.js — nessuna suite test
+- Portale web Next.js — nessuna suite test; correttezza verificata manualmente
+- UI MAUI — nessun test automatico; verificata su dispositivo Android fisico

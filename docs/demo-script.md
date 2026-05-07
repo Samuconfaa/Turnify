@@ -229,7 +229,7 @@ Aprire `ViewModels/DashboardViewModel.cs`:
 
 **Cosa dire:**
 
-> "Il backend ha 122 test automatici organizzati in due categorie."
+> "Il backend ha 232 test automatici organizzati in due categorie."
 
 **Test reali:**
 
@@ -244,7 +244,7 @@ Aprire `ViewModels/DashboardViewModel.cs`:
 - Portale web Next.js: nessuna test suite
 - FCM: `FcmPushNotificationService` non ha test; failure silenziosa se la chiave è errata
 
-**Coverage reale:** 122 test passano sulla build di rilascio. Nessun dato di code coverage nel repository.
+**Coverage reale:** 232 test passano sulla build di rilascio (0 failure). Nessun dato di code coverage nel repository.
 
 ---
 

@@ -323,11 +323,10 @@ Fonte consigliata: scaricare da [Heroicons](https://heroicons.com) o [Phosphor I
 ## Completati in seguito (da redesign2)
 - `src/Turnify.Mobile/Views/VacationListPage.xaml` — TASK 8: gradient header, filter chips (fix DataTrigger), card con left bar StripColor, bottom sheet nuova richiesta
 - `src/Turnify.Mobile/Views/NotificationsPage.xaml` — TASK 10: gradient header con badge non lette, card con BackgroundColor binding, unread dot Ellipse
-
 - `src/Turnify.Mobile/Views/OnboardingPage.xaml` — TASK 11: header bar gradient, progress dot fix DataTrigger, Navy→Primary logo badge, emoji→Image Source
 
-## Non completati
-- TASK 2 — asset icone PNG/SVG (26 file da scaricare da Heroicons/Phosphor)
+## Asset icone SVG (TASK 2)
+- `src/Turnify.Mobile/Resources/Images/` — 26 file SVG da Heroicons/Phosphor: `dashboard.svg`, `calendar.svg`, `team.svg`, `profile.svg`, `search.svg`, `add.svg`, `check.svg`, `close.svg`, `edit.svg`, `delete.svg`, `arrow_back.svg`, `arrow_forward.svg`, `notification.svg`, `vacation.svg`, `report.svg`, `swap.svg`, `logout.svg`, `password.svg`, `business.svg`, `availability.svg`, `attendance.svg`, `invite.svg`, `settings.svg`, `export.svg`, `approve.svg`, `reject.svg`
 
 # Prompt principali utilizzati
 

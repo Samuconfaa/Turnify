@@ -463,9 +463,14 @@ Turnify/
 ### Iterazione 15 — Redesign UI "Tropic Burst"
 **Data:** 2026-05-05
 
-**Obiettivo:** applicare il design system "Tropic Burst" all'app mobile: convertire i file HTML da Google Stitch in XAML .NET MAUI, aggiornare la palette colori, sostituire emoji con asset PNG.
+**Obiettivo:** applicare il design system "Tropic Burst" all'app mobile: convertire i file HTML da Google Stitch in XAML .NET MAUI, aggiornare la palette colori, sostituire icone con asset SVG.
 
-**Status:** parzialmente completata (TASK 1 completato, TASK 2 asset PNG non completati)
+**Deliverable:**
+1. `Colors.xaml` — palette Tropic Burst, token MD3 surface scale, KPI colors, stili globali aggiornati
+2. Asset icone SVG (26 file) in `Resources/Images/` — sostituzione emoji con immagini vettoriali
+3. Conversione XAML di 11 pagine principali al nuovo design system
+
+**Status:** completata
 
 ---
 

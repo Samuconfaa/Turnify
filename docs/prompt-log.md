@@ -2,6 +2,31 @@
 
 ---
 
+## Prompt 48
+
+### Data
+2026-05-07
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Fix crash su `ShiftDetailPage` al click del pulsante "+" per aggiungere un turno dal calendario.
+
+### Prompt
+> L'app crasha quando si clicca "+" dalla pagina calendario turni per aprire `ShiftDetailPage` in create mode. Identificare la causa e applicare il fix.
+
+### Output utile
+- `ShiftDetailPage.xaml` righe 144-160: rimosso `DataTrigger` che impostava le proprietà attached `Grid.ColumnSpan` e `Grid.Column` sul Button "Salva Turno". Sostituito con due layout separati: `Grid ColumnDefinitions="*,*"` visibile solo in `IsEditMode` (con "Elimina" + "Salva Turno"), e `Button` standalone visibile solo in `IsCreateMode`.
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Il `DataTrigger` su proprietà attached (`Grid.Column`, `Grid.ColumnSpan`) causa crash su Android in MAUI al momento della valutazione iniziale del trigger (IsCreateMode=true al primo caricamento). Stesso pattern del bug già fixato nel branch `fix/login-toggle-datatrigger`. Il fix usa due layout distinti con `IsVisible`, pattern già consolidato nel progetto.
+
+---
+
 ## Prompt 47
 
 ### Data

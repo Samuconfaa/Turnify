@@ -141,23 +141,23 @@
                 </Border>
             </VerticalStackLayout>
 
-            <!-- Buttons -->
-            <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,12,0,0">
+            <!-- Buttons (edit mode) -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,12,0,0"
+                  IsVisible="{Binding IsEditMode}">
                 <Button Grid.Column="0" Text="Elimina"
                         Command="{Binding DeleteCommand}"
-                        IsVisible="{Binding IsEditMode}"
                         Style="{StaticResource DangerButton}"/>
                 <Button Grid.Column="1" Text="Salva Turno"
                         Command="{Binding SaveCommand}"
-                        Style="{StaticResource PrimaryButton}">
-                    <Button.Triggers>
-                        <DataTrigger TargetType="Button" Binding="{Binding IsCreateMode}" Value="True">
-                            <Setter Property="Grid.ColumnSpan" Value="2"/>
-                            <Setter Property="Grid.Column" Value="0"/>
-                        </DataTrigger>
-                    </Button.Triggers>
-                </Button>
+                        Style="{StaticResource PrimaryButton}"/>
             </Grid>
+
+            <!-- Buttons (create mode) -->
+            <Button Text="Salva Turno"
+                    Command="{Binding SaveCommand}"
+                    IsVisible="{Binding IsCreateMode}"
+                    Style="{StaticResource PrimaryButton}"
+                    Margin="0,12,0,0"/>
 
             <!-- Proponi scambio (solo dipendenti in modalità modifica) -->
             <Button Text="🔄 Proponi scambio turno"

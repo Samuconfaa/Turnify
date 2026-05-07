@@ -93,6 +93,10 @@ Turnify/
 | Dashboard Dipendente | Ferie | Profilo |
 |---|---|---|
 | ![Employee](assets/screenshots/employee-dashboard.png) | ![Ferie](assets/screenshots/vacations.png) | ![Profilo](assets/screenshots/profile.png) |
+
+| Gestione Team| Seleziona Ruolo | Cambia Password |
+|---|---|---|
+| ![Team](assets/screenshots/team.png) | ![Ruolo](assets/screenshots/ruolo.png) | ![Password](assets/screenshots/password.png) |
  
 ---
 

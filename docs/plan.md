@@ -460,6 +460,31 @@ Turnify/
 
 ---
 
+### Iterazione 15 — Redesign UI "Tropic Burst"
+**Data:** 2026-05-05
+
+**Obiettivo:** applicare il design system "Tropic Burst" all'app mobile: convertire i file HTML da Google Stitch in XAML .NET MAUI, aggiornare la palette colori, sostituire emoji con asset PNG.
+
+**Status:** parzialmente completata (TASK 1 completato, TASK 2 asset PNG non completati)
+
+---
+
+### Iterazione 16 — Fix test suite e copertura nuovi servizi
+**Data:** 2026-05-07
+
+**Obiettivo:** risolvere 8 test pre-esistenti falliti e aggiungere copertura per i servizi introdotti nelle iterazioni 11-14.
+
+**Deliverable:**
+1. Fix `Program.cs` — `JsonStringEnumConverter` per `ShiftStatus` + rate limiter disabilitato in ambiente Testing
+2. Fix `EmployeesController` — email check scoped per company (`ExistsByEmailInCompanyAsync`), `User.Email = null` per employee
+3. Fix `AttendanceControllerIntegrationTests` — userId univoco per test per eliminare state bleed
+4. Fix `AuthControllerIntegrationTests` — `IsActive = true` sulla company seedata in `EmployeeLogin_ValidCredentials`
+5. Nuovi test: `ShiftSwapRepository` (11 unit), `FcmPushNotificationService` (11 unit), `SmtpEmailService` (3 unit), `CertificatePinningHandler` (8 unit), `ShiftSwapsController` integration (14 test) — in branch `test/coverage-it11-14`
+
+**Status:** completata
+
+---
+
 ## Rischi tecnici
 
 Derivati da problemi tecnici reali osservati durante lo sviluppo e la verifica:

@@ -217,6 +217,7 @@ public class AuthControllerIntegrationTests : IntegrationTestBase
             {
                 Name      = "Azienda Test",
                 Slug      = slug,
+                IsActive  = true,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             });

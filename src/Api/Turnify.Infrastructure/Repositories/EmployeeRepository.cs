@@ -36,6 +36,10 @@ public class EmployeeRepository : IEmployeeRepository
         return _context.Employees.FirstOrDefaultAsync(e => e.Id == id, ct);
     }
 
+    public Task<bool> ExistsByEmailInCompanyAsync(string email, int companyId, CancellationToken ct = default) =>
+        _context.Employees.AnyAsync(
+            e => e.CompanyId == companyId && e.Email == email, ct);
+
     public async Task<Employee> AddAsync(Employee employee, CancellationToken ct = default)
     {
         employee.CreatedAt = System.DateTime.UtcNow;

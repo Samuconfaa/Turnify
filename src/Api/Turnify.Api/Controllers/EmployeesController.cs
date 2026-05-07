@@ -113,8 +113,8 @@ public class EmployeesController : ControllerBase
             return BadRequest(new { message = "Nome utente già in uso in questa azienda." });
 
         if (!string.IsNullOrWhiteSpace(request.Email) &&
-            await _userRepository.ExistsByEmailAsync(request.Email, ct))
-            return BadRequest(new { message = "Email già in uso." });
+            await _employeeRepository.ExistsByEmailInCompanyAsync(request.Email, companyId, ct))
+            return BadRequest(new { message = "Email già in uso in questa azienda." });
 
         if (string.IsNullOrWhiteSpace(request.Password))
             return BadRequest(new { message = "La password è obbligatoria." });
@@ -133,7 +133,7 @@ public class EmployeesController : ControllerBase
         var user = new User
         {
             Username     = request.Username,
-            Email        = string.IsNullOrWhiteSpace(request.Email) ? null : request.Email,
+            Email        = null,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
             Role         = accountRole,
             CompanyId    = companyId,
@@ -223,10 +223,6 @@ public class EmployeesController : ControllerBase
                         return BadRequest(new { message = "Nome utente già in uso in questa azienda." });
                     user.Username = request.Username;
                 }
-
-                var newEmail = string.IsNullOrWhiteSpace(request.Email) ? null : request.Email;
-                if (user.Email != newEmail)
-                    user.Email = newEmail;
 
                 // Aggiorna il ruolo account se specificato (solo Employee o Manager)
                 if (!string.IsNullOrEmpty(request.AccountRole) &&

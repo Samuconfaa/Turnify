@@ -10,19 +10,20 @@ namespace Turnify.Tests.Integration;
 // ATT-01..ATT-07, EDGE-02, EDGE-09
 public class AttendanceControllerIntegrationTests : IntegrationTestBase
 {
-    private const int CompanyId     = 20;
-    private const int EmployeeUserId = 200;
-    private const int OtherUserId    = 201;
+    private const int CompanyId  = 20;
+    private const int OtherUserId = 999_001;
 
     public AttendanceControllerIntegrationTests(TurnifyWebFactory factory) : base(factory) { }
 
-    private async Task<int> SeedEmployeeAsync()
+    // Ogni test ottiene un userId univoco per evitare collisioni di stato tra test.
+    private async Task<(int EmployeeId, int UserId)> SeedEmployeeAsync()
     {
+        var userId = Random.Shared.Next(1_000_000, int.MaxValue);
         using var db = GetDb();
         var emp = new Employee
         {
             CompanyId    = CompanyId,
-            UserId       = EmployeeUserId,
+            UserId       = userId,
             FirstName    = "Anna",
             LastName     = "Verdi",
             Email        = $"anna_{Guid.NewGuid()}@test.it",
@@ -33,15 +34,15 @@ public class AttendanceControllerIntegrationTests : IntegrationTestBase
         };
         db.Employees.Add(emp);
         await db.SaveChangesAsync();
-        return emp.Id;
+        return (emp.Id, userId);
     }
 
     // ATT-05 — GET /api/attendance/today prima di qualsiasi check-in
     [Fact]
     public async Task GetToday_NoCheckIn_ReturnsNotCheckedIn()
     {
-        await SeedEmployeeAsync();
-        AuthenticateAs(EmployeeUserId, CompanyId, UserRole.Employee);
+        var (_, userId) = await SeedEmployeeAsync();
+        AuthenticateAs(userId, CompanyId, UserRole.Employee);
 
         var res = await Client.GetAsync("/turnify/api/attendance/today");
 
@@ -55,8 +56,8 @@ public class AttendanceControllerIntegrationTests : IntegrationTestBase
     [Fact]
     public async Task CheckIn_FirstTimeToday_Returns200()
     {
-        await SeedEmployeeAsync();
-        AuthenticateAs(EmployeeUserId, CompanyId, UserRole.Employee);
+        var (_, userId) = await SeedEmployeeAsync();
+        AuthenticateAs(userId, CompanyId, UserRole.Employee);
 
         var res = await Client.PostAsJsonAsync("/turnify/api/attendance/checkin", new { shiftId = (int?)null });
 
@@ -69,8 +70,8 @@ public class AttendanceControllerIntegrationTests : IntegrationTestBase
     [Fact]
     public async Task GetToday_AfterCheckIn_ReturnsCheckedIn()
     {
-        await SeedEmployeeAsync();
-        AuthenticateAs(EmployeeUserId, CompanyId, UserRole.Employee);
+        var (_, userId) = await SeedEmployeeAsync();
+        AuthenticateAs(userId, CompanyId, UserRole.Employee);
 
         await Client.PostAsJsonAsync("/turnify/api/attendance/checkin", new { shiftId = (int?)null });
 
@@ -87,8 +88,8 @@ public class AttendanceControllerIntegrationTests : IntegrationTestBase
     [Fact]
     public async Task CheckIn_Twice_Returns409WithMessage()
     {
-        await SeedEmployeeAsync();
-        AuthenticateAs(EmployeeUserId, CompanyId, UserRole.Employee);
+        var (_, userId) = await SeedEmployeeAsync();
+        AuthenticateAs(userId, CompanyId, UserRole.Employee);
 
         await Client.PostAsJsonAsync("/turnify/api/attendance/checkin", new { shiftId = (int?)null });
         var res = await Client.PostAsJsonAsync("/turnify/api/attendance/checkin", new { shiftId = (int?)null });
@@ -102,8 +103,8 @@ public class AttendanceControllerIntegrationTests : IntegrationTestBase
     [Fact]
     public async Task CheckOut_AfterCheckIn_Returns200()
     {
-        await SeedEmployeeAsync();
-        AuthenticateAs(EmployeeUserId, CompanyId, UserRole.Employee);
+        var (_, userId) = await SeedEmployeeAsync();
+        AuthenticateAs(userId, CompanyId, UserRole.Employee);
 
         await Client.PostAsJsonAsync("/turnify/api/attendance/checkin", new { shiftId = (int?)null });
         var res = await Client.PostAsync("/turnify/api/attendance/checkout", null);
@@ -117,7 +118,6 @@ public class AttendanceControllerIntegrationTests : IntegrationTestBase
     [Fact]
     public async Task CheckIn_UserWithoutEmployee_Returns403()
     {
-        // OtherUserId non ha un Employee in DB
         AuthenticateAs(OtherUserId, CompanyId, UserRole.Employee);
 
         var res = await Client.PostAsJsonAsync("/turnify/api/attendance/checkin", new { shiftId = (int?)null });
@@ -129,8 +129,8 @@ public class AttendanceControllerIntegrationTests : IntegrationTestBase
     [Fact]
     public async Task CheckOut_WithoutCheckIn_Returns409()
     {
-        await SeedEmployeeAsync();
-        AuthenticateAs(EmployeeUserId, CompanyId, UserRole.Employee);
+        var (_, userId) = await SeedEmployeeAsync();
+        AuthenticateAs(userId, CompanyId, UserRole.Employee);
 
         var res = await Client.PostAsync("/turnify/api/attendance/checkout", null);
 
@@ -141,8 +141,8 @@ public class AttendanceControllerIntegrationTests : IntegrationTestBase
     [Fact]
     public async Task GetHistory_AfterCheckInAndOut_ReturnsEntry()
     {
-        await SeedEmployeeAsync();
-        AuthenticateAs(EmployeeUserId, CompanyId, UserRole.Employee);
+        var (_, userId) = await SeedEmployeeAsync();
+        AuthenticateAs(userId, CompanyId, UserRole.Employee);
 
         await Client.PostAsJsonAsync("/turnify/api/attendance/checkin", new { shiftId = (int?)null });
         await Client.PostAsync("/turnify/api/attendance/checkout", null);
@@ -161,8 +161,8 @@ public class AttendanceControllerIntegrationTests : IntegrationTestBase
     [Fact]
     public async Task GetMonthlySummary_Returns200()
     {
-        await SeedEmployeeAsync();
-        AuthenticateAs(EmployeeUserId, CompanyId, UserRole.Employee);
+        var (_, userId) = await SeedEmployeeAsync();
+        AuthenticateAs(userId, CompanyId, UserRole.Employee);
 
         var year  = DateTime.UtcNow.Year;
         var month = DateTime.UtcNow.Month;

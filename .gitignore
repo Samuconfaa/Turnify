@@ -128,6 +128,8 @@ _ReSharper*/
 *.apk
 *.aab
 *.ipa
+# eccezione: APK firmato di consegna
+!assets/apk/turnify.apk
 *.app
 *.xcarchive
 

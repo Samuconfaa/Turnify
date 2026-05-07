@@ -18,6 +18,7 @@ Fix crash su `ShiftDetailPage` al click del pulsante "+" per aggiungere un turno
 
 ### Output utile
 - `ShiftDetailPage.xaml` righe 144-160: rimosso `DataTrigger` che impostava le proprietà attached `Grid.ColumnSpan` e `Grid.Column` sul Button "Salva Turno". Sostituito con due layout separati: `Grid ColumnDefinitions="*,*"` visibile solo in `IsEditMode` (con "Elimina" + "Salva Turno"), e `Button` standalone visibile solo in `IsCreateMode`.
+- `Resources/Styles/Colors.xaml`: aggiunto stile `GhostButton` mancante. Era referenziato in `ShiftDetailPage.xaml` (riga 166) e `ShiftSwapsPage.xaml` ma non definito — causava `XamlParseException` durante `InitializeComponent()`.
 
 ### Decisione presa
 Accettato integralmente

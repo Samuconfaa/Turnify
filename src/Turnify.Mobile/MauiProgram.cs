@@ -39,6 +39,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IAppNavigationService, AppNavigationService>();
         builder.Services.AddSingleton<ISessionService,       SessionService>();
         builder.Services.AddSingleton<ICacheService,         CacheService>();
+        builder.Services.AddSingleton<MobilePushService>();
 
         builder.Services.AddHttpClient<IAuthService, AuthService>(client =>
         {

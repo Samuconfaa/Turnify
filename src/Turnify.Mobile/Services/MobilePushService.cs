@@ -6,20 +6,10 @@ using Microsoft.Maui.Storage;
 
 namespace Turnify.Mobile.Services;
 
-/// <summary>
-/// Servizio lato mobile per la gestione del token FCM.
-/// 
-/// Integrazione Firebase MAUI (da completare):
-/// 1. Aggiungere il pacchetto NuGet: Plugin.Firebase.CloudMessaging
-/// 2. Aggiungere google-services.json in Platforms/Android/ (Build Action: GoogleServicesJson)
-/// 3. Aggiungere GoogleService-Info.plist in Platforms/iOS/ (Build Action: BundleResource)
-/// 4. In MainActivity.cs aggiungere: FirebaseCloudMessagingImplementation.Initialize()
-/// 5. Chiamare RegisterAsync() dopo il login riuscito
-/// </summary>
 public class MobilePushService
 {
     private readonly HttpClient _httpClient;
-    private const string TOKEN_KEY = "fcm_device_token";
+    private const string TokenKey = "fcm_device_token";
 
     public MobilePushService(IHttpClientFactory httpClientFactory)
     {
@@ -37,25 +27,20 @@ public class MobilePushService
             var token = await GetDeviceTokenAsync();
             if (string.IsNullOrEmpty(token)) return;
 
-            // Evita di re-registrare lo stesso token
-            var lastToken = await SecureStorage.Default.GetAsync(TOKEN_KEY);
+            var lastToken = await SecureStorage.Default.GetAsync(TokenKey);
             if (lastToken == token) return;
 
-            var platform = GetPlatform();
             var response = await _httpClient.PostAsJsonAsync("api/device-tokens", new
             {
                 token    = token,
-                platform = platform
+                platform = GetPlatform()
             });
 
             if (response.IsSuccessStatusCode)
-            {
-                await SecureStorage.Default.SetAsync(TOKEN_KEY, token);
-            }
+                await SecureStorage.Default.SetAsync(TokenKey, token);
         }
         catch (Exception ex)
         {
-            // Non critico: il push funzionerà al prossimo avvio
             System.Diagnostics.Debug.WriteLine($"[Push] Errore registrazione token: {ex.Message}");
         }
     }
@@ -67,33 +52,38 @@ public class MobilePushService
     {
         try
         {
-            var token = await SecureStorage.Default.GetAsync(TOKEN_KEY);
+            var token = await SecureStorage.Default.GetAsync(TokenKey);
             if (string.IsNullOrEmpty(token)) return;
 
-            await _httpClient.SendAsync(new System.Net.Http.HttpRequestMessage(
-                System.Net.Http.HttpMethod.Delete, "api/device-tokens")
+            await _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Delete, "api/device-tokens")
             {
                 Content = JsonContent.Create(new { token, platform = GetPlatform() })
             });
 
-            SecureStorage.Default.Remove(TOKEN_KEY);
+            SecureStorage.Default.Remove(TokenKey);
         }
         catch
         {
-            // Silenzioso
+            // Silenzioso: il token verrà invalidato automaticamente dal backend
         }
     }
 
-    // ── Metodi privati ────────────────────────────────────────────
-
     private static async Task<string?> GetDeviceTokenAsync()
     {
-        // Quando Plugin.Firebase.CloudMessaging è installato, sostituire con:
-        // return await CrossFirebaseCloudMessaging.Current.GetTokenAsync();
-        //
-        // Per ora restituisce null (push disabilitati fino all'integrazione Firebase)
+#if ANDROID
+        try
+        {
+            return await Plugin.Firebase.CloudMessaging.CrossFirebaseCloudMessaging.Current.GetTokenAsync();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[Push] Errore get token FCM: {ex.Message}");
+            return null;
+        }
+#else
         await Task.CompletedTask;
         return null;
+#endif
     }
 
     private static string GetPlatform()

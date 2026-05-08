@@ -5,7 +5,7 @@
              x:Class="Turnify.Mobile.Views.EmployeeDetailPage"
              x:DataType="vm:EmployeeDetailViewModel"
              Title="{Binding Title}"
-             BackgroundColor="{StaticResource Background}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource DarkBackground}}">
 
     <ScrollView>
         <VerticalStackLayout Spacing="14" Padding="20,20,20,40">
@@ -24,14 +24,14 @@
 
             <!-- Username -->
             <Label Text="NOME UTENTE" Style="{StaticResource SectionLabel}" Margin="2,6,0,0"/>
-            <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
-                    Stroke="{StaticResource Primary}" StrokeThickness="1.5">
+            <Border BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceContainerLow}, Dark={StaticResource DarkSurfaceContainerLow}}"
+                    Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}" StrokeThickness="1.5">
                 <Border.StrokeShape><RoundRectangle CornerRadius="13"/></Border.StrokeShape>
                 <Entry Text="{Binding Username}" Placeholder="es. mario.rossi" Style="{StaticResource FieldEntry}"/>
             </Border>
             <Label Text="Il dipendente userà questo nome per accedere all'app."
                    FontSize="12" FontFamily="PJSReg"
-                   TextColor="{StaticResource Outline}" Margin="4,0,0,0"/>
+                   TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}" Margin="4,0,0,0"/>
 
             <!-- Email -->
             <Label Text="EMAIL (OPZIONALE)" Style="{StaticResource SectionLabel}" Margin="2,6,0,0"/>
@@ -59,7 +59,7 @@
                 <Picker ItemsSource="{Binding ContractTypesDisplay}"
                         SelectedIndex="{Binding SelectedContractTypeIndex}"
                         FontFamily="PJSReg"
-                        TextColor="{StaticResource OnBackground}"
+                        TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                         Margin="10,0"/>
             </Border>
 
@@ -76,7 +76,7 @@
                        Style="{StaticResource SectionLabel}" VerticalOptions="Center"/>
                 <Label Grid.Column="1" Text="+ Crea attività"
                        FontSize="13" FontAttributes="Bold" FontFamily="PJSBold"
-                       TextColor="{StaticResource Primary}" VerticalOptions="Center">
+                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}" VerticalOptions="Center">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoCreateBusinessCommand}"/>
                     </Label.GestureRecognizers>
@@ -88,8 +88,8 @@
                         SelectedItem="{Binding SelectedBusiness}"
                         Title="Seleziona attività (opzionale)"
                         FontFamily="PJSReg"
-                        TextColor="{StaticResource OnBackground}"
-                        TitleColor="{StaticResource Outline}"
+                        TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
+                        TitleColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
                         Margin="10,0"/>
             </Border>
 
@@ -99,27 +99,27 @@
                 <Picker ItemsSource="{Binding AccountRolesDisplay}"
                         SelectedIndex="{Binding SelectedAccountRoleIndex}"
                         FontFamily="PJSReg"
-                        TextColor="{StaticResource OnBackground}"
+                        TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                         Margin="10,0"/>
             </Border>
 
             <!-- Password (create only) -->
             <VerticalStackLayout IsVisible="{Binding IsCreateMode}" Spacing="6" Margin="0,6,0,0">
                 <Label Text="PASSWORD TEMPORANEA" Style="{StaticResource SectionLabel}" Margin="2,0,0,0"/>
-                <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
-                        Stroke="{StaticResource Primary}" StrokeThickness="1.5">
+                <Border BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceContainerLow}, Dark={StaticResource DarkSurfaceContainerLow}}"
+                        Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}" StrokeThickness="1.5">
                     <Border.StrokeShape><RoundRectangle CornerRadius="13"/></Border.StrokeShape>
                     <Entry Text="{Binding Password}" Placeholder="Es. TempPass123!"
                            IsPassword="True" Style="{StaticResource FieldEntry}"/>
                 </Border>
                 <Label Text="Comunica questa password al dipendente per il primo accesso."
                        FontSize="12" FontFamily="PJSReg"
-                       TextColor="{StaticResource Outline}" Margin="4,0,0,0"/>
+                       TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}" Margin="4,0,0,0"/>
             </VerticalStackLayout>
 
             <!-- Saldo ferie (edit only) -->
-            <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
-                    Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+            <Border BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceContainerLow}, Dark={StaticResource DarkSurfaceContainerLow}}"
+                    Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
                     Padding="16,14" IsVisible="{Binding ShowEmployeeBalance}" Margin="0,6,0,0">
                 <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
                 <VerticalStackLayout Spacing="6">
@@ -127,10 +127,10 @@
                            Style="{StaticResource SectionLabel}" Margin="0,0,0,4"/>
                     <Label Text="{Binding HolidayBalance}"
                            FontSize="13" FontFamily="PJSSemi"
-                           TextColor="{StaticResource OnBackground}"/>
+                           TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
                     <Label Text="{Binding PaidLeaveBalance}"
                            FontSize="13" FontFamily="PJSSemi"
-                           TextColor="{StaticResource OnBackground}"/>
+                           TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
                 </VerticalStackLayout>
             </Border>
 
@@ -139,7 +139,7 @@
                     Command="{Binding ResetPasswordCommand}"
                     IsVisible="{Binding IsEditMode}"
                     BackgroundColor="Transparent"
-                    TextColor="{StaticResource Primary}"
+                    TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
                     BorderColor="{StaticResource PrimaryMid}"
                     BorderWidth="1.5" CornerRadius="12"
                     HeightRequest="48" FontSize="14"
@@ -165,7 +165,7 @@
             </Grid>
 
             <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
-                               HorizontalOptions="Center" Color="{StaticResource Primary}"/>
+                               HorizontalOptions="Center" Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
 
         </VerticalStackLayout>
     </ScrollView>

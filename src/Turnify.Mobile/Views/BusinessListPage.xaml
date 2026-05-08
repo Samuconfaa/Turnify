@@ -5,7 +5,7 @@
              x:Class="Turnify.Mobile.Views.BusinessListPage"
              x:DataType="vm:BusinessListViewModel"
              Title="{Binding Title}"
-             BackgroundColor="{StaticResource Background}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource DarkBackground}}">
 
     <Grid RowDefinitions="Auto,*">
 
@@ -14,11 +14,11 @@
             <VerticalStackLayout Spacing="2">
                 <Label Text="Attività"
                        FontSize="26" FontAttributes="Bold" FontFamily="PJSXBold"
-                       TextColor="{StaticResource OnBackground}"
+                       TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                        CharacterSpacing="-0.8"/>
                 <Label Text="Le mie sedi"
                        FontSize="13" FontFamily="PJSReg"
-                       TextColor="{StaticResource Outline}"/>
+                       TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"/>
             </VerticalStackLayout>
         </Grid>
 
@@ -31,7 +31,7 @@
                 <CollectionView.EmptyView>
                     <VerticalStackLayout HorizontalOptions="Center"
                                          Margin="0,48,0,0" Spacing="14">
-                        <Border BackgroundColor="{StaticResource Surface}"
+                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
                                 HeightRequest="68" WidthRequest="68"
                                 HorizontalOptions="Center">
                             <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
@@ -40,18 +40,18 @@
                         </Border>
                         <Label Text="Nessuna attività ancora"
                                FontSize="18" FontAttributes="Bold" FontFamily="PJSBold"
-                               TextColor="{StaticResource OnBackground}"
+                               TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                                HorizontalOptions="Center"/>
                         <Label Text="Usa + Aggiungi per creare la prima attività."
                                FontSize="14" FontFamily="PJSReg"
-                               TextColor="{StaticResource OnSurfaceVariant}"
+                               TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"
                                HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
                     </VerticalStackLayout>
                 </CollectionView.EmptyView>
 
                 <CollectionView.Footer>
-                    <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
-                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1.5"
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceContainerLow}, Dark={StaticResource DarkSurfaceContainerLow}}"
+                            Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1.5"
                             StrokeDashArray="6,4"
                             Padding="16,20" Margin="0,0,0,12">
                         <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
@@ -60,15 +60,15 @@
                         </Border.GestureRecognizers>
                         <Label Text="Aggiungi un'attività"
                                FontSize="15" FontAttributes="Bold" FontFamily="PJSBold"
-                               TextColor="{StaticResource OnSurfaceVariant}"
+                               TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"
                                HorizontalOptions="Center" VerticalOptions="Center"/>
                     </Border>
                 </CollectionView.Footer>
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="vm:BusinessDto">
-                        <Border BackgroundColor="{StaticResource Surface}"
-                                Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
+                                Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
                                 Padding="16" Margin="0,0,0,12">
                             <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
                             <Border.Shadow>
@@ -79,13 +79,13 @@
                                     <VerticalStackLayout Grid.Column="0" Spacing="4">
                                         <Label Text="{Binding Name}"
                                                FontSize="17" FontAttributes="Bold" FontFamily="PJSBold"
-                                               TextColor="{StaticResource OnBackground}"/>
+                                               TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
                                         <Label Text="{Binding BusinessType}"
                                                FontSize="13" FontFamily="PJSReg"
-                                               TextColor="{StaticResource OnSurfaceVariant}"/>
+                                               TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"/>
                                         <Label Text="{Binding Address}"
                                                FontSize="12" FontFamily="PJSReg"
-                                               TextColor="{StaticResource Outline}"
+                                               TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
                                                IsVisible="{Binding Address, Converter={StaticResource StringNotEmptyConverter}}"/>
                                     </VerticalStackLayout>
                                     <Border Grid.Column="1"
@@ -103,7 +103,7 @@
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BusinessListViewModel}}, Path=EditBusinessCommand}"
                                             CommandParameter="{Binding .}"
                                             BackgroundColor="Transparent"
-                                            TextColor="{StaticResource Primary}"
+                                            TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
                                             BorderColor="{StaticResource PrimaryMid}"
                                             BorderWidth="1.5" CornerRadius="10"
                                             HeightRequest="40" FontSize="13"

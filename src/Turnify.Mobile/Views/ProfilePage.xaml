@@ -7,7 +7,7 @@
              x:DataType="vm:ProfileViewModel"
              Title="Profilo"
              Shell.NavBarIsVisible="False"
-             BackgroundColor="{StaticResource Background}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource DarkBackground}}">
 
     <Grid RowDefinitions="Auto,*">
         <comp:StaleDataBanner Grid.Row="0"/>
@@ -17,7 +17,7 @@
         <Grid Grid.Row="0">
             <Grid.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="{StaticResource HeaderGradientStart}" Offset="0"/>
+                    <GradientStop Color="{AppThemeBinding Light={StaticResource HeaderGradientStart}, Dark={StaticResource DarkHeaderGradientStart}}" Offset="0"/>
                     <GradientStop Color="{StaticResource Secondary}" Offset="1"/>
                 </LinearGradientBrush>
             </Grid.Background>
@@ -81,7 +81,7 @@
 
         <!-- ── Settings card ─────────────────────────────── -->
         <ScrollView Grid.Row="1" Margin="0,-24,0,0">
-            <Border BackgroundColor="{StaticResource Surface}" Padding="0,0,0,56"
+            <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}" Padding="0,0,0,56"
                     Stroke="Transparent">
                 <Border.StrokeShape><RoundRectangle CornerRadius="24,24,0,0"/></Border.StrokeShape>
 
@@ -90,8 +90,8 @@
                     <!-- ACCOUNT -->
                     <VerticalStackLayout Padding="24,26,24,0" Spacing="0">
                         <Label Text="ACCOUNT" Style="{StaticResource SectionLabel}" Margin="0,0,0,12"/>
-                        <Border BackgroundColor="{StaticResource Surface}"
-                                Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
+                                Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
                                 Padding="0">
                             <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
                             <VerticalStackLayout>
@@ -109,15 +109,15 @@
                                     </Border>
                                     <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
                                         <Label Text="Scambi turno" FontSize="14" FontFamily="PJSSemi"
-                                               TextColor="{StaticResource OnBackground}"/>
+                                               TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
                                         <Label Text="Proposte di scambio ricevute e inviate"
                                                FontSize="11" FontFamily="PJSReg"
-                                               TextColor="{StaticResource Outline}"/>
+                                               TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"/>
                                     </VerticalStackLayout>
                                     <Image Grid.Column="2" Source="chevron_right.svg"
                                            HeightRequest="16" WidthRequest="16" VerticalOptions="Center"/>
                                 </Grid>
-                                <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}"
+                                <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}"
                                          Margin="16,0"
                                          IsVisible="{Binding IsAdmin, Converter={StaticResource InverseBoolConverter}}"/>
                                 <!-- Cambia foto profilo -->
@@ -125,7 +125,7 @@
                                     <Grid.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding PickAvatarCommand}"/>
                                     </Grid.GestureRecognizers>
-                                    <Border Grid.Column="0" BackgroundColor="{StaticResource SurfaceContainer}"
+                                    <Border Grid.Column="0" BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceContainer}, Dark={StaticResource DarkSurfaceContainer}}"
                                             HeightRequest="36" WidthRequest="36" Stroke="Transparent" Margin="0,0,14,0">
                                         <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
                                         <Image Source="edit.svg" HeightRequest="18" WidthRequest="18"
@@ -133,11 +133,11 @@
                                     </Border>
                                     <Label Grid.Column="1" Text="Cambia foto profilo"
                                            FontSize="14" FontFamily="PJSSemi"
-                                           TextColor="{StaticResource OnBackground}" VerticalOptions="Center"/>
+                                           TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}" VerticalOptions="Center"/>
                                     <Image Grid.Column="2" Source="chevron_right.svg"
                                            HeightRequest="16" WidthRequest="16" VerticalOptions="Center"/>
                                 </Grid>
-                                <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="16,0"/>
+                                <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" Margin="16,0"/>
                                 <!-- Cambia Password -->
                                 <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,14">
                                     <Grid.GestureRecognizers>
@@ -151,7 +151,7 @@
                                     </Border>
                                     <Label Grid.Column="1" Text="Cambia Password"
                                            FontSize="14" FontFamily="PJSSemi"
-                                           TextColor="{StaticResource OnBackground}" VerticalOptions="Center"/>
+                                           TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}" VerticalOptions="Center"/>
                                     <Image Grid.Column="2" Source="chevron_right.svg"
                                            HeightRequest="16" WidthRequest="16" VerticalOptions="Center"/>
                                 </Grid>
@@ -163,8 +163,8 @@
                     <VerticalStackLayout Padding="24,20,24,0" Spacing="0" IsVisible="{Binding IsAdmin}">
                         <Label Text="GESTIONE ATTIVITÀ" Style="{StaticResource SectionLabel}"
                                Margin="0,0,0,12"/>
-                        <Border BackgroundColor="{StaticResource Surface}"
-                                Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
+                                Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
                                 Padding="0">
                             <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
                             <VerticalStackLayout>
@@ -181,14 +181,14 @@
                                     </Border>
                                     <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
                                         <Label Text="Le mie attività" FontSize="14" FontFamily="PJSSemi"
-                                               TextColor="{StaticResource OnBackground}"/>
+                                               TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
                                         <Label Text="Crea e gestisci sedi" FontSize="11" FontFamily="PJSReg"
-                                               TextColor="{StaticResource Outline}"/>
+                                               TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"/>
                                     </VerticalStackLayout>
                                     <Image Grid.Column="2" Source="chevron_right.svg"
                                            HeightRequest="16" WidthRequest="16" VerticalOptions="Center"/>
                                 </Grid>
-                                <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="16,0"/>
+                                <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" Margin="16,0"/>
                                 <!-- Orari apertura -->
                                 <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,14">
                                     <Grid.GestureRecognizers>
@@ -202,14 +202,14 @@
                                     </Border>
                                     <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
                                         <Label Text="Orari di Apertura" FontSize="14" FontFamily="PJSSemi"
-                                               TextColor="{StaticResource OnBackground}"/>
+                                               TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
                                         <Label Text="Configura apertura/chiusura" FontSize="11" FontFamily="PJSReg"
-                                               TextColor="{StaticResource Outline}"/>
+                                               TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"/>
                                     </VerticalStackLayout>
                                     <Image Grid.Column="2" Source="chevron_right.svg"
                                            HeightRequest="16" WidthRequest="16" VerticalOptions="Center"/>
                                 </Grid>
-                                <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="16,0"/>
+                                <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" Margin="16,0"/>
                                 <!-- Team -->
                                 <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,14">
                                     <Grid.GestureRecognizers>
@@ -223,14 +223,14 @@
                                     </Border>
                                     <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
                                         <Label Text="Gestisci Team" FontSize="14" FontFamily="PJSSemi"
-                                               TextColor="{StaticResource OnBackground}"/>
+                                               TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
                                         <Label Text="Aggiungi o modifica dipendenti" FontSize="11"
-                                               FontFamily="PJSReg" TextColor="{StaticResource Outline}"/>
+                                               FontFamily="PJSReg" TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"/>
                                     </VerticalStackLayout>
                                     <Image Grid.Column="2" Source="chevron_right.svg"
                                            HeightRequest="16" WidthRequest="16" VerticalOptions="Center"/>
                                 </Grid>
-                                <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="16,0"/>
+                                <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" Margin="16,0"/>
                                 <!-- Scambi turni (admin) -->
                                 <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,14">
                                     <Grid.GestureRecognizers>
@@ -244,14 +244,14 @@
                                     </Border>
                                     <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
                                         <Label Text="Scambi turno" FontSize="14" FontFamily="PJSSemi"
-                                               TextColor="{StaticResource OnBackground}"/>
+                                               TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
                                         <Label Text="Gestisci proposte di scambio" FontSize="11"
-                                               FontFamily="PJSReg" TextColor="{StaticResource Outline}"/>
+                                               FontFamily="PJSReg" TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"/>
                                     </VerticalStackLayout>
                                     <Image Grid.Column="2" Source="chevron_right.svg"
                                            HeightRequest="16" WidthRequest="16" VerticalOptions="Center"/>
                                 </Grid>
-                                <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="16,0"/>
+                                <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" Margin="16,0"/>
                                 <!-- Report ore -->
                                 <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,14">
                                     <Grid.GestureRecognizers>
@@ -265,14 +265,14 @@
                                     </Border>
                                     <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
                                         <Label Text="Report ore dipendenti" FontSize="14" FontFamily="PJSSemi"
-                                               TextColor="{StaticResource OnBackground}"/>
+                                               TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
                                         <Label Text="Ore pianificate per periodo" FontSize="11"
-                                               FontFamily="PJSReg" TextColor="{StaticResource Outline}"/>
+                                               FontFamily="PJSReg" TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"/>
                                     </VerticalStackLayout>
                                     <Image Grid.Column="2" Source="chevron_right.svg"
                                            HeightRequest="16" WidthRequest="16" VerticalOptions="Center"/>
                                 </Grid>
-                                <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="16,0"/>
+                                <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" Margin="16,0"/>
                                 <!-- Report CSV -->
                                 <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,14">
                                     <Grid.GestureRecognizers>
@@ -286,9 +286,9 @@
                                     </Border>
                                     <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
                                         <Label Text="Report e statistiche" FontSize="14" FontFamily="PJSSemi"
-                                               TextColor="{StaticResource OnBackground}"/>
+                                               TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
                                         <Label Text="Esporta ore e presenze in CSV" FontSize="11"
-                                               FontFamily="PJSReg" TextColor="{StaticResource Outline}"/>
+                                               FontFamily="PJSReg" TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"/>
                                     </VerticalStackLayout>
                                     <Image Grid.Column="2" Source="chevron_right.svg"
                                            HeightRequest="16" WidthRequest="16" VerticalOptions="Center"/>
@@ -305,11 +305,11 @@
                     </VerticalStackLayout>
 
                     <Label Text="Turnify v1.0.0" FontSize="11" FontFamily="PJSReg"
-                           TextColor="{StaticResource Outline}"
+                           TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
                            HorizontalOptions="Center" Margin="0,18,0,0"/>
                     <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
                                        HorizontalOptions="Center"
-                                       Color="{StaticResource Primary}" Margin="0,12,0,0"/>
+                                       Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}" Margin="0,12,0,0"/>
                 </VerticalStackLayout>
             </Border>
         </ScrollView>

@@ -1224,3 +1224,28 @@ Accettato integralmente
 ### Motivazione
 Tutti i deliverable dell'iterazione 14 implementati secondo il piano. Pattern uniforme su tutti i ViewModel interessati.
 
+
+---
+
+## Prompt 37
+
+### Data
+2026-05-08
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Aggiungere tema scuro "Deep Forest" all'app MAUI tramite `AppThemeBinding`, con palette green-tinted derivata da Material Design 3
+
+### Prompt
+> Definire token dark `Dark*` in `Colors.xaml` (Background, Surface, SurfaceContainer*, SurfaceVariant, OnBackground, OnSurfaceVariant, Outline, OutlineVariant, Primary, PrimaryContainer, HeaderGradient*). Aggiornare tutti gli stili globali in `Colors.xaml` (ContentPage, FieldBorder, CardBorder, PrimaryButton, OutlineButton, GhostButton, FieldEntry, SectionLabel, HeadingLabel) con `AppThemeBinding Light=... Dark=...`. Sostituire ogni occorrenza di `{StaticResource X}` con `{AppThemeBinding Light={StaticResource X}, Dark={StaticResource DarkX}}` in tutte le 27 view XAML del progetto mobile.
+
+### Output utile
+`Colors.xaml`: aggiunta sezione 15 token `Dark*` + 9 stili globali aggiornati con AppThemeBinding. 27 file view modificati, 527 sostituzioni totali tramite script Python. Nessun `StaticResource` residuo per i token sostituiti.
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Verifica post-script confermata: zero occorrenze residue di `{StaticResource Background/Surface/Primary/...}` nelle view senza AppThemeBinding.

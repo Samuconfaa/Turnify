@@ -544,3 +544,14 @@ Derivata dallo stato attuale del repository e dalle verifiche documentate:
 - Ogni nuovo modello di dominio ha la migrazione EF Core corrispondente
 - I test esistenti rimangono verdi dopo ogni modifica
 - Le credenziali non sono hardcodate nel codice sorgente (in `.env` o `appsettings.json` non tracciato)
+
+### Iterazione 17 — Tema scuro "Deep Forest"
+
+**Obiettivo:** Supporto tema scuro tramite `AppThemeBinding` con palette green-tinted (MD3).
+
+**Deliverable:**
+- Token `Dark*` definiti in `Colors.xaml` (15 nuovi colori)
+- Stili globali aggiornati con `AppThemeBinding` in `Colors.xaml`
+- 527 sostituzioni `{StaticResource X}` → `{AppThemeBinding}` in 27 view
+
+**Status:** ✅ Completata (2026-05-08)

@@ -5,7 +5,7 @@
              x:Class="Turnify.Mobile.Views.BusinessDetailPage"
              x:DataType="vm:BusinessDetailViewModel"
              Title="{Binding Title}"
-             BackgroundColor="{StaticResource Background}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource DarkBackground}}">
 
     <ScrollView>
         <VerticalStackLayout Spacing="14" Padding="20,20,20,40">
@@ -21,8 +21,8 @@
                         SelectedItem="{Binding BusinessType}"
                         Title="Seleziona tipo"
                         FontFamily="PJSReg"
-                        TextColor="{StaticResource OnBackground}"
-                        TitleColor="{StaticResource Outline}"
+                        TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
+                        TitleColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
                         Margin="10,0"/>
             </Border>
 
@@ -55,7 +55,7 @@
             </Grid>
 
             <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
-                               HorizontalOptions="Center" Color="{StaticResource Primary}"/>
+                               HorizontalOptions="Center" Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

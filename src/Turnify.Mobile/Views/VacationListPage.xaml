@@ -6,7 +6,7 @@
              x:DataType="vm:VacationListViewModel"
              Title="Ferie e Permessi"
              Shell.NavBarIsVisible="False"
-             BackgroundColor="{StaticResource Background}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource DarkBackground}}">
 
     <Grid RowDefinitions="Auto,Auto,Auto,*">
 
@@ -14,8 +14,8 @@
         <Grid Grid.Row="0" Padding="20,54,20,16" MinimumHeightRequest="80">
             <Grid.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                    <GradientStop Color="{StaticResource HeaderGradientStart}" Offset="0"/>
-                    <GradientStop Color="{StaticResource HeaderGradientEnd}" Offset="1"/>
+                    <GradientStop Color="{AppThemeBinding Light={StaticResource HeaderGradientStart}, Dark={StaticResource DarkHeaderGradientStart}}" Offset="0"/>
+                    <GradientStop Color="{AppThemeBinding Light={StaticResource HeaderGradientEnd}, Dark={StaticResource DarkHeaderGradientEnd}}" Offset="1"/>
                 </LinearGradientBrush>
             </Grid.Background>
             <Grid ColumnDefinitions="*,Auto">
@@ -49,20 +49,20 @@
             <HorizontalStackLayout Spacing="8">
                 <!-- Tutte -->
                 <Border Padding="14,8"
-                        BackgroundColor="{StaticResource SurfaceContainerLow}"
-                        Stroke="{StaticResource OutlineVariant}" StrokeThickness="1.5">
+                        BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceContainerLow}, Dark={StaticResource DarkSurfaceContainerLow}}"
+                        Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1.5">
                     <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding SetFilterIndexCommand}" CommandParameter="0"/>
                     </Border.GestureRecognizers>
                     <Border.Triggers>
                         <DataTrigger TargetType="Border" Binding="{Binding FilterIndex}" Value="0">
-                            <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
+                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
                             <Setter Property="Stroke" Value="Transparent"/>
                         </DataTrigger>
                     </Border.Triggers>
                     <Label Text="Tutte" FontSize="12" FontAttributes="Bold" FontFamily="PJSBold"
-                           TextColor="{StaticResource OnSurfaceVariant}">
+                           TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}">
                         <Label.Triggers>
                             <DataTrigger TargetType="Label" Binding="{Binding FilterIndex}" Value="0">
                                 <Setter Property="TextColor" Value="White"/>
@@ -72,20 +72,20 @@
                 </Border>
                 <!-- In Attesa -->
                 <Border Padding="14,8"
-                        BackgroundColor="{StaticResource SurfaceContainerLow}"
-                        Stroke="{StaticResource OutlineVariant}" StrokeThickness="1.5">
+                        BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceContainerLow}, Dark={StaticResource DarkSurfaceContainerLow}}"
+                        Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1.5">
                     <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding SetFilterIndexCommand}" CommandParameter="1"/>
                     </Border.GestureRecognizers>
                     <Border.Triggers>
                         <DataTrigger TargetType="Border" Binding="{Binding FilterIndex}" Value="1">
-                            <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
+                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
                             <Setter Property="Stroke" Value="Transparent"/>
                         </DataTrigger>
                     </Border.Triggers>
                     <Label Text="In Attesa" FontSize="12" FontAttributes="Bold" FontFamily="PJSBold"
-                           TextColor="{StaticResource OnSurfaceVariant}">
+                           TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}">
                         <Label.Triggers>
                             <DataTrigger TargetType="Label" Binding="{Binding FilterIndex}" Value="1">
                                 <Setter Property="TextColor" Value="White"/>
@@ -95,20 +95,20 @@
                 </Border>
                 <!-- Approvate -->
                 <Border Padding="14,8"
-                        BackgroundColor="{StaticResource SurfaceContainerLow}"
-                        Stroke="{StaticResource OutlineVariant}" StrokeThickness="1.5">
+                        BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceContainerLow}, Dark={StaticResource DarkSurfaceContainerLow}}"
+                        Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1.5">
                     <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding SetFilterIndexCommand}" CommandParameter="2"/>
                     </Border.GestureRecognizers>
                     <Border.Triggers>
                         <DataTrigger TargetType="Border" Binding="{Binding FilterIndex}" Value="2">
-                            <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
+                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
                             <Setter Property="Stroke" Value="Transparent"/>
                         </DataTrigger>
                     </Border.Triggers>
                     <Label Text="Approvate" FontSize="12" FontAttributes="Bold" FontFamily="PJSBold"
-                           TextColor="{StaticResource OnSurfaceVariant}">
+                           TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}">
                         <Label.Triggers>
                             <DataTrigger TargetType="Label" Binding="{Binding FilterIndex}" Value="2">
                                 <Setter Property="TextColor" Value="White"/>
@@ -118,20 +118,20 @@
                 </Border>
                 <!-- Rifiutate -->
                 <Border Padding="14,8"
-                        BackgroundColor="{StaticResource SurfaceContainerLow}"
-                        Stroke="{StaticResource OutlineVariant}" StrokeThickness="1.5">
+                        BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceContainerLow}, Dark={StaticResource DarkSurfaceContainerLow}}"
+                        Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1.5">
                     <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding SetFilterIndexCommand}" CommandParameter="3"/>
                     </Border.GestureRecognizers>
                     <Border.Triggers>
                         <DataTrigger TargetType="Border" Binding="{Binding FilterIndex}" Value="3">
-                            <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
+                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
                             <Setter Property="Stroke" Value="Transparent"/>
                         </DataTrigger>
                     </Border.Triggers>
                     <Label Text="Rifiutate" FontSize="12" FontAttributes="Bold" FontFamily="PJSBold"
-                           TextColor="{StaticResource OnSurfaceVariant}">
+                           TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}">
                         <Label.Triggers>
                             <DataTrigger TargetType="Label" Binding="{Binding FilterIndex}" Value="3">
                                 <Setter Property="TextColor" Value="White"/>
@@ -160,7 +160,7 @@
             <CollectionView ItemsSource="{Binding Requests}" Margin="0,8,0,4">
                 <CollectionView.EmptyView>
                     <VerticalStackLayout HorizontalOptions="Center" Margin="0,52,0,0" Spacing="12">
-                        <Border BackgroundColor="{StaticResource Surface}"
+                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
                                 HeightRequest="68" WidthRequest="68"
                                 HorizontalOptions="Center">
                             <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
@@ -169,11 +169,11 @@
                         </Border>
                         <Label Text="Nessuna richiesta"
                                FontSize="17" FontAttributes="Bold" FontFamily="PJSBold"
-                               TextColor="{StaticResource OnBackground}"
+                               TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                                HorizontalOptions="Center"/>
                         <Label Text="Le richieste di ferie e permessi appariranno qui."
                                FontSize="14" FontFamily="PJSReg"
-                               TextColor="{StaticResource OnSurfaceVariant}"
+                               TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"
                                HorizontalOptions="Center" HorizontalTextAlignment="Center"
                                Margin="28,0"/>
                     </VerticalStackLayout>
@@ -201,8 +201,8 @@
                                 </SwipeItems>
                             </SwipeView.RightItems>
 
-                            <Border BackgroundColor="{StaticResource Surface}"
-                                    Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
+                                    Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
                                     Padding="0">
                                 <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
                                 <Border.Shadow>
@@ -224,12 +224,12 @@
                                                 <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
                                                 <Label Text="{Binding Initials}"
                                                        FontSize="12" FontAttributes="Bold" FontFamily="PJSBold"
-                                                       TextColor="{StaticResource Primary}"
+                                                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
                                                        HorizontalOptions="Center" VerticalOptions="Center"/>
                                             </Border>
                                             <Label Text="{Binding EmployeeName}"
                                                    FontSize="14" FontAttributes="Bold" FontFamily="PJSBold"
-                                                   TextColor="{StaticResource OnBackground}"
+                                                   TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                                                    VerticalOptions="Center"/>
                                         </HorizontalStackLayout>
 
@@ -238,10 +238,10 @@
                                             <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
                                                 <Label Text="{Binding TypeDisplay}"
                                                        FontSize="14" FontAttributes="Bold" FontFamily="PJSBold"
-                                                       TextColor="{StaticResource OnBackground}"/>
+                                                       TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
                                                 <Label Text="{Binding DateRange}"
                                                        FontSize="12" FontFamily="PJSReg"
-                                                       TextColor="{StaticResource OnSurfaceVariant}"/>
+                                                       TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"/>
                                             </VerticalStackLayout>
                                             <Border Grid.Column="1"
                                                     BackgroundColor="{Binding StatusBgColor}"
@@ -255,13 +255,13 @@
                                         </Grid>
 
                                         <!-- Days chip -->
-                                        <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
+                                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceContainerLow}, Dark={StaticResource DarkSurfaceContainerLow}}"
                                                 Stroke="Transparent" Padding="9,4"
                                                 HorizontalOptions="Start">
                                             <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
                                             <Label Text="{Binding TotalDays, StringFormat='{0} giorni lavorativi'}"
                                                    FontSize="11" FontAttributes="Bold" FontFamily="PJSBold"
-                                                   TextColor="{StaticResource OnSurfaceVariant}"/>
+                                                   TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"/>
                                         </Border>
 
                                         <!-- Review note -->
@@ -282,8 +282,8 @@
                                                     Command="{Binding Source={RelativeSource AncestorType={x:Type vm:VacationListViewModel}}, Path=EditRequestCommand}"
                                                     CommandParameter="{Binding .}"
                                                     BackgroundColor="Transparent"
-                                                    TextColor="{StaticResource Primary}"
-                                                    BorderColor="{StaticResource Primary}"
+                                                    TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
+                                                    BorderColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
                                                     BorderWidth="1.5" CornerRadius="9"
                                                     HeightRequest="38" FontSize="12"
                                                     FontAttributes="Bold" FontFamily="PJSBold"/>
@@ -339,13 +339,13 @@
         <ActivityIndicator Grid.Row="3"
                            IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
                            HorizontalOptions="Center" VerticalOptions="Center"
-                           Color="{StaticResource Primary}"/>
+                           Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
 
         <!-- ── New request bottom sheet overlay ──────────────── -->
         <Grid Grid.RowSpan="4"
               IsVisible="{Binding IsFormVisible}"
               BackgroundColor="#80000000">
-            <Border BackgroundColor="{StaticResource Surface}"
+            <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
                     Padding="24,8,24,36"
                     VerticalOptions="End"
                     Stroke="Transparent">
@@ -354,17 +354,17 @@
                     <Shadow Brush="#000000" Offset="0,-4" Radius="24" Opacity="0.14"/>
                 </Border.Shadow>
                 <VerticalStackLayout Spacing="0">
-                    <BoxView BackgroundColor="{StaticResource OutlineVariant}"
+                    <BoxView BackgroundColor="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}"
                              HeightRequest="4" WidthRequest="40" CornerRadius="2"
                              HorizontalOptions="Center" Margin="0,14,0,22"/>
                     <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,20">
                         <Label Grid.Column="0" Text="Nuova Richiesta"
                                FontSize="20" FontAttributes="Bold" FontFamily="PJSXBold"
-                               TextColor="{StaticResource OnBackground}" CharacterSpacing="-0.5"/>
+                               TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}" CharacterSpacing="-0.5"/>
                         <Button Grid.Column="1" Text="✕"
                                 Command="{Binding HideFormCommand}"
                                 BackgroundColor="Transparent"
-                                TextColor="{StaticResource OnSurfaceVariant}"
+                                TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"
                                 Padding="8,0" HeightRequest="36"/>
                     </Grid>
 
@@ -403,7 +403,7 @@
                     <Border Style="{StaticResource FieldBorder}" Margin="0,0,0,20">
                         <Editor Text="{Binding NewReason}"
                                 Placeholder="Descrivi brevemente il motivo…"
-                                PlaceholderColor="{StaticResource Outline}"
+                                PlaceholderColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
                                 FontFamily="PJSReg"
                                 AutoSize="TextChanges"
                                 MinimumHeightRequest="76"
@@ -414,7 +414,7 @@
                             Command="{Binding SubmitRequestCommand}"
                             Style="{StaticResource PrimaryButton}">
                         <Button.Shadow>
-                            <Shadow Brush="{StaticResource Primary}" Offset="0,4" Radius="16" Opacity="0.30"/>
+                            <Shadow Brush="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}" Offset="0,4" Radius="16" Opacity="0.30"/>
                         </Button.Shadow>
                     </Button>
                 </VerticalStackLayout>

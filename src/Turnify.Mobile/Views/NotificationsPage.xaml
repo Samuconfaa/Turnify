@@ -6,7 +6,7 @@
              x:DataType="vm:NotificationsViewModel"
              Title="Notifiche"
              Shell.NavBarIsVisible="False"
-             BackgroundColor="{StaticResource Background}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource DarkBackground}}">
 
     <Grid RowDefinitions="Auto,*">
 
@@ -14,8 +14,8 @@
         <Grid Grid.Row="0" Padding="20,54,20,20">
             <Grid.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                    <GradientStop Color="{StaticResource HeaderGradientStart}" Offset="0"/>
-                    <GradientStop Color="{StaticResource HeaderGradientEnd}" Offset="1"/>
+                    <GradientStop Color="{AppThemeBinding Light={StaticResource HeaderGradientStart}, Dark={StaticResource DarkHeaderGradientStart}}" Offset="0"/>
+                    <GradientStop Color="{AppThemeBinding Light={StaticResource HeaderGradientEnd}, Dark={StaticResource DarkHeaderGradientEnd}}" Offset="1"/>
                 </LinearGradientBrush>
             </Grid.Background>
             <Grid ColumnDefinitions="*,Auto">
@@ -31,7 +31,7 @@
                         <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
                         <Label Text="{Binding UnreadCount, StringFormat='{0} non lette'}"
                                FontSize="11" FontAttributes="Bold" FontFamily="PJSBold"
-                               TextColor="{StaticResource Primary}"/>
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
                     </Border>
                 </HorizontalStackLayout>
                 <!-- Mark all read -->
@@ -71,7 +71,7 @@
                     <VerticalStackLayout HorizontalOptions="Center"
                                          Margin="0,60,0,0" Spacing="14"
                                          IsVisible="{Binding HasError, Converter={StaticResource InverseBoolConverter}}">
-                        <Border BackgroundColor="{StaticResource Surface}"
+                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
                                 HeightRequest="68" WidthRequest="68"
                                 HorizontalOptions="Center">
                             <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
@@ -80,11 +80,11 @@
                         </Border>
                         <Label Text="Nessuna notifica"
                                FontSize="18" FontAttributes="Bold" FontFamily="PJSBold"
-                               TextColor="{StaticResource OnBackground}"
+                               TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                                HorizontalOptions="Center"/>
                         <Label Text="Le notifiche sui tuoi turni e ferie appariranno qui."
                                FontSize="14" FontFamily="PJSReg"
-                               TextColor="{StaticResource OnSurfaceVariant}"
+                               TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"
                                HorizontalOptions="Center" HorizontalTextAlignment="Center"
                                Margin="32,0"/>
                     </VerticalStackLayout>
@@ -123,21 +123,21 @@
                                 <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
                                     <Label Text="{Binding Title}"
                                            FontSize="14" FontAttributes="Bold" FontFamily="PJSBold"
-                                           TextColor="{StaticResource OnBackground}"
+                                           TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                                            LineBreakMode="TailTruncation"/>
                                     <Label Text="{Binding Body}"
                                            FontSize="13" FontFamily="PJSReg"
-                                           TextColor="{StaticResource OnSurfaceVariant}"
+                                           TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"
                                            LineBreakMode="WordWrap"/>
                                     <Label Text="{Binding TimeAgo}"
                                            FontSize="11" FontFamily="PJSReg"
-                                           TextColor="{StaticResource Outline}"
+                                           TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
                                            Margin="0,2,0,0"/>
                                 </VerticalStackLayout>
 
                                 <!-- Unread dot -->
                                 <Ellipse Grid.Column="2"
-                                         Fill="{StaticResource Primary}"
+                                         Fill="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
                                          HeightRequest="8" WidthRequest="8"
                                          VerticalOptions="Start"
                                          Margin="0,6,0,0">
@@ -157,6 +157,6 @@
         <ActivityIndicator Grid.Row="1"
                            IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
                            HorizontalOptions="Center" VerticalOptions="Center"
-                           Color="{StaticResource Primary}"/>
+                           Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
     </Grid>
 </ContentPage>

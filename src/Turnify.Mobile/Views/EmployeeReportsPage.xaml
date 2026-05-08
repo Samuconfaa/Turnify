@@ -5,7 +5,7 @@
              x:Class="Turnify.Mobile.Views.EmployeeReportsPage"
              x:DataType="vm:EmployeeReportsViewModel"
              Title="Report ore"
-             BackgroundColor="{StaticResource Background}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource DarkBackground}}">
 
     <Grid RowDefinitions="Auto,Auto,Auto,*">
 
@@ -13,17 +13,17 @@
         <VerticalStackLayout Grid.Row="0" Padding="20,18,20,4" Spacing="2">
             <Label Text="Report ore"
                    FontSize="26" FontAttributes="Bold" FontFamily="PJSXBold"
-                   TextColor="{StaticResource OnBackground}"
+                   TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                    CharacterSpacing="-0.8"/>
             <Label Text="Ore pianificate per dipendente"
                    FontSize="13" FontFamily="PJSReg"
-                   TextColor="{StaticResource Outline}"/>
+                   TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"/>
         </VerticalStackLayout>
 
         <!-- Filtri -->
         <Border Grid.Row="1"
-                BackgroundColor="{StaticResource Surface}"
-                Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
+                Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
                 Padding="16,12" Margin="20,8,20,0">
             <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
             <VerticalStackLayout Spacing="10">
@@ -32,7 +32,7 @@
                         <Label Text="DAL" Style="{StaticResource SectionLabel}"/>
                         <Border Style="{StaticResource FieldBorder}">
                             <DatePicker Date="{Binding From}"
-                                        TextColor="{StaticResource OnBackground}"
+                                        TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                                         FontFamily="PJSReg" Margin="16,0"/>
                         </Border>
                     </VerticalStackLayout>
@@ -40,7 +40,7 @@
                         <Label Text="AL" Style="{StaticResource SectionLabel}"/>
                         <Border Style="{StaticResource FieldBorder}">
                             <DatePicker Date="{Binding To}"
-                                        TextColor="{StaticResource OnBackground}"
+                                        TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                                         FontFamily="PJSReg" Margin="16,0"/>
                         </Border>
                     </VerticalStackLayout>
@@ -50,7 +50,7 @@
                     <Border Style="{StaticResource FieldBorder}">
                         <Picker ItemsSource="{Binding GroupByOptions}"
                                 SelectedItem="{Binding SelectedGroupBy}"
-                                TextColor="{StaticResource OnBackground}"
+                                TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                                 FontFamily="PJSReg" Margin="16,0"/>
                     </Border>
                 </VerticalStackLayout>
@@ -83,19 +83,19 @@
                                          IsVisible="{Binding IsEmptyState}">
                         <Label Text="Nessun dato disponibile"
                                FontSize="17" FontAttributes="Bold" FontFamily="PJSBold"
-                               TextColor="{StaticResource OnBackground}"
+                               TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                                HorizontalOptions="Center"/>
                         <Label Text="Seleziona un intervallo di date e premi Carica report."
                                FontSize="14" FontFamily="PJSReg"
-                               TextColor="{StaticResource OnSurfaceVariant}"
+                               TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"
                                HorizontalOptions="Center" HorizontalTextAlignment="Center"
                                Margin="8,0"/>
                     </VerticalStackLayout>
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="vm:EmployeeHoursReportDto">
-                        <Border BackgroundColor="{StaticResource Surface}"
-                                Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
+                                Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
                                 Padding="0" Margin="0,0,0,10">
                             <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
                             <Border.Shadow>
@@ -112,31 +112,31 @@
                                     <VerticalStackLayout Grid.Column="0" Spacing="3">
                                         <Label Text="{Binding EmployeeName}"
                                                FontSize="15" FontAttributes="Bold" FontFamily="PJSBold"
-                                               TextColor="{StaticResource OnBackground}"/>
+                                               TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
                                         <Label Text="{Binding TotalHoursDisplay}"
                                                FontSize="13" FontFamily="PJSSemi"
-                                               TextColor="{StaticResource Primary}"/>
+                                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
                                     </VerticalStackLayout>
                                     <Label Grid.Column="1" Text="›"
                                            FontSize="20" FontFamily="PJSBold"
-                                           TextColor="{StaticResource Outline}"
+                                           TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
                                            VerticalOptions="Center"/>
                                 </Grid>
 
                                 <!-- Breakdown espandibile -->
                                 <VerticalStackLayout IsVisible="{Binding IsExpanded}"
                                                      Padding="16,0,16,12" Spacing="6">
-                                    <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="0,0,0,6"/>
+                                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" Margin="0,0,0,6"/>
                                     <CollectionView ItemsSource="{Binding Breakdown}">
                                         <CollectionView.ItemTemplate>
                                             <DataTemplate x:DataType="vm:HoursBreakdownDto">
                                                 <Grid ColumnDefinitions="*,Auto" Padding="0,4">
                                                     <Label Grid.Column="0" Text="{Binding Period}"
                                                            FontSize="13" FontFamily="PJSReg"
-                                                           TextColor="{StaticResource OnSurfaceVariant}"/>
+                                                           TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"/>
                                                     <Label Grid.Column="1" Text="{Binding HoursDisplay}"
                                                            FontSize="13" FontAttributes="Bold" FontFamily="PJSSemi"
-                                                           TextColor="{StaticResource OnBackground}"/>
+                                                           TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
                                                 </Grid>
                                             </DataTemplate>
                                         </CollectionView.ItemTemplate>
@@ -153,6 +153,6 @@
                            IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
                            HorizontalOptions="Center" VerticalOptions="Start"
                            Margin="0,20,0,0"
-                           Color="{StaticResource Primary}"/>
+                           Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
     </Grid>
 </ContentPage>

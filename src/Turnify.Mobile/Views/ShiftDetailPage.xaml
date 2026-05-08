@@ -5,7 +5,7 @@
              x:Class="Turnify.Mobile.Views.ShiftDetailPage"
              x:DataType="vm:ShiftDetailViewModel"
              Title="{Binding Title}"
-             BackgroundColor="{StaticResource Background}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource DarkBackground}}">
 
     <ScrollView>
         <VerticalStackLayout Spacing="14" Padding="20,20,20,40">
@@ -18,8 +18,8 @@
                         SelectedItem="{Binding SelectedEmployee}"
                         Title="Seleziona dipendente"
                         FontFamily="PJSReg"
-                        TextColor="{StaticResource OnBackground}"
-                        TitleColor="{StaticResource Outline}"
+                        TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
+                        TitleColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
                         Margin="10,0"/>
             </Border>
 
@@ -53,7 +53,7 @@
                             Format="dddd dd MMMM yyyy"
                             MinimumDate="2020-01-01"
                             FontFamily="PJSReg"
-                            TextColor="{StaticResource OnBackground}"
+                            TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                             Margin="16,0"/>
             </Border>
 
@@ -64,7 +64,7 @@
                     <Border Style="{StaticResource FieldBorder}">
                         <TimePicker Time="{Binding StartTime}" Format="HH:mm"
                                     FontFamily="PJSReg"
-                                    TextColor="{StaticResource OnBackground}"
+                                    TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                                     Margin="16,0"/>
                     </Border>
                 </VerticalStackLayout>
@@ -73,7 +73,7 @@
                     <Border Style="{StaticResource FieldBorder}">
                         <TimePicker Time="{Binding EndTime}" Format="HH:mm"
                                     FontFamily="PJSReg"
-                                    TextColor="{StaticResource OnBackground}"
+                                    TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                                     Margin="16,0"/>
                     </Border>
                 </VerticalStackLayout>
@@ -90,8 +90,8 @@
             <Border Style="{StaticResource FieldBorder}">
                 <Editor Text="{Binding Note}" Placeholder="Es. Copertura per Mario assente…"
                         FontFamily="PJSReg"
-                        PlaceholderColor="{StaticResource Outline}"
-                        TextColor="{StaticResource OnBackground}"
+                        PlaceholderColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
+                        TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                         HeightRequest="80" Margin="14,8"/>
             </Border>
 
@@ -99,30 +99,30 @@
             <VerticalStackLayout Spacing="6" IsVisible="{Binding IsCreateMode}">
                 <Label Text="RIPETI TURNO (SETTIMANE SUCCESSIVE)"
                        Style="{StaticResource SectionLabel}" Margin="2,6,0,0"/>
-                <Border BackgroundColor="{StaticResource Surface}"
-                        Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
+                        Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
                         Padding="16,12">
                     <Border.StrokeShape><RoundRectangle CornerRadius="13"/></Border.StrokeShape>
                     <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="10">
                         <Label Grid.Column="0" Text="{Binding RepeatLabel}"
                                FontSize="14" FontFamily="PJSSemi"
-                               TextColor="{StaticResource OnBackground}"
+                               TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                                VerticalOptions="Center"/>
                         <Border Grid.Column="1"
-                                BackgroundColor="{StaticResource SurfaceContainerLow}"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceContainerLow}, Dark={StaticResource DarkSurfaceContainerLow}}"
                                 HeightRequest="40" WidthRequest="40"
-                                Stroke="{StaticResource OutlineVariant}" StrokeThickness="1">
+                                Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1">
                             <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding DecrementRepeatWeeksCommand}"/>
                             </Border.GestureRecognizers>
                             <Label Text="−" FontSize="18" FontAttributes="Bold" FontFamily="PJSBold"
-                                   TextColor="{StaticResource OnBackground}"
+                                   TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                                    HorizontalOptions="Center" VerticalOptions="Center"/>
                         </Border>
                         <Label Grid.Column="2" Text="{Binding RepeatWeeks}"
                                FontSize="16" FontAttributes="Bold" FontFamily="PJSBold"
-                               TextColor="{StaticResource Primary}"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
                                VerticalOptions="Center" HorizontalOptions="Center"
                                MinimumWidthRequest="28"/>
                         <Border Grid.Column="3"
@@ -167,7 +167,7 @@
                     Margin="0,4,0,0"/>
 
             <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
-                               HorizontalOptions="Center" Color="{StaticResource Primary}"/>
+                               HorizontalOptions="Center" Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
 
         </VerticalStackLayout>
     </ScrollView>

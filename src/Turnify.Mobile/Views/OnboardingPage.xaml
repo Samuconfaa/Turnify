@@ -5,7 +5,7 @@
              x:Class="Turnify.Mobile.Views.OnboardingPage"
              x:DataType="vm:OnboardingViewModel"
              Shell.NavBarIsVisible="False"
-             BackgroundColor="{StaticResource Background}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource DarkBackground}}">
 
     <Grid RowDefinitions="56,*,Auto">
 
@@ -13,8 +13,8 @@
         <Grid Grid.Row="0">
             <Grid.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                    <GradientStop Color="{StaticResource HeaderGradientStart}" Offset="0"/>
-                    <GradientStop Color="{StaticResource HeaderGradientEnd}" Offset="1"/>
+                    <GradientStop Color="{AppThemeBinding Light={StaticResource HeaderGradientStart}, Dark={StaticResource DarkHeaderGradientStart}}" Offset="0"/>
+                    <GradientStop Color="{AppThemeBinding Light={StaticResource HeaderGradientEnd}, Dark={StaticResource DarkHeaderGradientEnd}}" Offset="1"/>
                 </LinearGradientBrush>
             </Grid.Background>
             <Grid ColumnDefinitions="56,*,56" Padding="0">
@@ -82,8 +82,8 @@
                 <!-- ── STEP 1 – Benvenuto ── -->
                 <VerticalStackLayout IsVisible="{Binding IsStep1}"
                                      Spacing="24" Padding="20,36,20,20">
-                    <Border BackgroundColor="{StaticResource Surface}"
-                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
+                            Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
                             Padding="24">
                         <Border.StrokeShape><RoundRectangle CornerRadius="24"/></Border.StrokeShape>
                         <Border.Shadow>
@@ -91,12 +91,12 @@
                         </Border.Shadow>
                         <VerticalStackLayout Spacing="24">
                             <!-- Logo badge -->
-                            <Border BackgroundColor="{StaticResource Primary}"
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
                                     HeightRequest="80" WidthRequest="80"
                                     HorizontalOptions="Center">
                                 <Border.StrokeShape><RoundRectangle CornerRadius="24"/></Border.StrokeShape>
                                 <Border.Shadow>
-                                    <Shadow Brush="{StaticResource Primary}" Offset="0,4" Radius="16" Opacity="0.35"/>
+                                    <Shadow Brush="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}" Offset="0,4" Radius="16" Opacity="0.35"/>
                                 </Border.Shadow>
                                 <Label Text="T"
                                        FontSize="36" FontAttributes="Bold" FontFamily="PJSXBold"
@@ -106,18 +106,18 @@
                             <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
                                 <Label Text="Benvenuto in Turnify!"
                                        FontSize="24" FontAttributes="Bold" FontFamily="PJSXBold"
-                                       TextColor="{StaticResource OnBackground}"
+                                       TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                                        HorizontalOptions="Center" HorizontalTextAlignment="Center"
                                        CharacterSpacing="-0.5"/>
                                 <Label Text="Configura la tua azienda in 3 semplici passi. Ci vogliono meno di 2 minuti."
                                        FontSize="15" FontFamily="PJSReg"
-                                       TextColor="{StaticResource OnSurfaceVariant}"
+                                       TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"
                                        HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
                             </VerticalStackLayout>
                             <!-- Feature rows -->
                             <VerticalStackLayout Spacing="8">
-                                <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
-                                        Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceContainerLow}, Dark={StaticResource DarkSurfaceContainerLow}}"
+                                        Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
                                         Padding="14,12">
                                     <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
                                     <HorizontalStackLayout Spacing="14">
@@ -130,15 +130,15 @@
                                         <VerticalStackLayout Spacing="2" VerticalOptions="Center">
                                             <Label Text="Gestione Turni Automatica"
                                                    FontSize="13" FontAttributes="Bold" FontFamily="PJSBold"
-                                                   TextColor="{StaticResource OnBackground}"/>
+                                                   TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
                                             <Label Text="Ottimizza i tempi con scheduling intelligente."
                                                    FontSize="12" FontFamily="PJSReg"
-                                                   TextColor="{StaticResource OnSurfaceVariant}"/>
+                                                   TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"/>
                                         </VerticalStackLayout>
                                     </HorizontalStackLayout>
                                 </Border>
-                                <Border BackgroundColor="{StaticResource SurfaceContainerLow}"
-                                        Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceContainerLow}, Dark={StaticResource DarkSurfaceContainerLow}}"
+                                        Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
                                         Padding="14,12">
                                     <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
                                     <HorizontalStackLayout Spacing="14">
@@ -151,10 +151,10 @@
                                         <VerticalStackLayout Spacing="2" VerticalOptions="Center">
                                             <Label Text="Team Management"
                                                    FontSize="13" FontAttributes="Bold" FontFamily="PJSBold"
-                                                   TextColor="{StaticResource OnBackground}"/>
+                                                   TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
                                             <Label Text="Tieni traccia di disponibilità e ferie."
                                                    FontSize="12" FontFamily="PJSReg"
-                                                   TextColor="{StaticResource OnSurfaceVariant}"/>
+                                                   TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"/>
                                         </VerticalStackLayout>
                                     </HorizontalStackLayout>
                                 </Border>
@@ -169,11 +169,11 @@
                     <VerticalStackLayout Spacing="6">
                         <Label Text="La tua attività"
                                FontSize="24" FontAttributes="Bold" FontFamily="PJSXBold"
-                               TextColor="{StaticResource OnBackground}"
+                               TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                                CharacterSpacing="-0.5"/>
                         <Label Text="Inserisci i dati base della tua attività"
                                FontSize="14" FontFamily="PJSReg"
-                               TextColor="{StaticResource OnSurfaceVariant}"/>
+                               TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"/>
                     </VerticalStackLayout>
 
                     <VerticalStackLayout Spacing="14">
@@ -191,8 +191,8 @@
                                         SelectedItem="{Binding BusinessType}"
                                         Title="Seleziona tipo"
                                         FontFamily="PJSReg"
-                                        TextColor="{StaticResource OnBackground}"
-                                        TitleColor="{StaticResource Outline}"
+                                        TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
+                                        TitleColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
                                         Margin="10,0"/>
                             </Border>
                         </VerticalStackLayout>
@@ -210,7 +210,7 @@
                             Padding="14,12">
                         <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
                         <HorizontalStackLayout Spacing="12">
-                            <Border BackgroundColor="{StaticResource Primary}"
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
                                     HeightRequest="34" WidthRequest="34" Stroke="Transparent">
                                 <Border.StrokeShape><RoundRectangle CornerRadius="9"/></Border.StrokeShape>
                                 <Label Text="i" FontSize="16" FontAttributes="Bold" FontFamily="PJSBold"
@@ -220,10 +220,10 @@
                             <VerticalStackLayout Spacing="2" HorizontalOptions="Fill">
                                 <Label Text="Perché queste informazioni?"
                                        FontSize="12" FontAttributes="Bold" FontFamily="PJSBold"
-                                       TextColor="{StaticResource Primary}"/>
+                                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
                                 <Label Text="Personalizzano la tua dashboard e i report."
                                        FontSize="12" FontFamily="PJSReg"
-                                       TextColor="{StaticResource Primary}"/>
+                                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
                             </VerticalStackLayout>
                         </HorizontalStackLayout>
                     </Border>
@@ -235,17 +235,17 @@
                     <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
                         <Label Text="Il tuo primo dipendente"
                                FontSize="24" FontAttributes="Bold" FontFamily="PJSXBold"
-                               TextColor="{StaticResource OnBackground}"
+                               TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                                HorizontalOptions="Center" HorizontalTextAlignment="Center"
                                CharacterSpacing="-0.5"/>
                         <Label Text="Aggiungi almeno un dipendente per iniziare a creare turni"
                                FontSize="14" FontFamily="PJSReg"
-                               TextColor="{StaticResource OnSurfaceVariant}"
+                               TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"
                                HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
                     </VerticalStackLayout>
 
-                    <Border BackgroundColor="{StaticResource Surface}"
-                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
+                            Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
                             Padding="20">
                         <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
                         <Border.Shadow>
@@ -281,7 +281,7 @@
                                 </Border>
                                 <Label Text="Il dipendente potrà cambiarla al primo accesso."
                                        FontSize="11" FontFamily="PJSReg"
-                                       TextColor="{StaticResource Outline}" Margin="4,0,0,0"/>
+                                       TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}" Margin="4,0,0,0"/>
                             </VerticalStackLayout>
                         </VerticalStackLayout>
                     </Border>
@@ -291,7 +291,7 @@
         </ScrollView>
 
         <!-- ── Footer buttons ────────────────────────────────── -->
-        <Grid Grid.Row="2" BackgroundColor="{StaticResource Background}"
+        <Grid Grid.Row="2" BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource DarkBackground}}"
               Padding="20,12,20,32">
 
             <!-- Step 1 -->
@@ -300,13 +300,13 @@
                         Command="{Binding GoToStep2Command}"
                         Style="{StaticResource PrimaryButton}">
                     <Button.Shadow>
-                        <Shadow Brush="{StaticResource Primary}" Offset="0,4" Radius="16" Opacity="0.30"/>
+                        <Shadow Brush="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}" Offset="0,4" Radius="16" Opacity="0.30"/>
                     </Button.Shadow>
                 </Button>
                 <Button Text="Salta per ora"
                         Command="{Binding SkipOnboardingCommand}"
                         BackgroundColor="Transparent"
-                        TextColor="{StaticResource Outline}"
+                        TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
                         FontSize="13" FontFamily="PJSReg"
                         HeightRequest="36"/>
             </VerticalStackLayout>
@@ -317,7 +317,7 @@
                     Command="{Binding SaveBusinessAndContinueCommand}"
                     Style="{StaticResource PrimaryButton}">
                 <Button.Shadow>
-                    <Shadow Brush="{StaticResource Primary}" Offset="0,4" Radius="16" Opacity="0.30"/>
+                    <Shadow Brush="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}" Offset="0,4" Radius="16" Opacity="0.30"/>
                 </Button.Shadow>
             </Button>
 
@@ -327,19 +327,19 @@
                         Command="{Binding SaveEmployeeAndCompleteCommand}"
                         Style="{StaticResource PrimaryButton}">
                     <Button.Shadow>
-                        <Shadow Brush="{StaticResource Primary}" Offset="0,4" Radius="16" Opacity="0.30"/>
+                        <Shadow Brush="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}" Offset="0,4" Radius="16" Opacity="0.30"/>
                     </Button.Shadow>
                 </Button>
                 <Button Text="Aggiungi dopo"
                         Command="{Binding SkipEmployeeCommand}"
                         BackgroundColor="Transparent"
-                        TextColor="{StaticResource Outline}"
+                        TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
                         FontSize="13" FontFamily="PJSReg"
                         HeightRequest="36"/>
             </VerticalStackLayout>
 
             <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
-                               HorizontalOptions="Center" Color="{StaticResource Primary}"/>
+                               HorizontalOptions="Center" Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
         </Grid>
 
     </Grid>

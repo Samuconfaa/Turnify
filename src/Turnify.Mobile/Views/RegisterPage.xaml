@@ -6,7 +6,7 @@
              x:DataType="vm:RegisterViewModel"
              Title="{Binding Title}"
              Shell.NavBarIsVisible="False"
-             BackgroundColor="{StaticResource Background}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource DarkBackground}}">
 
     <ScrollView>
         <VerticalStackLayout Spacing="0" Padding="0">
@@ -29,7 +29,7 @@
                 </VerticalStackLayout>
             </Grid>
 
-            <Border BackgroundColor="{StaticResource Surface}"
+            <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
                     Stroke="Transparent"
                     Margin="0,-20,0,0">
                 <Border.StrokeShape><RoundRectangle CornerRadius="24,24,0,0"/></Border.StrokeShape>
@@ -38,8 +38,8 @@
                     <!-- Dati Azienda -->
                     <Label Text="DATI AZIENDA" Style="{StaticResource SectionLabel}"/>
 
-                    <Border BackgroundColor="{StaticResource Surface}"
-                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
+                            Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
                             Padding="0">
                         <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
                         <Border.Shadow>
@@ -80,8 +80,8 @@
                     <!-- Account Admin -->
                     <Label Text="ACCOUNT AMMINISTRATORE" Style="{StaticResource SectionLabel}"/>
 
-                    <Border BackgroundColor="{StaticResource Surface}"
-                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
+                            Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
                             Padding="0">
                         <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
                         <Border.Shadow>
@@ -125,16 +125,16 @@
                     <ActivityIndicator IsRunning="{Binding IsBusy}"
                                        IsVisible="{Binding IsBusy}"
                                        HorizontalOptions="Center"
-                                       Color="{StaticResource Primary}"/>
+                                       Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
 
                     <HorizontalStackLayout HorizontalOptions="Center" Spacing="5">
                         <Label Text="Hai già un account?"
                                FontSize="14" FontFamily="PJSReg"
-                               TextColor="{StaticResource OnSurfaceVariant}"
+                               TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"
                                VerticalOptions="Center"/>
                         <Label Text="Accedi"
                                FontSize="14" FontAttributes="Bold" FontFamily="PJSBold"
-                               TextColor="{StaticResource Primary}"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
                                VerticalOptions="Center">
                             <Label.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding GoBackCommand}"/>

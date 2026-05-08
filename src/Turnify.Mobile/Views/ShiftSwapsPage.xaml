@@ -6,7 +6,7 @@
              x:Class="Turnify.Mobile.Views.ShiftSwapsPage"
              x:DataType="vm:ShiftSwapsViewModel"
              Title="{Binding Title}"
-             BackgroundColor="{StaticResource Background}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource DarkBackground}}">
 
     <Grid RowDefinitions="Auto,*">
         <comp:StaleDataBanner Grid.Row="0"/>
@@ -18,7 +18,7 @@
                 <!-- Loading -->
                 <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
                                    HorizontalOptions="Center" Margin="0,30,0,0"
-                                   Color="{StaticResource Primary}"/>
+                                   Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
 
                 <!-- Error -->
                 <VerticalStackLayout IsVisible="{Binding HasError}" Spacing="8" Margin="0,30,0,0">
@@ -31,9 +31,9 @@
                 <VerticalStackLayout IsVisible="{Binding IsEmptyState}" Spacing="8" Margin="0,40,0,0">
                     <Label Text="🔄" FontSize="44" HorizontalOptions="Center"/>
                     <Label Text="Nessuno scambio turno" FontFamily="PJSSemi" FontSize="16"
-                           TextColor="{StaticResource OnBackground}" HorizontalOptions="Center"/>
+                           TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}" HorizontalOptions="Center"/>
                     <Label Text="Le proposte di scambio ricevute e inviate appariranno qui."
-                           FontFamily="PJSReg" FontSize="13" TextColor="{StaticResource Outline}"
+                           FontFamily="PJSReg" FontSize="13" TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
                            HorizontalOptions="Center" HorizontalTextAlignment="Center" Margin="20,0"/>
                 </VerticalStackLayout>
 
@@ -43,8 +43,8 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="vm:ShiftSwapsViewModel+SwapDto">
                             <Border Margin="0,0,0,10" Padding="16,14"
-                                    BackgroundColor="{StaticResource Surface}"
-                                    Stroke="{StaticResource OutlineVariant}" StrokeThickness="1">
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
+                                    Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1">
                                 <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
                                 <VerticalStackLayout Spacing="6">
 
@@ -53,14 +53,14 @@
                                         <Label Grid.Column="0"
                                                Text="{Binding StatusDisplay}"
                                                FontFamily="PJSSemi" FontSize="13"
-                                               TextColor="{StaticResource OnBackground}"/>
+                                               TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
                                         <Label Grid.Column="1"
                                                Text="{Binding CreatedAt, StringFormat='{0:dd/MM/yy}'}"
                                                FontFamily="PJSReg" FontSize="12"
-                                               TextColor="{StaticResource Outline}"/>
+                                               TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"/>
                                     </Grid>
 
-                                    <Label FontFamily="PJSReg" FontSize="12" TextColor="{StaticResource Outline}">
+                                    <Label FontFamily="PJSReg" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}">
                                         <Label.FormattedText>
                                             <FormattedString>
                                                 <Span Text="Turno "/>
@@ -72,7 +72,7 @@
                                     </Label>
 
                                     <Label Text="{Binding Note}" FontFamily="PJSReg" FontSize="12"
-                                           TextColor="{StaticResource Outline}"
+                                           TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
                                            IsVisible="{Binding Note, Converter={StaticResource StringNotEmptyConverter}}"/>
 
                                     <!-- Peer buttons (employee sees pending swaps directed to them) -->

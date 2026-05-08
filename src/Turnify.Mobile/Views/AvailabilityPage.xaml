@@ -5,23 +5,23 @@
              x:Class="Turnify.Mobile.Views.AvailabilityPage"
              x:DataType="vm:AvailabilityViewModel"
              Title="{Binding Title}"
-             BackgroundColor="{StaticResource Background}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource DarkBackground}}">
 
     <ScrollView>
         <VerticalStackLayout Spacing="10" Padding="20,20,20,40">
 
             <Label Text="Disponibilità settimanale"
                    FontSize="22" FontAttributes="Bold" FontFamily="PJSXBold"
-                   TextColor="{StaticResource OnBackground}"
+                   TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                    CharacterSpacing="-0.5" Margin="0,0,0,4"/>
             <Label Text="Seleziona i giorni in cui sei disponibile a ricevere turni."
                    FontSize="13" FontFamily="PJSReg"
-                   TextColor="{StaticResource OnSurfaceVariant}"
+                   TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"
                    Margin="0,0,0,14"/>
 
             <!-- Grouped in a single card -->
-            <Border BackgroundColor="{StaticResource Surface}"
-                    Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+            <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
+                    Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
                     Padding="0">
                 <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
                 <Border.Shadow>
@@ -33,51 +33,51 @@
                     <Grid ColumnDefinitions="*,Auto" Padding="18,14">
                         <Label Grid.Column="0" Text="Lunedì"
                                FontSize="15" FontFamily="PJSSemi"
-                               TextColor="{StaticResource OnBackground}" VerticalOptions="Center"/>
+                               TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}" VerticalOptions="Center"/>
                         <Switch Grid.Column="1" IsToggled="{Binding Monday}"
-                                OnColor="{StaticResource Primary}" ThumbColor="White"/>
+                                OnColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}" ThumbColor="White"/>
                     </Grid>
-                    <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="18,0"/>
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" Margin="18,0"/>
 
                     <!-- Martedì -->
                     <Grid ColumnDefinitions="*,Auto" Padding="18,14">
                         <Label Grid.Column="0" Text="Martedì"
                                FontSize="15" FontFamily="PJSSemi"
-                               TextColor="{StaticResource OnBackground}" VerticalOptions="Center"/>
+                               TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}" VerticalOptions="Center"/>
                         <Switch Grid.Column="1" IsToggled="{Binding Tuesday}"
-                                OnColor="{StaticResource Primary}" ThumbColor="White"/>
+                                OnColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}" ThumbColor="White"/>
                     </Grid>
-                    <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="18,0"/>
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" Margin="18,0"/>
 
                     <!-- Mercoledì -->
                     <Grid ColumnDefinitions="*,Auto" Padding="18,14">
                         <Label Grid.Column="0" Text="Mercoledì"
                                FontSize="15" FontFamily="PJSSemi"
-                               TextColor="{StaticResource OnBackground}" VerticalOptions="Center"/>
+                               TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}" VerticalOptions="Center"/>
                         <Switch Grid.Column="1" IsToggled="{Binding Wednesday}"
-                                OnColor="{StaticResource Primary}" ThumbColor="White"/>
+                                OnColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}" ThumbColor="White"/>
                     </Grid>
-                    <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="18,0"/>
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" Margin="18,0"/>
 
                     <!-- Giovedì -->
                     <Grid ColumnDefinitions="*,Auto" Padding="18,14">
                         <Label Grid.Column="0" Text="Giovedì"
                                FontSize="15" FontFamily="PJSSemi"
-                               TextColor="{StaticResource OnBackground}" VerticalOptions="Center"/>
+                               TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}" VerticalOptions="Center"/>
                         <Switch Grid.Column="1" IsToggled="{Binding Thursday}"
-                                OnColor="{StaticResource Primary}" ThumbColor="White"/>
+                                OnColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}" ThumbColor="White"/>
                     </Grid>
-                    <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="18,0"/>
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" Margin="18,0"/>
 
                     <!-- Venerdì -->
                     <Grid ColumnDefinitions="*,Auto" Padding="18,14">
                         <Label Grid.Column="0" Text="Venerdì"
                                FontSize="15" FontFamily="PJSSemi"
-                               TextColor="{StaticResource OnBackground}" VerticalOptions="Center"/>
+                               TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}" VerticalOptions="Center"/>
                         <Switch Grid.Column="1" IsToggled="{Binding Friday}"
-                                OnColor="{StaticResource Primary}" ThumbColor="White"/>
+                                OnColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}" ThumbColor="White"/>
                     </Grid>
-                    <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="18,0"/>
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" Margin="18,0"/>
 
                     <!-- Sabato -->
                     <Grid ColumnDefinitions="*,Auto" Padding="18,14">
@@ -85,9 +85,9 @@
                                FontSize="15" FontFamily="PJSSemi"
                                TextColor="{StaticResource Warning}" VerticalOptions="Center"/>
                         <Switch Grid.Column="1" IsToggled="{Binding Saturday}"
-                                OnColor="{StaticResource Primary}" ThumbColor="White"/>
+                                OnColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}" ThumbColor="White"/>
                     </Grid>
-                    <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="18,0"/>
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" Margin="18,0"/>
 
                     <!-- Domenica -->
                     <Grid ColumnDefinitions="*,Auto" Padding="18,14">
@@ -95,7 +95,7 @@
                                FontSize="15" FontFamily="PJSSemi"
                                TextColor="{StaticResource Error}" VerticalOptions="Center"/>
                         <Switch Grid.Column="1" IsToggled="{Binding Sunday}"
-                                OnColor="{StaticResource Primary}" ThumbColor="White"/>
+                                OnColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}" ThumbColor="White"/>
                     </Grid>
 
                 </VerticalStackLayout>
@@ -107,7 +107,7 @@
                     Margin="0,12,0,0"/>
 
             <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
-                               HorizontalOptions="Center" Color="{StaticResource Primary}"/>
+                               HorizontalOptions="Center" Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
 
         </VerticalStackLayout>
     </ScrollView>

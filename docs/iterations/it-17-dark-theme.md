@@ -4,7 +4,7 @@
 2026-05-08
 
 ## Commit
-(da aggiungere al merge)
+4fbe3fb — feat(mobile): aggiungi tema scuro Deep Forest con AppThemeBinding
 
 ## Obiettivo
 Aggiungere il tema scuro "Deep Forest" all'app MAUI usando `AppThemeBinding`, con una palette verde-foresta tinted derivata da Material Design 3.

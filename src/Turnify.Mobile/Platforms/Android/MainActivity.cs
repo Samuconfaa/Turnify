@@ -1,7 +1,9 @@
 using Android.App;
 using Android.Content.PM;
 using Android.OS;
+using CommunityToolkit.Mvvm.Messaging;
 using Plugin.Firebase.CloudMessaging;
+using Turnify.Mobile.Messages;
 
 namespace Turnify.Mobile;
 
@@ -21,10 +23,17 @@ public class MainActivity : MauiAppCompatActivity
 
         FirebaseCloudMessagingImplementation.Initialize();
 
+        // Notifica l'app quando arriva un push (app in foreground)
+        CrossFirebaseCloudMessaging.Current.NotificationReceived += (_, _) =>
+            MainThread.BeginInvokeOnMainThread(() =>
+                WeakReferenceMessenger.Default.Send(new PushNotificationReceivedMessage()));
+
+        // Token aggiornato: forza ri-registrazione al prossimo login
+        CrossFirebaseCloudMessaging.Current.TokenRefreshed += (_, _) =>
+            Microsoft.Maui.Storage.SecureStorage.Default.Remove("fcm_device_token");
+
         // Android 13+ richiede il permesso POST_NOTIFICATIONS a runtime
         if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu)
-        {
             RequestPermissions(new[] { Android.Manifest.Permission.PostNotifications }, 0);
-        }
     }
 }

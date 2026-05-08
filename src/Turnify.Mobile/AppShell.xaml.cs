@@ -28,9 +28,13 @@ public partial class AppShell : Shell
         WeakReferenceMessenger.Default.Register<PushNotificationReceivedMessage>(this, (_, _) =>
         {
             var current = NotificationsTab.Title;
-            var existing = current.Contains('(')
-                ? int.Parse(current[current.IndexOf('(') + 1..current.IndexOf(')')])
-                : 0;
+            var existing = 0;
+            if (current.Contains('('))
+            {
+                var start = current.IndexOf('(') + 1;
+                var end   = current.IndexOf(')');
+                existing  = int.Parse(current.Substring(start, end - start));
+            }
             NotificationsTab.Title = $"Notifiche ({existing + 1})";
         });
 

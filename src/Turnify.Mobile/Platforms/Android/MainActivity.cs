@@ -21,15 +21,14 @@ public class MainActivity : MauiAppCompatActivity
     {
         base.OnCreate(savedInstanceState);
 
-        FirebaseCloudMessagingImplementation.Initialize();
-
-        // Notifica l'app quando arriva un push (app in foreground)
+        // Firebase si auto-inizializza da google-services.json
+        // Notifica l'app quando arriva un push con app in foreground
         CrossFirebaseCloudMessaging.Current.NotificationReceived += (_, _) =>
             MainThread.BeginInvokeOnMainThread(() =>
                 WeakReferenceMessenger.Default.Send(new PushNotificationReceivedMessage()));
 
         // Token aggiornato: forza ri-registrazione al prossimo login
-        CrossFirebaseCloudMessaging.Current.TokenRefreshed += (_, _) =>
+        CrossFirebaseCloudMessaging.Current.TokenChanged += (_, _) =>
             Microsoft.Maui.Storage.SecureStorage.Default.Remove("fcm_device_token");
 
         // Android 13+ richiede il permesso POST_NOTIFICATIONS a runtime

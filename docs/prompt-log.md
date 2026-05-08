@@ -2,6 +2,36 @@
 
 ---
 
+## Prompt 49
+
+### Data
+2026-05-09
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Analisi delle lacune del progetto e implementazione iterazione 18: FCM push mobile, badge real-time, rimozione codice morto (geolocalizzazione, sistema inviti).
+
+### Prompt
+> Analizzare cosa manca assolutamente all'app Turnify. Implementare: (1) integrazione Firebase Cloud Messaging sul mobile con `Plugin.Firebase.CloudMessaging`, token registrato dopo login; (2) badge tab Notifiche aggiornato in real-time su push in foreground via `WeakReferenceMessenger`; (3) rimozione campi `CheckInLatitude`/`CheckInLongitude` da `AttendanceLog` e drop tabella `Invites` via EF migration.
+
+### Output utile
+- `MobilePushService.GetDeviceTokenAsync()` → `CrossFirebaseCloudMessaging.Current.GetTokenAsync()`
+- `MainActivity.cs`: eventi `NotificationReceived` e `TokenChanged` su `CrossFirebaseCloudMessaging.Current`
+- `LoginViewModel`: `_ = _pushService.RegisterAsync()` dopo login riuscito
+- `NotificationsViewModel`: `IRecipient<PushNotificationReceivedMessage>` ricarica lista su push
+- `AppShell.xaml.cs`: incremento badge immediato su `PushNotificationReceivedMessage`
+- Migration `CleanupDeadCode`: drop colonne geo + drop tabella Invites
+
+### Decisione presa
+Accettato con fix minori
+
+### Motivazione
+Richiesti fix iterativi su: nome API Plugin.Firebase (`Initialize` non esiste → auto-init da google-services.json; `TokenRefreshed` → `TokenChanged`); sintassi Range C# in AppShell; parsing `.env` DotNetEnv con JSON multi-riga (risolto con apici singoli).
+
+---
+
 ## Prompt 48
 
 ### Data

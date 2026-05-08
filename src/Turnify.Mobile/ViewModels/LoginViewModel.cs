@@ -16,6 +16,7 @@ public partial class LoginViewModel : BaseViewModel, IQueryAttributable
 {
     private readonly IAuthService _authService;
     private readonly IAppNavigationService _appNavigation;
+    private readonly MobilePushService _pushService;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
@@ -50,10 +51,11 @@ public partial class LoginViewModel : BaseViewModel, IQueryAttributable
 
     public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
 
-    public LoginViewModel(IAuthService authService, IAppNavigationService appNavigation)
+    public LoginViewModel(IAuthService authService, IAppNavigationService appNavigation, MobilePushService pushService)
     {
         _authService   = authService;
         _appNavigation = appNavigation;
+        _pushService   = pushService;
         Title          = "Login";
     }
 
@@ -110,6 +112,8 @@ public partial class LoginViewModel : BaseViewModel, IQueryAttributable
             await SecureStorage.Default.SetAsync("user_role", isAdmin ? "Admin" : "Employee");
             Preferences.Default.Set("user_role_cached",  isAdmin ? "Admin" : "Employee");
             Preferences.Default.Set("has_valid_session", true);
+
+            _ = _pushService.RegisterAsync();
 
             if (isAdmin && OnboardingViewModel.NeedsOnboarding())
             {

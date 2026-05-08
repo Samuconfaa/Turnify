@@ -74,6 +74,14 @@
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.1" />
 	</ItemGroup>
 
+	<ItemGroup Condition="$(TargetFramework.Contains('-android'))">
+		<PackageReference Include="Plugin.Firebase.CloudMessaging" Version="2.*" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(TargetFramework.Contains('-android'))">
+		<GoogleServicesJson Include="Platforms\Android\google-services.json" />
+	</ItemGroup>
+
 	<ItemGroup>
 	  <ProjectReference Include="..\Api\Turnify.Core\Turnify.Core.csproj" />
 	</ItemGroup>

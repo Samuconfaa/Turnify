@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
+using Turnify.Mobile.Messages;
 
 namespace Turnify.Mobile.ViewModels;
 
@@ -51,7 +52,8 @@ public class NotificationDto
         : "#F0F7FF";
 }
 
-public partial class NotificationsViewModel : BaseViewModel
+public partial class NotificationsViewModel : BaseViewModel,
+    IRecipient<PushNotificationReceivedMessage>
 {
     private readonly HttpClient _httpClient;
 
@@ -67,6 +69,14 @@ public partial class NotificationsViewModel : BaseViewModel
     {
         _httpClient = httpClientFactory.CreateClient("TurnifyApi");
         Title = "Notifiche";
+
+        // Ascolta push FCM in arrivo per aggiornare badge in real-time
+        WeakReferenceMessenger.Default.Register<PushNotificationReceivedMessage>(this);
+    }
+
+    void IRecipient<PushNotificationReceivedMessage>.Receive(PushNotificationReceivedMessage message)
+    {
+        _ = LoadAsync();
     }
 
     public async Task OnAppearingAsync() => await LoadAsync();

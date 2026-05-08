@@ -555,3 +555,31 @@ Derivata dallo stato attuale del repository e dalle verifiche documentate:
 - 527 sostituzioni `{StaticResource X}` → `{AppThemeBinding}` in 27 view
 
 **Status:** ✅ Completata (2026-05-08)
+
+---
+
+### Iterazione 18 — FCM push + badge real-time + cleanup codice morto
+
+**Obiettivo:** Completare F14 (notifiche push FCM) sul mobile, badge real-time e rimozione codice morto.
+
+**Deliverable:**
+- `Plugin.Firebase.CloudMessaging` integrato, token registrato dopo login
+- `MobilePushService.GetDeviceTokenAsync()` implementato
+- Badge tab Notifiche aggiornato in real-time su push in foreground
+- Rimossi campi geolocalizzazione da `AttendanceLog` e tabella `Invites` dal DB
+
+**Status:** ✅ Completata (2026-05-09)
+
+---
+
+### Iterazione 19 — Paginazione + fix warning + verifica notifiche
+
+**Obiettivo:** Aggiungere paginazione alle liste principali, risolvere warning di build residui e verificare il flusso notifiche end-to-end.
+
+**Deliverable:**
+- Fix CA1416 in `MainActivity.cs`, fix MVVMTK0034 in `ProfileViewModel.cs`
+- Verifica flusso: admin crea turno → notifica appare nella tab dipendente
+- `PaginatedResult<T>` DTO + paginazione su `EmployeesController`, `AttendanceController`, `VacationRequestsController`
+- Infinite scroll su `EmployeeListPage`, `AttendanceHistoryPage`, `VacationListPage`
+
+**Status:** 🔲 Pianificata

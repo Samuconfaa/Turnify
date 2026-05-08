@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
+using Turnify.Mobile.Messages;
 
 namespace Turnify.Mobile;
 
@@ -16,11 +17,25 @@ public partial class AppShell : Shell
         RegisterAllRoutes();
         ConfigureForRole(isAdmin);
 
-        // Aggiorna il badge della tab Notifiche quando cambia il conteggio non letti
+        // Aggiorna il badge quando NotificationsViewModel comunica il conteggio esatto
         WeakReferenceMessenger.Default.Register<ValueChangedMessage<int>>(this, (_, msg) =>
         {
             var count = msg.Value;
             NotificationsTab.Title = count > 0 ? $"Notifiche ({count})" : "Notifiche";
+        });
+
+        // Incrementa il badge immediatamente quando arriva un push (anche fuori dalla tab Notifiche)
+        WeakReferenceMessenger.Default.Register<PushNotificationReceivedMessage>(this, (_, _) =>
+        {
+            var current = NotificationsTab.Title;
+            var existing = 0;
+            if (current.Contains('('))
+            {
+                var start = current.IndexOf('(') + 1;
+                var end   = current.IndexOf(')');
+                existing  = int.Parse(current.Substring(start, end - start));
+            }
+            NotificationsTab.Title = $"Notifiche ({existing + 1})";
         });
 
         // Naviga alla schermata iniziale corretta dopo l'init

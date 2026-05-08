@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Turnify.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using Turnify.Infrastructure.Data;
 namespace Turnify.Infrastructure.Migrations
 {
     [DbContext(typeof(TurnifyDbContext))]
-    partial class TurnifyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260508212549_CleanupDeadCode")]
+    partial class CleanupDeadCode
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

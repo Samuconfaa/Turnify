@@ -11,8 +11,6 @@ public class AttendanceLog
     public DateTime CheckInTime { get; set; }
     public DateTime? CheckOutTime { get; set; }
     public CheckInMethod CheckInMethod { get; set; }
-    public decimal? CheckInLatitude { get; set; }
-    public decimal? CheckInLongitude { get; set; }
     public string Notes { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
 }

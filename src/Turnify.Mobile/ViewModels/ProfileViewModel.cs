@@ -37,6 +37,14 @@ public partial class ProfileViewModel : BaseViewModel
     [ObservableProperty] private bool _hasError;
     [ObservableProperty] private string _errorMessage = string.Empty;
 
+    [ObservableProperty] private bool _isDarkTheme;
+
+    partial void OnIsDarkThemeChanged(bool value)
+    {
+        Application.Current!.UserAppTheme = value ? AppTheme.Dark : AppTheme.Light;
+        Preferences.Default.Set("AppTheme", value ? "Dark" : "Light");
+    }
+
     // Avatar state
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShowPhoto))]
@@ -94,6 +102,8 @@ public partial class ProfileViewModel : BaseViewModel
     {
         await LoadProfileAsync();
         LoadSavedAvatar();
+        _isDarkTheme = Preferences.Default.Get("AppTheme", "Light") == "Dark";
+        OnPropertyChanged(nameof(IsDarkTheme));
     }
 
     private void LoadSavedAvatar()

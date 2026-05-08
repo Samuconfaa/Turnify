@@ -1,4 +1,5 @@
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Storage;
 using Turnify.Mobile.Services;
 using Turnify.Mobile.ViewModels;
 using Turnify.Mobile.Views;
@@ -15,6 +16,14 @@ public partial class App : Application
         InitializeComponent();
         _sessionService = sessionService;
         _appNavigation  = appNavigation;
+
+        var saved = Preferences.Default.Get("AppTheme", "System");
+        UserAppTheme = saved switch
+        {
+            "Dark"  => AppTheme.Dark,
+            "Light" => AppTheme.Light,
+            _       => AppTheme.Unspecified,
+        };
     }
 
     protected override Window CreateWindow(IActivationState? activationState)

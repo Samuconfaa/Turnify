@@ -6,7 +6,7 @@
              x:DataType="vm:RoleSelectionViewModel"
              Title="{Binding Title}"
              Shell.NavBarIsVisible="False"
-             BackgroundColor="{StaticResource HeaderGradientStart}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource HeaderGradientStart}, Dark={StaticResource DarkHeaderGradientStart}}">
 
     <Grid RowDefinitions="220,*">
 
@@ -14,8 +14,8 @@
         <Grid Grid.Row="0">
             <Grid.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                    <GradientStop Color="{StaticResource HeaderGradientStart}" Offset="0"/>
-                    <GradientStop Color="{StaticResource Primary}" Offset="1"/>
+                    <GradientStop Color="{AppThemeBinding Light={StaticResource HeaderGradientStart}, Dark={StaticResource DarkHeaderGradientStart}}" Offset="0"/>
+                    <GradientStop Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}" Offset="1"/>
                 </LinearGradientBrush>
             </Grid.Background>
             <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center"
@@ -39,7 +39,7 @@
         </Grid>
 
         <!-- ── Bottom sheet ───────────────────────────────────── -->
-        <Border Grid.Row="1" BackgroundColor="{StaticResource Surface}"
+        <Border Grid.Row="1" BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
                 Stroke="Transparent" Margin="0,-28,0,0">
             <Border.StrokeShape><RoundRectangle CornerRadius="28,28,0,0"/></Border.StrokeShape>
             <Border.Shadow>
@@ -51,26 +51,26 @@
 
                     <!-- Drag handle -->
                     <BoxView HeightRequest="5" WidthRequest="44" CornerRadius="3"
-                             BackgroundColor="{StaticResource SurfaceVariant}"
+                             BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceVariant}, Dark={StaticResource DarkSurfaceVariant}}"
                              HorizontalOptions="Center" Margin="0,-16,0,0"/>
 
                     <Label Text="Benvenuto" FontSize="22" FontAttributes="Bold" FontFamily="PJSXBold"
-                           TextColor="{StaticResource OnBackground}" CharacterSpacing="-0.5"
+                           TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}" CharacterSpacing="-0.5"
                            HorizontalOptions="Center"/>
                     <Label Text="Come vuoi accedere?" FontSize="14" FontFamily="PJSReg"
-                           TextColor="{StaticResource Outline}" HorizontalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}" HorizontalOptions="Center"
                            Margin="0,-8,0,4"/>
 
                     <!-- Card Admin -->
-                    <Border BackgroundColor="{StaticResource SurfaceContainer}"
-                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceContainer}, Dark={StaticResource DarkSurfaceContainer}}"
+                            Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
                             Padding="18,16">
                         <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding GoToAdminLoginCommand}"/>
                         </Border.GestureRecognizers>
                         <Grid ColumnDefinitions="56,*,28" ColumnSpacing="14" VerticalOptions="Center">
-                            <Border Grid.Column="0" BackgroundColor="{StaticResource PrimaryContainer}"
+                            <Border Grid.Column="0" BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryContainer}, Dark={StaticResource DarkPrimaryContainer}}"
                                     Stroke="Transparent" WidthRequest="48" HeightRequest="48"
                                     HorizontalOptions="Start" VerticalOptions="Center">
                                 <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
@@ -79,20 +79,20 @@
                             </Border>
                             <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="3">
                                 <Label Text="Admin / Manager" FontSize="15" FontAttributes="Bold"
-                                       FontFamily="PJSBold" TextColor="{StaticResource OnBackground}"/>
+                                       FontFamily="PJSBold" TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
                                 <Label Text="Gestisci dipendenti, turni e ferie"
                                        FontSize="13" FontFamily="PJSReg"
-                                       TextColor="{StaticResource Outline}"/>
+                                       TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"/>
                             </VerticalStackLayout>
                             <Label Grid.Column="2" Text="›" FontSize="22" FontFamily="PJSBold"
-                                   TextColor="{StaticResource Primary}"
+                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
                                    HorizontalOptions="End" VerticalOptions="Center"/>
                         </Grid>
                     </Border>
 
                     <!-- Card Dipendente -->
-                    <Border BackgroundColor="{StaticResource SurfaceContainer}"
-                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceContainer}, Dark={StaticResource DarkSurfaceContainer}}"
+                            Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
                             Padding="18,16">
                         <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
                         <Border.GestureRecognizers>
@@ -108,13 +108,13 @@
                             </Border>
                             <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="3">
                                 <Label Text="Dipendente" FontSize="15" FontAttributes="Bold"
-                                       FontFamily="PJSBold" TextColor="{StaticResource OnBackground}"/>
+                                       FontFamily="PJSBold" TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
                                 <Label Text="Visualizza turni, ferie e presenze"
                                        FontSize="13" FontFamily="PJSReg"
-                                       TextColor="{StaticResource Outline}"/>
+                                       TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"/>
                             </VerticalStackLayout>
                             <Label Grid.Column="2" Text="›" FontSize="22" FontFamily="PJSBold"
-                                   TextColor="{StaticResource Primary}"
+                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
                                    HorizontalOptions="End" VerticalOptions="Center"/>
                         </Grid>
                     </Border>
@@ -122,26 +122,26 @@
                     <!-- Divider -->
                     <Grid ColumnDefinitions="*,Auto,*" ColumnSpacing="12" Margin="0,4,0,0">
                         <BoxView Grid.Column="0" HeightRequest="1"
-                                 BackgroundColor="{StaticResource OutlineVariant}" VerticalOptions="Center"/>
+                                 BackgroundColor="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" VerticalOptions="Center"/>
                         <Label Grid.Column="1" Text="oppure" FontSize="12" FontFamily="PJSReg"
-                               TextColor="{StaticResource Outline}"/>
+                               TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"/>
                         <BoxView Grid.Column="2" HeightRequest="1"
-                                 BackgroundColor="{StaticResource OutlineVariant}" VerticalOptions="Center"/>
+                                 BackgroundColor="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" VerticalOptions="Center"/>
                     </Grid>
 
                     <Button Text="Registra la tua azienda" Command="{Binding GoToRegisterCommand}"
                             Style="{StaticResource OutlineButton}"/>
 
-                    <Label FontSize="11" FontFamily="PJSReg" TextColor="{StaticResource Outline}"
+                    <Label FontSize="11" FontFamily="PJSReg" TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
                            HorizontalOptions="Center" HorizontalTextAlignment="Center">
                         <Label.FormattedText>
                             <FormattedString>
                                 <Span Text="Accedendo, accetti i nostri "/>
                                 <Span Text="Termini di Servizio"
-                                      TextColor="{StaticResource Primary}" FontAttributes="Bold"/>
+                                      TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}" FontAttributes="Bold"/>
                                 <Span Text=" e la "/>
                                 <Span Text="Privacy Policy"
-                                      TextColor="{StaticResource Primary}" FontAttributes="Bold"/>
+                                      TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}" FontAttributes="Bold"/>
                             </FormattedString>
                         </Label.FormattedText>
                     </Label>

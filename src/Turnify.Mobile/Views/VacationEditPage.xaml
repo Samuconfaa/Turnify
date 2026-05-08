@@ -5,7 +5,7 @@
              x:Class="Turnify.Mobile.Views.VacationEditPage"
              x:DataType="vm:VacationEditViewModel"
              Title="{Binding Title}"
-             BackgroundColor="{StaticResource Background}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource DarkBackground}}">
 
     <ScrollView>
         <VerticalStackLayout Spacing="14" Padding="20,20,20,40">
@@ -16,7 +16,7 @@
                     Padding="16,12">
                 <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
                 <HorizontalStackLayout Spacing="12">
-                    <Border BackgroundColor="{StaticResource Primary}"
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
                             HeightRequest="36" WidthRequest="36" Stroke="Transparent">
                         <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
                         <Label Text="👤" FontSize="16"
@@ -24,7 +24,7 @@
                     </Border>
                     <Label Text="{Binding EmployeeName}"
                            FontSize="15" FontAttributes="Bold" FontFamily="PJSBold"
-                           TextColor="{StaticResource Primary}"
+                           TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
                            VerticalOptions="Center"/>
                 </HorizontalStackLayout>
             </Border>
@@ -35,7 +35,7 @@
                 <Picker ItemsSource="{Binding VacationTypesDisplay}"
                         SelectedIndex="{Binding SelectedTypeIndex}"
                         FontFamily="PJSReg"
-                        TextColor="{StaticResource OnBackground}"
+                        TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                         Margin="10,0"/>
             </Border>
 
@@ -60,7 +60,7 @@
                     <Border Style="{StaticResource FieldBorder}">
                         <DatePicker Date="{Binding StartDate}"
                                     FontFamily="PJSReg"
-                                    TextColor="{StaticResource OnBackground}"
+                                    TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                                     Margin="12,0"/>
                     </Border>
                 </VerticalStackLayout>
@@ -69,7 +69,7 @@
                     <Border Style="{StaticResource FieldBorder}">
                         <DatePicker Date="{Binding EndDate}"
                                     FontFamily="PJSReg"
-                                    TextColor="{StaticResource OnBackground}"
+                                    TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                                     Margin="12,0"/>
                     </Border>
                 </VerticalStackLayout>
@@ -81,7 +81,7 @@
                 <Picker ItemsSource="{Binding StatusOptionsDisplay}"
                         SelectedIndex="{Binding SelectedStatusIndex}"
                         FontFamily="PJSReg"
-                        TextColor="{StaticResource OnBackground}"
+                        TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                         Margin="10,0"/>
             </Border>
 
@@ -90,9 +90,9 @@
             <Border Style="{StaticResource FieldBorder}">
                 <Editor Text="{Binding Reason}"
                         Placeholder="Motivazione…"
-                        PlaceholderColor="{StaticResource Outline}"
+                        PlaceholderColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
                         FontFamily="PJSReg"
-                        TextColor="{StaticResource OnBackground}"
+                        TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                         HeightRequest="80" Margin="14,8"/>
             </Border>
 
@@ -102,7 +102,7 @@
                     Margin="0,12,0,0"/>
 
             <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
-                               HorizontalOptions="Center" Color="{StaticResource Primary}"/>
+                               HorizontalOptions="Center" Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

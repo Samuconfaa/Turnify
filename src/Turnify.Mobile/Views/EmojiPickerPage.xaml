@@ -5,14 +5,14 @@
              x:Class="Turnify.Mobile.Views.EmojiPickerPage"
              x:DataType="vm:EmojiPickerViewModel"
              Title="Scegli emoji"
-             BackgroundColor="{StaticResource Background}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource DarkBackground}}">
 
     <Grid RowDefinitions="Auto,*,Auto" Padding="16">
 
         <Label Grid.Row="0"
                Text="Tocca un'emoji per selezionarla come foto profilo"
                FontSize="14"
-               TextColor="{StaticResource OnSurfaceVariant}"
+               TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"
                HorizontalTextAlignment="Center"
                Margin="0,8,0,16"/>
 
@@ -26,8 +26,8 @@
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="x:String">
-                    <Border BackgroundColor="{StaticResource Surface}"
-                            Stroke="{StaticResource Outline}"
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
+                            Stroke="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
                             StrokeThickness="1"
                             Padding="4"
                             HeightRequest="56" WidthRequest="56">
@@ -47,8 +47,8 @@
                 Text="Annulla"
                 Command="{Binding CloseCommand}"
                 BackgroundColor="Transparent"
-                TextColor="{StaticResource Primary}"
-                BorderColor="{StaticResource Primary}"
+                TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
+                BorderColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
                 BorderWidth="1"
                 CornerRadius="10"
                 HeightRequest="48"

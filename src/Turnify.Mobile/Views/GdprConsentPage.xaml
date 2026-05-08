@@ -5,14 +5,14 @@
              x:Class="Turnify.Mobile.Views.GdprConsentPage"
              x:DataType="vm:GdprConsentViewModel"
              Shell.NavBarIsVisible="False"
-             BackgroundColor="{StaticResource Background}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource DarkBackground}}">
 
     <Grid RowDefinitions="56,*,Auto">
 
         <!-- Header -->
         <Border Grid.Row="0"
-                BackgroundColor="{StaticResource Surface}"
-                Stroke="{StaticResource OutlineVariant}" StrokeThickness="0,0,0,1"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
+                Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="0,0,0,1"
                 Padding="20,0">
             <Border.StrokeShape><RoundRectangle CornerRadius="0"/></Border.StrokeShape>
             <HorizontalStackLayout VerticalOptions="Center" Spacing="10">
@@ -25,7 +25,7 @@
                 </Border>
                 <Label Text="Privacy &amp; Terms"
                        FontSize="17" FontAttributes="Bold" FontFamily="PJSBold"
-                       TextColor="{StaticResource OnBackground}"
+                       TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                        VerticalOptions="Center"/>
             </HorizontalStackLayout>
         </Border>
@@ -46,18 +46,18 @@
                     </Border>
                     <Label Text="La tua privacy è importante"
                            FontSize="22" FontAttributes="Bold" FontFamily="PJSXBold"
-                           TextColor="{StaticResource OnBackground}"
+                           TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                            HorizontalOptions="Center" HorizontalTextAlignment="Center"
                            CharacterSpacing="-0.5"/>
                     <Label Text="Prima di iniziare, leggi come trattiamo i tuoi dati."
                            FontSize="14" FontFamily="PJSReg"
-                           TextColor="{StaticResource OnSurfaceVariant}"
+                           TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"
                            HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
                 </VerticalStackLayout>
 
                 <!-- Value props -->
-                <Border BackgroundColor="{StaticResource Surface}"
-                        Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
+                        Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
                         Padding="0">
                     <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
                     <Border.Shadow>
@@ -75,14 +75,14 @@
                             <VerticalStackLayout Spacing="2" VerticalOptions="Center" HorizontalOptions="Fill">
                                 <Label Text="Dati al sicuro"
                                        FontSize="13" FontAttributes="Bold" FontFamily="PJSBold"
-                                       TextColor="{StaticResource OnBackground}"/>
+                                       TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
                                 <Label Text="Cifrati e conservati su server italiani"
                                        FontSize="12" FontFamily="PJSReg"
-                                       TextColor="{StaticResource OnSurfaceVariant}"/>
+                                       TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"/>
                             </VerticalStackLayout>
                         </HorizontalStackLayout>
 
-                        <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="16,0"/>
+                        <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" Margin="16,0"/>
 
                         <HorizontalStackLayout Spacing="14" Padding="16,16">
                             <Border BackgroundColor="{StaticResource SuccessLight}"
@@ -94,14 +94,14 @@
                             <VerticalStackLayout Spacing="2" VerticalOptions="Center" HorizontalOptions="Fill">
                                 <Label Text="Solo per te"
                                        FontSize="13" FontAttributes="Bold" FontFamily="PJSBold"
-                                       TextColor="{StaticResource OnBackground}"/>
+                                       TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
                                 <Label Text="Non vendiamo i tuoi dati a terze parti, mai"
                                        FontSize="12" FontFamily="PJSReg"
-                                       TextColor="{StaticResource OnSurfaceVariant}"/>
+                                       TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"/>
                             </VerticalStackLayout>
                         </HorizontalStackLayout>
 
-                        <BoxView HeightRequest="1" Color="{StaticResource OutlineVariant}" Margin="16,0"/>
+                        <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" Margin="16,0"/>
 
                         <HorizontalStackLayout Spacing="14" Padding="16,16">
                             <Border BackgroundColor="{StaticResource PurpleLight}"
@@ -113,10 +113,10 @@
                             <VerticalStackLayout Spacing="2" VerticalOptions="Center" HorizontalOptions="Fill">
                                 <Label Text="Controllo totale"
                                        FontSize="13" FontAttributes="Bold" FontFamily="PJSBold"
-                                       TextColor="{StaticResource OnBackground}"/>
+                                       TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
                                 <Label Text="Esporta o elimina i dati in qualsiasi momento"
                                        FontSize="12" FontFamily="PJSReg"
-                                       TextColor="{StaticResource OnSurfaceVariant}"/>
+                                       TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"/>
                             </VerticalStackLayout>
                         </HorizontalStackLayout>
 
@@ -126,23 +126,23 @@
                 <!-- Consents -->
                 <VerticalStackLayout Spacing="14">
                     <!-- Obbligatorio -->
-                    <Border BackgroundColor="{StaticResource Surface}"
-                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
+                            Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
                             Padding="16,14">
                         <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
                         <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14">
                             <CheckBox Grid.Column="0"
                                       IsChecked="{Binding PrivacyAccepted}"
-                                      Color="{StaticResource Primary}"
+                                      Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
                                       VerticalOptions="Start"
                                       Margin="0,2,0,0"/>
                             <Label Grid.Column="1" FontSize="14" FontFamily="PJSReg"
-                                   TextColor="{StaticResource OnBackground}">
+                                   TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}">
                                 <Label.FormattedText>
                                     <FormattedString>
                                         <Span Text="Ho letto e accetto la "/>
                                         <Span Text="Privacy Policy"
-                                              TextColor="{StaticResource Primary}"
+                                              TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
                                               FontAttributes="Bold"
                                               TextDecorations="Underline">
                                             <Span.GestureRecognizers>
@@ -151,7 +151,7 @@
                                         </Span>
                                         <Span Text=" e i "/>
                                         <Span Text="Termini di Servizio"
-                                              TextColor="{StaticResource Primary}"
+                                              TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
                                               FontAttributes="Bold"
                                               TextDecorations="Underline">
                                             <Span.GestureRecognizers>
@@ -165,27 +165,27 @@
                     </Border>
 
                     <!-- Marketing -->
-                    <Border BackgroundColor="{StaticResource Surface}"
-                            Stroke="{StaticResource OutlineVariant}" StrokeThickness="1"
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
+                            Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
                             Padding="16,14">
                         <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
                         <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14">
                             <CheckBox Grid.Column="0"
                                       IsChecked="{Binding MarketingAccepted}"
-                                      Color="{StaticResource Primary}"
+                                      Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
                                       VerticalOptions="Start"
                                       Margin="0,2,0,0"/>
                             <Label Grid.Column="1"
                                    Text="Acconsento a ricevere comunicazioni di prodotto e aggiornamenti (opzionale)"
                                    FontSize="14" FontFamily="PJSReg"
-                                   TextColor="{StaticResource OnBackground}"
+                                   TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                                    LineBreakMode="WordWrap"/>
                         </Grid>
                     </Border>
                 </VerticalStackLayout>
 
                 <Label FontSize="11" FontFamily="PJSReg"
-                       TextColor="{StaticResource Outline}"
+                       TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
                        HorizontalTextAlignment="Center"
                        LineBreakMode="WordWrap">
                     <Label.FormattedText>
@@ -200,7 +200,7 @@
         </ScrollView>
 
         <!-- Footer CTA -->
-        <Grid Grid.Row="2" BackgroundColor="{StaticResource Background}" Padding="20,12,20,36">
+        <Grid Grid.Row="2" BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource DarkBackground}}" Padding="20,12,20,36">
             <Button Text="Accetta e continua"
                     Command="{Binding AcceptAndContinueCommand}"
                     HeightRequest="52" CornerRadius="14"
@@ -212,8 +212,8 @@
                         <Setter Property="IsEnabled" Value="True"/>
                     </DataTrigger>
                     <DataTrigger TargetType="Button" Binding="{Binding CanProceed}" Value="False">
-                        <Setter Property="BackgroundColor" Value="{StaticResource OutlineVariant}"/>
-                        <Setter Property="TextColor" Value="{StaticResource Outline}"/>
+                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}"/>
+                        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"/>
                         <Setter Property="IsEnabled" Value="False"/>
                     </DataTrigger>
                 </Button.Triggers>

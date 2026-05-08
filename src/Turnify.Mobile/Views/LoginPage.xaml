@@ -6,7 +6,7 @@
              x:DataType="vm:LoginViewModel"
              Title="{Binding Title}"
              Shell.NavBarIsVisible="False"
-             BackgroundColor="{StaticResource HeaderGradientStart}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource HeaderGradientStart}, Dark={StaticResource DarkHeaderGradientStart}}">
 
     <Grid RowDefinitions="220,*">
 
@@ -14,8 +14,8 @@
         <Grid Grid.Row="0">
             <Grid.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                    <GradientStop Color="{StaticResource HeaderGradientStart}" Offset="0"/>
-                    <GradientStop Color="{StaticResource Primary}" Offset="1"/>
+                    <GradientStop Color="{AppThemeBinding Light={StaticResource HeaderGradientStart}, Dark={StaticResource DarkHeaderGradientStart}}" Offset="0"/>
+                    <GradientStop Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}" Offset="1"/>
                 </LinearGradientBrush>
             </Grid.Background>
             <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center"
@@ -39,7 +39,7 @@
         </Grid>
 
         <!-- ── Bottom sheet ───────────────────────────────────── -->
-        <Border Grid.Row="1" BackgroundColor="{StaticResource Surface}"
+        <Border Grid.Row="1" BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
                 Stroke="Transparent" Margin="0,-28,0,0">
             <Border.StrokeShape><RoundRectangle CornerRadius="28,28,0,0"/></Border.StrokeShape>
             <Border.Shadow>
@@ -51,12 +51,12 @@
 
                     <!-- Drag handle -->
                     <BoxView HeightRequest="5" WidthRequest="44" CornerRadius="3"
-                             BackgroundColor="{StaticResource SurfaceVariant}"
+                             BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceVariant}, Dark={StaticResource DarkSurfaceVariant}}"
                              HorizontalOptions="Center" Margin="0,-16,0,0"/>
 
                     <!-- Back button -->
                     <Label FontSize="13" FontFamily="PJSSemi"
-                           TextColor="{StaticResource Primary}"
+                           TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
                            HorizontalOptions="Start" Margin="0,-4,0,0">
                         <Label.FormattedText>
                             <FormattedString>
@@ -70,7 +70,7 @@
                     </Label>
 
                     <Label Text="{Binding LoginTitle}" FontSize="22" FontAttributes="Bold"
-                           FontFamily="PJSXBold" TextColor="{StaticResource OnBackground}"
+                           FontFamily="PJSXBold" TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
                            CharacterSpacing="-0.5" HorizontalOptions="Center" Margin="0,-6,0,0"/>
 
                     <!-- Error banner -->
@@ -120,7 +120,7 @@
 
                     <!-- Forgot password -->
                     <Label Text="Password dimenticata?" FontSize="13" FontAttributes="Bold"
-                           FontFamily="PJSSemi" TextColor="{StaticResource Primary}"
+                           FontFamily="PJSSemi" TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
                            HorizontalOptions="End" IsVisible="{Binding IsAdminMode}" Margin="0,-8,0,0">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding GoToForgotPasswordCommand}"/>
@@ -132,36 +132,36 @@
                     <Button Text="Accedi" Command="{Binding LoginCommand}"
                             Style="{StaticResource PrimaryButton}">
                         <Button.Shadow>
-                            <Shadow Brush="{StaticResource Primary}" Offset="0,4" Radius="16" Opacity="0.30"/>
+                            <Shadow Brush="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}" Offset="0,4" Radius="16" Opacity="0.30"/>
                         </Button.Shadow>
                     </Button>
 
                     <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
-                                       HorizontalOptions="Center" Color="{StaticResource Primary}"/>
+                                       HorizontalOptions="Center" Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
 
                     <!-- Divider -->
                     <Grid ColumnDefinitions="*,Auto,*" ColumnSpacing="12">
                         <BoxView Grid.Column="0" HeightRequest="1"
-                                 BackgroundColor="{StaticResource OutlineVariant}" VerticalOptions="Center"/>
+                                 BackgroundColor="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" VerticalOptions="Center"/>
                         <Label Grid.Column="1" Text="oppure" FontSize="12" FontFamily="PJSReg"
-                               TextColor="{StaticResource Outline}"/>
+                               TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"/>
                         <BoxView Grid.Column="2" HeightRequest="1"
-                                 BackgroundColor="{StaticResource OutlineVariant}" VerticalOptions="Center"/>
+                                 BackgroundColor="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" VerticalOptions="Center"/>
                     </Grid>
 
                     <Button Text="Registra la tua azienda" Command="{Binding GoToRegisterCommand}"
                             Style="{StaticResource OutlineButton}"/>
 
-                    <Label FontSize="11" FontFamily="PJSReg" TextColor="{StaticResource Outline}"
+                    <Label FontSize="11" FontFamily="PJSReg" TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
                            HorizontalOptions="Center" HorizontalTextAlignment="Center">
                         <Label.FormattedText>
                             <FormattedString>
                                 <Span Text="Accedendo, accetti i nostri "/>
                                 <Span Text="Termini di Servizio"
-                                      TextColor="{StaticResource Primary}" FontAttributes="Bold"/>
+                                      TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}" FontAttributes="Bold"/>
                                 <Span Text=" e la "/>
                                 <Span Text="Privacy Policy"
-                                      TextColor="{StaticResource Primary}" FontAttributes="Bold"/>
+                                      TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}" FontAttributes="Bold"/>
                             </FormattedString>
                         </Label.FormattedText>
                     </Label>

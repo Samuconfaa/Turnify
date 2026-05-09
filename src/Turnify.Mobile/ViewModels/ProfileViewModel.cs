@@ -102,8 +102,7 @@ public partial class ProfileViewModel : BaseViewModel
     {
         await LoadProfileAsync();
         LoadSavedAvatar();
-        _isDarkTheme = Preferences.Default.Get("AppTheme", "Light") == "Dark";
-        OnPropertyChanged(nameof(IsDarkTheme));
+        IsDarkTheme = Preferences.Default.Get("AppTheme", "Light") == "Dark";
     }
 
     private void LoadSavedAvatar()

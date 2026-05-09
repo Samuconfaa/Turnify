@@ -32,7 +32,7 @@ public class MainActivity : MauiAppCompatActivity
             Microsoft.Maui.Storage.SecureStorage.Default.Remove("fcm_device_token");
 
         // Android 13+ richiede il permesso POST_NOTIFICATIONS a runtime
-        if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu)
+        if (OperatingSystem.IsAndroidVersionAtLeast(33))
             RequestPermissions(new[] { Android.Manifest.Permission.PostNotifications }, 0);
     }
 }

@@ -95,6 +95,7 @@ public class VacationRequestsController : ControllerBase
         var employees = await _employeeRepository.GetAllByCompanyIdAsync(companyId, null, ct);
         var nameMap   = employees.ToDictionary(e => e.Id, e => $"{e.FirstName} {e.LastName}".Trim());
 
+        var total = requests.Count;
         var paged = requests
             .OrderByDescending(r => r.CreatedAt)
             .Skip((page - 1) * pageSize)
@@ -116,7 +117,7 @@ public class VacationRequestsController : ControllerBase
             })
             .ToList();
 
-        return Ok(paged);
+        return Ok(new { data = paged, total, page, pageSize, hasMore = page * pageSize < total });
     }
 
     [HttpPost]

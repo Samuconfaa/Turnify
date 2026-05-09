@@ -45,11 +45,14 @@ public partial class AttendanceHistoryViewModel : BaseViewModel
     [ObservableProperty] private string  _monthLabel = string.Empty;
     [ObservableProperty] private bool    _hasError;
     [ObservableProperty] private string  _errorMessage = string.Empty;
+    [ObservableProperty] private bool    _isLoadingMore;
 
     public ObservableCollection<AttendanceEntryDto> Entries { get; } = new();
 
     private int _year  = DateTime.Now.Year;
     private int _month = DateTime.Now.Month;
+    private int _currentPage = 1;
+    private bool _hasMore;
 
     public AttendanceHistoryViewModel(IHttpClientFactory httpClientFactory)
     {
@@ -86,13 +89,15 @@ public partial class AttendanceHistoryViewModel : BaseViewModel
             var from = new DateTime(_year, _month, 1, 0, 0, 0, DateTimeKind.Utc).ToString("o");
             var to   = new DateTime(_year, _month, 1, 0, 0, 0, DateTimeKind.Utc).AddMonths(1).ToString("o");
 
+            _currentPage = 1;
             var result = await _httpClient.GetFromJsonAsync<AttendanceHistoryResponse>(
-                $"api/attendance/history?from={Uri.EscapeDataString(from)}&to={Uri.EscapeDataString(to)}&pageSize=100");
+                $"api/attendance/history?from={Uri.EscapeDataString(from)}&to={Uri.EscapeDataString(to)}&page=1&pageSize=30");
 
             Entries.Clear();
             if (result?.Data != null)
                 foreach (var e in result.Data)
                     Entries.Add(e);
+            _hasMore = result?.HasMore ?? false;
         }
         catch (HttpRequestException)
         {
@@ -106,6 +111,27 @@ public partial class AttendanceHistoryViewModel : BaseViewModel
             _ = ErrorReporterService.Current?.ReportAsync(ex, screenName: nameof(AttendanceHistoryViewModel));
         }
         finally { IsBusy = false; }
+    }
+
+    [RelayCommand]
+    private async Task LoadMoreAsync()
+    {
+        if (IsLoadingMore || !_hasMore || IsBusy) return;
+        IsLoadingMore = true;
+        try
+        {
+            _currentPage++;
+            var from = new DateTime(_year, _month, 1, 0, 0, 0, DateTimeKind.Utc).ToString("o");
+            var to   = new DateTime(_year, _month, 1, 0, 0, 0, DateTimeKind.Utc).AddMonths(1).ToString("o");
+            var result = await _httpClient.GetFromJsonAsync<AttendanceHistoryResponse>(
+                $"api/attendance/history?from={Uri.EscapeDataString(from)}&to={Uri.EscapeDataString(to)}&page={_currentPage}&pageSize=30");
+            if (result?.Data != null)
+                foreach (var e in result.Data) Entries.Add(e);
+            _hasMore = result?.HasMore ?? false;
+        }
+        catch (HttpRequestException) { }
+        catch (TaskCanceledException) { }
+        finally { IsLoadingMore = false; }
     }
 
     [RelayCommand]
@@ -131,6 +157,7 @@ public partial class AttendanceHistoryViewModel : BaseViewModel
 
 public class AttendanceHistoryResponse
 {
-    [JsonPropertyName("data")]  public System.Collections.Generic.List<AttendanceEntryDto> Data  { get; set; } = new();
-    [JsonPropertyName("total")] public int Total { get; set; }
+    [JsonPropertyName("data")]    public System.Collections.Generic.List<AttendanceEntryDto> Data    { get; set; } = new();
+    [JsonPropertyName("total")]   public int Total   { get; set; }
+    [JsonPropertyName("hasMore")] public bool HasMore { get; set; }
 }

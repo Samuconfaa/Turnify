@@ -2,6 +2,35 @@
 
 ---
 
+## Prompt 50
+
+### Data
+2026-05-09
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Iterazione 19: fix warning di build residui (CA1416, MVVMTK0034), paginazione server-side su tre controller API, infinite scroll sui tre CollectionView MAUI principali.
+
+### Prompt
+> Implementare iterazione 19: (1) fix CA1416 in `MainActivity.cs` usando `OperatingSystem.IsAndroidVersionAtLeast(33)`; (2) fix MVVMTK0034 in `ProfileViewModel.cs` assegnando via proprietà `IsDarkTheme` invece del backing field; (3) creare `PaginatedResult<T>` DTO; (4) aggiungere `page`/`pageSize` a `EmployeesController.GetEmployees` con risposta `PaginatedResult<EmployeeDto>`; (5) aggiungere `hasMore` a `AttendanceController.GetHistory` e `VacationRequestsController.GetVacationRequests`; (6) aggiungere `LoadMoreCommand` + `RemainingItemsThreshold` su `EmployeeListViewModel/Page`, `AttendanceHistoryViewModel/Page`, `VacationListViewModel/Page`.
+
+### Output utile
+- `OperatingSystem.IsAndroidVersionAtLeast(33)` elimina CA1416 senza `#pragma` suppress
+- Proprietà `IsDarkTheme =` invece di `_isDarkTheme =` + `OnPropertyChanged` elimina MVVMTK0034
+- `PaginatedResult<T>` con `HasMore = Page * PageSize < Total` (computed property)
+- Pattern `_currentPage`, `_hasMore`, `IsLoadingMore`, `LoadMoreCommand` replicato sui 3 ViewModel
+- `RemainingItemsThreshold="5"` + Footer `ActivityIndicator` sui 3 CollectionView XAML
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+135/135 unit test verdi. I 97 falliti sono integration test che richiedono il DB in esecuzione (pre-esistenti, non regressione).
+
+---
+
 ## Prompt 49
 
 ### Data

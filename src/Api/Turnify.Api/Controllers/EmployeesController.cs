@@ -83,7 +83,11 @@ public class EmployeesController : ControllerBase
     private bool IsAdmin() => User.IsInRole(UserRole.Admin.ToString());
 
     [HttpGet]
-    public async Task<IActionResult> GetEmployees([FromQuery] int? businessId, CancellationToken ct)
+    public async Task<IActionResult> GetEmployees(
+        [FromQuery] int? businessId,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 50,
+        CancellationToken ct = default)
     {
         if (!IsAdmin()) return Forbid();
 
@@ -92,9 +96,20 @@ public class EmployeesController : ControllerBase
             return Unauthorized(new { message = "CompanyId non trovato nel token." });
 
         var employees = await _employeeRepository.GetAllByCompanyIdAsync(companyId, businessId, ct);
+        var total = employees.Count;
+        var paged = employees
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(e => MapToDto(e))
+            .ToList();
 
-        var dtos = employees.Select(e => MapToDto(e)).ToList();
-        return Ok(dtos);
+        return Ok(new PaginatedResult<EmployeeDto>
+        {
+            Data = paged,
+            Total = total,
+            Page = page,
+            PageSize = pageSize
+        });
     }
 
     [HttpPost]

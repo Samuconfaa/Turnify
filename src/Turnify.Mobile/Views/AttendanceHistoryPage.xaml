@@ -97,7 +97,9 @@
                      Command="{Binding LoadDataCommand}"
                      IsRefreshing="{Binding IsBusy}">
             <CollectionView ItemsSource="{Binding Entries}"
-                            Margin="20,14,20,20">
+                            Margin="20,14,20,20"
+                            RemainingItemsThreshold="5"
+                            RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
                 <CollectionView.EmptyView>
                     <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center"
                                          Spacing="10" Margin="0,40,0,0">
@@ -149,6 +151,12 @@
                         </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
+                <CollectionView.Footer>
+                    <ActivityIndicator IsRunning="{Binding IsLoadingMore}"
+                                       IsVisible="{Binding IsLoadingMore}"
+                                       Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
+                                       Margin="0,8,0,16" />
+                </CollectionView.Footer>
             </CollectionView>
         </RefreshView>
 

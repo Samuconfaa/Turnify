@@ -35,12 +35,22 @@ public class BusinessItemDto
     public string Name { get; set; } = string.Empty;
 }
 
+public class EmployeePagedResponse
+{
+    [System.Text.Json.Serialization.JsonPropertyName("data")]
+    public List<EmployeeListDto> Data { get; set; } = new();
+    [System.Text.Json.Serialization.JsonPropertyName("hasMore")]
+    public bool HasMore { get; set; }
+}
+
 public partial class EmployeeListViewModel : BaseViewModel
 {
     private readonly HttpClient _httpClient;
     private readonly ICacheService _cache;
     private List<EmployeeListDto> _allEmployees = new();
     private bool _suppressBusinessChanged;
+    private int _currentPage = 1;
+    private bool _hasMore;
 
     public ObservableCollection<EmployeeListDto> Employees { get; } = new();
     public ObservableCollection<BusinessItemDto> Businesses { get; } = new();
@@ -56,6 +66,7 @@ public partial class EmployeeListViewModel : BaseViewModel
     [ObservableProperty] private bool _isEmptyState;
     [ObservableProperty] private bool _hasError;
     [ObservableProperty] private string _errorMessage = string.Empty;
+    [ObservableProperty] private bool _isLoadingMore;
 
     public bool HasEmployees => Employees.Count > 0;
 
@@ -129,12 +140,14 @@ public partial class EmployeeListViewModel : BaseViewModel
 
         try
         {
-            string url = "api/employees";
+            _currentPage = 1;
+            string url = "api/employees?page=1&pageSize=50";
             if (SelectedBusiness != null && SelectedBusiness.Id > 0)
-                url += $"?businessId={SelectedBusiness.Id}";
+                url += $"&businessId={SelectedBusiness.Id}";
 
-            var emps = await _httpClient.GetFromJsonAsync<EmployeeListDto[]>(url);
-            _allEmployees = emps?.ToList() ?? new List<EmployeeListDto>();
+            var result = await _httpClient.GetFromJsonAsync<EmployeePagedResponse>(url);
+            _allEmployees = result?.Data ?? new List<EmployeeListDto>();
+            _hasMore = result?.HasMore ?? false;
             await _cache.SetAsync(CacheKeys.Employees, _allEmployees, TimeSpan.FromMinutes(30));
             ApplyFilter();
             HasData = _allEmployees.Count > 0;
@@ -173,6 +186,29 @@ public partial class EmployeeListViewModel : BaseViewModel
         await _cache.InvalidateAsync(CacheKeys.Employees);
         IsStale = false;
         await LoadDataAsync();
+    }
+
+    [RelayCommand]
+    private async Task LoadMoreAsync()
+    {
+        if (IsLoadingMore || !_hasMore || IsBusy) return;
+        IsLoadingMore = true;
+        try
+        {
+            _currentPage++;
+            string url = $"api/employees?page={_currentPage}&pageSize=50";
+            if (SelectedBusiness != null && SelectedBusiness.Id > 0)
+                url += $"&businessId={SelectedBusiness.Id}";
+
+            var result = await _httpClient.GetFromJsonAsync<EmployeePagedResponse>(url);
+            if (result?.Data != null)
+                foreach (var e in result.Data) _allEmployees.Add(e);
+            _hasMore = result?.HasMore ?? false;
+            ApplyFilter();
+        }
+        catch (HttpRequestException) { }
+        catch (TaskCanceledException) { }
+        finally { IsLoadingMore = false; }
     }
 
     public async Task InvalidateEmployeeCacheAsync()

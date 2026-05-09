@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Turnify.Mobile.Messages;
+using Turnify.Mobile.Models;
 using Turnify.Mobile.Services;
 
 namespace Turnify.Mobile.ViewModels;
@@ -359,9 +360,4 @@ public partial class ProfileViewModel : BaseViewModel
         public string? AvatarEmoji { get; set; }
     }
 
-    private class BusinessItemDto
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-    }
 }

@@ -39,7 +39,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IAppNavigationService, AppNavigationService>();
         builder.Services.AddSingleton<ISessionService,       SessionService>();
         builder.Services.AddSingleton<ICacheService,         CacheService>();
-        builder.Services.AddSingleton<MobilePushService>();
+        builder.Services.AddSingleton<IMobilePushService, MobilePushService>();
 
         builder.Services.AddHttpClient<IAuthService, AuthService>(client =>
         {
@@ -64,7 +64,7 @@ public static class MauiProgram
         builder.Services.AddTransient<ShiftCalendarViewModel>();
         builder.Services.AddTransient<ShiftDetailViewModel>();
         builder.Services.AddTransient<VacationListViewModel>();
-        builder.Services.AddTransient<VacationEditViewModel>(); // Fix 3: era mancante
+        builder.Services.AddTransient<VacationEditViewModel>();
         builder.Services.AddTransient<NotificationsViewModel>();
         builder.Services.AddTransient<ProfileViewModel>();
         builder.Services.AddTransient<EmployeeListViewModel>();
@@ -93,7 +93,7 @@ public static class MauiProgram
         builder.Services.AddTransient<ShiftCalendarPage>();
         builder.Services.AddTransient<ShiftDetailPage>();
         builder.Services.AddTransient<VacationListPage>();
-        builder.Services.AddTransient<VacationEditPage>();      // Fix 3: era mancante
+        builder.Services.AddTransient<VacationEditPage>();
         builder.Services.AddTransient<NotificationsPage>();
         builder.Services.AddTransient<ProfilePage>();
         builder.Services.AddTransient<EmployeeListPage>();

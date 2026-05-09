@@ -16,7 +16,7 @@ public partial class LoginViewModel : BaseViewModel, IQueryAttributable
 {
     private readonly IAuthService _authService;
     private readonly IAppNavigationService _appNavigation;
-    private readonly MobilePushService _pushService;
+    private readonly IMobilePushService _pushService;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
@@ -51,7 +51,7 @@ public partial class LoginViewModel : BaseViewModel, IQueryAttributable
 
     public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
 
-    public LoginViewModel(IAuthService authService, IAppNavigationService appNavigation, MobilePushService pushService)
+    public LoginViewModel(IAuthService authService, IAppNavigationService appNavigation, IMobilePushService pushService)
     {
         _authService   = authService;
         _appNavigation = appNavigation;

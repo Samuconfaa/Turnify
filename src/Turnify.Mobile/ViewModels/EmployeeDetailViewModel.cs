@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Turnify.Mobile.Models;
 
 namespace Turnify.Mobile.ViewModels;
 
@@ -343,9 +344,4 @@ public partial class EmployeeDetailViewModel : BaseViewModel
         }
     }
 
-    private class BusinessItemDto
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-    }
 }

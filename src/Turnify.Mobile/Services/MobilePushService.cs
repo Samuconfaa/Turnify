@@ -6,7 +6,7 @@ using Microsoft.Maui.Storage;
 
 namespace Turnify.Mobile.Services;
 
-public class MobilePushService
+public class MobilePushService : IMobilePushService
 {
     private readonly HttpClient _httpClient;
     private const string TokenKey = "fcm_device_token";

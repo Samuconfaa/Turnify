@@ -21,7 +21,7 @@ Bar, ristoranti, negozi e palestre gestiscono ancora i turni via WhatsApp e fogl
 | Database | MySQL via EF Core + Pomelo |
 | Autenticazione | JWT (access 15 min + refresh 7 giorni) |
 | Portale web | Next.js 14 + TypeScript + Tailwind CSS |
-| Test | xUnit + Moq + FluentAssertions (122 test) |
+| Test | xUnit + Moq + FluentAssertions (232 test) |
 | Hosting | VPS Linux con Nginx + PM2 |
 
 ---
@@ -39,14 +39,14 @@ Turnify/
 │   └── Turnify.Web/            # Portale web admin (Next.js)
 ├── docs/
 │   ├── spec.md                 # Specifica funzionale completa
-│   ├── plan.md                 # Piano di lavoro con 14 iterazioni
+│   ├── plan.md                 # Piano di lavoro con 20 iterazioni
 │   ├── architecture.md         # Architettura tecnica e flusso dati
 │   ├── api-notes.md            # Documentazione endpoint API
 │   ├── test-matrix.md          # Matrice di test con esiti e bug
-│   ├── prompt-log.md           # Log dei 36 prompt AI significativi
+│   ├── prompt-log.md           # Log dei 51 prompt AI significativi
 │   ├── deployment.md           # Build, APK, deploy VPS
 │   ├── demo-script.md          # Scaletta presentazione finale
-│   └── iterations/             # Log delle 14 iterazioni di sviluppo
+│   └── iterations/             # Log delle 20 iterazioni di sviluppo
 ├── assets/
 │   └── screenshots/            # Screenshot dell'app
 ├── AGENTS.md                   # Regole per agenti AI
@@ -201,7 +201,7 @@ cd src/Turnify.Tests
 dotnet test
 ```
 
-La suite include 122 test: unit test su Service e Repository, integration test con `WebApplicationFactory` su tutti i controller principali.
+La suite include 232 test: unit test su Service e Repository, integration test con `WebApplicationFactory` su tutti i controller principali.
 
 ---
 
@@ -230,35 +230,42 @@ Per i dettagli completi sul processo di build e deploy vedere [`docs/deployment.
 | File | Contenuto |
 |---|---|
 | [`docs/spec.md`](docs/spec.md) | Specifica funzionale completa con criteri di accettazione |
-| [`docs/plan.md`](docs/plan.md) | Piano di lavoro con le 14 iterazioni documentate |
+| [`docs/plan.md`](docs/plan.md) | Piano di lavoro con le 20 iterazioni documentate |
 | [`docs/architecture.md`](docs/architecture.md) | Architettura Clean Architecture, MVVM, flusso dati |
 | [`docs/api-notes.md`](docs/api-notes.md) | Tutti gli endpoint API con parametri e risposte |
 | [`docs/test-matrix.md`](docs/test-matrix.md) | Matrice di test con esiti, bug trovati e fix |
-| [`docs/prompt-log.md`](docs/prompt-log.md) | Log dei 36 prompt AI con decisioni e motivazioni |
+| [`docs/prompt-log.md`](docs/prompt-log.md) | Log dei 51 prompt AI con decisioni e motivazioni |
 | [`docs/deployment.md`](docs/deployment.md) | Build APK, configurazione VPS, checklist pre-release |
 | [`docs/demo-script.md`](docs/demo-script.md) | Scaletta della presentazione finale (10-12 min) |
-| [`docs/iterations/`](docs/iterations/) | Log dettagliato delle 14 iterazioni di sviluppo |
+| [`docs/iterations/`](docs/iterations/) | Log dettagliato delle 20 iterazioni di sviluppo |
 
 ---
 
 ## Iterazioni di sviluppo
 
-Il progetto è stato sviluppato in 14 iterazioni incrementali dal 21 aprile al 4 maggio 2026, ciascuna documentata in `docs/iterations/`. Ogni iterazione corrisponde a un tag Git annotato:
+Il progetto è stato sviluppato in 20 iterazioni incrementali dal 21 aprile al 12 maggio 2026, ciascuna documentata in `docs/iterations/`. Ogni iterazione corrisponde a un tag Git:
 
 ```
-it-01-bootstrap      → Setup soluzione, dominio, EF Core, JWT, Shell MAUI
-it-02-maui-login     → LoginPage reale, AuthService mobile, test unitari
-it-03-api-admin      → CRUD dipendenti, ferie, dashboard con dati reali
-it-04-gdpr-onboard   → GDPR consent, onboarding, push notification FCM
-it-05-redesign       → Redesign UI, timbratura presenze, ricorrenza turni
-it-06-web            → Portale web Next.js, deploy VPS
-it-07-production     → Reportistica CSV, reset password, rate limiter
-it-08-security       → FluentValidation, certificate pinning, 122 test
-it-09-username       → Login dipendente con username, indice univoco
-it-10-calendar       → Calendario avanzato, report ore dipendenti
-it-11-gaps           → Refresh token, EmojiPickerViewModel, Day View
-it-12-13-advanced    → Sessione persistente, swap turni, copertura dashboard
-it-14-caching        → Caching SQLite stale-while-revalidate
+it-01-backend-core        → Setup soluzione, dominio, EF Core, JWT, Shell MAUI
+it-02-maui-fondamenta     → LoginPage reale, AuthService mobile, test unitari
+it-03-api-admin           → CRUD dipendenti, ferie, dashboard con dati reali
+it-04-gdpr-onboarding     → GDPR consent, onboarding, push notification FCM
+it-05-redesign-mvvm       → Redesign UI, timbratura presenze, ricorrenza turni
+it-06-web-portal          → Portale web Next.js, deploy VPS
+it-07-production          → Reportistica CSV, reset password, rate limiter
+it-08-security-tests      → FluentValidation, certificate pinning, test suite
+it-09-employee-login      → Login dipendente con username, indice univoco
+it-10-ux-calendar         → Calendario avanzato, report ore dipendenti
+it-11-mvvm-gaps           → Refresh token, EmojiPickerViewModel, Day View
+it-12-sessione-ferie      → Sessione persistente, saldo ferie, codice invito
+it-13-swap-coverage       → Swap turni, copertura dashboard, disponibilità
+it-14-caching             → Caching SQLite stale-while-revalidate
+it-15-ui-redesign         → Redesign Tropic Burst: palette, 26 SVG, 11 pagine
+it-16-test-fixes          → Fix 8 test falliti, copertura it11-14 (232 test)
+it-17-dark-theme          → Tema scuro Deep Forest con AppThemeBinding
+it-18-fcm-badge           → FCM push mobile, badge notifiche real-time
+it-19-pagination-warnings → Paginazione API, infinite scroll, fix warning
+it-20-session-fix         → Fix sessione persistente al riavvio app
 ```
 
 ---

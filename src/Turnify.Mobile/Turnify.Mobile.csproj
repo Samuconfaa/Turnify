@@ -75,7 +75,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="$(TargetFramework.Contains('-android'))">
-		<PackageReference Include="Plugin.Firebase.CloudMessaging" Version="2.*" />
+		<PackageReference Include="Plugin.Firebase.CloudMessaging" Version="2.8.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(TargetFramework.Contains('-android'))">

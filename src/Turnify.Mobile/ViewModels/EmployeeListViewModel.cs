@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Turnify.Mobile.Models;
 using Turnify.Mobile.Services;
 using Turnify.Mobile.Views;
 
@@ -27,12 +28,6 @@ public class EmployeeListDto
     public string FullName => $"{FirstName} {LastName}";
     public string Initials => $"{FirstName?.FirstOrDefault()}{LastName?.FirstOrDefault()}".ToUpper();
     public string StatusText => IsActive ? "Attivo" : "Inattivo";
-}
-
-public class BusinessItemDto
-{
-    public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
 }
 
 public class EmployeePagedResponse

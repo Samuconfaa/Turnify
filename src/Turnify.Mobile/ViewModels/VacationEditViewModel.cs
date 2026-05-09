@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Storage;
+using Turnify.Mobile.Models;
 
 namespace Turnify.Mobile.ViewModels;
 
@@ -206,15 +207,4 @@ public partial class VacationEditViewModel : BaseViewModel
         }
     }
 
-    private class VacationRequestDto
-    {
-        [JsonPropertyName("id")]           public int Id { get; set; }
-        [JsonPropertyName("employeeName")] public string EmployeeName { get; set; } = string.Empty;
-        [JsonPropertyName("type")]         public string Type { get; set; } = string.Empty;
-        [JsonPropertyName("startDate")]    public DateTime StartDate { get; set; }
-        [JsonPropertyName("endDate")]      public DateTime EndDate { get; set; }
-        [JsonPropertyName("reason")]       public string Reason { get; set; } = string.Empty;
-        [JsonPropertyName("status")]       public string Status { get; set; } = string.Empty;
-        [JsonPropertyName("reviewNote")]   public string? ReviewNote { get; set; }
-    }
 }

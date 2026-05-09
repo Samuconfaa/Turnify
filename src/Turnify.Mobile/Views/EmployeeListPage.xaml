@@ -57,7 +57,9 @@
 
         <!-- ── Employee list ─────────────────────────────── -->
         <RefreshView Grid.Row="2" Command="{Binding LoadDataCommand}" IsRefreshing="{Binding IsBusy}">
-            <CollectionView ItemsSource="{Binding Employees}" Margin="0,8,0,0">
+            <CollectionView ItemsSource="{Binding Employees}" Margin="0,8,0,0"
+                            RemainingItemsThreshold="5"
+                            RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
 
                 <CollectionView.EmptyView>
                     <VerticalStackLayout HorizontalOptions="Center" Margin="32,52,32,0" Spacing="14">
@@ -82,6 +84,11 @@
                 </CollectionView.EmptyView>
 
                 <CollectionView.Footer>
+                    <VerticalStackLayout>
+                        <ActivityIndicator IsRunning="{Binding IsLoadingMore}"
+                                           IsVisible="{Binding IsLoadingMore}"
+                                           Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
+                                           Margin="0,8,0,4" />
                     <Border BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceContainerLow}, Dark={StaticResource DarkSurfaceContainerLow}}"
                             Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}" StrokeThickness="1.5"
                             StrokeDashArray="6,4"
@@ -98,6 +105,7 @@
                                    VerticalOptions="Center"/>
                         </HorizontalStackLayout>
                     </Border>
+                    </VerticalStackLayout>
                 </CollectionView.Footer>
 
                 <CollectionView.ItemTemplate>

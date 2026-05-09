@@ -79,10 +79,19 @@ public class VacationRequestDto
     }
 }
 
+public class VacationPagedResponse
+{
+    [JsonPropertyName("data")]    public List<VacationRequestDto> Data    { get; set; } = new();
+    [JsonPropertyName("total")]   public int Total   { get; set; }
+    [JsonPropertyName("hasMore")] public bool HasMore { get; set; }
+}
+
 public partial class VacationListViewModel : BaseViewModel
 {
     private readonly HttpClient _httpClient;
     private int _myEmployeeId;
+    private int _currentPage = 1;
+    private bool _hasMore;
 
     public ObservableCollection<VacationRequestDto> Requests { get; } = new();
 
@@ -93,6 +102,7 @@ public partial class VacationListViewModel : BaseViewModel
     [ObservableProperty] private bool _hasData;
     [ObservableProperty] private bool _isFormVisible;
     [ObservableProperty] private string _filterStatus = "All";
+    [ObservableProperty] private bool _isLoadingMore;
 
     // Form fields
     [ObservableProperty]
@@ -157,13 +167,15 @@ public partial class VacationListViewModel : BaseViewModel
             var me = await _httpClient.GetFromJsonAsync<UserMeDto>("api/users/me");
             if (me != null) _myEmployeeId = me.EmployeeId;
 
-            var url = "api/vacation-requests?pageSize=200";
+            _currentPage = 1;
+            var url = "api/vacation-requests?page=1&pageSize=20";
             if (FilterStatus != "All") url += $"&status={FilterStatus}";
 
-            var list = await _httpClient.GetFromJsonAsync<VacationRequestDto[]>(url);
+            var result = await _httpClient.GetFromJsonAsync<VacationPagedResponse>(url);
             Requests.Clear();
-            if (list != null)
-                foreach (var r in list) Requests.Add(r);
+            if (result?.Data != null)
+                foreach (var r in result.Data) Requests.Add(r);
+            _hasMore = result?.HasMore ?? false;
 
             HasData      = Requests.Count > 0;
             IsEmptyState = Requests.Count == 0;
@@ -191,6 +203,26 @@ public partial class VacationListViewModel : BaseViewModel
             ErrorMessage = "Richiesta scaduta. Riprova.";
         }
         finally { IsBusy = false; }
+    }
+
+    [RelayCommand]
+    private async Task LoadMoreAsync()
+    {
+        if (IsLoadingMore || !_hasMore || IsBusy) return;
+        IsLoadingMore = true;
+        try
+        {
+            _currentPage++;
+            var url = $"api/vacation-requests?page={_currentPage}&pageSize=20";
+            if (FilterStatus != "All") url += $"&status={FilterStatus}";
+            var result = await _httpClient.GetFromJsonAsync<VacationPagedResponse>(url);
+            if (result?.Data != null)
+                foreach (var r in result.Data) Requests.Add(r);
+            _hasMore = result?.HasMore ?? false;
+        }
+        catch (HttpRequestException) { }
+        catch (TaskCanceledException) { }
+        finally { IsLoadingMore = false; }
     }
 
     [RelayCommand]

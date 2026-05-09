@@ -133,7 +133,8 @@ public class AttendanceController : ControllerBase
             })
             .ToList();
 
-        return Ok(new { data = paged, total = logs.Count, page, pageSize });
+        var total = logs.Count;
+        return Ok(new { data = paged, total, page, pageSize, hasMore = page * pageSize < total });
     }
 
     [HttpGet("monthly-summary")]

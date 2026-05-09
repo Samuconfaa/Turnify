@@ -157,7 +157,9 @@
         <RefreshView Grid.Row="3"
                      Command="{Binding LoadRequestsCommand}"
                      IsRefreshing="{Binding IsBusy}">
-            <CollectionView ItemsSource="{Binding Requests}" Margin="0,8,0,4">
+            <CollectionView ItemsSource="{Binding Requests}" Margin="0,8,0,4"
+                            RemainingItemsThreshold="5"
+                            RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
                 <CollectionView.EmptyView>
                     <VerticalStackLayout HorizontalOptions="Center" Margin="0,52,0,0" Spacing="12">
                         <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
@@ -333,6 +335,12 @@
                         </SwipeView>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
+                <CollectionView.Footer>
+                    <ActivityIndicator IsRunning="{Binding IsLoadingMore}"
+                                       IsVisible="{Binding IsLoadingMore}"
+                                       Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
+                                       Margin="0,8,0,16" />
+                </CollectionView.Footer>
             </CollectionView>
         </RefreshView>
 

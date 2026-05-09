@@ -582,4 +582,4 @@ Derivata dallo stato attuale del repository e dalle verifiche documentate:
 - `PaginatedResult<T>` DTO + paginazione su `EmployeesController`, `AttendanceController`, `VacationRequestsController`
 - Infinite scroll su `EmployeeListPage`, `AttendanceHistoryPage`, `VacationListPage`
 
-**Status:** 🔲 Pianificata
+**Status:** ✅ Completata (2026-05-09)

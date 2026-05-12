@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Turnify.Mobile.Views.ManageDataPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
+    x:DataType="vm:GdprConsentViewModel"
+    Title="Gestisci i tuoi dati"
+    BackgroundColor="#F9FAFB">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="20">
+
+            <Label
+                Text="🛡️ I tuoi dati"
+                FontSize="24"
+                FontAttributes="Bold"
+                HorizontalOptions="Center"
+                Margin="0,20,0,0" />
+
+            <Label
+                Text="Hai il diritto di accedere, portare o cancellare i tuoi dati personali in qualsiasi momento (GDPR Art. 15, 17, 20)."
+                FontSize="14"
+                TextColor="#6B7280"
+                HorizontalTextAlignment="Center" />
+
+            <Button
+                Text="📥  Esporta i miei dati"
+                Command="{Binding ExportDataCommand}"
+                BackgroundColor="#2563EB"
+                TextColor="White"
+                CornerRadius="10"
+                HeightRequest="50" />
+
+            <Button
+                Text="🗑️  Elimina il mio account"
+                Command="{Binding RequestAccountDeletionCommand}"
+                BackgroundColor="Transparent"
+                TextColor="#DC2626"
+                BorderColor="#DC2626"
+                BorderWidth="1.5"
+                CornerRadius="10"
+                HeightRequest="50" />
+
+            <Label
+                Text="Per qualsiasi richiesta relativa alla privacy puoi contattarci a privacy@turnify.it"
+                FontSize="12"
+                TextColor="#9CA3AF"
+                HorizontalTextAlignment="Center"
+                Margin="0,12,0,0" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

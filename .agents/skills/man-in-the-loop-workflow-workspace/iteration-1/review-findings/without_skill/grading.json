@@ -1,0 +1,19 @@
+{
+  "expectations": [
+    {
+      "text": "Presenta findings o un blocker onesto prima di proporre soluzioni o riscritture.",
+      "passed": true,
+      "evidence": "Apre con un finding bloccante per assenza dei file modificati."
+    },
+    {
+      "text": "Non inventa una review puntuale se i file richiesti non sono presenti nel workspace.",
+      "passed": true,
+      "evidence": "Spiega che senza sorgenti non è possibile verificare architettura, naming, nullability ed error handling riga per riga."
+    },
+    {
+      "text": "Suggerisce comunque controlli o test rilevanti per architettura, nullability ed error handling.",
+      "passed": true,
+      "evidence": "Include sezioni dedicate ad architettura, naming, nullability, error handling e test manuali."
+    }
+  ]
+}

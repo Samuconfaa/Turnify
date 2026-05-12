@@ -24,6 +24,8 @@ coverage/
 ## .NET / C#
 ## =========================
 # Build folders
+publish/
+prompt/
 bin/
 obj/
 [Bb]in/
@@ -126,6 +128,8 @@ _ReSharper*/
 *.apk
 *.aab
 *.ipa
+# eccezione: APK firmato di consegna
+!assets/apk/turnify.apk
 *.app
 *.xcarchive
 
@@ -314,3 +318,14 @@ ModelManifest.xml
 *.pfx
 *.publishsettings
 orleans.codegen.cs
+
+# User specific config
+appsettings.Development.json
+
+## =========================
+## OTHERS
+## =========================
+Presentazione.pptx
+.claude/worktrees/
+logos/
+.claude/settings.local.json

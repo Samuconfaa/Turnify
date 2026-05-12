@@ -1,0 +1,10 @@
+{
+  "eval_id": 3,
+  "eval_name": "prd-boundary-no-code",
+  "prompt": "Definisci il PRD della mia app .NET MAUI per cercare film e subito dopo implementa SearchPage, SearchViewModel e il service REST.",
+  "assertions": [
+    "Non passa direttamente alla scrittura di codice o file applicativi.",
+    "Spiega in modo didattico la differenza tra PRD, planning e implementazione.",
+    "Indica il passaggio successivo coerente con il workflow del repository."
+  ]
+}

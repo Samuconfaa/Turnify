@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
+             x:Class="Turnify.Mobile.Views.ShiftDetailPage"
+             x:DataType="vm:ShiftDetailViewModel"
+             Title="{Binding Title}"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource DarkBackground}}">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="14" Padding="20,20,20,40">
+
+            <!-- Dipendente -->
+            <Label Text="DIPENDENTE" Style="{StaticResource SectionLabel}" Margin="2,0,0,0"/>
+            <Border Style="{StaticResource FieldBorder}">
+                <Picker ItemsSource="{Binding Employees}"
+                        ItemDisplayBinding="{Binding FullName}"
+                        SelectedItem="{Binding SelectedEmployee}"
+                        Title="Seleziona dipendente"
+                        FontFamily="PJSReg"
+                        TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
+                        TitleColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
+                        Margin="10,0"/>
+            </Border>
+
+            <!-- Avviso nessun dipendente -->
+            <Border BackgroundColor="{StaticResource WarningLight}"
+                    Stroke="{StaticResource Warning}" StrokeThickness="1" Padding="14,12"
+                    IsVisible="{Binding Employees.Count, Converter={StaticResource IntIsZeroConverter}}">
+                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                <VerticalStackLayout Spacing="3">
+                    <Label Text="Nessun dipendente disponibile."
+                           FontSize="14" FontAttributes="Bold" FontFamily="PJSBold"
+                           TextColor="{StaticResource WarningText}"/>
+                    <Label Text="Aggiungi prima un dipendente dalla sezione Team."
+                           FontSize="13" FontFamily="PJSReg"
+                           TextColor="{StaticResource WarningText}"/>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Badge ricorrente (solo edit mode) -->
+            <Border BackgroundColor="#EFF6FF" Stroke="#BFDBFE" StrokeThickness="1"
+                    Padding="12,6" HorizontalOptions="Start"
+                    IsVisible="{Binding IsRecurring}">
+                <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                <Label Text="🔁 Turno ricorrente" FontSize="13" FontFamily="PJSSemi" TextColor="#1D4ED8"/>
+            </Border>
+
+            <!-- Data -->
+            <Label Text="DATA" Style="{StaticResource SectionLabel}" Margin="2,6,0,0"/>
+            <Border Style="{StaticResource FieldBorder}">
+                <DatePicker Date="{Binding ShiftDate}"
+                            Format="dddd dd MMMM yyyy"
+                            MinimumDate="2020-01-01"
+                            FontFamily="PJSReg"
+                            TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
+                            Margin="16,0"/>
+            </Border>
+
+            <!-- Orari -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                <VerticalStackLayout Grid.Column="0" Spacing="6">
+                    <Label Text="INIZIO" Style="{StaticResource SectionLabel}" Margin="2,0,0,0"/>
+                    <Border Style="{StaticResource FieldBorder}">
+                        <TimePicker Time="{Binding StartTime}" Format="HH:mm"
+                                    FontFamily="PJSReg"
+                                    TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
+                                    Margin="16,0"/>
+                    </Border>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1" Spacing="6">
+                    <Label Text="FINE" Style="{StaticResource SectionLabel}" Margin="2,0,0,0"/>
+                    <Border Style="{StaticResource FieldBorder}">
+                        <TimePicker Time="{Binding EndTime}" Format="HH:mm"
+                                    FontFamily="PJSReg"
+                                    TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
+                                    Margin="16,0"/>
+                    </Border>
+                </VerticalStackLayout>
+            </Grid>
+
+            <!-- Etichetta -->
+            <Label Text="ETICHETTA (OPZIONALE)" Style="{StaticResource SectionLabel}" Margin="2,6,0,0"/>
+            <Border Style="{StaticResource FieldBorder}">
+                <Entry Text="{Binding Label}" Placeholder="Es. Apertura, Turno pranzo…" Style="{StaticResource FieldEntry}"/>
+            </Border>
+
+            <!-- Note -->
+            <Label Text="NOTE (OPZIONALE)" Style="{StaticResource SectionLabel}" Margin="2,0,0,0"/>
+            <Border Style="{StaticResource FieldBorder}">
+                <Editor Text="{Binding Note}" Placeholder="Es. Copertura per Mario assente…"
+                        FontFamily="PJSReg"
+                        PlaceholderColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
+                        TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
+                        HeightRequest="80" Margin="14,8"/>
+            </Border>
+
+            <!-- Ricorrenza (create only) -->
+            <VerticalStackLayout Spacing="6" IsVisible="{Binding IsCreateMode}">
+                <Label Text="RIPETI TURNO (SETTIMANE SUCCESSIVE)"
+                       Style="{StaticResource SectionLabel}" Margin="2,6,0,0"/>
+                <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
+                        Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
+                        Padding="16,12">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="13"/></Border.StrokeShape>
+                    <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="10">
+                        <Label Grid.Column="0" Text="{Binding RepeatLabel}"
+                               FontSize="14" FontFamily="PJSSemi"
+                               TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
+                               VerticalOptions="Center"/>
+                        <Border Grid.Column="1"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceContainerLow}, Dark={StaticResource DarkSurfaceContainerLow}}"
+                                HeightRequest="40" WidthRequest="40"
+                                Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding DecrementRepeatWeeksCommand}"/>
+                            </Border.GestureRecognizers>
+                            <Label Text="−" FontSize="18" FontAttributes="Bold" FontFamily="PJSBold"
+                                   TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
+                                   HorizontalOptions="Center" VerticalOptions="Center"/>
+                        </Border>
+                        <Label Grid.Column="2" Text="{Binding RepeatWeeks}"
+                               FontSize="16" FontAttributes="Bold" FontFamily="PJSBold"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
+                               VerticalOptions="Center" HorizontalOptions="Center"
+                               MinimumWidthRequest="28"/>
+                        <Border Grid.Column="3"
+                                BackgroundColor="{StaticResource Navy}"
+                                HeightRequest="40" WidthRequest="40"
+                                Stroke="Transparent">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding IncrementRepeatWeeksCommand}"/>
+                            </Border.GestureRecognizers>
+                            <Label Text="+" FontSize="18" FontAttributes="Bold" FontFamily="PJSBold"
+                                   TextColor="White"
+                                   HorizontalOptions="Center" VerticalOptions="Center"/>
+                        </Border>
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Buttons (edit mode) -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,12,0,0"
+                  IsVisible="{Binding IsEditMode}">
+                <Button Grid.Column="0" Text="Elimina"
+                        Command="{Binding DeleteCommand}"
+                        Style="{StaticResource DangerButton}"/>
+                <Button Grid.Column="1" Text="Salva Turno"
+                        Command="{Binding SaveCommand}"
+                        Style="{StaticResource PrimaryButton}"/>
+            </Grid>
+
+            <!-- Buttons (create mode) -->
+            <Button Text="Salva Turno"
+                    Command="{Binding SaveCommand}"
+                    IsVisible="{Binding IsCreateMode}"
+                    Style="{StaticResource PrimaryButton}"
+                    Margin="0,12,0,0"/>
+
+            <!-- Proponi scambio (solo dipendenti in modalità modifica) -->
+            <Button Text="🔄 Proponi scambio turno"
+                    Command="{Binding ProposeSwapCommand}"
+                    IsVisible="{Binding CanProposeSwap}"
+                    Style="{StaticResource GhostButton}"
+                    Margin="0,4,0,0"/>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                               HorizontalOptions="Center" Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

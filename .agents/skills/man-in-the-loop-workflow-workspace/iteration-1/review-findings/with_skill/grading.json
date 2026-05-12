@@ -1,0 +1,19 @@
+{
+  "expectations": [
+    {
+      "text": "Presenta findings o un blocker onesto prima di proporre soluzioni o riscritture.",
+      "passed": true,
+      "evidence": "La sezione Implementazione richiesta apre con `Findings` e dichiara il blocker dovuto all'assenza dei file."
+    },
+    {
+      "text": "Non inventa una review puntuale se i file richiesti non sono presenti nel workspace.",
+      "passed": true,
+      "evidence": "Dice esplicitamente che una valutazione puntuale sarebbe inventata e non affidabile."
+    },
+    {
+      "text": "Suggerisce comunque controlli o test rilevanti per architettura, nullability ed error handling.",
+      "passed": true,
+      "evidence": "Propone una checklist di controlli MVVM e un elenco di test manuali rilevanti."
+    }
+  ]
+}

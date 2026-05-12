@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="Turnify.Mobile.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:Turnify.Mobile.Views"
+    Title="Turnify">
+
+    <ShellItem Route="RoleSelection" FlyoutItemIsVisible="False">
+        <ShellContent ContentTemplate="{DataTemplate views:RoleSelectionPage}" />
+    </ShellItem>
+
+    <TabBar Route="Main" x:Name="MainTabBar">
+
+        <!-- Admin only -->
+        <Tab Title="Dashboard" x:Name="DashboardTab" Route="Dashboard">
+            <ShellContent ContentTemplate="{DataTemplate views:DashboardPage}" />
+        </Tab>
+        <Tab Title="Team" x:Name="TeamTab" Route="Team">
+            <ShellContent ContentTemplate="{DataTemplate views:EmployeeListPage}" />
+        </Tab>
+
+        <!-- Employee only -->
+        <Tab Title="Home" x:Name="EmployeeDashboardTab" Route="EmployeeDashboard">
+            <ShellContent ContentTemplate="{DataTemplate views:EmployeeDashboardPage}" />
+        </Tab>
+
+        <!-- Shared -->
+        <Tab Title="Turni" x:Name="ShiftsTab" Route="Shifts">
+            <ShellContent ContentTemplate="{DataTemplate views:ShiftCalendarPage}" />
+        </Tab>
+        <Tab Title="Ferie" x:Name="VacationsTab" Route="Vacations">
+            <ShellContent ContentTemplate="{DataTemplate views:VacationListPage}" />
+        </Tab>
+        <Tab Title="Notifiche" x:Name="NotificationsTab" Route="Notifications">
+            <ShellContent ContentTemplate="{DataTemplate views:NotificationsPage}" />
+        </Tab>
+        <Tab Title="Profilo" x:Name="ProfileTab" Route="Profile">
+            <ShellContent ContentTemplate="{DataTemplate views:ProfilePage}" />
+        </Tab>
+
+    </TabBar>
+
+</Shell>

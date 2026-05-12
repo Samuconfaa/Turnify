@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
+             x:Class="Turnify.Mobile.Views.EmojiPickerPage"
+             x:DataType="vm:EmojiPickerViewModel"
+             Title="Scegli emoji"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource DarkBackground}}">
+
+    <Grid RowDefinitions="Auto,*,Auto" Padding="16">
+
+        <Label Grid.Row="0"
+               Text="Tocca un'emoji per selezionarla come foto profilo"
+               FontSize="14"
+               TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"
+               HorizontalTextAlignment="Center"
+               Margin="0,8,0,16"/>
+
+        <CollectionView Grid.Row="1"
+                        x:Name="EmojiGrid"
+                        ItemsSource="{Binding AvailableEmojis}"
+                        SelectionMode="Single"
+                        SelectedItem="{Binding SelectedEmoji}">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="6" HorizontalItemSpacing="8" VerticalItemSpacing="8"/>
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="x:String">
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
+                            Stroke="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
+                            StrokeThickness="1"
+                            Padding="4"
+                            HeightRequest="56" WidthRequest="56">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="12"/>
+                        </Border.StrokeShape>
+                        <Label Text="{Binding .}"
+                               FontSize="28"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"/>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Button Grid.Row="2"
+                Text="Annulla"
+                Command="{Binding CloseCommand}"
+                BackgroundColor="Transparent"
+                TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
+                BorderColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
+                BorderWidth="1"
+                CornerRadius="10"
+                HeightRequest="48"
+                Margin="0,16,0,0"/>
+    </Grid>
+</ContentPage>

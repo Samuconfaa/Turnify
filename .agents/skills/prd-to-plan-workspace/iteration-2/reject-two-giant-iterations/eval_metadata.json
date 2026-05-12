@@ -1,0 +1,10 @@
+{
+  "eval_id": 2,
+  "eval_name": "reject-two-giant-iterations",
+  "prompt": "Il mio spec è pronto ma io vorrei fare solo due iterazioni: una per costruire tutta l'app e una per rifinire. Preparami `docs/plan.md` e spiegami se va bene così.",
+  "assertions": [
+    "Non accetta passivamente un piano troppo ampio senza spiegare il problema.",
+    "Spiega perché iterazioni più piccole sono più reviewable e testabili.",
+    "Propone una roadmap più granulare invece di lasciare il piano in due blocchi enormi."
+  ]
+}

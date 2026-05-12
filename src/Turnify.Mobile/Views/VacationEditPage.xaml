@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
+             x:Class="Turnify.Mobile.Views.VacationEditPage"
+             x:DataType="vm:VacationEditViewModel"
+             Title="{Binding Title}"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource DarkBackground}}">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="14" Padding="20,20,20,40">
+
+            <!-- Employee badge -->
+            <Border BackgroundColor="{StaticResource PrimaryLight}"
+                    Stroke="{StaticResource PrimaryMid}" StrokeThickness="1"
+                    Padding="16,12">
+                <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                <HorizontalStackLayout Spacing="12">
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
+                            HeightRequest="36" WidthRequest="36" Stroke="Transparent">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
+                        <Label Text="👤" FontSize="16"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Border>
+                    <Label Text="{Binding EmployeeName}"
+                           FontSize="15" FontAttributes="Bold" FontFamily="PJSBold"
+                           TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
+                           VerticalOptions="Center"/>
+                </HorizontalStackLayout>
+            </Border>
+
+            <!-- Tipo -->
+            <Label Text="TIPO RICHIESTA" Style="{StaticResource SectionLabel}" Margin="2,6,0,0"/>
+            <Border Style="{StaticResource FieldBorder}">
+                <Picker ItemsSource="{Binding VacationTypesDisplay}"
+                        SelectedIndex="{Binding SelectedTypeIndex}"
+                        FontFamily="PJSReg"
+                        TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
+                        Margin="10,0"/>
+            </Border>
+
+            <!-- Saldo ferie residue -->
+            <Border BackgroundColor="#F0FDF4" Stroke="#86EFAC" StrokeThickness="1"
+                    Padding="14,10" IsVisible="{Binding ShowBalance}">
+                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                <Label Text="{Binding BalanceLabel}"
+                       FontSize="13" FontFamily="PJSSemi" TextColor="#166534"/>
+            </Border>
+            <Border BackgroundColor="#FEF9C3" Stroke="#FDE047" StrokeThickness="1"
+                    Padding="14,10" IsVisible="{Binding ShowBalanceWarning}">
+                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                <Label Text="⚠️ Saldo esaurito — la richiesta verrà comunque inoltrata"
+                       FontSize="13" FontFamily="PJSSemi" TextColor="#854D0E"/>
+            </Border>
+
+            <!-- Date -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                <VerticalStackLayout Grid.Column="0" Spacing="6">
+                    <Label Text="INIZIO" Style="{StaticResource SectionLabel}" Margin="2,0,0,0"/>
+                    <Border Style="{StaticResource FieldBorder}">
+                        <DatePicker Date="{Binding StartDate}"
+                                    FontFamily="PJSReg"
+                                    TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
+                                    Margin="12,0"/>
+                    </Border>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1" Spacing="6">
+                    <Label Text="FINE" Style="{StaticResource SectionLabel}" Margin="2,0,0,0"/>
+                    <Border Style="{StaticResource FieldBorder}">
+                        <DatePicker Date="{Binding EndDate}"
+                                    FontFamily="PJSReg"
+                                    TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
+                                    Margin="12,0"/>
+                    </Border>
+                </VerticalStackLayout>
+            </Grid>
+
+            <!-- Stato -->
+            <Label Text="STATO" Style="{StaticResource SectionLabel}" Margin="2,6,0,0"/>
+            <Border Style="{StaticResource FieldBorder}">
+                <Picker ItemsSource="{Binding StatusOptionsDisplay}"
+                        SelectedIndex="{Binding SelectedStatusIndex}"
+                        FontFamily="PJSReg"
+                        TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
+                        Margin="10,0"/>
+            </Border>
+
+            <!-- Motivazione -->
+            <Label Text="MOTIVAZIONE" Style="{StaticResource SectionLabel}" Margin="2,6,0,0"/>
+            <Border Style="{StaticResource FieldBorder}">
+                <Editor Text="{Binding Reason}"
+                        Placeholder="Motivazione…"
+                        PlaceholderColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
+                        FontFamily="PJSReg"
+                        TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
+                        HeightRequest="80" Margin="14,8"/>
+            </Border>
+
+            <Button Text="Salva modifiche"
+                    Command="{Binding SaveCommand}"
+                    Style="{StaticResource PrimaryButton}"
+                    Margin="0,12,0,0"/>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                               HorizontalOptions="Center" Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

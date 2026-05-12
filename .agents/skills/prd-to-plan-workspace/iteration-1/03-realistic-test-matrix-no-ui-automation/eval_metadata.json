@@ -1,0 +1,10 @@
+{
+  "eval_id": 3,
+  "eval_name": "realistic-test-matrix-no-ui-automation",
+  "prompt": "Partendo dal PRD della mia app MAUI, voglio soprattutto una `docs/test-matrix.md` realistica. Il repository non ha ancora UI automation. Indicami cosa metteresti come verifiche manuali, automatiche subito e automatiche più avanti.",
+  "assertions": [
+    "Non inventa copertura UI automation già pronta se il repository non la possiede.",
+    "Distingue chiaramente verifiche manuali e automatiche realistiche per una app MAUI.",
+    "Mantiene il linguaggio di pianificazione senza dichiarare test come già eseguiti."
+  ]
+}

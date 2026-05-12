@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
+             x:Class="Turnify.Mobile.Views.ShiftSwapRequestPage"
+             x:DataType="vm:ShiftSwapRequestViewModel"
+             Title="{Binding Title}"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource DarkBackground}}">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="14" Padding="20,20,20,40">
+
+            <Label Text="SCEGLI IL COLLEGA" Style="{StaticResource SectionLabel}" Margin="2,0,0,0"/>
+            <Border Style="{StaticResource FieldBorder}">
+                <Picker ItemsSource="{Binding Colleagues}"
+                        ItemDisplayBinding="{Binding FullName}"
+                        SelectedItem="{Binding SelectedColleague}"
+                        Title="Seleziona collega"
+                        FontFamily="PJSReg"
+                        TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
+                        TitleColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
+                        Margin="10,0"/>
+            </Border>
+
+            <Label Text="TURNO DEL COLLEGA" Style="{StaticResource SectionLabel}" Margin="2,6,0,0"/>
+            <Border Style="{StaticResource FieldBorder}">
+                <Picker ItemsSource="{Binding ColleagueShifts}"
+                        ItemDisplayBinding="{Binding DisplayLabel}"
+                        SelectedItem="{Binding SelectedColleagueShift}"
+                        Title="Seleziona il suo turno"
+                        FontFamily="PJSReg"
+                        TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
+                        TitleColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
+                        Margin="10,0"/>
+            </Border>
+
+            <Label Text="NOTA (OPZIONALE)" Style="{StaticResource SectionLabel}" Margin="2,6,0,0"/>
+            <Border Style="{StaticResource FieldBorder}">
+                <Editor Text="{Binding Note}"
+                        Placeholder="Motivo della richiesta…"
+                        PlaceholderColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
+                        FontFamily="PJSReg"
+                        TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
+                        HeightRequest="80" Margin="14,8"/>
+            </Border>
+
+            <Border BackgroundColor="{StaticResource PrimaryLight}"
+                    Stroke="{StaticResource PrimaryMid}" StrokeThickness="1"
+                    Padding="14,10" Margin="0,6,0,0">
+                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                <Label Text="ℹ️ La proposta sarà inviata al collega. Solo dopo la sua accettazione e l'approvazione dell'admin lo scambio diventa effettivo."
+                       FontSize="12" FontFamily="PJSReg" TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
+            </Border>
+
+            <Button Text="Invia proposta di scambio"
+                    Command="{Binding SendCommand}"
+                    Style="{StaticResource PrimaryButton}"
+                    Margin="0,12,0,0"/>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                               HorizontalOptions="Center" Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

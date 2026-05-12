@@ -1,0 +1,19 @@
+{
+  "expectations": [
+    {
+      "text": "Indica almeno docs/iterations/it-xx.md e docs/test-matrix.md tra i documenti da aggiornare.",
+      "passed": true,
+      "evidence": "Cita esplicitamente `docs/iterations/it-xx.md` e `docs/test-matrix.md`."
+    },
+    {
+      "text": "Propone test manuali concreti per chiudere l'iterazione.",
+      "passed": true,
+      "evidence": "Elenca casi manuali concreti su ricerca, errori, empty state, navigazione e device behavior."
+    },
+    {
+      "text": "Esplicita che merge e push non vanno eseguiti automaticamente.",
+      "passed": true,
+      "evidence": "Specifica chiaramente che in questa fase non farebbe né merge né push."
+    }
+  ]
+}

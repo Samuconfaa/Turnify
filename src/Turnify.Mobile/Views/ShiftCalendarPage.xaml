@@ -1,0 +1,606 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
+             xmlns:comp="clr-namespace:Turnify.Mobile.Views.Components"
+             x:Class="Turnify.Mobile.Views.ShiftCalendarPage"
+             x:Name="page"
+             Title="Turni"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource DarkBackground}}">
+
+    <Grid RowDefinitions="Auto,*">
+        <comp:StaleDataBanner Grid.Row="0"/>
+        <Grid Grid.Row="1" RowDefinitions="Auto,Auto,Auto,Auto,Auto,*">
+
+        <!-- ── Week navigation ──────────────────────────────── -->
+        <Border Grid.Row="0"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
+                Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="0,0,0,1"
+                Padding="8,10">
+            <Border.StrokeShape><RoundRectangle CornerRadius="0"/></Border.StrokeShape>
+            <Grid ColumnDefinitions="40,*,40,Auto,Auto">
+                <Button Grid.Column="0" Text="‹"
+                        Command="{Binding PreviousWeekCommand}"
+                        BackgroundColor="Transparent"
+                        TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
+                        FontSize="26" FontFamily="PJSBold"
+                        Padding="0" HorizontalOptions="Center"/>
+                <Label Grid.Column="1"
+                       Text="{Binding WeekLabel}"
+                       FontSize="15" FontAttributes="Bold" FontFamily="PJSBold"
+                       TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
+                       HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToTodayCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <Button Grid.Column="2" Text="›"
+                        Command="{Binding NextWeekCommand}"
+                        BackgroundColor="Transparent"
+                        TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
+                        FontSize="26" FontFamily="PJSBold"
+                        Padding="0" HorizontalOptions="Center"/>
+                <!-- Oggi pill -->
+                <Border Grid.Column="3"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceContainerLow}, Dark={StaticResource DarkSurfaceContainerLow}}"
+                        Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
+                        IsVisible="{Binding IsCurrentWeek, Converter={StaticResource InverseBoolConverter}}"
+                        Padding="10,6" Margin="2,0">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToTodayCommand}"/>
+                    </Border.GestureRecognizers>
+                    <Label Text="Oggi"
+                           FontSize="12" FontAttributes="Bold" FontFamily="PJSBold"
+                           TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
+                </Border>
+                <!-- Add FAB (admin) -->
+                <Border Grid.Column="4"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
+                        Stroke="Transparent"
+                        IsVisible="{Binding IsAdmin}"
+                        HeightRequest="36" WidthRequest="36"
+                        Margin="4,0,8,0">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding AddShiftCommand}"/>
+                    </Border.GestureRecognizers>
+                    <Label Text="+"
+                           FontSize="22" FontAttributes="Bold" FontFamily="PJSBold"
+                           TextColor="White"
+                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- ── Switch vista (admin) ─────────────────────────── -->
+        <Border Grid.Row="1"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
+                Stroke="Transparent"
+                IsVisible="{Binding IsAdmin}"
+                Padding="16,6,16,0">
+            <Border.StrokeShape><RoundRectangle CornerRadius="0"/></Border.StrokeShape>
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="6">
+                <!-- Employee -->
+                <Border Grid.Column="0" Padding="0,8">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ChangeViewModeCommand}"
+                                              CommandParameter="{x:Static vm:CalendarViewMode.Employee}"/>
+                    </Border.GestureRecognizers>
+                    <Border.Triggers>
+                        <DataTrigger TargetType="Border" Binding="{Binding IsEmployeeMode}" Value="True">
+                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
+                            <Setter Property="Stroke" Value="Transparent"/>
+                        </DataTrigger>
+                        <DataTrigger TargetType="Border" Binding="{Binding IsEmployeeMode}" Value="False">
+                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SurfaceContainerLow}, Dark={StaticResource DarkSurfaceContainerLow}}"/>
+                            <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}"/>
+                        </DataTrigger>
+                    </Border.Triggers>
+                    <Label Text="Dipendenti" FontSize="11" FontAttributes="Bold" FontFamily="PJSBold"
+                           HorizontalOptions="Center">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding IsEmployeeMode}" Value="True">
+                                <Setter Property="TextColor" Value="White"/>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label" Binding="{Binding IsEmployeeMode}" Value="False">
+                                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"/>
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+                </Border>
+                <!-- Day -->
+                <Border Grid.Column="1" Padding="0,8">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ChangeViewModeCommand}"
+                                              CommandParameter="{x:Static vm:CalendarViewMode.Day}"/>
+                    </Border.GestureRecognizers>
+                    <Border.Triggers>
+                        <DataTrigger TargetType="Border" Binding="{Binding IsDayMode}" Value="True">
+                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
+                            <Setter Property="Stroke" Value="Transparent"/>
+                        </DataTrigger>
+                        <DataTrigger TargetType="Border" Binding="{Binding IsDayMode}" Value="False">
+                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SurfaceContainerLow}, Dark={StaticResource DarkSurfaceContainerLow}}"/>
+                            <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}"/>
+                        </DataTrigger>
+                    </Border.Triggers>
+                    <Label Text="Giorno" FontSize="11" FontAttributes="Bold" FontFamily="PJSBold"
+                           HorizontalOptions="Center">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding IsDayMode}" Value="True">
+                                <Setter Property="TextColor" Value="White"/>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label" Binding="{Binding IsDayMode}" Value="False">
+                                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"/>
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- ── Duplica settimana (admin) ────────────────────── -->
+        <Border Grid.Row="2"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
+                Stroke="Transparent"
+                IsVisible="{Binding IsAdmin}"
+                Padding="16,8,16,4">
+            <Border.StrokeShape><RoundRectangle CornerRadius="0"/></Border.StrokeShape>
+            <Border BackgroundColor="Transparent"
+                    Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
+                    Padding="0">
+                <Border.StrokeShape><RoundRectangle CornerRadius="11"/></Border.StrokeShape>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding CopyPreviousWeekCommand}"/>
+                </Border.GestureRecognizers>
+                <HorizontalStackLayout Spacing="8" HorizontalOptions="Center" Padding="16,10">
+                    <Label Text="Duplica settimana precedente"
+                           FontSize="13" FontAttributes="Bold" FontFamily="PJSBold"
+                           TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
+                           VerticalOptions="Center"/>
+                </HorizontalStackLayout>
+            </Border>
+        </Border>
+
+        <!-- ── Legenda (admin) ──────────────────────────────── -->
+        <HorizontalStackLayout Grid.Row="3" Spacing="16"
+                               Padding="16,6,16,4"
+                               IsVisible="{Binding IsAdmin}">
+            <HorizontalStackLayout Spacing="6">
+                <BoxView Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}" HeightRequest="8" WidthRequest="8"
+                         VerticalOptions="Center" CornerRadius="4"/>
+                <Label Text="Turno" FontSize="11" FontFamily="PJSSemi"
+                       TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}" VerticalOptions="Center"/>
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Spacing="6">
+                <BoxView Color="{StaticResource Warning}" HeightRequest="8" WidthRequest="8"
+                         VerticalOptions="Center" CornerRadius="4"/>
+                <Label Text="Ferie" FontSize="11" FontFamily="PJSSemi"
+                       TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}" VerticalOptions="Center"/>
+            </HorizontalStackLayout>
+        </HorizontalStackLayout>
+
+        <!-- Error -->
+        <Border Grid.Row="4" IsVisible="{Binding HasError}"
+                BackgroundColor="{StaticResource ErrorLight}"
+                Stroke="{StaticResource Error}" StrokeThickness="1"
+                Padding="12,8" Margin="16,4,16,0">
+            <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+            <Label Text="{Binding ErrorMessage}"
+                   FontSize="13" FontFamily="PJSSemi"
+                   TextColor="{StaticResource ErrorText}"
+                   VerticalOptions="Center"/>
+        </Border>
+
+        <!-- ══ EMPLOYEE VIEW ══ ──────────────────────────────── -->
+        <Grid Grid.Row="5" RowDefinitions="Auto,Auto,*"
+              IsVisible="{Binding IsAdmin, Converter={StaticResource InverseBoolConverter}}">
+
+            <!-- Timbratura card -->
+            <Border Grid.Row="0"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
+                    Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
+                    Padding="16,14" Margin="16,12,16,4">
+                <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                <Border.Shadow>
+                    <Shadow Brush="#000000" Offset="0,4" Radius="14" Opacity="0.06"/>
+                </Border.Shadow>
+                <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
+                    <VerticalStackLayout Grid.Column="0" Spacing="3" VerticalOptions="Center">
+                        <Label Text="TIMBRATURA OGGI"
+                               FontSize="10" FontAttributes="Bold" FontFamily="PJSBold"
+                               TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
+                               CharacterSpacing="0.8"/>
+                        <Label Text="{Binding AttendanceStatusText}"
+                               FontSize="13" FontFamily="PJSSemi"
+                               TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
+                    </VerticalStackLayout>
+                    <Button Grid.Column="1" Text="Entrata"
+                            Command="{Binding CheckInCommand}"
+                            IsVisible="{Binding CanCheckIn}"
+                            BackgroundColor="{StaticResource Success}"
+                            TextColor="White" CornerRadius="11"
+                            HeightRequest="40" Padding="14,0"
+                            FontSize="13" FontAttributes="Bold" FontFamily="PJSBold"/>
+                    <Button Grid.Column="2" Text="Uscita"
+                            Command="{Binding CheckOutCommand}"
+                            IsVisible="{Binding CanCheckOut}"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
+                            TextColor="White" CornerRadius="11"
+                            HeightRequest="40" Padding="14,0"
+                            FontSize="13" FontAttributes="Bold" FontFamily="PJSBold"/>
+                </Grid>
+            </Border>
+
+            <!-- Check-in feedback -->
+            <Border Grid.Row="1"
+                    IsVisible="{Binding HasCheckInFeedback}"
+                    BackgroundColor="{StaticResource SuccessLight}"
+                    Stroke="{StaticResource Success}" StrokeThickness="1"
+                    Padding="12,7" Margin="16,4,16,0">
+                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                <HorizontalStackLayout Spacing="8">
+                    <Label Text="{Binding CheckInFeedback}"
+                           FontSize="13" FontFamily="PJSSemi"
+                           TextColor="{StaticResource SuccessText}"
+                           VerticalOptions="Center"/>
+                </HorizontalStackLayout>
+            </Border>
+
+            <RefreshView Grid.Row="2"
+                         Command="{Binding LoadShiftsCommand}"
+                         IsRefreshing="{Binding IsBusy}">
+                <CollectionView ItemsSource="{Binding Shifts}">
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout HorizontalOptions="Center"
+                                             Margin="0,52,0,0" Spacing="12">
+                            <Label Text="—"
+                                   FontSize="48" FontAttributes="Bold" FontFamily="PJSXBold"
+                                   TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Nessun turno questa settimana"
+                                   FontSize="17" FontAttributes="Bold" FontFamily="PJSBold"
+                                   TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="I tuoi turni appariranno qui quando l'admin li assegna."
+                                   FontSize="14" FontFamily="PJSReg"
+                                   TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"
+                                   HorizontalOptions="Center" HorizontalTextAlignment="Center"
+                                   Margin="28,0"/>
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="vm:ShiftDto">
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
+                                    Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
+                                    Padding="0" Margin="16,0,16,10">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                                <Border.Shadow>
+                                    <Shadow Brush="#000000" Offset="0,2" Radius="10" Opacity="0.05"/>
+                                </Border.Shadow>
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsToday}" Value="True">
+                                        <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
+                                        <Setter Property="StrokeThickness" Value="2"/>
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <Grid ColumnDefinitions="5,*">
+                                    <BoxView Grid.Column="0"
+                                             BackgroundColor="{Binding AccentColor}"
+                                             VerticalOptions="Fill" CornerRadius="5,0,0,5"/>
+                                    <Grid Grid.Column="1" ColumnDefinitions="*,Auto" Padding="14,14">
+                                        <VerticalStackLayout Grid.Column="0" Spacing="4">
+                                            <HorizontalStackLayout Spacing="8">
+                                                <Label Text="{Binding StartTime, StringFormat='{0:dddd dd MMMM}'}"
+                                                       FontSize="14" FontAttributes="Bold" FontFamily="PJSBold"
+                                                       TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
+                                                <Border BackgroundColor="{StaticResource SuccessLight}"
+                                                        Stroke="Transparent" Padding="6,2"
+                                                        IsVisible="{Binding IsToday}"
+                                                        VerticalOptions="Center">
+                                                    <Border.StrokeShape><RoundRectangle CornerRadius="6"/></Border.StrokeShape>
+                                                    <Label Text="OGGI"
+                                                           FontSize="9" FontAttributes="Bold" FontFamily="PJSBold"
+                                                           TextColor="{StaticResource SuccessText}"/>
+                                                </Border>
+                                            </HorizontalStackLayout>
+                                            <Label Text="{Binding StartTime, StringFormat='{0:HH:mm}'}"
+                                                   FontSize="13" FontFamily="PJSReg"
+                                                   TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"/>
+                                            <Label Text="{Binding Label}"
+                                                   FontSize="12" FontFamily="PJSReg"
+                                                   TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
+                                                   IsVisible="{Binding Label, Converter={StaticResource StringNotEmptyConverter}}"/>
+                                        </VerticalStackLayout>
+                                        <Border Grid.Column="1"
+                                                BackgroundColor="{StaticResource PrimaryLight}"
+                                                Stroke="Transparent" Padding="10,5"
+                                                VerticalOptions="Center">
+                                            <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                                            <Label Text="{Binding EndTime, StringFormat='fino {0:HH:mm}'}"
+                                                   FontSize="11" FontAttributes="Bold" FontFamily="PJSBold"
+                                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
+                                        </Border>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
+        </Grid>
+
+        <!-- ══ ADMIN GRID VIEW ══ ────────────────────────────── -->
+        <Grid Grid.Row="5" IsVisible="{Binding IsEmployeeMode}" RowDefinitions="Auto,*">
+
+            <!-- Day headers -->
+            <Border Grid.Row="0"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
+                    Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="0,0,0,1"
+                    Padding="0,6,0,6">
+                <Border.StrokeShape><RoundRectangle CornerRadius="0"/></Border.StrokeShape>
+                <Grid ColumnDefinitions="60,*,*,*,*,*,*,*">
+                    <Label Grid.Column="0"/>
+                    <!-- LUN -->
+                    <Border Grid.Column="1" Padding="2,4" Stroke="Transparent">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="6"/></Border.StrokeShape>
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding TodayColumnIndex}" Value="0">
+                                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryLight}"/>
+                            </DataTrigger>
+                        </Border.Triggers>
+                        <Label Text="LUN" HorizontalOptions="Center"
+                               FontSize="9" FontAttributes="Bold" FontFamily="PJSBold"
+                               TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"
+                               CharacterSpacing="0.5"/>
+                    </Border>
+                    <!-- MAR -->
+                    <Border Grid.Column="2" Padding="2,4" Stroke="Transparent">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="6"/></Border.StrokeShape>
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding TodayColumnIndex}" Value="1">
+                                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryLight}"/>
+                            </DataTrigger>
+                        </Border.Triggers>
+                        <Label Text="MAR" HorizontalOptions="Center"
+                               FontSize="9" FontAttributes="Bold" FontFamily="PJSBold"
+                               TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"
+                               CharacterSpacing="0.5"/>
+                    </Border>
+                    <!-- MER -->
+                    <Border Grid.Column="3" Padding="2,4" Stroke="Transparent">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="6"/></Border.StrokeShape>
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding TodayColumnIndex}" Value="2">
+                                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryLight}"/>
+                            </DataTrigger>
+                        </Border.Triggers>
+                        <Label Text="MER" HorizontalOptions="Center"
+                               FontSize="9" FontAttributes="Bold" FontFamily="PJSBold"
+                               TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"
+                               CharacterSpacing="0.5"/>
+                    </Border>
+                    <!-- GIO -->
+                    <Border Grid.Column="4" Padding="2,4" Stroke="Transparent">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="6"/></Border.StrokeShape>
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding TodayColumnIndex}" Value="3">
+                                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryLight}"/>
+                            </DataTrigger>
+                        </Border.Triggers>
+                        <Label Text="GIO" HorizontalOptions="Center"
+                               FontSize="9" FontAttributes="Bold" FontFamily="PJSBold"
+                               TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"
+                               CharacterSpacing="0.5"/>
+                    </Border>
+                    <!-- VEN -->
+                    <Border Grid.Column="5" Padding="2,4" Stroke="Transparent">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="6"/></Border.StrokeShape>
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding TodayColumnIndex}" Value="4">
+                                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryLight}"/>
+                            </DataTrigger>
+                        </Border.Triggers>
+                        <Label Text="VEN" HorizontalOptions="Center"
+                               FontSize="9" FontAttributes="Bold" FontFamily="PJSBold"
+                               TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"
+                               CharacterSpacing="0.5"/>
+                    </Border>
+                    <!-- SAB -->
+                    <Border Grid.Column="6" Padding="2,4" Stroke="Transparent">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="6"/></Border.StrokeShape>
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding TodayColumnIndex}" Value="5">
+                                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryLight}"/>
+                            </DataTrigger>
+                        </Border.Triggers>
+                        <Label Text="SAB" HorizontalOptions="Center"
+                               FontSize="9" FontAttributes="Bold" FontFamily="PJSBold"
+                               TextColor="{StaticResource Warning}"
+                               CharacterSpacing="0.5"/>
+                    </Border>
+                    <!-- DOM -->
+                    <Border Grid.Column="7" Padding="2,4" Stroke="Transparent">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="6"/></Border.StrokeShape>
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding TodayColumnIndex}" Value="6">
+                                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryLight}"/>
+                            </DataTrigger>
+                        </Border.Triggers>
+                        <Label Text="DOM" HorizontalOptions="Center"
+                               FontSize="9" FontAttributes="Bold" FontFamily="PJSBold"
+                               TextColor="{StaticResource Error}"
+                               CharacterSpacing="0.5"/>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- Employee rows -->
+            <RefreshView Grid.Row="1"
+                         Command="{Binding LoadShiftsCommand}"
+                         IsRefreshing="{Binding IsBusy}">
+                <CollectionView ItemsSource="{Binding EmployeeRows}"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}">
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout HorizontalOptions="Center"
+                                             Margin="0,48,0,0" Spacing="10">
+                            <Label Text="Nessun dato questa settimana"
+                                   FontSize="15" FontFamily="PJSSemi"
+                                   TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"
+                                   HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="vm:EmployeeWeekRow">
+                            <Grid ColumnDefinitions="60,*,*,*,*,*,*,*"
+                                  Padding="0,2" MinimumHeightRequest="62"
+                                  BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}">
+                                <!-- Separator -->
+                                <BoxView Grid.ColumnSpan="8"
+                                         HeightRequest="1" VerticalOptions="End"
+                                         BackgroundColor="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}"
+                                         Opacity="0.5"/>
+
+                                <!-- Avatar + name -->
+                                <VerticalStackLayout Grid.Column="0"
+                                                     HorizontalOptions="Center"
+                                                     VerticalOptions="Center"
+                                                     Spacing="3" Padding="3,0">
+                                    <Border BackgroundColor="{StaticResource PrimaryLight}"
+                                            Stroke="Transparent"
+                                            HeightRequest="30" WidthRequest="30"
+                                            HorizontalOptions="Center">
+                                        <Border.StrokeShape><RoundRectangle CornerRadius="15"/></Border.StrokeShape>
+                                        <Label Text="{Binding Initials}"
+                                               FontSize="10" FontAttributes="Bold" FontFamily="PJSBold"
+                                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
+                                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    </Border>
+                                    <Label Text="{Binding EmployeeName}"
+                                           FontSize="8" FontAttributes="Bold" FontFamily="PJSSemi"
+                                           TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
+                                           HorizontalOptions="Center"
+                                           HorizontalTextAlignment="Center"
+                                           LineBreakMode="TailTruncation"
+                                           MaxLines="2"/>
+                                </VerticalStackLayout>
+
+                                <!-- Day cells -->
+                                <Border Grid.Column="1" Margin="2"
+                                        BackgroundColor="{Binding Days[0].CellColor}"
+                                        Stroke="Transparent" Padding="2">
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftCalendarViewModel}}, Path=TapShiftCommand}" CommandParameter="{Binding Days[0]}"/>
+                                    </Border.GestureRecognizers>
+                                    <Label Text="{Binding Days[0].Label}" FontSize="9" FontAttributes="Bold" FontFamily="PJSBold"
+                                           TextColor="{Binding Days[0].LabelColor}" HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
+                                </Border>
+                                <Border Grid.Column="2" Margin="2" BackgroundColor="{Binding Days[1].CellColor}" Stroke="Transparent" Padding="2">
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftCalendarViewModel}}, Path=TapShiftCommand}" CommandParameter="{Binding Days[1]}"/>
+                                    </Border.GestureRecognizers>
+                                    <Label Text="{Binding Days[1].Label}" FontSize="9" FontAttributes="Bold" FontFamily="PJSBold" TextColor="{Binding Days[1].LabelColor}" HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
+                                </Border>
+                                <Border Grid.Column="3" Margin="2" BackgroundColor="{Binding Days[2].CellColor}" Stroke="Transparent" Padding="2">
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftCalendarViewModel}}, Path=TapShiftCommand}" CommandParameter="{Binding Days[2]}"/>
+                                    </Border.GestureRecognizers>
+                                    <Label Text="{Binding Days[2].Label}" FontSize="9" FontAttributes="Bold" FontFamily="PJSBold" TextColor="{Binding Days[2].LabelColor}" HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
+                                </Border>
+                                <Border Grid.Column="4" Margin="2" BackgroundColor="{Binding Days[3].CellColor}" Stroke="Transparent" Padding="2">
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftCalendarViewModel}}, Path=TapShiftCommand}" CommandParameter="{Binding Days[3]}"/>
+                                    </Border.GestureRecognizers>
+                                    <Label Text="{Binding Days[3].Label}" FontSize="9" FontAttributes="Bold" FontFamily="PJSBold" TextColor="{Binding Days[3].LabelColor}" HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
+                                </Border>
+                                <Border Grid.Column="5" Margin="2" BackgroundColor="{Binding Days[4].CellColor}" Stroke="Transparent" Padding="2">
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftCalendarViewModel}}, Path=TapShiftCommand}" CommandParameter="{Binding Days[4]}"/>
+                                    </Border.GestureRecognizers>
+                                    <Label Text="{Binding Days[4].Label}" FontSize="9" FontAttributes="Bold" FontFamily="PJSBold" TextColor="{Binding Days[4].LabelColor}" HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
+                                </Border>
+                                <Border Grid.Column="6" Margin="2" BackgroundColor="{Binding Days[5].CellColor}" Stroke="Transparent" Padding="2">
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftCalendarViewModel}}, Path=TapShiftCommand}" CommandParameter="{Binding Days[5]}"/>
+                                    </Border.GestureRecognizers>
+                                    <Label Text="{Binding Days[5].Label}" FontSize="9" FontAttributes="Bold" FontFamily="PJSBold" TextColor="{Binding Days[5].LabelColor}" HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
+                                </Border>
+                                <Border Grid.Column="7" Margin="2" BackgroundColor="{Binding Days[6].CellColor}" Stroke="Transparent" Padding="2">
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftCalendarViewModel}}, Path=TapShiftCommand}" CommandParameter="{Binding Days[6]}"/>
+                                    </Border.GestureRecognizers>
+                                    <Label Text="{Binding Days[6].Label}" FontSize="9" FontAttributes="Bold" FontFamily="PJSBold" TextColor="{Binding Days[6].LabelColor}" HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
+        </Grid>
+
+        <!-- ══ DAY VIEW ══ ──────────────────────────────────── -->
+        <Grid Grid.Row="5"
+              RowDefinitions="Auto,*"
+              IsVisible="{Binding IsDayMode}">
+            <!-- Selettore giorno -->
+            <Grid Grid.Row="0" ColumnDefinitions="40,*,40" Padding="8,8,8,4">
+                <Button Grid.Column="0" Text="‹"
+                        BackgroundColor="Transparent"
+                        TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
+                        FontSize="26" FontFamily="PJSBold"
+                        Padding="0" HorizontalOptions="Center"
+                        Command="{Binding PreviousDayCommand}"/>
+                <Label Grid.Column="1" Text="{Binding DayLabel}"
+                       FontSize="14" FontAttributes="Bold" FontFamily="PJSBold"
+                       TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
+                       HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Button Grid.Column="2" Text="›"
+                        BackgroundColor="Transparent"
+                        TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
+                        FontSize="26" FontFamily="PJSBold"
+                        Padding="0" HorizontalOptions="Center"
+                        Command="{Binding NextDayCommand}"/>
+            </Grid>
+            <CollectionView Grid.Row="1"
+                            ItemsSource="{Binding DaySlots}"
+                            Margin="16,0,16,0">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:TimeSlot">
+                        <Grid ColumnDefinitions="52,*" Padding="0,2" ColumnSpacing="10">
+                            <Label Grid.Column="0" Text="{Binding Time}"
+                                   FontSize="11" FontFamily="PJSSemi"
+                                   TextColor="{Binding TimeColor}"
+                                   VerticalOptions="Center"/>
+                            <Border Grid.Column="1"
+                                    BackgroundColor="{Binding RowColor}"
+                                    Stroke="Transparent" Padding="10,6"
+                                    MinimumHeightRequest="36">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
+                                <Label Text="{Binding EmployeesDisplay}"
+                                       FontSize="12" FontFamily="PJSReg"
+                                       TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"
+                                       LineBreakMode="TailTruncation"/>
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+
+        <ActivityIndicator Grid.Row="5"
+                           IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                           HorizontalOptions="Center" VerticalOptions="Center"
+                           Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}" ZIndex="10"/>
+        </Grid>
+    </Grid>
+</ContentPage>

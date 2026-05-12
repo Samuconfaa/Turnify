@@ -1,0 +1,10 @@
+{
+  "eval_id": 4,
+  "eval_name": "block-on-missing-spec",
+  "prompt": "Vorrei `docs/plan.md` e `docs/architecture.md`, ma in realtà non ho ancora scritto `docs/spec.md`: ho solo l'idea di una app per studenti. Procedi pure con le assunzioni.",
+  "assertions": [
+    "Non costruisce piano e architettura completi da uno spec inesistente senza segnalare il problema.",
+    "Indica `maui-prd` come passaggio corretto prima di derivare i documenti successivi.",
+    "Chiede solo le informazioni minime o i blocker necessari per poter continuare."
+  ]
+}

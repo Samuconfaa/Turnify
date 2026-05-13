@@ -45,6 +45,12 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+
+		<AndroidKeyStore Condition="'$(ANDROID_KEYSTORE_PASS)' != ''">true</AndroidKeyStore>
+		<AndroidSigningKeyStore Condition="'$(ANDROID_KEYSTORE_PASS)' != ''">turnify-release.keystore</AndroidSigningKeyStore>
+		<AndroidSigningKeyAlias Condition="'$(ANDROID_KEYSTORE_PASS)' != ''">turnify</AndroidSigningKeyAlias>
+		<AndroidSigningStorePass Condition="'$(ANDROID_KEYSTORE_PASS)' != ''">$(ANDROID_KEYSTORE_PASS)</AndroidSigningStorePass>
+		<AndroidSigningKeyPass Condition="'$(ANDROID_KEY_PASS)' != ''">$(ANDROID_KEY_PASS)</AndroidSigningKeyPass>
 	</PropertyGroup>
 
 	<ItemGroup>

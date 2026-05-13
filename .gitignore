@@ -42,6 +42,7 @@ x86/
 bld/
 [Ll]og/
 [Ll]ogs/
+turnify-release.keystore
 
 # Artifacts
 *.dll
@@ -130,6 +131,7 @@ _ReSharper*/
 *.ipa
 # eccezione: APK firmato di consegna
 !assets/apk/turnify.apk
+!assets/apk/turnify.aab
 *.app
 *.xcarchive
 

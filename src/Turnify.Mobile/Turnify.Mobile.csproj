@@ -53,6 +53,10 @@
 		<AndroidSigningKeyPass Condition="'$(ANDROID_KEY_PASS)' != ''">$(ANDROID_KEY_PASS)</AndroidSigningKeyPass>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="$(TargetFramework.Contains('-android')) And '$(Configuration)' == 'Release'">
+		<AndroidLinkMode>SdkOnly</AndroidLinkMode>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.png"/>

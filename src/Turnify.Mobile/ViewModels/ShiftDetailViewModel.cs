@@ -21,6 +21,12 @@ public class ShiftEmployeeDto
     public int? BusinessId { get; set; }
 }
 
+file sealed class ShiftEmployeePagedResult
+{
+    [System.Text.Json.Serialization.JsonPropertyName("data")]
+    public ShiftEmployeeDto[] Data { get; set; } = [];
+}
+
 [QueryProperty(nameof(ShiftId), "shiftId")]
 public partial class ShiftDetailViewModel : BaseViewModel
 {
@@ -84,7 +90,8 @@ public partial class ShiftDetailViewModel : BaseViewModel
             IsBusy = true;
 
             // Load active employees
-            var emps = await _httpClient.GetFromJsonAsync<ShiftEmployeeDto[]>("api/employees");
+            var paged = await _httpClient.GetFromJsonAsync<ShiftEmployeePagedResult>("api/employees");
+            var emps = paged?.Data;
             Employees.Clear();
             if (emps != null)
                 foreach (var e in emps) Employees.Add(e);

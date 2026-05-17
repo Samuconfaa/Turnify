@@ -583,3 +583,17 @@ Derivata dallo stato attuale del repository e dalle verifiche documentate:
 - Infinite scroll su `EmployeeListPage`, `AttendanceHistoryPage`, `VacationListPage`
 
 **Status:** ✅ Completata (2026-05-09)
+
+---
+
+### Iterazione 21 — Post-release bugfix: visibilità dati dipendente
+
+**Obiettivo:** Correggere tre bug che impedivano ai dipendenti di vedere i propri dati (turni, ferie) e un crash di build Android Release.
+
+**Deliverable:**
+- Fix ILLink crash Android Release (`AndroidLinkMode=SdkOnly`)
+- Fix `ShiftDetailViewModel`: dipendenti vuoti per mismatch deserializzazione paginata
+- Fix `ShiftCalendarPage`: dipendenti vedevano grid admin vuota anziché i propri turni
+- Fix `VacationRequestsController`: ferie vuote per `userId` passato dove si aspettava `employeeId`
+
+**Status:** ✅ Completata (2026-05-17)

@@ -91,14 +91,16 @@ public partial class VacationListViewModel : BaseViewModel
         {
             IsBusy = true;
 
-            var me = await _httpClient.GetFromJsonAsync<UserMeDto>("api/users/me");
+            var ciOpts = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+            var me = await _httpClient.GetFromJsonAsync<UserMeDto>("api/users/me", ciOpts);
             if (me != null) _myEmployeeId = me.EmployeeId;
 
             _currentPage = 1;
             var url = "api/vacation-requests?page=1&pageSize=20";
             if (FilterStatus != "All") url += $"&status={FilterStatus}";
 
-            var result = await _httpClient.GetFromJsonAsync<VacationPagedResponse>(url);
+            var result = await _httpClient.GetFromJsonAsync<VacationPagedResponse>(url, ciOpts);
             Requests.Clear();
             if (result?.Data != null)
                 foreach (var r in result.Data) Requests.Add(r);
@@ -142,7 +144,8 @@ public partial class VacationListViewModel : BaseViewModel
             _currentPage++;
             var url = $"api/vacation-requests?page={_currentPage}&pageSize=20";
             if (FilterStatus != "All") url += $"&status={FilterStatus}";
-            var result = await _httpClient.GetFromJsonAsync<VacationPagedResponse>(url);
+            var ciOpts = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var result = await _httpClient.GetFromJsonAsync<VacationPagedResponse>(url, ciOpts);
             if (result?.Data != null)
                 foreach (var r in result.Data) Requests.Add(r);
             _hasMore = result?.HasMore ?? false;

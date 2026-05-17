@@ -103,13 +103,7 @@ public class EmployeesController : ControllerBase
             .Select(e => MapToDto(e))
             .ToList();
 
-        return Ok(new PaginatedResult<EmployeeDto>
-        {
-            Data = paged,
-            Total = total,
-            Page = page,
-            PageSize = pageSize
-        });
+        return Ok(new { data = paged, total, page, pageSize, hasMore = page * pageSize < total });
     }
 
     [HttpPost]

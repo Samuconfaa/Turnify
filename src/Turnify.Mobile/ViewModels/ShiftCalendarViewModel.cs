@@ -29,13 +29,19 @@ public partial class ShiftCalendarViewModel : BaseViewModel
     [NotifyPropertyChangedFor(nameof(TodayColumnIndex))]
     private DateTime _currentWeekStart;
 
-    [ObservableProperty] private bool _isAdmin;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShowAttendance))]
+    [NotifyPropertyChangedFor(nameof(IsAdminEmployeeMode))]
+    [NotifyPropertyChangedFor(nameof(IsAdminDayMode))]
+    private bool _isAdmin;
     [ObservableProperty] private ObservableCollection<ShiftDto> _shifts = new();
     [ObservableProperty] private ObservableCollection<EmployeeWeekRow> _employeeRows = new();
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEmployeeMode))]
     [NotifyPropertyChangedFor(nameof(IsDayMode))]
+    [NotifyPropertyChangedFor(nameof(IsAdminEmployeeMode))]
+    [NotifyPropertyChangedFor(nameof(IsAdminDayMode))]
     private CalendarViewMode _selectedViewMode = CalendarViewMode.Employee;
 
     [ObservableProperty]
@@ -44,8 +50,10 @@ public partial class ShiftCalendarViewModel : BaseViewModel
 
     [ObservableProperty] private ObservableCollection<TimeSlot> _daySlots  = new();
 
-    public bool IsEmployeeMode => SelectedViewMode == CalendarViewMode.Employee;
-    public bool IsDayMode      => SelectedViewMode == CalendarViewMode.Day;
+    public bool IsEmployeeMode     => SelectedViewMode == CalendarViewMode.Employee;
+    public bool IsDayMode          => SelectedViewMode == CalendarViewMode.Day;
+    public bool IsAdminEmployeeMode => IsAdmin && IsEmployeeMode;
+    public bool IsAdminDayMode      => IsAdmin && IsDayMode;
 
     public string DayLabel => SelectedDate.ToString("dddd dd MMMM");
     [ObservableProperty] private bool _hasError;

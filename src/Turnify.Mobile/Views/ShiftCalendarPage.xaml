@@ -334,7 +334,7 @@
         </Grid>
 
         <!-- ══ ADMIN GRID VIEW ══ ────────────────────────────── -->
-        <Grid Grid.Row="5" IsVisible="{Binding IsEmployeeMode}" RowDefinitions="Auto,*">
+        <Grid Grid.Row="5" IsVisible="{Binding IsAdminEmployeeMode}" RowDefinitions="Auto,*">
 
             <!-- Day headers -->
             <Border Grid.Row="0"
@@ -551,7 +551,7 @@
         <!-- ══ DAY VIEW ══ ──────────────────────────────────── -->
         <Grid Grid.Row="5"
               RowDefinitions="Auto,*"
-              IsVisible="{Binding IsDayMode}">
+              IsVisible="{Binding IsAdminDayMode}">
             <!-- Selettore giorno -->
             <Grid Grid.Row="0" ColumnDefinitions="40,*,40" Padding="8,8,8,4">
                 <Button Grid.Column="0" Text="‹"

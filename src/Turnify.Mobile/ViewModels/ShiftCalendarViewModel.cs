@@ -540,13 +540,13 @@ public partial class ShiftCalendarViewModel : BaseViewModel
 // ── DTOs ─────────────────────────────────────────────────────────────
 public class ShiftDto
 {
-    public int Id { get; set; }
-    public int EmployeeId { get; set; }
-    public string EmployeeName { get; set; } = string.Empty;
-    public DateTime StartTime { get; set; }
-    public DateTime EndTime { get; set; }
-    public string Label { get; set; } = string.Empty;
-    public string Status { get; set; } = string.Empty;
+    [JsonPropertyName("id")]           public int Id { get; set; }
+    [JsonPropertyName("employeeId")]   public int EmployeeId { get; set; }
+    [JsonPropertyName("employeeName")] public string EmployeeName { get; set; } = string.Empty;
+    [JsonPropertyName("startTime")]    public DateTime StartTime { get; set; }
+    [JsonPropertyName("endTime")]      public DateTime EndTime { get; set; }
+    [JsonPropertyName("label")]        public string Label { get; set; } = string.Empty;
+    [JsonPropertyName("status")]       public string Status { get; set; } = string.Empty;
 
     public bool IsToday => StartTime.ToLocalTime().Date == DateTime.Today;
     public string AccentColor => IsToday ? "#16A34A" : "#2563EB";

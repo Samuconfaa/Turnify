@@ -82,9 +82,16 @@ public class VacationRequestsController : ControllerBase
         IReadOnlyList<VacationRequest> requests;
 
         if (IsManagerOrAdmin())
+        {
             requests = await _vacationService.GetVacationRequestsAsync(companyId, ct);
+        }
         else
-            requests = await _vacationService.GetVacationRequestsByEmployeeAsync(GetUserId(), ct);
+        {
+            var employee = await _employeeRepository.GetByUserIdAsync(GetUserId(), ct);
+            if (employee == null)
+                return Ok(new { data = Array.Empty<object>(), total = 0, page, pageSize, hasMore = false });
+            requests = await _vacationService.GetVacationRequestsByEmployeeAsync(employee.Id, ct);
+        }
 
         // Optional status filter
         if (!string.IsNullOrEmpty(status) &&

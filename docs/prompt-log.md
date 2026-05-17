@@ -2,6 +2,84 @@
 
 ---
 
+## Prompt 53
+
+### Data
+2026-05-17
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Fix bug: dipendente non vede le proprie richieste ferie nella sezione "Ferie e Permessi".
+
+### Prompt
+> Fix `VacationRequestsController.GetVacationRequests`: per utenti non-admin, il metodo chiama `GetVacationRequestsByEmployeeAsync(GetUserId())` passando `User.Id` (JWT sub) anziché `Employee.Id`. La funzione si aspetta `employeeId`. Risolvere aggiungendo lookup `_employeeRepository.GetByUserIdAsync(userId)` e passando `employee.Id`, come già fatto in `ShiftsController` (righe 99-101). `_employeeRepository` è già iniettato.
+
+### Output utile
+- `VacationRequestsController.cs:84-94` — ramo `else` riscritto con lookup employee
+- Pattern identico a `ShiftsController.cs:99-102`
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Root cause confermata: `User.Id` (es. 5) ≠ `Employee.Id` (es. 3), quindi `WHERE EmployeeId = 5` non trovava nessun record. ShiftsController usava già il pattern corretto.
+
+---
+
+## Prompt 52
+
+### Data
+2026-05-17
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Fix bug: dipendente loggato non vede i propri turni nella sezione "Turni" (lista vuota).
+
+### Prompt
+> Fix `ShiftCalendarPage.xaml` e `ShiftCalendarViewModel.cs`: la Admin Grid View (Row=5) aveva `IsVisible="{Binding IsEmployeeMode}"` che è `true` di default per tutti gli utenti, coprendo la employee shift list con una empty-view "Nessun dato questa settimana". Aggiungere `IsAdminEmployeeMode` e `IsAdminDayMode` come `bool IsAdmin && IsEmployeeMode/IsDayMode`, aggiungere `[NotifyPropertyChangedFor]` su `_isAdmin` e `_selectedViewMode`, sostituire `IsEmployeeMode`/`IsDayMode` con le nuove proprietà nelle due Grid admin in XAML.
+
+### Output utile
+- `ShiftCalendarViewModel.cs` — aggiunte proprietà `IsAdminEmployeeMode`, `IsAdminDayMode`; aggiunto `[NotifyPropertyChangedFor]` su `_isAdmin`
+- `ShiftCalendarPage.xaml` — due Grid admin usano `IsAdminEmployeeMode`/`IsAdminDayMode`
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+`IsEmployeeMode = true` di default → admin grid sovrapponeva employee view per tutti gli utenti. Fix minimo senza riscrittura XAML.
+
+---
+
+## Prompt 51
+
+### Data
+2026-05-17
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Fix build Android Release: errore ILLink "This object is no longer valid because the MetadataLoadContext that created it has been disposed" + merge main→develop --no-ff + fix dipendenti vuoti in ShiftDetailViewModel.
+
+### Prompt
+> (1) Fix ILLink crash su Android Release aggiungendo `<AndroidLinkMode>SdkOnly</AndroidLinkMode>` in `Turnify.Mobile.csproj` per la configurazione `net10.0-android` + `Release`. (2) Merge `main → develop` con `--no-ff`. (3) Fix `ShiftDetailViewModel.LoadDataAsync`: `GetFromJsonAsync<ShiftEmployeeDto[]>("api/employees")` deserializza array piatto ma l'API ritorna oggetto paginato `{ data: [...] }`. Aggiungere `file sealed class ShiftEmployeePagedResult` con `[JsonPropertyName("data")]` e cambiare la chiamata.
+
+### Output utile
+- `Turnify.Mobile.csproj` — `AndroidLinkMode=SdkOnly` in PropertyGroup Release Android
+- `ShiftDetailViewModel.cs` — aggiunta `file sealed class ShiftEmployeePagedResult`, `GetFromJsonAsync<ShiftEmployeePagedResult>` → `paged?.Data`
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+`file-scoped internal sealed class` non esiste in C# — corretto in `file sealed class`. ILLink crash confermato da pattern reflection-heavy (JWT + Firebase). Paged deserialization identica a `EmployeeListViewModel`.
+
+---
+
 ## Prompt 50
 
 ### Data

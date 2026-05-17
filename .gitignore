@@ -3,6 +3,12 @@
 ## =========================
 .env
 .env.*
+
+## Local build secrets (signing passwords, never commit)
+Directory.Build.user.props
+
+## IDE cache files
+*.lscache
 !.env.example
 
 # dotenv files (duplicate-safe kept once)
@@ -327,7 +333,7 @@ appsettings.Development.json
 ## =========================
 ## OTHERS
 ## =========================
-Presentazione.pptx
+Turnify-Presentazione.pptx
 .claude/worktrees/
 logos/
 .claude/settings.local.json

@@ -3,6 +3,12 @@
 ## =========================
 .env
 .env.*
+
+## Local build secrets (signing passwords, never commit)
+Directory.Build.user.props
+
+## IDE cache files
+*.lscache
 !.env.example
 
 # dotenv files (duplicate-safe kept once)
@@ -42,6 +48,7 @@ x86/
 bld/
 [Ll]og/
 [Ll]ogs/
+turnify-release.keystore
 
 # Artifacts
 *.dll
@@ -130,6 +137,7 @@ _ReSharper*/
 *.ipa
 # eccezione: APK firmato di consegna
 !assets/apk/turnify.apk
+!assets/apk/turnify.aab
 *.app
 *.xcarchive
 
@@ -325,7 +333,7 @@ appsettings.Development.json
 ## =========================
 ## OTHERS
 ## =========================
-Presentazione.pptx
+Turnify-Presentazione.pptx
 .claude/worktrees/
 logos/
 .claude/settings.local.json

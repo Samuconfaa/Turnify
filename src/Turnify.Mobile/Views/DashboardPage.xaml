@@ -2,320 +2,259 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Turnify.Mobile.ViewModels"
-             xmlns:comp="clr-namespace:Turnify.Mobile.Views.Components"
              x:Class="Turnify.Mobile.Views.DashboardPage"
              x:DataType="vm:DashboardViewModel"
              Title="Dashboard"
              Shell.NavBarIsVisible="False"
-             BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource DarkBackground}}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource Bg}, Dark={StaticResource BgDark}}">
 
-    <Grid RowDefinitions="Auto,Auto,*">
-        <comp:StaleDataBanner Grid.Row="0"/>
+    <Grid RowDefinitions="Auto,*,Auto">
 
-        <!-- ── Gradient header ──────────────────────────────── -->
-        <Grid Grid.Row="1" Padding="20,18,20,20" MinimumHeightRequest="72">
-            <Grid.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                    <GradientStop Color="{AppThemeBinding Light={StaticResource HeaderGradientStart}, Dark={StaticResource DarkHeaderGradientStart}}" Offset="0"/>
-                    <GradientStop Color="{AppThemeBinding Light={StaticResource HeaderGradientEnd}, Dark={StaticResource DarkHeaderGradientEnd}}" Offset="1"/>
-                </LinearGradientBrush>
-            </Grid.Background>
-            <Grid ColumnDefinitions="*,Auto">
-                <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
-                    <Label Text="{Binding WeekLabel}" FontSize="12" FontFamily="PJSReg"
-                           TextColor="#FFFFFF70"/>
-                    <Label Text="Dashboard" FontSize="26" FontAttributes="Bold" FontFamily="PJSXBold"
-                           TextColor="White" CharacterSpacing="-0.8"/>
-                </VerticalStackLayout>
-                <!-- Bell button -->
-                <Border Grid.Column="1" BackgroundColor="#FFFFFF1A" Stroke="#FFFFFF22"
-                        StrokeThickness="1" HeightRequest="42" WidthRequest="42"
-                        VerticalOptions="Center">
-                    <Border.StrokeShape><RoundRectangle CornerRadius="21"/></Border.StrokeShape>
-                    <Image Source="bell.svg" HeightRequest="20" WidthRequest="20"
-                           HorizontalOptions="Center" VerticalOptions="Center"/>
+        <!-- Header -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Padding="20,8,20,16"
+              BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
+            <Grid.Shadow>
+                <Shadow Brush="Black" Offset="0,1" Radius="4" Opacity="0.06"/>
+            </Grid.Shadow>
+            <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
+                <Label Text="Dashboard"
+                       FontSize="22" FontFamily="PJSSemi"
+                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                       CharacterSpacing="-0.4"/>
+                <Label Text="{Binding WeekLabel}"
+                       FontSize="13" FontFamily="PJSReg"
+                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+            </VerticalStackLayout>
+            <!-- Bell icon -->
+            <Grid Grid.Column="1" WidthRequest="40" HeightRequest="40" VerticalOptions="Center">
+                <Border StrokeShape="RoundRectangle CornerRadius='12'"
+                        StrokeThickness="0"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLow}, Dark={StaticResource SurfaceLowDark}}">
+                    <Label Text="🔔" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center"/>
                 </Border>
             </Grid>
         </Grid>
 
-        <!-- ── Scrollable content ───────────────────────────── -->
-        <RefreshView Grid.Row="2" Command="{Binding LoadDataCommand}" IsRefreshing="{Binding IsBusy}">
+        <!-- Scrollable content -->
+        <RefreshView Grid.Row="1" Command="{Binding LoadDataCommand}" IsRefreshing="{Binding IsBusy}">
         <ScrollView>
-            <VerticalStackLayout Spacing="0" Padding="0,0,0,36">
+            <VerticalStackLayout Padding="16,20,16,16" Spacing="20">
 
                 <!-- Error banner -->
-                <Border BackgroundColor="{StaticResource ErrorLight}"
-                        Stroke="{StaticResource Error}" StrokeThickness="1"
-                        Padding="14,10" Margin="20,16,20,0" IsVisible="{Binding HasError}">
-                    <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                <Border StrokeShape="RoundRectangle CornerRadius='10'"
+                        StrokeThickness="1"
+                        Stroke="{AppThemeBinding Light={StaticResource Danger}, Dark={StaticResource DangerDark}}"
+                        Padding="12,10"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource ErrorBg}, Dark={StaticResource ErrorBgDark}}"
+                        IsVisible="{Binding HasError}">
                     <Label Text="{Binding ErrorMessage}" FontSize="13" FontFamily="PJSSemi"
-                           TextColor="{StaticResource ErrorText}"/>
+                           TextColor="{AppThemeBinding Light={StaticResource ErrorText}, Dark={StaticResource ErrorTextDark}}"/>
                 </Border>
 
-                <!-- ── KPI 2×2 ────────────────────────────────── -->
-                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto"
-                      ColumnSpacing="10" RowSpacing="10" Padding="20,16,20,0">
-
-                    <!-- Dipendenti — verde -->
-                    <Border Grid.Row="0" Grid.Column="0" Stroke="Transparent" Padding="16">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
-                        <Border.Background>
-                            <SolidColorBrush Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
-                        </Border.Background>
-                        <Border.Shadow>
-                            <Shadow Brush="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}" Offset="0,8" Radius="20" Opacity="0.25"/>
-                        </Border.Shadow>
-                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
-                            <Label Grid.Row="0" Grid.Column="0"
-                                   Text="{Binding TotalEmployees}"
-                                   FontSize="30" FontAttributes="Bold" FontFamily="PJSXBold"
-                                   TextColor="White" CharacterSpacing="-1"/>
-                            <Image Grid.Row="0" Grid.Column="1"
-                                   Source="users_group.svg" HeightRequest="28" WidthRequest="28"
-                                   VerticalOptions="Start"/>
-                            <Label Grid.Row="1" Grid.ColumnSpan="2"
-                                   Text="Dipendenti" FontSize="11" FontFamily="PJSSemi"
-                                   TextColor="#FFFFFFCC" Margin="0,6,0,0"/>
-                            <Label Grid.Row="2" Grid.ColumnSpan="2"
-                                   Text="in turno" FontSize="11" FontFamily="PJSReg"
-                                   TextColor="#FFFFFF80"/>
-                        </Grid>
+                <!-- KPI 2x2 -->
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="12">
+                    <!-- In turno / Dipendenti -->
+                    <Border Grid.Row="0" Grid.Column="0"
+                            StrokeShape="RoundRectangle CornerRadius='16'"
+                            StrokeThickness="0" Padding="16"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="👥" FontSize="16"
+                                   TextColor="{AppThemeBinding Light={StaticResource PrimaryText}, Dark={StaticResource PrimaryTextDark}}"/>
+                            <Label Text="{Binding TotalEmployees}" FontSize="28" FontFamily="PJSBold"
+                                   TextColor="{AppThemeBinding Light={StaticResource PrimaryText}, Dark={StaticResource PrimaryTextDark}}"
+                                   CharacterSpacing="-0.6"/>
+                            <Label Text="Dipendenti" FontSize="11" FontFamily="PJSSemi"
+                                   TextColor="{AppThemeBinding Light={StaticResource PrimaryText}, Dark={StaticResource PrimaryTextDark}}"
+                                   Opacity="0.9"/>
+                        </VerticalStackLayout>
                     </Border>
-
-                    <!-- Turni — ambra -->
-                    <Border Grid.Row="0" Grid.Column="1" Stroke="Transparent" Padding="16">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
-                        <Border.Background>
-                            <SolidColorBrush Color="{StaticResource KpiAmber}"/>
-                        </Border.Background>
-                        <Border.Shadow>
-                            <Shadow Brush="{StaticResource KpiAmber}" Offset="0,8" Radius="20" Opacity="0.25"/>
-                        </Border.Shadow>
-                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
-                            <Label Grid.Row="0" Grid.Column="0"
-                                   Text="{Binding ShiftsThisWeek}"
-                                   FontSize="30" FontAttributes="Bold" FontFamily="PJSXBold"
-                                   TextColor="White" CharacterSpacing="-1"/>
-                            <Image Grid.Row="0" Grid.Column="1"
-                                   Source="calendar_check.svg" HeightRequest="28" WidthRequest="28"
-                                   VerticalOptions="Start"/>
-                            <Label Grid.Row="1" Grid.ColumnSpan="2"
-                                   Text="Turni" FontSize="11" FontFamily="PJSSemi"
-                                   TextColor="#FFFFFFCC" Margin="0,6,0,0"/>
-                            <Label Grid.Row="2" Grid.ColumnSpan="2"
-                                   Text="questa settimana" FontSize="11" FontFamily="PJSReg"
-                                   TextColor="#FFFFFF80"/>
-                        </Grid>
+                    <!-- Turni settimana -->
+                    <Border Grid.Row="0" Grid.Column="1"
+                            StrokeShape="RoundRectangle CornerRadius='16'"
+                            StrokeThickness="0" Padding="16"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource KpiAmber}, Dark={StaticResource KpiAmberDark}}">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="📅" FontSize="16" TextColor="White"/>
+                            <Label Text="{Binding ShiftsThisWeek}" FontSize="28" FontFamily="PJSBold" TextColor="White" CharacterSpacing="-0.6"/>
+                            <Label Text="Turni questa settimana" FontSize="11" FontFamily="PJSSemi" TextColor="White" Opacity="0.9"/>
+                        </VerticalStackLayout>
                     </Border>
-
-                    <!-- Ferie — corallo/error -->
-                    <Border Grid.Row="1" Grid.Column="0" Stroke="Transparent" Padding="16">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
-                        <Border.Background>
-                            <SolidColorBrush Color="{StaticResource Error}"/>
-                        </Border.Background>
-                        <Border.Shadow>
-                            <Shadow Brush="{StaticResource Error}" Offset="0,8" Radius="20" Opacity="0.25"/>
-                        </Border.Shadow>
-                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
-                            <Label Grid.Row="0" Grid.Column="0"
-                                   Text="{Binding PendingVacations}"
-                                   FontSize="30" FontAttributes="Bold" FontFamily="PJSXBold"
-                                   TextColor="White" CharacterSpacing="-1"/>
-                            <Image Grid.Row="0" Grid.Column="1"
-                                   Source="beach_umbrella.svg" HeightRequest="28" WidthRequest="28"
-                                   VerticalOptions="Start"/>
-                            <Label Grid.Row="1" Grid.ColumnSpan="2"
-                                   Text="Ferie" FontSize="11" FontFamily="PJSSemi"
-                                   TextColor="#FFFFFFCC" Margin="0,6,0,0"/>
-                            <Label Grid.Row="2" Grid.ColumnSpan="2"
-                                   Text="in attesa" FontSize="11" FontFamily="PJSReg"
-                                   TextColor="#FFFFFF80"/>
-                        </Grid>
+                    <!-- Ferie in attesa -->
+                    <Border Grid.Row="1" Grid.Column="0"
+                            StrokeShape="RoundRectangle CornerRadius='16'"
+                            StrokeThickness="0" Padding="16"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Danger}, Dark={StaticResource DangerDark}}">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="🌴" FontSize="16" TextColor="White"/>
+                            <Label Text="{Binding PendingVacations}" FontSize="28" FontFamily="PJSBold" TextColor="White" CharacterSpacing="-0.6"/>
+                            <Label Text="Ferie in attesa" FontSize="11" FontFamily="PJSSemi" TextColor="White" Opacity="0.9"/>
+                        </VerticalStackLayout>
                     </Border>
-
-                    <!-- Ore — sky blue -->
-                    <Border Grid.Row="1" Grid.Column="1" Stroke="Transparent" Padding="16">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
-                        <Border.Background>
-                            <SolidColorBrush Color="{StaticResource KpiBlue}"/>
-                        </Border.Background>
-                        <Border.Shadow>
-                            <Shadow Brush="{StaticResource KpiBlue}" Offset="0,8" Radius="20" Opacity="0.25"/>
-                        </Border.Shadow>
-                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
-                            <Label Grid.Row="0" Grid.Column="0"
-                                   Text="{Binding TotalHoursScheduled, StringFormat='{0:0}h'}"
-                                   FontSize="30" FontAttributes="Bold" FontFamily="PJSXBold"
-                                   TextColor="White" CharacterSpacing="-1"/>
-                            <Image Grid.Row="0" Grid.Column="1"
-                                   Source="clock_timer.svg" HeightRequest="28" WidthRequest="28"
-                                   VerticalOptions="Start"/>
-                            <Label Grid.Row="1" Grid.ColumnSpan="2"
-                                   Text="Ore" FontSize="11" FontFamily="PJSSemi"
-                                   TextColor="#FFFFFFCC" Margin="0,6,0,0"/>
-                            <Label Grid.Row="2" Grid.ColumnSpan="2"
-                                   Text="questa settimana" FontSize="11" FontFamily="PJSReg"
-                                   TextColor="#FFFFFF80"/>
-                        </Grid>
+                    <!-- Ore totali -->
+                    <Border Grid.Row="1" Grid.Column="1"
+                            StrokeShape="RoundRectangle CornerRadius='16'"
+                            StrokeThickness="0" Padding="16"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource KpiBlue}, Dark={StaticResource KpiBlueDark}}">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="⏱" FontSize="16" TextColor="White"/>
+                            <Label Text="{Binding TotalHoursScheduled, StringFormat='{0:0}h'}" FontSize="28" FontFamily="PJSBold" TextColor="White" CharacterSpacing="-0.6"/>
+                            <Label Text="Ore totali" FontSize="11" FontFamily="PJSSemi" TextColor="White" Opacity="0.9"/>
+                        </VerticalStackLayout>
                     </Border>
                 </Grid>
 
                 <!-- Empty state -->
                 <VerticalStackLayout IsVisible="{Binding IsEmptyState}"
                                      HorizontalOptions="Center"
-                                     Margin="32,48,32,0" Spacing="12">
-                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
-                            HeightRequest="72" WidthRequest="72" HorizontalOptions="Center">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="22"/></Border.StrokeShape>
-                        <Image Source="building.svg" HeightRequest="36" WidthRequest="36"
-                               HorizontalOptions="Center" VerticalOptions="Center"/>
-                    </Border>
-                    <Label Text="Nessun dato ancora" FontSize="18" FontAttributes="Bold"
-                           FontFamily="PJSBold" TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
+                                     Spacing="12">
+                    <Label Text="Nessun dato ancora" FontSize="18" FontFamily="PJSBold"
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                            HorizontalOptions="Center"/>
                     <Label Text="Aggiungi dipendenti e crea turni dal menu Team e Turni."
                            FontSize="14" FontFamily="PJSReg"
-                           TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                            HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
                 </VerticalStackLayout>
 
-                <!-- ── Turni oggi ─────────────────────────────── -->
-                <VerticalStackLayout Spacing="10" Padding="20,28,20,0"
+                <!-- Turni oggi -->
+                <VerticalStackLayout Spacing="10"
                                      IsVisible="{Binding IsEmptyState, Converter={StaticResource InverseBoolConverter}}">
-                    <Label Text="TURNI OGGI" Style="{StaticResource SectionLabel}"/>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" Text="TURNI OGGI" FontSize="11" FontFamily="PJSSemi"
+                               CharacterSpacing="0.8"
+                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                    </Grid>
 
                     <CollectionView ItemsSource="{Binding ShiftsToday}">
                         <CollectionView.EmptyView>
-                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
-                                    Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
-                                    Padding="16">
-                                <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                            <Border StrokeShape="RoundRectangle CornerRadius='16'"
+                                    StrokeThickness="1"
+                                    Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                                    Padding="16"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
                                 <Label Text="Nessun turno programmato per oggi."
-                                       FontFamily="PJSReg" TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"
+                                       FontFamily="PJSReg"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                        HorizontalOptions="Center"/>
                             </Border>
                         </CollectionView.EmptyView>
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="vm:DashboardShiftDto">
-                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
-                                        Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
-                                        Padding="0" Margin="0,0,0,8">
-                                    <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
-                                    <Border.Shadow>
-                                        <Shadow Brush="#000000" Offset="0,2" Radius="10" Opacity="0.05"/>
-                                    </Border.Shadow>
-                                    <Grid ColumnDefinitions="4,Auto,*,Auto" Padding="0,12,14,12" ColumnSpacing="12">
-                                        <BoxView Grid.Column="0" BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
-                                                 VerticalOptions="Fill" CornerRadius="4,0,0,4"/>
-                                        <Border Grid.Column="1" BackgroundColor="{StaticResource PrimaryLight}"
-                                                HeightRequest="38" WidthRequest="38" Stroke="Transparent">
-                                            <Border.StrokeShape><RoundRectangle CornerRadius="19"/></Border.StrokeShape>
-                                            <Label Text="{Binding Initials}" FontSize="13"
-                                                   FontAttributes="Bold" FontFamily="PJSBold"
-                                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
+                                <Border StrokeShape="RoundRectangle CornerRadius='16'"
+                                        StrokeThickness="1"
+                                        Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                                        Padding="14" Margin="0,0,0,8"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
+                                    <Border.Shadow><Shadow Brush="Black" Offset="0,4" Radius="12" Opacity="0.08"/></Border.Shadow>
+                                    <HorizontalStackLayout Spacing="12">
+                                        <Border WidthRequest="40" HeightRequest="40"
+                                                StrokeShape="RoundRectangle CornerRadius='20'"
+                                                StrokeThickness="0"
+                                                BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryLightDark}}">
+                                            <Label Text="{Binding Initials}" FontSize="13" FontFamily="PJSSemi"
+                                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                                                    HorizontalOptions="Center" VerticalOptions="Center"/>
                                         </Border>
-                                        <VerticalStackLayout Grid.Column="2" Spacing="3" VerticalOptions="Center">
-                                            <Label Text="{Binding EmployeeName}" FontSize="14"
-                                                   FontAttributes="Bold" FontFamily="PJSBold"
-                                                   TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
-                                            <Label Text="{Binding DisplayTime}" FontSize="12"
-                                                   FontFamily="PJSReg"
-                                                   TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"/>
+                                        <VerticalStackLayout Spacing="2" HorizontalOptions="FillAndExpand" VerticalOptions="Center">
+                                            <Label Text="{Binding EmployeeName}" FontSize="14" FontFamily="PJSSemi"
+                                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"/>
+                                            <Label Text="{Binding DisplayTime}" FontSize="12" FontFamily="PJSReg"
+                                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                                         </VerticalStackLayout>
-                                        <Border Grid.Column="3" BackgroundColor="{StaticResource SuccessLight}"
-                                                Stroke="Transparent" Padding="10,5" VerticalOptions="Center">
-                                            <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
-                                            <Label Text="{Binding Status}" FontSize="10"
-                                                   FontAttributes="Bold" FontFamily="PJSBold"
-                                                   TextColor="{StaticResource SuccessText}"/>
+                                        <Border StrokeShape="RoundRectangle CornerRadius='8'"
+                                                StrokeThickness="0" Padding="8,4"
+                                                BackgroundColor="{AppThemeBinding Light={StaticResource SuccessBg}, Dark={StaticResource SuccessBgDark}}"
+                                                VerticalOptions="Center">
+                                            <Label Text="{Binding Status}" FontSize="12" FontFamily="PJSSemi"
+                                                   TextColor="{AppThemeBinding Light={StaticResource SuccessText}, Dark={StaticResource SuccessTextDark}}"/>
                                         </Border>
-                                    </Grid>
+                                    </HorizontalStackLayout>
                                 </Border>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
                 </VerticalStackLayout>
 
-                <!-- ── Ferie in attesa ───────────────────────── -->
-                <VerticalStackLayout Spacing="10" Padding="20,24,20,0"
+                <!-- Ferie in attesa -->
+                <VerticalStackLayout Spacing="10"
                                      IsVisible="{Binding IsEmptyState, Converter={StaticResource InverseBoolConverter}}">
-                    <HorizontalStackLayout Spacing="8">
-                        <Label Text="FERIE IN ATTESA" Style="{StaticResource SectionLabel}"
-                               VerticalOptions="Center"/>
-                        <Border BackgroundColor="{StaticResource WarningLight}"
-                                Stroke="Transparent" Padding="8,3"
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" Text="FERIE IN ATTESA" FontSize="11" FontFamily="PJSSemi"
+                               CharacterSpacing="0.8"
+                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                        <Border Grid.Column="1"
+                                StrokeShape="RoundRectangle CornerRadius='8'"
+                                StrokeThickness="0" Padding="8,3"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource WarningBg}, Dark={StaticResource WarningBgDark}}"
+                                VerticalOptions="Center"
                                 IsVisible="{Binding PendingVacations, Converter={StaticResource IntIsZeroConverter}, ConverterParameter=invert}">
-                            <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
-                            <Label Text="{Binding PendingVacations}" FontSize="10"
-                                   FontAttributes="Bold" FontFamily="PJSBold"
-                                   TextColor="{StaticResource WarningText}"/>
+                            <Label Text="{Binding PendingVacations}" FontSize="11" FontFamily="PJSBold"
+                                   TextColor="{AppThemeBinding Light={StaticResource WarningText}, Dark={StaticResource WarningTextDark}}"/>
                         </Border>
-                    </HorizontalStackLayout>
+                    </Grid>
 
                     <CollectionView ItemsSource="{Binding PendingRequests}">
                         <CollectionView.EmptyView>
-                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
-                                    Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
-                                    Padding="16">
-                                <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                            <Border StrokeShape="RoundRectangle CornerRadius='16'"
+                                    StrokeThickness="1"
+                                    Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                                    Padding="16"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
                                 <Label Text="Nessuna richiesta in attesa." FontFamily="PJSReg"
-                                       TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                        HorizontalOptions="Center"/>
                             </Border>
                         </CollectionView.EmptyView>
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="vm:DashboardPendingVacationDto">
-                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
-                                        Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
-                                        Padding="16" Margin="0,0,0,10">
-                                    <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
-                                    <Border.Shadow>
-                                        <Shadow Brush="#000000" Offset="0,4" Radius="14" Opacity="0.06"/>
-                                    </Border.Shadow>
-                                    <VerticalStackLayout Spacing="14">
-                                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
-                                            <Border Grid.Column="0" BackgroundColor="{StaticResource PrimaryLight}"
-                                                    HeightRequest="44" WidthRequest="44" Stroke="Transparent">
-                                                <Border.StrokeShape><RoundRectangle CornerRadius="22"/></Border.StrokeShape>
-                                                <Label Text="{Binding Initials}" FontSize="15"
-                                                       FontAttributes="Bold" FontFamily="PJSBold"
-                                                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
+                                <Border StrokeShape="RoundRectangle CornerRadius='16'"
+                                        StrokeThickness="1"
+                                        Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                                        Padding="14" Margin="0,0,0,10"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
+                                    <Border.Shadow><Shadow Brush="Black" Offset="0,4" Radius="12" Opacity="0.08"/></Border.Shadow>
+                                    <VerticalStackLayout Spacing="12">
+                                        <HorizontalStackLayout Spacing="12">
+                                            <Border WidthRequest="40" HeightRequest="40"
+                                                    StrokeShape="RoundRectangle CornerRadius='20'"
+                                                    StrokeThickness="0"
+                                                    BackgroundColor="{AppThemeBinding Light={StaticResource WarningBg}, Dark={StaticResource WarningBgDark}}">
+                                                <Label Text="{Binding Initials}" FontSize="13" FontFamily="PJSSemi"
+                                                       TextColor="{AppThemeBinding Light={StaticResource WarningText}, Dark={StaticResource WarningTextDark}}"
                                                        HorizontalOptions="Center" VerticalOptions="Center"/>
                                             </Border>
-                                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="3">
-                                                <Label Text="{Binding EmployeeName}" FontSize="14"
-                                                       FontAttributes="Bold" FontFamily="PJSBold"
-                                                       TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
-                                                <Label Text="{Binding DisplayDate}" FontSize="12"
-                                                       FontFamily="PJSReg"
-                                                       TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"/>
+                                            <VerticalStackLayout Spacing="2" HorizontalOptions="FillAndExpand" VerticalOptions="Center">
+                                                <Label Text="{Binding EmployeeName}" FontSize="14" FontFamily="PJSSemi"
+                                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"/>
+                                                <Label Text="{Binding DisplayDate}" FontSize="12" FontFamily="PJSReg"
+                                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                                             </VerticalStackLayout>
-                                            <Border Grid.Column="2" BackgroundColor="{StaticResource WarningLight}"
-                                                    Stroke="Transparent" Padding="10,5" VerticalOptions="Center">
-                                                <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
-                                                <Label Text="In attesa" FontSize="10"
-                                                       FontAttributes="Bold" FontFamily="PJSBold"
-                                                       TextColor="{StaticResource WarningText}"/>
+                                            <Border StrokeShape="RoundRectangle CornerRadius='8'"
+                                                    StrokeThickness="0" Padding="8,4"
+                                                    BackgroundColor="{AppThemeBinding Light={StaticResource WarningBg}, Dark={StaticResource WarningBgDark}}"
+                                                    VerticalOptions="Center">
+                                                <Label Text="In attesa" FontSize="12" FontFamily="PJSSemi"
+                                                       TextColor="{AppThemeBinding Light={StaticResource WarningText}, Dark={StaticResource WarningTextDark}}"/>
                                             </Border>
-                                        </Grid>
-                                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                                            <Button Grid.Column="0" Text="Rifiuta"
+                                        </HorizontalStackLayout>
+                                        <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                                            <Button Grid.Column="0" Text="Approva"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:DashboardViewModel}}, Path=ApproveVacationCommand}"
+                                                    CommandParameter="{Binding .}"
+                                                    BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                                    TextColor="{AppThemeBinding Light={StaticResource PrimaryText}, Dark={StaticResource PrimaryTextDark}}"
+                                                    CornerRadius="10" HeightRequest="36"
+                                                    FontFamily="PJSSemi" FontSize="13"/>
+                                            <Button Grid.Column="1" Text="Rifiuta"
                                                     Command="{Binding Source={RelativeSource AncestorType={x:Type vm:DashboardViewModel}}, Path=RejectVacationCommand}"
                                                     CommandParameter="{Binding .}"
                                                     BackgroundColor="Transparent"
-                                                    TextColor="{StaticResource Error}"
-                                                    BorderColor="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}"
-                                                    BorderWidth="1.5" CornerRadius="11" HeightRequest="42"
-                                                    FontSize="13" FontFamily="PJSBold" FontAttributes="Bold"/>
-                                            <Button Grid.Column="1" Text="Approva"
-                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:DashboardViewModel}}, Path=ApproveVacationCommand}"
-                                                    CommandParameter="{Binding .}"
-                                                    BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
-                                                    TextColor="White"
-                                                    CornerRadius="11" HeightRequest="42"
-                                                    FontSize="13" FontFamily="PJSBold" FontAttributes="Bold"/>
+                                                    BorderColor="{AppThemeBinding Light={StaticResource Danger}, Dark={StaticResource DangerDark}}"
+                                                    BorderWidth="1"
+                                                    TextColor="{AppThemeBinding Light={StaticResource Danger}, Dark={StaticResource DangerDark}}"
+                                                    CornerRadius="10" HeightRequest="36"
+                                                    FontFamily="PJSSemi" FontSize="13"/>
                                         </Grid>
                                     </VerticalStackLayout>
                                 </Border>
@@ -324,33 +263,107 @@
                     </CollectionView>
                 </VerticalStackLayout>
 
-                <!-- ── Copertura settimana ───────────────────── -->
-                <VerticalStackLayout Spacing="10" Padding="20,16,20,0"
-                                     IsVisible="{Binding IsAdmin}">
-                    <Label Text="COPERTURA QUESTA SETTIMANA" Style="{StaticResource SectionLabel}"/>
-                    <CollectionView ItemsSource="{Binding WeeklyCoverage}" ItemsLayout="HorizontalList">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate x:DataType="vm:CoverageDay">
-                                <Border Padding="10,10" Margin="0,0,8,0"
-                                        BackgroundColor="{Binding CardColor}"
-                                        Stroke="Transparent" WidthRequest="72">
-                                    <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
-                                    <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
-                                        <Image Source="{Binding Icon}" HeightRequest="20" WidthRequest="20"
-                                               HorizontalOptions="Center"/>
-                                        <Label Text="{Binding DayLabel}" FontFamily="PJSSemi" FontSize="12"
-                                               TextColor="{Binding TextColor}" HorizontalOptions="Center"/>
-                                        <Label Text="{Binding DateLabel}" FontFamily="PJSReg" FontSize="11"
-                                               TextColor="{Binding TextColor}" HorizontalOptions="Center"/>
-                                    </VerticalStackLayout>
-                                </Border>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
+                <!-- Copertura settimana -->
+                <VerticalStackLayout Spacing="10" IsVisible="{Binding IsAdmin}">
+                    <Label Text="COPERTURA SETTIMANA" FontSize="11" FontFamily="PJSSemi"
+                           CharacterSpacing="0.8"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                    <ScrollView Orientation="Horizontal">
+                        <CollectionView ItemsSource="{Binding WeeklyCoverage}" ItemsLayout="HorizontalList">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="vm:CoverageDay">
+                                    <Border WidthRequest="64" HeightRequest="84"
+                                            StrokeShape="RoundRectangle CornerRadius='14'"
+                                            StrokeThickness="0" Margin="0,0,8,0"
+                                            BackgroundColor="{Binding CardColor}">
+                                        <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="4">
+                                            <Label Text="{Binding DayLabel}" FontSize="11" FontFamily="PJSSemi"
+                                                   TextColor="{Binding TextColor}"
+                                                   HorizontalOptions="Center" Opacity="0.85" CharacterSpacing="0.3"/>
+                                            <Label Text="{Binding DateLabel}" FontSize="22" FontFamily="PJSBold"
+                                                   TextColor="{Binding TextColor}"
+                                                   HorizontalOptions="Center" CharacterSpacing="-0.4"/>
+                                            <BoxView WidthRequest="6" HeightRequest="6" CornerRadius="3" HorizontalOptions="Center"
+                                                     BackgroundColor="{Binding TextColor}"
+                                                     Opacity="0.7"/>
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </ScrollView>
                 </VerticalStackLayout>
 
             </VerticalStackLayout>
         </ScrollView>
         </RefreshView>
+
+        <!-- Tab bar -->
+        <Border Grid.Row="2"
+                StrokeShape="RoundRectangle CornerRadius='28'"
+                StrokeThickness="1"
+                Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                Padding="6" Margin="16,8,16,24"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="0,6" Radius="24" Opacity="0.10"/>
+            </Border.Shadow>
+            <Grid ColumnDefinitions="*,*,*,*,*" ColumnSpacing="4">
+                <!-- Dashboard (active) -->
+                <Border Grid.Column="0" StrokeShape="RoundRectangle CornerRadius='22'"
+                        StrokeThickness="0" HeightRequest="44"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}">
+                    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="1">
+                        <Label Text="⊞" FontSize="18"
+                               TextColor="{AppThemeBinding Light={StaticResource PrimaryText}, Dark={StaticResource PrimaryTextDark}}"
+                               HorizontalOptions="Center"/>
+                        <Label Text="Casa" FontSize="9" FontFamily="PJSSemi"
+                               TextColor="{AppThemeBinding Light={StaticResource PrimaryText}, Dark={StaticResource PrimaryTextDark}}"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Border>
+                <!-- Turni -->
+                <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" Spacing="1">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToShiftsCommand}"/>
+                    </VerticalStackLayout.GestureRecognizers>
+                    <Label Text="📅" FontSize="18" HorizontalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                    <Label Text="Turni" FontSize="9" FontFamily="PJSSemi" HorizontalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                </VerticalStackLayout>
+                <!-- Team -->
+                <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center" VerticalOptions="Center" Spacing="1">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToTeamCommand}"/>
+                    </VerticalStackLayout.GestureRecognizers>
+                    <Label Text="👥" FontSize="18" HorizontalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                    <Label Text="Team" FontSize="9" FontFamily="PJSSemi" HorizontalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                </VerticalStackLayout>
+                <!-- Ferie -->
+                <VerticalStackLayout Grid.Column="3" HorizontalOptions="Center" VerticalOptions="Center" Spacing="1">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToVacationsCommand}"/>
+                    </VerticalStackLayout.GestureRecognizers>
+                    <Label Text="🌴" FontSize="18" HorizontalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                    <Label Text="Ferie" FontSize="9" FontFamily="PJSSemi" HorizontalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                </VerticalStackLayout>
+                <!-- Profilo -->
+                <VerticalStackLayout Grid.Column="4" HorizontalOptions="Center" VerticalOptions="Center" Spacing="1">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToProfileCommand}"/>
+                    </VerticalStackLayout.GestureRecognizers>
+                    <Label Text="👤" FontSize="18" HorizontalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                    <Label Text="Profilo" FontSize="9" FontFamily="PJSSemi" HorizontalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                </VerticalStackLayout>
+            </Grid>
+        </Border>
+
     </Grid>
 </ContentPage>

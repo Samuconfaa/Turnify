@@ -6,111 +6,215 @@
              x:Class="Turnify.Mobile.Views.ShiftSwapsPage"
              x:DataType="vm:ShiftSwapsViewModel"
              Title="{Binding Title}"
-             BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource DarkBackground}}">
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Bg}, Dark={StaticResource BgDark}}">
 
-    <Grid RowDefinitions="Auto,*">
+    <Grid RowDefinitions="Auto,Auto,*">
+
         <comp:StaleDataBanner Grid.Row="0"/>
-        <RefreshView Grid.Row="1" Command="{Binding RefreshCommand}"
-                 IsRefreshing="{Binding IsRefreshing}">
-        <ScrollView>
-            <VerticalStackLayout Spacing="0" Padding="16,12,16,40">
 
-                <!-- Loading -->
-                <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
-                                   HorizontalOptions="Center" Margin="0,30,0,0"
-                                   Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"/>
+        <!-- ── Header ──────────────────────────────────────────── -->
+        <Grid Grid.Row="1" ColumnDefinitions="Auto,*,Auto" Padding="20,8,20,16"
+              BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
+            <!-- Back (Shell.GoToAsync handles navigation; no GoBackCommand in VM) -->
+            <Border Grid.Column="0" StrokeShape="RoundRectangle CornerRadius='10'"
+                    StrokeThickness="0" WidthRequest="32" HeightRequest="32"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLow}, Dark={StaticResource SurfaceLowDark}}">
+                <Label Text="‹" FontSize="18" FontFamily="PJSSemi"
+                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                       HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Border>
+            <Label Grid.Column="1" Text="{Binding Title}" FontSize="18" FontFamily="PJSBold"
+                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                   HorizontalOptions="Center" VerticalOptions="Center" CharacterSpacing="-0.3"/>
+            <BoxView Grid.Column="2" WidthRequest="32" HeightRequest="32" Color="Transparent"/>
+        </Grid>
 
-                <!-- Error -->
-                <VerticalStackLayout IsVisible="{Binding HasError}" Spacing="8" Margin="0,30,0,0">
-                    <Label Text="⚠️" FontSize="36" HorizontalOptions="Center"/>
-                    <Label Text="{Binding ErrorMessage}" FontFamily="PJSReg" FontSize="14"
-                           TextColor="{StaticResource Error}" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
-                </VerticalStackLayout>
+        <!-- ── Scrollable content ──────────────────────────────── -->
+        <RefreshView Grid.Row="2" Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsRefreshing}">
+            <CollectionView ItemsSource="{Binding Swaps}" IsVisible="{Binding HasData}" SelectionMode="None">
 
-                <!-- Empty -->
-                <VerticalStackLayout IsVisible="{Binding IsEmptyState}" Spacing="8" Margin="0,40,0,0">
-                    <Label Text="🔄" FontSize="44" HorizontalOptions="Center"/>
-                    <Label Text="Nessuno scambio turno" FontFamily="PJSSemi" FontSize="16"
-                           TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}" HorizontalOptions="Center"/>
-                    <Label Text="Le proposte di scambio ricevute e inviate appariranno qui."
-                           FontFamily="PJSReg" FontSize="13" TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
-                           HorizontalOptions="Center" HorizontalTextAlignment="Center" Margin="20,0"/>
-                </VerticalStackLayout>
+                <CollectionView.Header>
+                    <VerticalStackLayout Padding="16,16,16,4" Spacing="10">
 
-                <!-- List -->
-                <CollectionView ItemsSource="{Binding Swaps}" IsVisible="{Binding HasData}"
-                                SelectionMode="None">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="vm:ShiftSwapsViewModel+SwapDto">
-                            <Border Margin="0,0,0,10" Padding="16,14"
-                                    BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
-                                    Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1">
-                                <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
-                                <VerticalStackLayout Spacing="6">
+                        <!-- Activity indicator (loading) -->
+                        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                                           HorizontalOptions="Center" Margin="0,20,0,0"
+                                           Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
 
-                                    <!-- IDs row -->
-                                    <Grid ColumnDefinitions="*,Auto">
-                                        <Label Grid.Column="0"
-                                               Text="{Binding StatusDisplay}"
-                                               FontFamily="PJSSemi" FontSize="13"
-                                               TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
-                                        <Label Grid.Column="1"
-                                               Text="{Binding CreatedAt, StringFormat='{0:dd/MM/yy}'}"
-                                               FontFamily="PJSReg" FontSize="12"
-                                               TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"/>
-                                    </Grid>
+                        <!-- Error state -->
+                        <VerticalStackLayout IsVisible="{Binding HasError}" Spacing="8" Margin="0,20,0,0">
+                            <Label Text="⚠️" FontSize="36" HorizontalOptions="Center"/>
+                            <Label Text="{Binding ErrorMessage}" FontFamily="PJSReg" FontSize="14"
+                                   TextColor="{AppThemeBinding Light={StaticResource ErrorText}, Dark={StaticResource ErrorTextDark}}"
+                                   HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                        </VerticalStackLayout>
 
-                                    <Label FontFamily="PJSReg" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}">
+                        <!-- Empty state -->
+                        <VerticalStackLayout IsVisible="{Binding IsEmptyState}" Spacing="10" Margin="0,32,0,0">
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                                    HeightRequest="68" WidthRequest="68" HorizontalOptions="Center">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                                <Label Text="🔄" FontSize="34"
+                                       HorizontalOptions="Center" VerticalOptions="Center"/>
+                            </Border>
+                            <Label Text="Nessuno scambio turno" FontFamily="PJSSemi" FontSize="16"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Le proposte di scambio ricevute e inviate appariranno qui."
+                                   FontFamily="PJSReg" FontSize="13"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                                   HorizontalOptions="Center" HorizontalTextAlignment="Center" Margin="20,0"/>
+                        </VerticalStackLayout>
+
+                    </VerticalStackLayout>
+                </CollectionView.Header>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ShiftSwapsViewModel+SwapDto">
+                        <Border StrokeShape="RoundRectangle CornerRadius='16'"
+                                StrokeThickness="1"
+                                Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                                Padding="14" Margin="16,0,16,10"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
+                            <Border.Shadow><Shadow Brush="Black" Offset="0,4" Radius="12" Opacity="0.08"/></Border.Shadow>
+                            <VerticalStackLayout Spacing="0">
+
+                                <!-- Status + date row -->
+                                <HorizontalStackLayout Spacing="8" Margin="0,0,0,10">
+                                    <Border StrokeShape="RoundRectangle CornerRadius='8'"
+                                            StrokeThickness="0" Padding="8,4"
+                                            BackgroundColor="{AppThemeBinding Light={StaticResource WarningBg}, Dark={StaticResource WarningBgDark}}">
+                                        <Label Text="{Binding StatusDisplay}" FontSize="12" FontFamily="PJSSemi"
+                                               TextColor="{AppThemeBinding Light={StaticResource WarningText}, Dark={StaticResource WarningTextDark}}"/>
+                                    </Border>
+                                    <Label Text="{Binding CreatedAt, StringFormat='{0:dd/MM/yy}'}"
+                                           FontSize="11" FontFamily="PJSReg"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                                           HorizontalOptions="EndAndExpand" VerticalOptions="Center"/>
+                                </HorizontalStackLayout>
+
+                                <!-- Shift A party -->
+                                <HorizontalStackLayout Spacing="6">
+                                    <Border WidthRequest="36" HeightRequest="36"
+                                            StrokeShape="RoundRectangle CornerRadius='18'"
+                                            StrokeThickness="0"
+                                            BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryLightDark}}">
+                                        <Label FontSize="12" FontFamily="PJSSemi"
+                                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                               HorizontalOptions="Center" VerticalOptions="Center">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="T"/>
+                                                    <Span Text="{Binding ShiftAId}"/>
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+                                    </Border>
+                                    <Label FontSize="13" FontFamily="PJSSemi"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                                           VerticalOptions="Center">
                                         <Label.FormattedText>
                                             <FormattedString>
                                                 <Span Text="Turno "/>
                                                 <Span Text="{Binding ShiftAId}"/>
-                                                <Span Text=" ⇄ Turno "/>
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                </HorizontalStackLayout>
+
+                                <!-- Swap arrow -->
+                                <HorizontalStackLayout Spacing="8" Padding="6,8">
+                                    <Label Text="⇄" FontSize="18"
+                                           TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+                                    <BoxView HeightRequest="1" HorizontalOptions="FillAndExpand" VerticalOptions="Center"
+                                             BackgroundColor="{AppThemeBinding Light={StaticResource BorderSoft}, Dark={StaticResource BorderSoftDark}}"/>
+                                </HorizontalStackLayout>
+
+                                <!-- Shift B party -->
+                                <HorizontalStackLayout Spacing="6">
+                                    <Border WidthRequest="36" HeightRequest="36"
+                                            StrokeShape="RoundRectangle CornerRadius='18'"
+                                            StrokeThickness="0"
+                                            BackgroundColor="{AppThemeBinding Light={StaticResource WarningBg}, Dark={StaticResource WarningBgDark}}">
+                                        <Label FontSize="12" FontFamily="PJSSemi"
+                                               TextColor="{AppThemeBinding Light={StaticResource WarningText}, Dark={StaticResource WarningTextDark}}"
+                                               HorizontalOptions="Center" VerticalOptions="Center">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="T"/>
+                                                    <Span Text="{Binding ShiftBId}"/>
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+                                    </Border>
+                                    <Label FontSize="13" FontFamily="PJSSemi"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                                           VerticalOptions="Center">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="Turno "/>
                                                 <Span Text="{Binding ShiftBId}"/>
                                             </FormattedString>
                                         </Label.FormattedText>
                                     </Label>
+                                </HorizontalStackLayout>
 
-                                    <Label Text="{Binding Note}" FontFamily="PJSReg" FontSize="12"
-                                           TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
-                                           IsVisible="{Binding Note, Converter={StaticResource StringNotEmptyConverter}}"/>
+                                <!-- Note (if present) -->
+                                <Label Text="{Binding Note}" FontFamily="PJSReg" FontSize="12"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                                       Margin="0,8,0,0"
+                                       IsVisible="{Binding Note, Converter={StaticResource StringNotEmptyConverter}}"/>
 
-                                    <!-- Peer buttons (employee sees pending swaps directed to them) -->
-                                    <HorizontalStackLayout Spacing="8" IsVisible="{Binding IsPending}">
-                                        <Button Text="Accetta"
-                                                CommandParameter="{Binding .}"
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftSwapsViewModel}}, Path=AcceptCommand}"
-                                                Style="{StaticResource PrimaryButton}"
-                                                HeightRequest="36" FontSize="13"/>
-                                        <Button Text="Rifiuta"
-                                                CommandParameter="{Binding .}"
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftSwapsViewModel}}, Path=RejectCommand}"
-                                                Style="{StaticResource GhostButton}"
-                                                HeightRequest="36" FontSize="13"/>
-                                    </HorizontalStackLayout>
+                                <!-- Peer accept/reject buttons (IsPending) -->
+                                <Grid ColumnDefinitions="*,*" ColumnSpacing="8" Margin="0,12,0,0"
+                                      IsVisible="{Binding IsPending}">
+                                    <Button Grid.Column="0" Text="Accetta"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftSwapsViewModel}}, Path=AcceptCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                            TextColor="{AppThemeBinding Light={StaticResource PrimaryText}, Dark={StaticResource PrimaryTextDark}}"
+                                            CornerRadius="10" HeightRequest="34"
+                                            FontFamily="PJSSemi" FontSize="13"/>
+                                    <Button Grid.Column="1" Text="Rifiuta"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftSwapsViewModel}}, Path=RejectCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="Transparent"
+                                            BorderColor="{AppThemeBinding Light={StaticResource Danger}, Dark={StaticResource DangerDark}}"
+                                            BorderWidth="1"
+                                            TextColor="{AppThemeBinding Light={StaticResource Danger}, Dark={StaticResource DangerDark}}"
+                                            CornerRadius="10" HeightRequest="34"
+                                            FontFamily="PJSSemi" FontSize="13"/>
+                                </Grid>
 
-                                    <!-- Admin buttons -->
-                                    <HorizontalStackLayout Spacing="8" IsVisible="{Binding IsAcceptedByPeer}">
-                                        <Button Text="Approva"
-                                                CommandParameter="{Binding .}"
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftSwapsViewModel}}, Path=AdminApproveCommand}"
-                                                Style="{StaticResource PrimaryButton}"
-                                                HeightRequest="36" FontSize="13"/>
-                                        <Button Text="Blocca"
-                                                CommandParameter="{Binding .}"
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftSwapsViewModel}}, Path=AdminRejectCommand}"
-                                                Style="{StaticResource GhostButton}"
-                                                HeightRequest="36" FontSize="13"/>
-                                    </HorizontalStackLayout>
+                                <!-- Admin approve/reject buttons (IsAcceptedByPeer) -->
+                                <Grid ColumnDefinitions="*,*" ColumnSpacing="8" Margin="0,12,0,0"
+                                      IsVisible="{Binding IsAcceptedByPeer}">
+                                    <Button Grid.Column="0" Text="Approva"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftSwapsViewModel}}, Path=AdminApproveCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                            TextColor="{AppThemeBinding Light={StaticResource PrimaryText}, Dark={StaticResource PrimaryTextDark}}"
+                                            CornerRadius="10" HeightRequest="34"
+                                            FontFamily="PJSSemi" FontSize="13"/>
+                                    <Button Grid.Column="1" Text="Blocca"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftSwapsViewModel}}, Path=AdminRejectCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="Transparent"
+                                            BorderColor="{AppThemeBinding Light={StaticResource Danger}, Dark={StaticResource DangerDark}}"
+                                            BorderWidth="1"
+                                            TextColor="{AppThemeBinding Light={StaticResource Danger}, Dark={StaticResource DangerDark}}"
+                                            CornerRadius="10" HeightRequest="34"
+                                            FontFamily="PJSSemi" FontSize="13"/>
+                                </Grid>
 
-                                </VerticalStackLayout>
-                            </Border>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
 
-            </VerticalStackLayout>
-        </ScrollView>
+            </CollectionView>
         </RefreshView>
+
     </Grid>
 </ContentPage>

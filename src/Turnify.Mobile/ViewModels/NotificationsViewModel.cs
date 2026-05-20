@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
+using Microsoft.Maui.Storage;
 using Turnify.Mobile.Messages;
 
 namespace Turnify.Mobile.ViewModels;
@@ -148,6 +149,19 @@ public partial class NotificationsViewModel : BaseViewModel,
         catch (HttpRequestException) { }
         catch (TaskCanceledException) { }
     }
+
+    [RelayCommand]
+    private async Task GoToDashAsync()
+    {
+        var role = await SecureStorage.Default.GetAsync("user_role");
+        await Shell.Current.GoToAsync(role == "Admin" ? "//Dashboard" : "//EmployeeDashboard");
+    }
+    [RelayCommand]
+    private async Task GoToShiftsAsync() => await Shell.Current.GoToAsync("//Shifts");
+    [RelayCommand]
+    private async Task GoToVacationsAsync() => await Shell.Current.GoToAsync("//Vacations");
+    [RelayCommand]
+    private async Task GoToProfileAsync() => await Shell.Current.GoToAsync("//Profile");
 
     [RelayCommand]
     private async Task MarkAllReadAsync()

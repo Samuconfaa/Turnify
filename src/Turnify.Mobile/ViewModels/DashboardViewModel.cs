@@ -286,4 +286,13 @@ public partial class DashboardViewModel : BaseViewModel
             await Shell.Current.DisplayAlertAsync("Errore", "Richiesta scaduta. Riprova.", "OK");
         }
     }
+
+    [RelayCommand]
+    private async Task GoToShiftsAsync() => await Shell.Current.GoToAsync("//Shifts");
+    [RelayCommand]
+    private async Task GoToTeamAsync() => await Shell.Current.GoToAsync("//Team");
+    [RelayCommand]
+    private async Task GoToVacationsAsync() => await Shell.Current.GoToAsync("//Vacations");
+    [RelayCommand]
+    private async Task GoToProfileAsync() => await Shell.Current.GoToAsync("//Profile");
 }

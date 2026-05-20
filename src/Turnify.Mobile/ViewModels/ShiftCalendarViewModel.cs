@@ -543,6 +543,18 @@ public partial class ShiftCalendarViewModel : BaseViewModel
         if (cell.HasShift && cell.ShiftId > 0)
             await Shell.Current.GoToAsync($"{nameof(Views.ShiftDetailPage)}?shiftId={cell.ShiftId}");
     }
+
+    [RelayCommand]
+    private async Task GoToDashAsync()
+        => await Shell.Current.GoToAsync(IsAdmin ? "//Dashboard" : "//EmployeeDashboard");
+    [RelayCommand]
+    private async Task GoToLeaveAsync()
+        => await Shell.Current.GoToAsync(IsAdmin ? "//Team" : "//Vacations");
+    [RelayCommand]
+    private async Task GoToNotificationsOrReportsAsync()
+        => await Shell.Current.GoToAsync(IsAdmin ? nameof(Views.ReportsPage) : "//Notifications");
+    [RelayCommand]
+    private async Task GoToProfileAsync() => await Shell.Current.GoToAsync("//Profile");
 }
 
 // ── DTOs ─────────────────────────────────────────────────────────────

@@ -16,7 +16,7 @@
     <Color x:Key="Magenta">#D600AA</Color>
     <Color x:Key="MidnightBlue">#190649</Color>
     <Color x:Key="OffBlack">#1F1F1F</Color>
-    <Color x:Key="PrimaryDark">#005137</Color>
+    <Color x:Key="PrimaryDark">#68DBA9</Color>
     <Color x:Key="PrimaryDarkText">#68DBA9</Color>
     <Color x:Key="Secondary">#006A63</Color>
 
@@ -106,6 +106,45 @@
     <Color x:Key="DarkPrimaryContainer">#004D34</Color>
     <Color x:Key="DarkHeaderGradientStart">#0D2218</Color>
     <Color x:Key="DarkHeaderGradientEnd">#103529</Color>
+
+    <!-- ── it-22 design system aliases ─────────────────────────── -->
+    <!-- Light -->
+    <Color x:Key="Bg">#F5FBF5</Color>
+    <Color x:Key="TextPrimary">#171D19</Color>
+    <Color x:Key="TextSecondary">#3D4A42</Color>
+    <Color x:Key="Border">#6D7A72</Color>
+    <Color x:Key="BorderSoft">#BCCAC0</Color>
+    <Color x:Key="SurfaceLow">#EFF5EF</Color>
+    <Color x:Key="PrimaryText">#FFFFFF</Color>
+    <Color x:Key="SuccessBg">#D1FAE5</Color>
+    <Color x:Key="WarningBg">#FEF3C7</Color>
+    <Color x:Key="ErrorBg">#FFDAD6</Color>
+    <Color x:Key="Danger">#BA1A1A</Color>
+    <Color x:Key="KpiBlueBg">#EFF6FF</Color>
+    <Color x:Key="KpiAmberBg">#FFFBEB</Color>
+    <Color x:Key="KpiDangerBg">#FEF2F2</Color>
+    <!-- Dark -->
+    <Color x:Key="BgDark">#0D1510</Color>
+    <Color x:Key="SurfaceDark">#162019</Color>
+    <Color x:Key="TextPrimaryDark">#E2F0E6</Color>
+    <Color x:Key="TextSecondaryDark">#A3B5A8</Color>
+    <Color x:Key="BorderDark">#7D8F83</Color>
+    <Color x:Key="BorderSoftDark">#3A4D41</Color>
+    <Color x:Key="SurfaceLowDark">#1A261D</Color>
+    <Color x:Key="PrimaryTextDark">#FFFFFF</Color>
+    <Color x:Key="PrimaryLightDark">#1A4D35</Color>
+    <Color x:Key="SuccessBgDark">#0D3320</Color>
+    <Color x:Key="SuccessTextDark">#4ADE80</Color>
+    <Color x:Key="WarningBgDark">#3D2900</Color>
+    <Color x:Key="WarningTextDark">#FBBF24</Color>
+    <Color x:Key="ErrorBgDark">#3D0D0D</Color>
+    <Color x:Key="ErrorTextDark">#F87171</Color>
+    <Color x:Key="DangerDark">#F87171</Color>
+    <Color x:Key="KpiBlueDark">#60A5FA</Color>
+    <Color x:Key="KpiBlueBgDark">#1E3A5F</Color>
+    <Color x:Key="KpiAmberDark">#FBBF24</Color>
+    <Color x:Key="KpiAmberBgDark">#3D2900</Color>
+    <Color x:Key="KpiDangerBgDark">#3D0D0D</Color>
 
     <!-- ── Global styles ─────────────────────────────────────── -->
     <Style TargetType="ContentPage" ApplyToDerivedTypes="True">

@@ -121,4 +121,9 @@ public partial class EmployeeDashboardViewModel : BaseViewModel
     [RelayCommand]
     private async Task GoToHistoryAsync()
         => await Shell.Current.GoToAsync(nameof(Views.AttendanceHistoryPage));
+
+    [RelayCommand]
+    private async Task GoToNotificationsAsync() => await Shell.Current.GoToAsync("//Notifications");
+    [RelayCommand]
+    private async Task GoToProfileAsync() => await Shell.Current.GoToAsync("//Profile");
 }

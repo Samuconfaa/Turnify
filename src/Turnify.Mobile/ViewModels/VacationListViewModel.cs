@@ -325,4 +325,15 @@ public partial class VacationListViewModel : BaseViewModel
         [JsonPropertyName("id")]         public int Id { get; set; }
         [JsonPropertyName("employeeId")] public int EmployeeId { get; set; }
     }
+
+    [RelayCommand]
+    private async Task GoToDashAsync()
+        => await Shell.Current.GoToAsync(IsAdmin ? "//Dashboard" : "//EmployeeDashboard");
+    [RelayCommand]
+    private async Task GoToShiftsAsync() => await Shell.Current.GoToAsync("//Shifts");
+    [RelayCommand]
+    private async Task GoToThirdTabAsync()
+        => await Shell.Current.GoToAsync(IsAdmin ? "//Team" : "//Notifications");
+    [RelayCommand]
+    private async Task GoToProfileAsync() => await Shell.Current.GoToAsync("//Profile");
 }

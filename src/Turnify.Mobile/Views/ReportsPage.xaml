@@ -5,137 +5,180 @@
              x:Class="Turnify.Mobile.Views.ReportsPage"
              x:DataType="vm:ReportsViewModel"
              Title="Report"
-             BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource DarkBackground}}">
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Bg}, Dark={StaticResource BgDark}}">
 
-    <ScrollView>
-        <VerticalStackLayout Spacing="0" Padding="20,20,20,48">
+    <Grid RowDefinitions="Auto,*">
 
-            <!-- Error -->
-            <Border BackgroundColor="{StaticResource ErrorLight}"
-                    Stroke="{StaticResource Error}" StrokeThickness="1"
-                    Padding="14,10" Margin="0,0,0,14"
-                    IsVisible="{Binding HasError}">
-                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                <Label Text="{Binding ErrorMessage}" FontSize="13" FontFamily="PJSSemi"
-                       TextColor="{StaticResource ErrorText}"/>
+        <!-- Header -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Padding="20,8,20,16"
+              BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
+            <Border Grid.Column="0" StrokeShape="RoundRectangle CornerRadius='10'"
+                    StrokeThickness="0" WidthRequest="32" HeightRequest="32"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLow}, Dark={StaticResource SurfaceLowDark}}">
+                <Label Text="&#8249;" FontSize="18" FontFamily="PJSSemi"
+                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                       HorizontalOptions="Center" VerticalOptions="Center"/>
             </Border>
+            <Label Grid.Column="1" Text="Report" FontSize="18" FontFamily="PJSBold"
+                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                   HorizontalOptions="Center" VerticalOptions="Center" CharacterSpacing="-0.3"/>
+        </Grid>
 
-            <!-- Success -->
-            <Border BackgroundColor="{StaticResource SuccessLight}"
-                    Stroke="{StaticResource Success}" StrokeThickness="1"
-                    Padding="14,10" Margin="0,0,0,14"
-                    IsVisible="{Binding HasSuccess}">
-                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                <Label Text="{Binding SuccessMessage}" FontSize="13" FontFamily="PJSSemi"
-                       TextColor="{StaticResource SuccessText}"/>
-            </Border>
+        <!-- Content -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="18,18,18,24" Spacing="16">
 
-            <!-- Periodo -->
-            <Label Text="PERIODO" Style="{StaticResource SectionLabel}" Margin="4,0,0,12"/>
-            <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,0,0,28">
-                <VerticalStackLayout Grid.Column="0" Spacing="6">
-                    <Label Text="INIZIO" Style="{StaticResource SectionLabel}"/>
-                    <Border Style="{StaticResource FieldBorder}">
-                        <DatePicker Date="{Binding FromDate}"
-                                    FontFamily="PJSReg"
-                                    TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
-                                    Margin="12,0"/>
-                    </Border>
-                </VerticalStackLayout>
-                <VerticalStackLayout Grid.Column="1" Spacing="6">
-                    <Label Text="FINE" Style="{StaticResource SectionLabel}"/>
-                    <Border Style="{StaticResource FieldBorder}">
-                        <DatePicker Date="{Binding ToDate}"
-                                    FontFamily="PJSReg"
-                                    TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
-                                    Margin="12,0"/>
-                    </Border>
-                </VerticalStackLayout>
-            </Grid>
+                <!-- Error banner -->
+                <Border StrokeShape="RoundRectangle CornerRadius='12'" StrokeThickness="1"
+                        Stroke="{AppThemeBinding Light={StaticResource Danger}, Dark={StaticResource DangerDark}}"
+                        Padding="14,10"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource ErrorBg}, Dark={StaticResource ErrorBgDark}}"
+                        IsVisible="{Binding HasError}">
+                    <Label Text="{Binding ErrorMessage}" FontSize="13" FontFamily="PJSSemi"
+                           TextColor="{AppThemeBinding Light={StaticResource ErrorText}, Dark={StaticResource ErrorTextDark}}"/>
+                </Border>
 
-            <!-- Esporta -->
-            <Label Text="ESPORTA" Style="{StaticResource SectionLabel}" Margin="4,0,0,12"/>
-            <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
-                    Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
-                    Padding="0">
-                <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
-                <Border.Shadow>
-                    <Shadow Brush="#000000" Offset="0,4" Radius="16" Opacity="0.06"/>
-                </Border.Shadow>
-
-                <!-- Ore pianificate -->
-                <VerticalStackLayout>
-                    <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,18">
-                        <Grid.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding DownloadHoursCommand}"/>
-                        </Grid.GestureRecognizers>
-                        <Border Grid.Column="0"
-                                BackgroundColor="{StaticResource PrimaryLight}"
-                                HeightRequest="46" WidthRequest="46"
-                                Stroke="Transparent" Margin="0,0,14,0">
-                            <Border.StrokeShape><RoundRectangle CornerRadius="13"/></Border.StrokeShape>
-                            <Label Text="⏰" FontSize="22"
-                                   HorizontalOptions="Center" VerticalOptions="Center"/>
-                        </Border>
-                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="3">
-                            <Label Text="Ore pianificate"
-                                   FontSize="15" FontAttributes="Bold" FontFamily="PJSBold"
-                                   TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
-                            <Label Text="Turni programmati per dipendente · CSV"
-                                   FontSize="12" FontFamily="PJSReg"
-                                   TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"/>
-                        </VerticalStackLayout>
-                        <Border Grid.Column="2"
-                                BackgroundColor="{StaticResource PrimaryLight}"
-                                HeightRequest="34" WidthRequest="34"
-                                Stroke="Transparent" VerticalOptions="Center">
-                            <Border.StrokeShape><RoundRectangle CornerRadius="17"/></Border.StrokeShape>
-                            <Label Text="↓" FontSize="18" FontAttributes="Bold" FontFamily="PJSBold"
-                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
-                                   HorizontalOptions="Center" VerticalOptions="Center"/>
-                        </Border>
+                <!-- Success banner -->
+                <Border StrokeShape="RoundRectangle CornerRadius='12'" StrokeThickness="0"
+                        Padding="14,12"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryLightDark}}"
+                        IsVisible="{Binding HasSuccess}">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                        <Label Grid.Column="0" Text="&#10003;" FontSize="18"
+                               TextColor="{AppThemeBinding Light={StaticResource SuccessText}, Dark={StaticResource SuccessTextDark}}"
+                               VerticalOptions="Center"/>
+                        <Label Grid.Column="1" Text="{Binding SuccessMessage}"
+                               FontSize="13" FontFamily="PJSReg"
+                               TextColor="{AppThemeBinding Light={StaticResource SuccessText}, Dark={StaticResource SuccessTextDark}}"
+                               VerticalOptions="Center"/>
                     </Grid>
+                </Border>
 
-                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" Margin="16,0"/>
-
-                    <!-- Presenze effettive -->
-                    <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,18">
-                        <Grid.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding DownloadAttendanceCommand}"/>
-                        </Grid.GestureRecognizers>
-                        <Border Grid.Column="0"
-                                BackgroundColor="{StaticResource SuccessLight}"
-                                HeightRequest="46" WidthRequest="46"
-                                Stroke="Transparent" Margin="0,0,14,0">
-                            <Border.StrokeShape><RoundRectangle CornerRadius="13"/></Border.StrokeShape>
-                            <Label Text="📋" FontSize="22"
-                                   HorizontalOptions="Center" VerticalOptions="Center"/>
-                        </Border>
-                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="3">
-                            <Label Text="Presenze effettive"
-                                   FontSize="15" FontAttributes="Bold" FontFamily="PJSBold"
-                                   TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
-                            <Label Text="Timbrature reali: giorni e ore lavorate · CSV"
-                                   FontSize="12" FontFamily="PJSReg"
-                                   TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"/>
+                <!-- Periodo -->
+                <Label Text="PERIODO" FontSize="11" FontFamily="PJSSemi" CharacterSpacing="0.8"
+                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Border Grid.Column="0" StrokeShape="RoundRectangle CornerRadius='12'"
+                            StrokeThickness="1"
+                            Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                            HeightRequest="56"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
+                        <VerticalStackLayout Padding="14,8" Spacing="2">
+                            <Label Text="Dal" FontSize="10" FontFamily="PJSSemi"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                            <HorizontalStackLayout Spacing="8">
+                                <Label Text="&#128197;" FontSize="14" VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                                <DatePicker Date="{Binding FromDate}"
+                                            FontFamily="PJSReg" FontSize="14"
+                                            TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                                            HorizontalOptions="FillAndExpand" VerticalOptions="Center"/>
+                            </HorizontalStackLayout>
                         </VerticalStackLayout>
-                        <Border Grid.Column="2"
-                                BackgroundColor="{StaticResource SuccessLight}"
-                                HeightRequest="34" WidthRequest="34"
-                                Stroke="Transparent" VerticalOptions="Center">
-                            <Border.StrokeShape><RoundRectangle CornerRadius="17"/></Border.StrokeShape>
-                            <Label Text="↓" FontSize="18" FontAttributes="Bold" FontFamily="PJSBold"
-                                   TextColor="{StaticResource Success}"
+                    </Border>
+                    <Border Grid.Column="1" StrokeShape="RoundRectangle CornerRadius='12'"
+                            StrokeThickness="1"
+                            Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                            HeightRequest="56"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
+                        <VerticalStackLayout Padding="14,8" Spacing="2">
+                            <Label Text="Al" FontSize="10" FontFamily="PJSSemi"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                            <HorizontalStackLayout Spacing="8">
+                                <Label Text="&#128197;" FontSize="14" VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                                <DatePicker Date="{Binding ToDate}"
+                                            FontFamily="PJSReg" FontSize="14"
+                                            TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                                            HorizontalOptions="FillAndExpand" VerticalOptions="Center"/>
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+
+                <!-- Esporta label -->
+                <Label Text="ESPORTA" FontSize="11" FontFamily="PJSSemi" CharacterSpacing="0.8"
+                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                       Margin="0,6,0,0"/>
+
+                <!-- Ore pianificate card -->
+                <Border StrokeShape="RoundRectangle CornerRadius='14'" StrokeThickness="1"
+                        Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                        Padding="16"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
+                    <Border.Shadow><Shadow Brush="Black" Offset="0,4" Radius="12" Opacity="0.08"/></Border.Shadow>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding DownloadHoursCommand}"/>
+                    </Border.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="14">
+                        <Border WidthRequest="44" HeightRequest="44"
+                                StrokeShape="RoundRectangle CornerRadius='12'"
+                                StrokeThickness="0"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryLightDark}}">
+                            <Label Text="&#9201;" FontSize="20"
+                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                                    HorizontalOptions="Center" VerticalOptions="Center"/>
                         </Border>
-                    </Grid>
-                </VerticalStackLayout>
-            </Border>
+                        <VerticalStackLayout Spacing="2" HorizontalOptions="FillAndExpand" VerticalOptions="Center">
+                            <Label Text="Ore pianificate" FontSize="14" FontFamily="PJSSemi"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"/>
+                            <Label Text="Tutti i turni assegnati nel periodo selezionato." FontSize="12" FontFamily="PJSReg"
+                                   LineHeight="1.4"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                        </VerticalStackLayout>
+                        <Border WidthRequest="36" HeightRequest="36"
+                                StrokeShape="RoundRectangle CornerRadius='10'"
+                                StrokeThickness="0" VerticalOptions="Center"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}">
+                            <Label Text="&#8595;" FontSize="16" FontFamily="PJSSemi"
+                                   TextColor="{AppThemeBinding Light={StaticResource PrimaryText}, Dark={StaticResource PrimaryTextDark}}"
+                                   HorizontalOptions="Center" VerticalOptions="Center"/>
+                        </Border>
+                    </HorizontalStackLayout>
+                </Border>
 
-            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
-                               Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
-                               HorizontalOptions="Center" Margin="0,16,0,0"/>
+                <!-- Presenze effettive card -->
+                <Border StrokeShape="RoundRectangle CornerRadius='14'" StrokeThickness="1"
+                        Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                        Padding="16"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
+                    <Border.Shadow><Shadow Brush="Black" Offset="0,4" Radius="12" Opacity="0.08"/></Border.Shadow>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding DownloadAttendanceCommand}"/>
+                    </Border.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="14">
+                        <Border WidthRequest="44" HeightRequest="44"
+                                StrokeShape="RoundRectangle CornerRadius='12'"
+                                StrokeThickness="0"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource KpiBlueBg}, Dark={StaticResource KpiBlueBgDark}}">
+                            <Label Text="&#128203;" FontSize="20"
+                                   TextColor="{AppThemeBinding Light={StaticResource KpiBlue}, Dark={StaticResource KpiBlueDark}}"
+                                   HorizontalOptions="Center" VerticalOptions="Center"/>
+                        </Border>
+                        <VerticalStackLayout Spacing="2" HorizontalOptions="FillAndExpand" VerticalOptions="Center">
+                            <Label Text="Presenze effettive" FontSize="14" FontFamily="PJSSemi"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"/>
+                            <Label Text="Timbrature entrata e uscita con ore lavorate." FontSize="12" FontFamily="PJSReg"
+                                   LineHeight="1.4"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                        </VerticalStackLayout>
+                        <Border WidthRequest="36" HeightRequest="36"
+                                StrokeShape="RoundRectangle CornerRadius='10'"
+                                StrokeThickness="0" VerticalOptions="Center"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource KpiBlue}, Dark={StaticResource KpiBlueDark}}">
+                            <Label Text="&#8595;" FontSize="16" FontFamily="PJSSemi" TextColor="White"
+                                   HorizontalOptions="Center" VerticalOptions="Center"/>
+                        </Border>
+                    </HorizontalStackLayout>
+                </Border>
 
-        </VerticalStackLayout>
-    </ScrollView>
+                <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                                   Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                   HorizontalOptions="Center" Margin="0,8,0,0"/>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
 </ContentPage>

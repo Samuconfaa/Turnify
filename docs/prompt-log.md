@@ -2,6 +2,126 @@
 
 ---
 
+## Prompt 57
+
+### Data
+2026-05-20
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Redesign XAML del gruppo 3 (5 pagine): EmployeeListPage, EmployeeDetailPage, VacationListPage, VacationEditPage, ShiftSwapsPage — sostituire il layout visuale con i prototipi da `turnifyUI/` mantenendo tutti i binding MVVM esistenti.
+
+### Prompt
+Adattare `EmployeeListPage.xaml`, `EmployeeDetailPage.xaml`, `VacationListPage.xaml`, `VacationEditPage.xaml`, `ShiftSwapsPage.xaml` con i nuovi design da `turnifyUI/TeamListPage.xaml`, `TeamEditPage.xaml` + `TeamNewPage.xaml`, `LeaveAdminPage.xaml` + `LeaveEmpPage.xaml`, `LeaveNewPage.xaml`, `SwapsPage.xaml`. Per ogni file: preservare `x:Class`, `x:DataType`, tutti i Command/Text/IsVisible/CollectionView binding; sostituire palette con nuovi token (Bg/BgDark, Surface/SurfaceDark, Border/BorderDark, TextPrimary, TextSecondary, ecc.). `EmployeeListPage`: tab bar admin 5 voci (Casa/Turni/Team*/Ferie/Profilo). `EmployeeDetailPage`: fusione edit+create con sezioni DATI PERSONALI/CONTATTI/LAVORO/ATTIVITÀ/SICUREZZA/SALDO FERIE e IsCreateMode/IsEditMode/ShowEmployeeBalance. `VacationListPage`: filter chips dinamici, card con accent strip, admin Approva/Rifiuta + employee Annulla, dual tab bar IsAdmin, bottom sheet richiesta. `VacationEditPage`: modale bottom sheet trasparente con SelectedTypeIndex/ShowBalance/ShowBalanceWarning/BalanceLabel/StatusOptionsDisplay. `ShiftSwapsPage`: CollectionView SwapDto con IsPending/IsAcceptedByPeer, peer accept/reject + admin approve/block.
+
+### Output utile
+- `EmployeeListPage.xaml` (313 righe) — header Surface, CollectionView con Search Entry + Picker attività in CollectionView.Header, card dipendenti con avatar PrimaryLight/SurfaceLow e badge SuccessBg/SurfaceLow via DataTrigger IsActive, footer dashed "Aggiungi dipendente", tab bar con Team attivo
+- `EmployeeDetailPage.xaml` (364 righe) — ScrollView con 6 sezioni etichettate, Nome+Cognome a 2 colonne, Username con Primary stroke, Picker contratto+ore a 2 colonne, business/account Picker con dropdown arrow, Password (IsCreateMode), saldo ferie (ShowEmployeeBalance), pulsanti con DataTrigger Grid.ColumnSpan
+- `VacationListPage.xaml` (608 righe) — dual tab bar (admin/employee) via IsAdmin/InverseBoolConverter, CollectionView.Header con filter chips interattivi, card con BoxView accent strip + sezione admin/employee con IsAdmin e InverseBoolConverter, bottom sheet con RefreshView/DatePicker/Editor
+- `VacationEditPage.xaml` (196 righe) — BackgroundColor="Transparent", BoxView overlay, Border bottom sheet, badge employee, Picker tipo + ShowBalance/ShowBalanceWarning, date pickers con Primary stroke, Picker stato, Editor nota, pulsante Salva modifiche
+- `ShiftSwapsPage.xaml` (220 righe) — Shell.NavBarIsVisible="False", RefreshView+CollectionView, header status+data row, shift A/B con avatar T{ID} e HorizontalStackLayout, swap arrow ⇄ con BoxView linea, Grid 2 col peer/admin action buttons
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Tutti i binding del file originale sono stati trascritti nel file adattato. VacationListPage unifica correttamente admin e employee con dual tab bar e IsAdmin selettivo. EmployeeDetailPage consolida correttamente IsCreateMode/IsEditMode/ShowEmployeeBalance con sezioni condizionali. GoBackCommand rimosso dalle pagine detail che non lo definiscono nel ViewModel.
+
+---
+
+## Prompt 56
+
+### Data
+2026-05-20
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Redesign XAML del gruppo 4 (9 pagine): Profilo, Notifiche, Attività, Report — sostituire il layout visuale con i prototipi da `turnifyUI/` mantenendo tutti i binding MVVM esistenti.
+
+### Prompt
+Adattare `AttendanceHistoryPage.xaml`, `BusinessDetailPage.xaml`, `BusinessListPage.xaml`, `BusinessOpeningHoursPage.xaml`, `ProfilePage.xaml`, `NotificationsPage.xaml`, `AvailabilityPage.xaml`, `EmployeeReportsPage.xaml`, `ReportsPage.xaml` con i nuovi design da `turnifyUI/AttendancePage.xaml`, `BizDetailPage.xaml`, `BizListPage.xaml`, `HoursPage.xaml`, `ProfileAdminPage.xaml` + `ProfileEmpPage.xaml`, `NotifsPage.xaml`, `AvailabilityPage.xaml`, `HoursReportPage.xaml`, `ReportPage.xaml`. Per ogni file: preservare `x:Class`, `x:DataType`, tutti i Command/Text/IsVisible/CollectionView binding; sostituire palette con nuovi token. `ProfilePage`: fusione dei due prototipi admin/employee con `IsVisible="{Binding IsAdmin}"` e `InverseBoolConverter` per sezioni GESTIONE/LAVORO; tab bar con `GoToLeaveOrVacationsCommand`/`GoToNotificationsOrTeamCommand`. `NotificationsPage`: tab bar con `GoToVacationsCommand`/`GoToProfileCommand`. Pagine senza tab bar (detail): nessuna barra di navigazione in fondo.
+
+### Output utile
+- `AttendanceHistoryPage.xaml` — CollectionView.Header per month nav + KPI, RefreshView LoadDataCommand, LoadMoreCommand su RemainingItemsThresholdReachedCommand
+- `BusinessDetailPage.xaml` — campi con icone inline, Picker per BusinessType, pulsanti Disattiva/Salva con IsEditMode/IsCreateMode e DataTrigger Grid.ColumnSpan
+- `BusinessListPage.xaml` — CollectionView con card accent stripe sinistra (BoxView 4px), TapGestureRecognizer Modifica/Orari con RelativeSource AncestorType
+- `BusinessOpeningHoursPage.xaml` — CollectionView su Days con TimePicker OpenTime/CloseTime + Switch IsOpen, DataTrigger per label "Chiuso"
+- `ProfilePage.xaml` — hero BoxView Primary + avatar trimodale (ShowPhoto/ShowEmoji/ShowInitials), 6 voci admin in sezione GESTIONE, 1 voce employee in sezione LAVORO, switch IsDarkTheme, LogoutCommand, tab bar 5 voci
+- `NotificationsPage.xaml` — CollectionView con Header (unread pill + error banner), unread dot BoxView con DataTrigger IsRead, tab bar 5 voci
+- `AvailabilityPage.xaml` — 7 righe giorni con Switch + DataTrigger label Sì/No colorata, banner info PrimaryLight
+- `EmployeeReportsPage.xaml` — filtri in CollectionView.Header (3 colonne DatePicker/Picker), breakdown CollectionView annidato con ToggleExpandCommand
+- `ReportsPage.xaml` — banner error/success, DatePicker Dal/Al inline, card DownloadHoursCommand + DownloadAttendanceCommand con TapGestureRecognizer
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Tutti i binding del file originale sono stati trascritti nel file adattato. ProfilePage unifica correttamente admin e employee in un unico file con IsVisible selettivo. Struttura CollectionView.Header usata per mantenere la scrollabilità degli header contestuali.
+
+---
+
+## Prompt 55
+
+### Data
+2026-05-20
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Redesign XAML del gruppo Dashboard + Shifts (4 pagine): sostituire il layout visuale con i prototipi da `turnifyUI/` mantenendo tutti i binding MVVM esistenti.
+
+### Prompt
+Adattare `DashboardPage.xaml`, `EmployeeDashboardPage.xaml`, `ShiftCalendarPage.xaml`, `ShiftDetailPage.xaml` con i nuovi design da `turnifyUI/DashAdminPage.xaml`, `DashEmpPage.xaml`, `ShiftsAdminPage.xaml`, `ShiftsEmpPage.xaml`, `ShiftDetailEditPage.xaml`, `ShiftDetailNewPage.xaml`. Per ogni file: preservare `x:Class`, `x:DataType`, tutti i Command/Text/IsVisible/CollectionView binding; sostituire palette con i nuovi token (`Bg/BgDark`, `Surface/SurfaceDark`, `Primary/PrimaryDark`, `TextPrimary`, `TextSecondary`, `Border/BorderDark`, `SuccessBg`, `WarningBg`, `ErrorBg`, `Danger/DangerDark`, `KpiBlue`, `KpiAmber`). ShiftCalendarPage: fusione delle 2 nuove viste admin e employee in un unico file con `IsVisible` per distinguere le sezioni. ShiftDetailPage: layout bottom-sheet con BoxView overlay e Border arrotondato, pulsanti separati per IsEditMode/IsCreateMode. Tab bar con GoTo*Command già aggiunti ai ViewModel.
+
+### Output utile
+- `DashboardPage.xaml` — Surface header con WeekLabel, KPI 2x2 flat (Primary/KpiAmber/Danger/KpiBlue), CollectionView turni/ferie con stile card border flat, WeeklyCoverage in CollectionView orizzontale, tab bar 5 voci con GoToShiftsCommand/GoToTeamCommand/GoToVacationsCommand/GoToProfileCommand
+- `EmployeeDashboardPage.xaml` — header con Title binding, hero prossimo turno (HasNextShift/NoNextShift), NextShift.DisplayTime/WhenText/DurationLabel/DisplayLabel, azioni rapide (GoToVacationsCommand/GoToHistoryCommand), CheckInDisplay/CheckOutDisplay con SuccessBg/WarningBg, HoursThisWeek/HoursThisMonth, VacationDaysRemaining/Allowed/Used/PendingVacations, tab bar employee con GoToShiftsCommand/GoToVacationsCommand/GoToNotificationsCommand/GoToProfileCommand
+- `ShiftCalendarPage.xaml` — header con navigazione settimana (PreviousWeekCommand/NextWeekCommand/GoToTodayCommand), pulsante + per AddShiftCommand (IsAdmin), tab Dipendenti/Giorno con IsAdminEmployeeMode/IsAdminDayMode e ChangeViewModeCommand, CopyPreviousWeekCommand, CheckInCommand/CheckOutCommand per employee, CollectionView EmployeeRows con TapShiftCommand su 7 celle, Day view con PreviousDayCommand/NextDayCommand/DayLabel/DaySlots, tab bar con GoToDashCommand/GoToLeaveCommand/GoToNotificationsOrReportsCommand/GoToProfileCommand
+- `ShiftDetailPage.xaml` — BoxView overlay + Border bottom-sheet CornerRadius 28,28,0,0, drag handle, Picker Employees/SelectedEmployee, DatePicker ShiftDate, TimePicker StartTime/EndTime, Entry Label, Editor Note, stepper RepeatWeeks con DecrementRepeatWeeksCommand/IncrementRepeatWeeksCommand (IsCreateMode), pulsanti Delete+Save (IsEditMode) e solo Save (IsCreateMode), ProposeSwapCommand (CanProposeSwap), IsBusy ActivityIndicator
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Tutti i binding del file originale sono stati trascritti nel file adattato. Struttura bottom-sheet unificata per ShiftDetailPage (edit + create in unico file con IsVisible). ShiftCalendarPage mantiene l'intero comportamento admin (grid employee mode + day mode) e employee (lista turni + timbratura card).
+
+---
+
+## Prompt 54
+
+### Data
+2026-05-20
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Redesign XAML del gruppo Auth + Onboarding (6 pagine): sostituire il layout visuale con i prototipi da `turnifyUI/` mantenendo tutti i binding MVVM esistenti.
+
+### Prompt
+Adattare `LoginPage.xaml`, `RoleSelectionPage.xaml`, `RegisterPage.xaml`, `ForgotPasswordPage.xaml`, `GdprConsentPage.xaml`, `OnboardingPage.xaml` con i nuovi design da `turnifyUI/`. Per ogni file: usare `x:Class` e `x:DataType` esistenti, preservare tutti i Command/Text/IsVisible binding, sostituire la palette `Old*` con i nuovi token (`Bg`, `BgDark`, `Surface`, `SurfaceDark`, `Primary`, `PrimaryDark`, `TextPrimary`, `TextPrimaryDark`, `TextSecondary`, `TextSecondaryDark`, `Border`, `BorderDark`, `PrimaryText`, `PrimaryTextDark`). Per fusioni 2→1 (Login, Forgot, Onboarding) usare `IsVisible` binding per separare le sezioni.
+
+### Output utile
+- `LoginPage.xaml` — hero flat con BoxView primary, sheet card, sezioni admin (Email) ed employee (CompanySlug + Username) con IsAdminMode/IsEmployeeMode, campo password con "Password dimenticata?" solo admin, binding completi
+- `RoleSelectionPage.xaml` — logo centrato, card admin con bordo primary e card employee con bordo neutral, GestureRecognizers su entrambe, register via FormattedText con TapGestureRecognizer
+- `RegisterPage.xaml` — hero compact (150 px), sheet scrollabile, campi con icone emoji inline, senza wrapper Border gruppi, GoBackCommand su "Accedi"
+- `ForgotPasswordPage.xaml` — hero primary con icona chiave, form state (EmailSent=false) e success state (EmailSent=true) via InverseBoolConverter, ErrorBanner, SendResetCommand, GoBackCommand
+- `GdprConsentPage.xaml` — header con icona shield, hero section, value props card (3 righe con BoxView separator), consent checkboxes PrivacyAccepted + MarketingAccepted, footer CTA con DataTrigger su CanProceed
+- `OnboardingPage.xaml` — barra top (back + logo + skip), 3 progress dots con DataTrigger su Step1Dot/Step2Dot/Step3Dot, step 1 (2x2 feature cards + testo), step 2 (BusinessName + BusinessType Picker + BusinessAddress), step 3 (FirstName/LastName inline + Email + Password), footer con pulsanti per step
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Tutti i binding verificati con grep: 54 occorrenze su LoginPage, 27 su RoleSelectionPage, 49 su RegisterPage, 33 su ForgotPasswordPage, 44 su GdprConsentPage, 112 su OnboardingPage. Ogni Command, IsVisible, Text binding e DataTrigger del file originale è presente nel file adattato.
+
+---
+
 ## Prompt 53
 
 ### Data
@@ -1386,3 +1506,28 @@ Accettato integralmente
 
 ### Motivazione
 Verifica post-script confermata: zero occorrenze residue di `{StaticResource Background/Surface/Primary/...}` nelle view senza AppThemeBinding.
+
+---
+
+## Prompt 38
+
+### Data
+2026-05-20
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Applicare nuovo design system (33 prototipi XAML in `turnifyUI/`) a tutte le 24 View MAUI, con custom tab bar, nuovi color token e allineamento develop → main.
+
+### Prompt
+> Allineare develop a main con `--no-ff`, creare `feature/it-22-ui-redesign`. Aggiungere ~35 nuovi color alias in `Colors.xaml` (Bg, TextPrimary, Border, SurfaceLow, Danger, KpiBlueBg, ecc.). Nascondere Shell tab bar (`Shell.TabBarIsVisible="False"` in AppShell). Aggiungere `[RelayCommand]` tab navigation a 7 ViewModel. Adattare 24 XAML da prototipi `turnifyUI/` preservando `x:Class`, `x:DataType` e tutti i binding MVVM; fondere pagine doppie con `IsVisible="{Binding IsAdmin/IsAdminMode}"`.
+
+### Output utile
+`Colors.xaml` (+35 token), `AppShell.xaml` (TabBarIsVisible=False), 7 ViewModel (+4 RelayCommand ciascuno), 24 file XAML adattati (login, onboarding, dashboard admin/emp, turni, dipendenti, ferie, profilo, notifiche, ecc.).
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Tutti i binding MVVM originali preservati in ogni file. Verifica: x:Class corretto, x:DataType presente, {Binding ...} wired su ogni controllo funzionale.

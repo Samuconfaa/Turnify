@@ -597,3 +597,19 @@ Derivata dallo stato attuale del repository e dalle verifiche documentate:
 - Fix `VacationRequestsController`: ferie vuote per `userId` passato dove si aspettava `employeeId`
 
 **Status:** ✅ Completata (2026-05-17)
+
+---
+
+### Iterazione 22 — Redesign UI completo (turnifyUI → MAUI)
+
+**Data:** 2026-05-20
+
+**Obiettivo:** Applicare il nuovo design system da `turnifyUI/` (33 prototipi XAML) a tutte le 24 View MAUI, preservando binding MVVM. Custom tab bar con Shell.TabBarIsVisible="False". Nuovi color token in Colors.xaml.
+
+**Deliverable:**
+- `Colors.xaml` — 35 nuovi alias token (Bg/BgDark, TextPrimary, Border, SurfaceLow, Danger, KpiBlueBg, ecc.)
+- `AppShell.xaml` — `Shell.TabBarIsVisible="False"` su tutti i Tab principali
+- 7 ViewModel — comandi tab nav (`GoToShiftsCommand`, `GoToDashCommand`, `GoToProfileCommand`, ecc.)
+- 24 View XAML adattate: LoginPage, RoleSelectionPage, RegisterPage, ForgotPasswordPage, GdprConsentPage, OnboardingPage, DashboardPage, EmployeeDashboardPage, ShiftCalendarPage, ShiftDetailPage, EmployeeListPage, EmployeeDetailPage, VacationListPage, VacationEditPage, ShiftSwapsPage, AttendanceHistoryPage, BusinessDetailPage, BusinessListPage, BusinessOpeningHoursPage, ProfilePage, NotificationsPage, AvailabilityPage, EmployeeReportsPage, ReportsPage
+
+**Status:** ✅ Completata (2026-05-20)

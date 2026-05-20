@@ -5,20 +5,28 @@
              x:Class="Turnify.Mobile.Views.BusinessListPage"
              x:DataType="vm:BusinessListViewModel"
              Title="{Binding Title}"
-             BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource DarkBackground}}">
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Bg}, Dark={StaticResource BgDark}}">
 
     <Grid RowDefinitions="Auto,*">
 
         <!-- Header -->
-        <Grid Grid.Row="0" Padding="20,18,20,12">
-            <VerticalStackLayout Spacing="2">
-                <Label Text="Attività"
-                       FontSize="26" FontAttributes="Bold" FontFamily="PJSXBold"
-                       TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
-                       CharacterSpacing="-0.8"/>
-                <Label Text="Le mie sedi"
-                       FontSize="13" FontFamily="PJSReg"
-                       TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"/>
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Padding="20,8,20,16"
+              BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
+            <Border Grid.Column="0" StrokeShape="RoundRectangle CornerRadius='10'"
+                    StrokeThickness="0" WidthRequest="32" HeightRequest="32"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLow}, Dark={StaticResource SurfaceLowDark}}">
+                <Label Text="&#8249;" FontSize="18" FontFamily="PJSSemi"
+                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                       HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Border>
+            <VerticalStackLayout Grid.Column="1" Spacing="0" HorizontalOptions="Center" VerticalOptions="Center">
+                <Label Text="Attività" FontSize="18" FontFamily="PJSBold"
+                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                       HorizontalOptions="Center" CharacterSpacing="-0.3"/>
+                <Label Text="Le mie sedi" FontSize="12" FontFamily="PJSReg"
+                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                       HorizontalOptions="Center"/>
             </VerticalStackLayout>
         </Grid>
 
@@ -26,101 +34,114 @@
         <RefreshView Grid.Row="1"
                      Command="{Binding LoadCommand}"
                      IsRefreshing="{Binding IsBusy}">
-            <CollectionView ItemsSource="{Binding Businesses}"
-                            Margin="20,0,20,20">
+            <CollectionView ItemsSource="{Binding Businesses}">
+
                 <CollectionView.EmptyView>
                     <VerticalStackLayout HorizontalOptions="Center"
                                          Margin="0,48,0,0" Spacing="14">
-                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
+                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
                                 HeightRequest="68" WidthRequest="68"
                                 HorizontalOptions="Center">
                             <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
-                            <Label Text="🏪" FontSize="34"
+                            <Label Text="&#127987;" FontSize="34"
                                    HorizontalOptions="Center" VerticalOptions="Center"/>
                         </Border>
                         <Label Text="Nessuna attività ancora"
                                FontSize="18" FontAttributes="Bold" FontFamily="PJSBold"
-                               TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"
+                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                HorizontalOptions="Center"/>
                         <Label Text="Usa + Aggiungi per creare la prima attività."
                                FontSize="14" FontFamily="PJSReg"
-                               TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"
+                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
                     </VerticalStackLayout>
                 </CollectionView.EmptyView>
 
                 <CollectionView.Footer>
-                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceContainerLow}, Dark={StaticResource DarkSurfaceContainerLow}}"
-                            Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1.5"
-                            StrokeDashArray="6,4"
-                            Padding="16,20" Margin="0,0,0,12">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding CreateBusinessCommand}"/>
-                        </Border.GestureRecognizers>
-                        <Label Text="Aggiungi un'attività"
-                               FontSize="15" FontAttributes="Bold" FontFamily="PJSBold"
-                               TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"
-                               HorizontalOptions="Center" VerticalOptions="Center"/>
-                    </Border>
+                    <VerticalStackLayout Padding="16,4,16,24">
+                        <!-- Add business dashed -->
+                        <Border StrokeShape="RoundRectangle CornerRadius='14'"
+                                StrokeThickness="1.5"
+                                Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                                Padding="16" Margin="0,4,0,0"
+                                BackgroundColor="Transparent">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding CreateBusinessCommand}"/>
+                            </Border.GestureRecognizers>
+                            <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
+                                <Label Text="+" FontSize="16" FontFamily="PJSSemi"
+                                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                       VerticalOptions="Center"/>
+                                <Label Text="Aggiungi attività" FontSize="14" FontFamily="PJSSemi"
+                                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                       VerticalOptions="Center"/>
+                            </HorizontalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
                 </CollectionView.Footer>
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="vm:BusinessDto">
-                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
-                                Stroke="{AppThemeBinding Light={StaticResource OutlineVariant}, Dark={StaticResource DarkOutlineVariant}}" StrokeThickness="1"
-                                Padding="16" Margin="0,0,0,12">
-                            <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
-                            <Border.Shadow>
-                                <Shadow Brush="#000000" Offset="0,4" Radius="16" Opacity="0.06"/>
-                            </Border.Shadow>
-                            <VerticalStackLayout Spacing="14">
-                                <Grid ColumnDefinitions="*,Auto">
-                                    <VerticalStackLayout Grid.Column="0" Spacing="4">
-                                        <Label Text="{Binding Name}"
-                                               FontSize="17" FontAttributes="Bold" FontFamily="PJSBold"
-                                               TextColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark={StaticResource DarkOnBackground}}"/>
-                                        <Label Text="{Binding BusinessType}"
-                                               FontSize="13" FontFamily="PJSReg"
-                                               TextColor="{AppThemeBinding Light={StaticResource OnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"/>
-                                        <Label Text="{Binding Address}"
-                                               FontSize="12" FontFamily="PJSReg"
-                                               TextColor="{AppThemeBinding Light={StaticResource Outline}, Dark={StaticResource DarkOutline}}"
-                                               IsVisible="{Binding Address, Converter={StaticResource StringNotEmptyConverter}}"/>
-                                    </VerticalStackLayout>
-                                    <Border Grid.Column="1"
-                                            BackgroundColor="{StaticResource SuccessLight}"
-                                            Stroke="Transparent" Padding="10,5"
-                                            VerticalOptions="Start">
-                                        <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
-                                        <Label Text="{Binding StatusText}"
-                                               FontSize="10" FontAttributes="Bold" FontFamily="PJSBold"
-                                               TextColor="{StaticResource SuccessText}"/>
-                                    </Border>
-                                </Grid>
-                                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                                    <Button Grid.Column="0" Text="Modifica"
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BusinessListViewModel}}, Path=EditBusinessCommand}"
-                                            CommandParameter="{Binding .}"
-                                            BackgroundColor="Transparent"
-                                            TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource DarkPrimary}}"
-                                            BorderColor="{StaticResource PrimaryMid}"
-                                            BorderWidth="1.5" CornerRadius="10"
-                                            HeightRequest="40" FontSize="13"
-                                            FontAttributes="Bold" FontFamily="PJSBold"/>
-                                    <Button Grid.Column="1" Text="Orari"
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BusinessListViewModel}}, Path=OpenHoursCommand}"
-                                            CommandParameter="{Binding .}"
-                                            BackgroundColor="{StaticResource Navy}"
-                                            TextColor="White"
-                                            CornerRadius="10" HeightRequest="40"
-                                            FontSize="13" FontAttributes="Bold" FontFamily="PJSBold"/>
-                                </Grid>
-                            </VerticalStackLayout>
+                        <Border StrokeShape="RoundRectangle CornerRadius='16'" StrokeThickness="1"
+                                Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                                Margin="16,10,16,0">
+                            <Border.Shadow><Shadow Brush="Black" Offset="0,4" Radius="12" Opacity="0.08"/></Border.Shadow>
+                            <Grid ColumnDefinitions="4,*" ColumnSpacing="0">
+                                <BoxView Grid.Column="0" CornerRadius="14,0,0,14"
+                                         BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+                                <VerticalStackLayout Grid.Column="1" Padding="14,14,16,14" Spacing="0">
+                                    <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,8">
+                                        <Label Grid.Column="0" Text="{Binding Name}" FontSize="15" FontFamily="PJSSemi"
+                                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                                               VerticalOptions="Center"/>
+                                        <Border Grid.Column="1" StrokeShape="RoundRectangle CornerRadius='8'" StrokeThickness="0"
+                                                Padding="8,4"
+                                                BackgroundColor="{AppThemeBinding Light={StaticResource SuccessBg}, Dark={StaticResource SuccessBgDark}}">
+                                            <Label Text="{Binding StatusText, StringFormat='&#9679; {0}'}" FontSize="11" FontFamily="PJSSemi"
+                                                   TextColor="{AppThemeBinding Light={StaticResource SuccessText}, Dark={StaticResource SuccessTextDark}}"/>
+                                        </Border>
+                                    </Grid>
+                                    <Label Text="{Binding BusinessType}" FontSize="13" FontFamily="PJSReg"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                                    <Label Text="{Binding Address, StringFormat='&#128205; {0}'}" FontSize="12" FontFamily="PJSReg"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                                           Margin="0,4,0,14"
+                                           IsVisible="{Binding Address, Converter={StaticResource StringNotEmptyConverter}}"/>
+                                    <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                                        <Border Grid.Column="0" StrokeShape="RoundRectangle CornerRadius='10'"
+                                                StrokeThickness="0" HeightRequest="36"
+                                                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLow}, Dark={StaticResource SurfaceLowDark}}">
+                                            <Border.GestureRecognizers>
+                                                <TapGestureRecognizer
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BusinessListViewModel}}, Path=EditBusinessCommand}"
+                                                    CommandParameter="{Binding .}"/>
+                                            </Border.GestureRecognizers>
+                                            <Label Text="&#9999; Modifica" FontSize="13" FontFamily="PJSSemi"
+                                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                                                   HorizontalOptions="Center" VerticalOptions="Center"/>
+                                        </Border>
+                                        <Border Grid.Column="1" StrokeShape="RoundRectangle CornerRadius='10'"
+                                                StrokeThickness="0" HeightRequest="36"
+                                                BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryLightDark}}">
+                                            <Border.GestureRecognizers>
+                                                <TapGestureRecognizer
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BusinessListViewModel}}, Path=OpenHoursCommand}"
+                                                    CommandParameter="{Binding .}"/>
+                                            </Border.GestureRecognizers>
+                                            <Label Text="&#9201; Orari" FontSize="13" FontFamily="PJSSemi"
+                                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                                   HorizontalOptions="Center" VerticalOptions="Center"/>
+                                        </Border>
+                                    </Grid>
+                                </VerticalStackLayout>
+                            </Grid>
                         </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
+
             </CollectionView>
         </RefreshView>
+
     </Grid>
 </ContentPage>

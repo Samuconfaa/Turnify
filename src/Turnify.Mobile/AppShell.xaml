@@ -13,29 +13,29 @@
     <TabBar Route="Main" x:Name="MainTabBar">
 
         <!-- Admin only -->
-        <Tab Title="Dashboard" x:Name="DashboardTab" Route="Dashboard">
+        <Tab Title="Dashboard" x:Name="DashboardTab" Route="Dashboard" Shell.TabBarIsVisible="False">
             <ShellContent ContentTemplate="{DataTemplate views:DashboardPage}" />
         </Tab>
-        <Tab Title="Team" x:Name="TeamTab" Route="Team">
+        <Tab Title="Team" x:Name="TeamTab" Route="Team" Shell.TabBarIsVisible="False">
             <ShellContent ContentTemplate="{DataTemplate views:EmployeeListPage}" />
         </Tab>
 
         <!-- Employee only -->
-        <Tab Title="Home" x:Name="EmployeeDashboardTab" Route="EmployeeDashboard">
+        <Tab Title="Home" x:Name="EmployeeDashboardTab" Route="EmployeeDashboard" Shell.TabBarIsVisible="False">
             <ShellContent ContentTemplate="{DataTemplate views:EmployeeDashboardPage}" />
         </Tab>
 
         <!-- Shared -->
-        <Tab Title="Turni" x:Name="ShiftsTab" Route="Shifts">
+        <Tab Title="Turni" x:Name="ShiftsTab" Route="Shifts" Shell.TabBarIsVisible="False">
             <ShellContent ContentTemplate="{DataTemplate views:ShiftCalendarPage}" />
         </Tab>
-        <Tab Title="Ferie" x:Name="VacationsTab" Route="Vacations">
+        <Tab Title="Ferie" x:Name="VacationsTab" Route="Vacations" Shell.TabBarIsVisible="False">
             <ShellContent ContentTemplate="{DataTemplate views:VacationListPage}" />
         </Tab>
-        <Tab Title="Notifiche" x:Name="NotificationsTab" Route="Notifications">
+        <Tab Title="Notifiche" x:Name="NotificationsTab" Route="Notifications" Shell.TabBarIsVisible="False">
             <ShellContent ContentTemplate="{DataTemplate views:NotificationsPage}" />
         </Tab>
-        <Tab Title="Profilo" x:Name="ProfileTab" Route="Profile">
+        <Tab Title="Profilo" x:Name="ProfileTab" Route="Profile" Shell.TabBarIsVisible="False">
             <ShellContent ContentTemplate="{DataTemplate views:ProfilePage}" />
         </Tab>
 

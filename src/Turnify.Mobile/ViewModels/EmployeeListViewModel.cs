@@ -233,4 +233,13 @@ public partial class EmployeeListViewModel : BaseViewModel
         if (emp == null) return;
         await Shell.Current.GoToAsync($"{nameof(EmployeeDetailPage)}?employeeId={emp.Id}");
     }
+
+    [RelayCommand]
+    private async Task GoToDashAsync() => await Shell.Current.GoToAsync("//Dashboard");
+    [RelayCommand]
+    private async Task GoToShiftsAsync() => await Shell.Current.GoToAsync("//Shifts");
+    [RelayCommand]
+    private async Task GoToVacationsAsync() => await Shell.Current.GoToAsync("//Vacations");
+    [RelayCommand]
+    private async Task GoToProfileAsync() => await Shell.Current.GoToAsync("//Profile");
 }

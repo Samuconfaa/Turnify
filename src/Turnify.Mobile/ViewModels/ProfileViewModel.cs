@@ -360,4 +360,15 @@ public partial class ProfileViewModel : BaseViewModel
         public string? AvatarEmoji { get; set; }
     }
 
+    [RelayCommand]
+    private async Task GoToDashAsync()
+        => await Shell.Current.GoToAsync(IsAdmin ? "//Dashboard" : "//EmployeeDashboard");
+    [RelayCommand]
+    private async Task GoToShiftsAsync() => await Shell.Current.GoToAsync("//Shifts");
+    [RelayCommand]
+    private async Task GoToLeaveOrVacationsAsync()
+        => await Shell.Current.GoToAsync(IsAdmin ? "//Vacations" : "//Vacations");
+    [RelayCommand]
+    private async Task GoToNotificationsOrTeamAsync()
+        => await Shell.Current.GoToAsync(IsAdmin ? "//Team" : "//Notifications");
 }

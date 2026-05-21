@@ -145,6 +145,8 @@
     <Color x:Key="KpiAmberDark">#FBBF24</Color>
     <Color x:Key="KpiAmberBgDark">#3D2900</Color>
     <Color x:Key="KpiDangerBgDark">#3D0D0D</Color>
+    <Color x:Key="KpiGreenBg">#D1FAE5</Color>
+    <Color x:Key="KpiGreenBgDark">#0D3320</Color>
 
     <!-- ── Global styles ─────────────────────────────────────── -->
     <Style TargetType="ContentPage" ApplyToDerivedTypes="True">

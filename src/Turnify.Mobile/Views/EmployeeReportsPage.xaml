@@ -154,7 +154,7 @@
                                             StrokeShape="RoundRectangle 12"
                                             StrokeThickness="0"
                                             BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryLightDark}}">
-                                        <Label Text="{Binding EmployeeName, Converter={StaticResource InitialsConverter}}"
+                                        <Label Text="{Binding Initials}"
                                                FontSize="13" FontFamily="PJSBold"
                                                TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                                                HorizontalOptions="Center" VerticalOptions="Center"/>

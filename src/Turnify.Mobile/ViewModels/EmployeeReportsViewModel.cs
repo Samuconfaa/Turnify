@@ -16,6 +16,16 @@ public class EmployeeHoursReportDto
     public ObservableCollection<HoursBreakdownDto> Breakdown { get; set; } = new();
     public bool IsExpanded { get; set; }
     public string TotalHoursDisplay => $"{TotalHours:F1} h";
+    public string Initials
+    {
+        get
+        {
+            var parts = EmployeeName.Split(' ', System.StringSplitOptions.RemoveEmptyEntries);
+            return parts.Length >= 2
+                ? $"{parts[0][0]}{parts[^1][0]}".ToUpper()
+                : EmployeeName.Length > 0 ? EmployeeName[0].ToString().ToUpper() : "?";
+        }
+    }
 }
 
 public class HoursBreakdownDto

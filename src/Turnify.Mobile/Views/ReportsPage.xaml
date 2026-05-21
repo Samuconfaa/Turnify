@@ -13,7 +13,7 @@
         <!-- Header -->
         <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Padding="20,8,20,16"
               BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
-            <Border Grid.Column="0" StrokeShape="RoundRectangle CornerRadius='10'"
+            <Border Grid.Column="0" StrokeShape="RoundRectangle 10"
                     StrokeThickness="0" WidthRequest="32" HeightRequest="32"
                     BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLow}, Dark={StaticResource SurfaceLowDark}}">
                 <Label Text="&#8249;" FontSize="18" FontFamily="PJSSemi"
@@ -30,7 +30,7 @@
             <VerticalStackLayout Padding="18,18,18,24" Spacing="16">
 
                 <!-- Error banner -->
-                <Border StrokeShape="RoundRectangle CornerRadius='12'" StrokeThickness="1"
+                <Border StrokeShape="RoundRectangle 12" StrokeThickness="1"
                         Stroke="{AppThemeBinding Light={StaticResource Danger}, Dark={StaticResource DangerDark}}"
                         Padding="14,10"
                         BackgroundColor="{AppThemeBinding Light={StaticResource ErrorBg}, Dark={StaticResource ErrorBgDark}}"
@@ -40,7 +40,7 @@
                 </Border>
 
                 <!-- Success banner -->
-                <Border StrokeShape="RoundRectangle CornerRadius='12'" StrokeThickness="0"
+                <Border StrokeShape="RoundRectangle 12" StrokeThickness="0"
                         Padding="14,12"
                         BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryLightDark}}"
                         IsVisible="{Binding HasSuccess}">
@@ -59,7 +59,7 @@
                 <Label Text="PERIODO" FontSize="11" FontFamily="PJSSemi" CharacterSpacing="0.8"
                        TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                    <Border Grid.Column="0" StrokeShape="RoundRectangle CornerRadius='12'"
+                    <Border Grid.Column="0" StrokeShape="RoundRectangle 12"
                             StrokeThickness="1"
                             Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                             HeightRequest="56"
@@ -77,7 +77,7 @@
                             </HorizontalStackLayout>
                         </VerticalStackLayout>
                     </Border>
-                    <Border Grid.Column="1" StrokeShape="RoundRectangle CornerRadius='12'"
+                    <Border Grid.Column="1" StrokeShape="RoundRectangle 12"
                             StrokeThickness="1"
                             Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                             HeightRequest="56"
@@ -103,7 +103,7 @@
                        Margin="0,6,0,0"/>
 
                 <!-- Ore pianificate card -->
-                <Border StrokeShape="RoundRectangle CornerRadius='14'" StrokeThickness="1"
+                <Border StrokeShape="RoundRectangle 14" StrokeThickness="1"
                         Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                         Padding="16"
                         BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -113,7 +113,7 @@
                     </Border.GestureRecognizers>
                     <HorizontalStackLayout Spacing="14">
                         <Border WidthRequest="44" HeightRequest="44"
-                                StrokeShape="RoundRectangle CornerRadius='12'"
+                                StrokeShape="RoundRectangle 12"
                                 StrokeThickness="0"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryLightDark}}">
                             <Label Text="&#9201;" FontSize="20"
@@ -128,7 +128,7 @@
                                    TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                         </VerticalStackLayout>
                         <Border WidthRequest="36" HeightRequest="36"
-                                StrokeShape="RoundRectangle CornerRadius='10'"
+                                StrokeShape="RoundRectangle 10"
                                 StrokeThickness="0" VerticalOptions="Center"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}">
                             <Label Text="&#8595;" FontSize="16" FontFamily="PJSSemi"
@@ -139,7 +139,7 @@
                 </Border>
 
                 <!-- Presenze effettive card -->
-                <Border StrokeShape="RoundRectangle CornerRadius='14'" StrokeThickness="1"
+                <Border StrokeShape="RoundRectangle 14" StrokeThickness="1"
                         Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                         Padding="16"
                         BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -149,7 +149,7 @@
                     </Border.GestureRecognizers>
                     <HorizontalStackLayout Spacing="14">
                         <Border WidthRequest="44" HeightRequest="44"
-                                StrokeShape="RoundRectangle CornerRadius='12'"
+                                StrokeShape="RoundRectangle 12"
                                 StrokeThickness="0"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource KpiBlueBg}, Dark={StaticResource KpiBlueBgDark}}">
                             <Label Text="&#128203;" FontSize="20"
@@ -164,7 +164,7 @@
                                    TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                         </VerticalStackLayout>
                         <Border WidthRequest="36" HeightRequest="36"
-                                StrokeShape="RoundRectangle CornerRadius='10'"
+                                StrokeShape="RoundRectangle 10"
                                 StrokeThickness="0" VerticalOptions="Center"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource KpiBlue}, Dark={StaticResource KpiBlueDark}}">
                             <Label Text="&#8595;" FontSize="16" FontFamily="PJSSemi" TextColor="White"

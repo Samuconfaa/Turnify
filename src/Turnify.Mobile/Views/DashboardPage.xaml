@@ -27,7 +27,7 @@
             </VerticalStackLayout>
             <!-- Bell icon -->
             <Grid Grid.Column="1" WidthRequest="40" HeightRequest="40" VerticalOptions="Center">
-                <Border StrokeShape="RoundRectangle CornerRadius='12'"
+                <Border StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
                         BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLow}, Dark={StaticResource SurfaceLowDark}}">
                     <Label Text="🔔" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center"/>
@@ -41,7 +41,7 @@
             <VerticalStackLayout Padding="16,20,16,16" Spacing="20">
 
                 <!-- Error banner -->
-                <Border StrokeShape="RoundRectangle CornerRadius='10'"
+                <Border StrokeShape="RoundRectangle 10"
                         StrokeThickness="1"
                         Stroke="{AppThemeBinding Light={StaticResource Danger}, Dark={StaticResource DangerDark}}"
                         Padding="12,10"
@@ -55,7 +55,7 @@
                 <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="12">
                     <!-- In turno / Dipendenti -->
                     <Border Grid.Row="0" Grid.Column="0"
-                            StrokeShape="RoundRectangle CornerRadius='16'"
+                            StrokeShape="RoundRectangle 16"
                             StrokeThickness="0" Padding="16"
                             BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}">
                         <VerticalStackLayout Spacing="4">
@@ -71,7 +71,7 @@
                     </Border>
                     <!-- Turni settimana -->
                     <Border Grid.Row="0" Grid.Column="1"
-                            StrokeShape="RoundRectangle CornerRadius='16'"
+                            StrokeShape="RoundRectangle 16"
                             StrokeThickness="0" Padding="16"
                             BackgroundColor="{AppThemeBinding Light={StaticResource KpiAmber}, Dark={StaticResource KpiAmberDark}}">
                         <VerticalStackLayout Spacing="4">
@@ -82,7 +82,7 @@
                     </Border>
                     <!-- Ferie in attesa -->
                     <Border Grid.Row="1" Grid.Column="0"
-                            StrokeShape="RoundRectangle CornerRadius='16'"
+                            StrokeShape="RoundRectangle 16"
                             StrokeThickness="0" Padding="16"
                             BackgroundColor="{AppThemeBinding Light={StaticResource Danger}, Dark={StaticResource DangerDark}}">
                         <VerticalStackLayout Spacing="4">
@@ -93,7 +93,7 @@
                     </Border>
                     <!-- Ore totali -->
                     <Border Grid.Row="1" Grid.Column="1"
-                            StrokeShape="RoundRectangle CornerRadius='16'"
+                            StrokeShape="RoundRectangle 16"
                             StrokeThickness="0" Padding="16"
                             BackgroundColor="{AppThemeBinding Light={StaticResource KpiBlue}, Dark={StaticResource KpiBlueDark}}">
                         <VerticalStackLayout Spacing="4">
@@ -128,7 +128,7 @@
 
                     <CollectionView ItemsSource="{Binding ShiftsToday}">
                         <CollectionView.EmptyView>
-                            <Border StrokeShape="RoundRectangle CornerRadius='16'"
+                            <Border StrokeShape="RoundRectangle 16"
                                     StrokeThickness="1"
                                     Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                     Padding="16"
@@ -141,7 +141,7 @@
                         </CollectionView.EmptyView>
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="vm:DashboardShiftDto">
-                                <Border StrokeShape="RoundRectangle CornerRadius='16'"
+                                <Border StrokeShape="RoundRectangle 16"
                                         StrokeThickness="1"
                                         Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                         Padding="14" Margin="0,0,0,8"
@@ -149,7 +149,7 @@
                                     <Border.Shadow><Shadow Brush="Black" Offset="0,4" Radius="12" Opacity="0.08"/></Border.Shadow>
                                     <HorizontalStackLayout Spacing="12">
                                         <Border WidthRequest="40" HeightRequest="40"
-                                                StrokeShape="RoundRectangle CornerRadius='20'"
+                                                StrokeShape="RoundRectangle 20"
                                                 StrokeThickness="0"
                                                 BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryLightDark}}">
                                             <Label Text="{Binding Initials}" FontSize="13" FontFamily="PJSSemi"
@@ -162,7 +162,7 @@
                                             <Label Text="{Binding DisplayTime}" FontSize="12" FontFamily="PJSReg"
                                                    TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                                         </VerticalStackLayout>
-                                        <Border StrokeShape="RoundRectangle CornerRadius='8'"
+                                        <Border StrokeShape="RoundRectangle 8"
                                                 StrokeThickness="0" Padding="8,4"
                                                 BackgroundColor="{AppThemeBinding Light={StaticResource SuccessBg}, Dark={StaticResource SuccessBgDark}}"
                                                 VerticalOptions="Center">
@@ -184,7 +184,7 @@
                                CharacterSpacing="0.8"
                                TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                         <Border Grid.Column="1"
-                                StrokeShape="RoundRectangle CornerRadius='8'"
+                                StrokeShape="RoundRectangle 8"
                                 StrokeThickness="0" Padding="8,3"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource WarningBg}, Dark={StaticResource WarningBgDark}}"
                                 VerticalOptions="Center"
@@ -196,7 +196,7 @@
 
                     <CollectionView ItemsSource="{Binding PendingRequests}">
                         <CollectionView.EmptyView>
-                            <Border StrokeShape="RoundRectangle CornerRadius='16'"
+                            <Border StrokeShape="RoundRectangle 16"
                                     StrokeThickness="1"
                                     Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                     Padding="16"
@@ -208,7 +208,7 @@
                         </CollectionView.EmptyView>
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="vm:DashboardPendingVacationDto">
-                                <Border StrokeShape="RoundRectangle CornerRadius='16'"
+                                <Border StrokeShape="RoundRectangle 16"
                                         StrokeThickness="1"
                                         Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                         Padding="14" Margin="0,0,0,10"
@@ -217,7 +217,7 @@
                                     <VerticalStackLayout Spacing="12">
                                         <HorizontalStackLayout Spacing="12">
                                             <Border WidthRequest="40" HeightRequest="40"
-                                                    StrokeShape="RoundRectangle CornerRadius='20'"
+                                                    StrokeShape="RoundRectangle 20"
                                                     StrokeThickness="0"
                                                     BackgroundColor="{AppThemeBinding Light={StaticResource WarningBg}, Dark={StaticResource WarningBgDark}}">
                                                 <Label Text="{Binding Initials}" FontSize="13" FontFamily="PJSSemi"
@@ -230,7 +230,7 @@
                                                 <Label Text="{Binding DisplayDate}" FontSize="12" FontFamily="PJSReg"
                                                        TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                                             </VerticalStackLayout>
-                                            <Border StrokeShape="RoundRectangle CornerRadius='8'"
+                                            <Border StrokeShape="RoundRectangle 8"
                                                     StrokeThickness="0" Padding="8,4"
                                                     BackgroundColor="{AppThemeBinding Light={StaticResource WarningBg}, Dark={StaticResource WarningBgDark}}"
                                                     VerticalOptions="Center">
@@ -273,7 +273,7 @@
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="vm:CoverageDay">
                                     <Border WidthRequest="64" HeightRequest="84"
-                                            StrokeShape="RoundRectangle CornerRadius='14'"
+                                            StrokeShape="RoundRectangle 14"
                                             StrokeThickness="0" Margin="0,0,8,0"
                                             BackgroundColor="{Binding CardColor}">
                                         <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="4">
@@ -300,7 +300,7 @@
 
         <!-- Tab bar -->
         <Border Grid.Row="2"
-                StrokeShape="RoundRectangle CornerRadius='28'"
+                StrokeShape="RoundRectangle 28"
                 StrokeThickness="1"
                 Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                 Padding="6" Margin="16,8,16,24"
@@ -310,7 +310,7 @@
             </Border.Shadow>
             <Grid ColumnDefinitions="*,*,*,*,*" ColumnSpacing="4">
                 <!-- Dashboard (active) -->
-                <Border Grid.Column="0" StrokeShape="RoundRectangle CornerRadius='22'"
+                <Border Grid.Column="0" StrokeShape="RoundRectangle 22"
                         StrokeThickness="0" HeightRequest="44"
                         BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}">
                     <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="1">

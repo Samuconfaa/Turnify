@@ -12,7 +12,7 @@
         <!-- Header -->
         <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Padding="20,12,20,16"
               BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
-            <Border Grid.Column="0" StrokeShape="RoundRectangle CornerRadius='10'"
+            <Border Grid.Column="0" StrokeShape="RoundRectangle 10"
                     StrokeThickness="0" WidthRequest="32" HeightRequest="32"
                     BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLow}, Dark={StaticResource SurfaceLowDark}}">
                 <Label Text="🛡" FontSize="16"
@@ -30,7 +30,7 @@
                 <!-- Hero section -->
                 <VerticalStackLayout Spacing="14" HorizontalOptions="Center">
                     <Border WidthRequest="72" HeightRequest="72"
-                            StrokeShape="RoundRectangle CornerRadius='20'"
+                            StrokeShape="RoundRectangle 20"
                             StrokeThickness="0" HorizontalOptions="Center"
                             BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryLightDark}}">
                         <Label Text="🛡" FontSize="36"
@@ -50,7 +50,7 @@
                 </VerticalStackLayout>
 
                 <!-- Value props card -->
-                <Border StrokeShape="RoundRectangle CornerRadius='16'" StrokeThickness="1"
+                <Border StrokeShape="RoundRectangle 16" StrokeThickness="1"
                         Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                         Padding="0"
                         BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -61,7 +61,7 @@
 
                         <HorizontalStackLayout Spacing="14" Padding="16,16">
                             <Border WidthRequest="38" HeightRequest="38"
-                                    StrokeShape="RoundRectangle CornerRadius='11'"
+                                    StrokeShape="RoundRectangle 11"
                                     StrokeThickness="0"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryLightDark}}">
                                 <Label Text="🔒" FontSize="18"
@@ -81,7 +81,7 @@
 
                         <HorizontalStackLayout Spacing="14" Padding="16,16">
                             <Border WidthRequest="38" HeightRequest="38"
-                                    StrokeShape="RoundRectangle CornerRadius='11'"
+                                    StrokeShape="RoundRectangle 11"
                                     StrokeThickness="0"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource KpiGreenBg}, Dark={StaticResource KpiGreenBgDark}}">
                                 <Label Text="👥" FontSize="18"
@@ -101,7 +101,7 @@
 
                         <HorizontalStackLayout Spacing="14" Padding="16,16">
                             <Border WidthRequest="38" HeightRequest="38"
-                                    StrokeShape="RoundRectangle CornerRadius='11'"
+                                    StrokeShape="RoundRectangle 11"
                                     StrokeThickness="0"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource KpiAmberBg}, Dark={StaticResource KpiAmberBgDark}}">
                                 <Label Text="⚙" FontSize="18"
@@ -124,7 +124,7 @@
                 <VerticalStackLayout Spacing="12">
 
                     <!-- Obbligatorio -->
-                    <Border StrokeShape="RoundRectangle CornerRadius='14'" StrokeThickness="1"
+                    <Border StrokeShape="RoundRectangle 14" StrokeThickness="1"
                             Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                             Padding="16,14"
                             BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -163,7 +163,7 @@
                     </Border>
 
                     <!-- Marketing -->
-                    <Border StrokeShape="RoundRectangle CornerRadius='14'" StrokeThickness="1"
+                    <Border StrokeShape="RoundRectangle 14" StrokeThickness="1"
                             Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                             Padding="16,14"
                             BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">

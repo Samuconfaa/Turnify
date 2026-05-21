@@ -12,7 +12,7 @@
     <Grid>
         <BoxView BackgroundColor="Black" Opacity="0.4"/>
         <Border VerticalOptions="End"
-                StrokeShape="RoundRectangle CornerRadius='28,28,0,0'"
+                StrokeShape="RoundRectangle 28,28,0,0"
                 StrokeThickness="0"
                 BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
             <Grid RowDefinitions="Auto,*,Auto">
@@ -28,7 +28,7 @@
                                TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                CharacterSpacing="-0.3" VerticalOptions="Center"/>
                         <Border Grid.Column="1"
-                                StrokeShape="RoundRectangle CornerRadius='10'"
+                                StrokeShape="RoundRectangle 10"
                                 StrokeThickness="0" WidthRequest="32" HeightRequest="32"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLow}, Dark={StaticResource SurfaceLowDark}}">
                             <Label Text="✕" FontSize="14"
@@ -43,7 +43,7 @@
                     <VerticalStackLayout Padding="20,12,20,20" Spacing="14">
 
                         <!-- Recurring banner (edit mode only) -->
-                        <Border StrokeShape="RoundRectangle CornerRadius='10'"
+                        <Border StrokeShape="RoundRectangle 10"
                                 StrokeThickness="0" Padding="12"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource WarningBg}, Dark={StaticResource WarningBgDark}}"
                                 IsVisible="{Binding IsRecurring}">
@@ -59,7 +59,7 @@
                         </Border>
 
                         <!-- No employees warning -->
-                        <Border StrokeShape="RoundRectangle CornerRadius='10'"
+                        <Border StrokeShape="RoundRectangle 10"
                                 StrokeThickness="1"
                                 Stroke="{AppThemeBinding Light={StaticResource WarningText}, Dark={StaticResource WarningTextDark}}"
                                 Padding="12,10"
@@ -80,7 +80,7 @@
                                CharacterSpacing="0.8"
                                TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                Margin="0,4,0,0"/>
-                        <Border StrokeShape="RoundRectangle CornerRadius='12'"
+                        <Border StrokeShape="RoundRectangle 12"
                                 StrokeThickness="1"
                                 Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                 Padding="10,4,14,4"
@@ -102,7 +102,7 @@
                                Margin="0,6,0,0"/>
 
                         <!-- Data -->
-                        <Border StrokeShape="RoundRectangle CornerRadius='12'"
+                        <Border StrokeShape="RoundRectangle 12"
                                 Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                                 StrokeThickness="2" HeightRequest="50"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -122,7 +122,7 @@
                         <!-- Ora inizio + fine -->
                         <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                             <Border Grid.Column="0"
-                                    StrokeShape="RoundRectangle CornerRadius='12'"
+                                    StrokeShape="RoundRectangle 12"
                                     Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                     StrokeThickness="1" HeightRequest="50"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -137,7 +137,7 @@
                                 </HorizontalStackLayout>
                             </Border>
                             <Border Grid.Column="1"
-                                    StrokeShape="RoundRectangle CornerRadius='12'"
+                                    StrokeShape="RoundRectangle 12"
                                     Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                     StrokeThickness="1" HeightRequest="50"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -154,7 +154,7 @@
                         </Grid>
 
                         <!-- Etichetta -->
-                        <Border StrokeShape="RoundRectangle CornerRadius='12'"
+                        <Border StrokeShape="RoundRectangle 12"
                                 Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                 StrokeThickness="1" HeightRequest="50"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -169,7 +169,7 @@
                         </Border>
 
                         <!-- Note -->
-                        <Border StrokeShape="RoundRectangle CornerRadius='12'"
+                        <Border StrokeShape="RoundRectangle 12"
                                 Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                 StrokeThickness="1"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -187,7 +187,7 @@
                                TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                Margin="0,6,0,0"
                                IsVisible="{Binding IsCreateMode}"/>
-                        <Border StrokeShape="RoundRectangle CornerRadius='12'"
+                        <Border StrokeShape="RoundRectangle 12"
                                 StrokeThickness="1"
                                 Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                 Padding="14"
@@ -201,7 +201,7 @@
                                            TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                                 </VerticalStackLayout>
                                 <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
-                                    <Border StrokeShape="RoundRectangle CornerRadius='10'"
+                                    <Border StrokeShape="RoundRectangle 10"
                                             StrokeThickness="0" WidthRequest="32" HeightRequest="32"
                                             BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLow}, Dark={StaticResource SurfaceLowDark}}">
                                         <Border.GestureRecognizers>
@@ -215,7 +215,7 @@
                                            TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                            WidthRequest="40" HorizontalTextAlignment="Center"
                                            VerticalOptions="Center"/>
-                                    <Border StrokeShape="RoundRectangle CornerRadius='10'"
+                                    <Border StrokeShape="RoundRectangle 10"
                                             StrokeThickness="0" WidthRequest="32" HeightRequest="32"
                                             BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}">
                                         <Border.GestureRecognizers>

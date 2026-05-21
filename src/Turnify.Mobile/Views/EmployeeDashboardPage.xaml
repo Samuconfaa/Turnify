@@ -22,7 +22,7 @@
                    CharacterSpacing="-0.4" VerticalOptions="Center"/>
             <!-- Bell icon -->
             <Grid Grid.Column="1" WidthRequest="40" HeightRequest="40" VerticalOptions="Center">
-                <Border StrokeShape="RoundRectangle CornerRadius='12'"
+                <Border StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
                         BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLow}, Dark={StaticResource SurfaceLowDark}}">
                     <Label Text="🔔" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center"/>
@@ -36,7 +36,7 @@
             <VerticalStackLayout Padding="16,20,16,16" Spacing="20">
 
                 <!-- Error banner -->
-                <Border StrokeShape="RoundRectangle CornerRadius='10'"
+                <Border StrokeShape="RoundRectangle 10"
                         StrokeThickness="1"
                         Stroke="{AppThemeBinding Light={StaticResource Danger}, Dark={StaticResource DangerDark}}"
                         Padding="12,10"
@@ -48,7 +48,7 @@
 
                 <!-- Hero: prossimo turno — HasNextShift -->
                 <Border IsVisible="{Binding HasNextShift}"
-                        StrokeShape="RoundRectangle CornerRadius='20'"
+                        StrokeShape="RoundRectangle 20"
                         StrokeThickness="0" Padding="20"
                         BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}">
                     <VerticalStackLayout Spacing="0">
@@ -58,7 +58,7 @@
                                    TextColor="{AppThemeBinding Light={StaticResource PrimaryText}, Dark={StaticResource PrimaryTextDark}}"
                                    Opacity="0.9"/>
                             <Border Grid.Column="1"
-                                    StrokeShape="RoundRectangle CornerRadius='8'"
+                                    StrokeShape="RoundRectangle 8"
                                     StrokeThickness="0" Padding="8,4"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource SuccessBg}, Dark={StaticResource SuccessBgDark}}">
                                 <Label Text="{Binding NextShift.WhenText}" FontSize="12" FontFamily="PJSSemi"
@@ -84,7 +84,7 @@
 
                 <!-- Prossimo turno — NoNextShift -->
                 <Border IsVisible="{Binding NoNextShift}"
-                        StrokeShape="RoundRectangle CornerRadius='20'"
+                        StrokeShape="RoundRectangle 20"
                         StrokeThickness="1"
                         Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                         Padding="24"
@@ -112,7 +112,7 @@
                     <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
                         <!-- Richiedi ferie -->
                         <Border Grid.Column="0"
-                                StrokeShape="RoundRectangle CornerRadius='14'"
+                                StrokeShape="RoundRectangle 14"
                                 StrokeThickness="0" Padding="14"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource WarningBg}, Dark={StaticResource WarningBgDark}}">
                             <Border.GestureRecognizers>
@@ -127,7 +127,7 @@
                         </Border>
                         <!-- Timbratura -->
                         <Border Grid.Column="1"
-                                StrokeShape="RoundRectangle CornerRadius='14'"
+                                StrokeShape="RoundRectangle 14"
                                 StrokeThickness="0" Padding="14"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryLightDark}}">
                             <VerticalStackLayout Spacing="10">
@@ -139,7 +139,7 @@
                         </Border>
                         <!-- Storico -->
                         <Border Grid.Column="2"
-                                StrokeShape="RoundRectangle CornerRadius='14'"
+                                StrokeShape="RoundRectangle 14"
                                 StrokeThickness="0" Padding="14"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource KpiBlueBg}, Dark={StaticResource KpiBlueBgDark}}">
                             <Border.GestureRecognizers>
@@ -163,7 +163,7 @@
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                         <!-- Entrata -->
                         <Border Grid.Column="0"
-                                StrokeShape="RoundRectangle CornerRadius='16'"
+                                StrokeShape="RoundRectangle 16"
                                 StrokeThickness="0" Padding="14"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource SuccessBg}, Dark={StaticResource SuccessBgDark}}">
                             <VerticalStackLayout Spacing="6">
@@ -181,7 +181,7 @@
                         </Border>
                         <!-- Uscita -->
                         <Border Grid.Column="1"
-                                StrokeShape="RoundRectangle CornerRadius='16'"
+                                StrokeShape="RoundRectangle 16"
                                 StrokeThickness="0" Padding="14"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource WarningBg}, Dark={StaticResource WarningBgDark}}">
                             <VerticalStackLayout Spacing="6">
@@ -208,7 +208,7 @@
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                         <!-- Settimanali -->
                         <Border Grid.Column="0"
-                                StrokeShape="RoundRectangle CornerRadius='16'"
+                                StrokeShape="RoundRectangle 16"
                                 StrokeThickness="1"
                                 Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                 Padding="14"
@@ -232,7 +232,7 @@
                         </Border>
                         <!-- Mensili -->
                         <Border Grid.Column="1"
-                                StrokeShape="RoundRectangle CornerRadius='16'"
+                                StrokeShape="RoundRectangle 16"
                                 StrokeThickness="1"
                                 Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                 Padding="14"
@@ -258,7 +258,7 @@
                 </VerticalStackLayout>
 
                 <!-- Ferie rimanenti -->
-                <Border StrokeShape="RoundRectangle CornerRadius='16'"
+                <Border StrokeShape="RoundRectangle 16"
                         StrokeThickness="1"
                         Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                         Padding="16"
@@ -266,7 +266,7 @@
                     <Border.Shadow><Shadow Brush="Black" Offset="0,4" Radius="12" Opacity="0.08"/></Border.Shadow>
                     <HorizontalStackLayout Spacing="14">
                         <Border WidthRequest="44" HeightRequest="44"
-                                StrokeShape="RoundRectangle CornerRadius='12'"
+                                StrokeShape="RoundRectangle 12"
                                 StrokeThickness="0"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryLightDark}}">
                             <Label Text="🌴" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center"/>
@@ -305,7 +305,7 @@
 
         <!-- Tab bar (employee) -->
         <Border Grid.Row="2"
-                StrokeShape="RoundRectangle CornerRadius='28'"
+                StrokeShape="RoundRectangle 28"
                 StrokeThickness="1"
                 Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                 Padding="6" Margin="16,8,16,24"
@@ -315,7 +315,7 @@
             </Border.Shadow>
             <Grid ColumnDefinitions="*,*,*,*,*" ColumnSpacing="4">
                 <!-- Home (active) -->
-                <Border Grid.Column="0" StrokeShape="RoundRectangle CornerRadius='22'"
+                <Border Grid.Column="0" StrokeShape="RoundRectangle 22"
                         StrokeThickness="0" HeightRequest="44"
                         BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}">
                     <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="1">

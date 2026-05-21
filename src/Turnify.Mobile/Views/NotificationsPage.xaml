@@ -38,7 +38,7 @@
                 <CollectionView.Header>
                     <VerticalStackLayout Padding="16,14,16,4" Spacing="8">
                         <!-- Error banner -->
-                        <Border StrokeShape="RoundRectangle CornerRadius='12'" StrokeThickness="1"
+                        <Border StrokeShape="RoundRectangle 12" StrokeThickness="1"
                                 Stroke="{AppThemeBinding Light={StaticResource Danger}, Dark={StaticResource DangerDark}}"
                                 Padding="14,10"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource ErrorBg}, Dark={StaticResource ErrorBgDark}}"
@@ -47,7 +47,7 @@
                                    TextColor="{AppThemeBinding Light={StaticResource ErrorText}, Dark={StaticResource ErrorTextDark}}"/>
                         </Border>
                         <!-- Unread count pill -->
-                        <Border StrokeShape="RoundRectangle CornerRadius='13'"
+                        <Border StrokeShape="RoundRectangle 13"
                                 StrokeThickness="0" Padding="10,4"
                                 HorizontalOptions="Start"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
@@ -84,7 +84,7 @@
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="vm:NotificationDto">
-                        <Border StrokeShape="RoundRectangle CornerRadius='14'"
+                        <Border StrokeShape="RoundRectangle 14"
                                 StrokeThickness="1"
                                 Stroke="{AppThemeBinding Light={StaticResource BorderSoft}, Dark={StaticResource BorderSoftDark}}"
                                 Padding="14" Margin="16,0,16,8"
@@ -96,7 +96,7 @@
                             </Border.GestureRecognizers>
                             <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
                                 <Border Grid.Column="0"
-                                        StrokeShape="RoundRectangle CornerRadius='12'"
+                                        StrokeShape="RoundRectangle 12"
                                         StrokeThickness="0" WidthRequest="40" HeightRequest="40"
                                         BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryLightDark}}">
                                     <Label Text="{Binding Icon}" FontSize="18"
@@ -142,7 +142,7 @@
 
         <!-- Custom tab bar -->
         <Border Grid.Row="2"
-                StrokeShape="RoundRectangle CornerRadius='28'" StrokeThickness="1"
+                StrokeShape="RoundRectangle 28" StrokeThickness="1"
                 Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                 Padding="6" Margin="16,8,16,24"
                 BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -179,7 +179,7 @@
                            TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                 </VerticalStackLayout>
                 <!-- Notifiche (active) -->
-                <Border Grid.Column="3" StrokeShape="RoundRectangle CornerRadius='22'"
+                <Border Grid.Column="3" StrokeShape="RoundRectangle 22"
                         StrokeThickness="0" HeightRequest="44"
                         BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}">
                     <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="1">

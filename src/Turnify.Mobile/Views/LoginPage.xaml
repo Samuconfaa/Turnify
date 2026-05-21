@@ -29,7 +29,7 @@
 
         <!-- Sheet card -->
         <Border Grid.Row="1"
-                StrokeShape="RoundRectangle CornerRadius='28,28,0,0'"
+                StrokeShape="RoundRectangle 28,28,0,0"
                 StrokeThickness="0"
                 Margin="0,-16,0,0"
                 BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -92,7 +92,7 @@
                         <VerticalStackLayout IsVisible="{Binding IsAdminMode}" Spacing="14">
 
                             <!-- Email input -->
-                            <Border StrokeShape="RoundRectangle CornerRadius='12'"
+                            <Border StrokeShape="RoundRectangle 12"
                                     Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                     StrokeThickness="1" HeightRequest="50"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -113,7 +113,7 @@
                         <VerticalStackLayout IsVisible="{Binding IsEmployeeMode}" Spacing="14">
 
                             <!-- Codice azienda -->
-                            <Border StrokeShape="RoundRectangle CornerRadius='12'"
+                            <Border StrokeShape="RoundRectangle 12"
                                     Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                     StrokeThickness="1" HeightRequest="50"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -129,7 +129,7 @@
                             </Border>
 
                             <!-- Username -->
-                            <Border StrokeShape="RoundRectangle CornerRadius='12'"
+                            <Border StrokeShape="RoundRectangle 12"
                                     Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                     StrokeThickness="1" HeightRequest="50"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -148,7 +148,7 @@
 
                         <!-- Password -->
                         <VerticalStackLayout Spacing="0">
-                            <Border StrokeShape="RoundRectangle CornerRadius='12'"
+                            <Border StrokeShape="RoundRectangle 12"
                                     Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                                     StrokeThickness="2" HeightRequest="50"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">

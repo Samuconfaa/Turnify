@@ -13,7 +13,7 @@
         <!-- Header -->
         <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Padding="20,8,20,16"
               BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
-            <Border Grid.Column="0" StrokeShape="RoundRectangle CornerRadius='10'"
+            <Border Grid.Column="0" StrokeShape="RoundRectangle 10"
                     StrokeThickness="0" WidthRequest="32" HeightRequest="32"
                     BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLow}, Dark={StaticResource SurfaceLowDark}}">
                 <Label Text="&#8249;" FontSize="18" FontFamily="PJSSemi"
@@ -37,7 +37,7 @@
                     <VerticalStackLayout Padding="16,14,16,0" Spacing="12">
 
                         <!-- Month navigator -->
-                        <Border StrokeShape="RoundRectangle CornerRadius='12'" StrokeThickness="1"
+                        <Border StrokeShape="RoundRectangle 12" StrokeThickness="1"
                                 Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
                             <Grid ColumnDefinitions="44,*,44" Padding="4,10">
@@ -61,7 +61,7 @@
 
                         <!-- KPI 2-col -->
                         <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                            <Border Grid.Column="0" StrokeShape="RoundRectangle CornerRadius='14'" StrokeThickness="1"
+                            <Border Grid.Column="0" StrokeShape="RoundRectangle 14" StrokeThickness="1"
                                     Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                     Padding="14"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -74,7 +74,7 @@
                                            TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"/>
                                 </VerticalStackLayout>
                             </Border>
-                            <Border Grid.Column="1" StrokeShape="RoundRectangle CornerRadius='14'" StrokeThickness="1"
+                            <Border Grid.Column="1" StrokeShape="RoundRectangle 14" StrokeThickness="1"
                                     Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                     Padding="14"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -112,12 +112,12 @@
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="vm:AttendanceEntryDto">
-                        <Border StrokeShape="RoundRectangle CornerRadius='12'" StrokeThickness="1"
+                        <Border StrokeShape="RoundRectangle 12" StrokeThickness="1"
                                 Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                 Padding="12,12" Margin="16,0,16,6"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
                             <HorizontalStackLayout Spacing="12">
-                                <Border WidthRequest="32" HeightRequest="32" StrokeShape="RoundRectangle CornerRadius='10'"
+                                <Border WidthRequest="32" HeightRequest="32" StrokeShape="RoundRectangle 10"
                                         StrokeThickness="0"
                                         BackgroundColor="{Binding IsComplete, Converter={StaticResource BoolToShiftColorConverter}}">
                                     <Label Text="&#10003;" FontSize="14"

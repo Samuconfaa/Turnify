@@ -13,7 +13,7 @@
         <!-- Header -->
         <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Padding="20,8,20,16"
               BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
-            <Border Grid.Column="0" StrokeShape="RoundRectangle CornerRadius='10'"
+            <Border Grid.Column="0" StrokeShape="RoundRectangle 10"
                     StrokeThickness="0" WidthRequest="32" HeightRequest="32"
                     BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLow}, Dark={StaticResource SurfaceLowDark}}">
                 <Label Text="&#8249;" FontSize="18" FontFamily="PJSSemi"
@@ -23,7 +23,7 @@
             <Label Grid.Column="1" Text="Report ore" FontSize="18" FontFamily="PJSBold"
                    TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                    HorizontalOptions="Center" VerticalOptions="Center" CharacterSpacing="-0.3"/>
-            <Border Grid.Column="2" StrokeShape="RoundRectangle CornerRadius='10'"
+            <Border Grid.Column="2" StrokeShape="RoundRectangle 10"
                     StrokeThickness="0" WidthRequest="36" HeightRequest="36"
                     BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryLightDark}}">
                 <Border.GestureRecognizers>
@@ -46,7 +46,7 @@
 
                         <!-- Filters -->
                         <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8" Padding="16,14,16,0">
-                            <Border Grid.Column="0" StrokeShape="RoundRectangle CornerRadius='12'"
+                            <Border Grid.Column="0" StrokeShape="RoundRectangle 12"
                                     StrokeThickness="1"
                                     Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                     HeightRequest="52"
@@ -64,7 +64,7 @@
                                     </HorizontalStackLayout>
                                 </VerticalStackLayout>
                             </Border>
-                            <Border Grid.Column="1" StrokeShape="RoundRectangle CornerRadius='12'"
+                            <Border Grid.Column="1" StrokeShape="RoundRectangle 12"
                                     StrokeThickness="1"
                                     Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                     HeightRequest="52"
@@ -82,7 +82,7 @@
                                     </HorizontalStackLayout>
                                 </VerticalStackLayout>
                             </Border>
-                            <Border Grid.Column="2" StrokeShape="RoundRectangle CornerRadius='12'"
+                            <Border Grid.Column="2" StrokeShape="RoundRectangle 12"
                                     StrokeThickness="1"
                                     Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                     HeightRequest="52"
@@ -105,7 +105,7 @@
                         </Grid>
 
                         <!-- Error banner -->
-                        <Border StrokeShape="RoundRectangle CornerRadius='12'" StrokeThickness="1"
+                        <Border StrokeShape="RoundRectangle 12" StrokeThickness="1"
                                 Stroke="{AppThemeBinding Light={StaticResource Danger}, Dark={StaticResource DangerDark}}"
                                 Padding="12,8" Margin="16,0"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource ErrorBg}, Dark={StaticResource ErrorBgDark}}"
@@ -137,7 +137,7 @@
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="vm:EmployeeHoursReportDto">
-                        <Border StrokeShape="RoundRectangle CornerRadius='14'" StrokeThickness="1"
+                        <Border StrokeShape="RoundRectangle 14" StrokeThickness="1"
                                 Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
                                 Margin="16,0,16,10">
@@ -151,7 +151,7 @@
                                             CommandParameter="{Binding .}"/>
                                     </HorizontalStackLayout.GestureRecognizers>
                                     <Border WidthRequest="40" HeightRequest="40"
-                                            StrokeShape="RoundRectangle CornerRadius='12'"
+                                            StrokeShape="RoundRectangle 12"
                                             StrokeThickness="0"
                                             BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryLightDark}}">
                                         <Label Text="{Binding EmployeeName, Converter={StaticResource InitialsConverter}}"
@@ -184,7 +184,7 @@
                                                            TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                            VerticalOptions="Center"/>
                                                     <Border Grid.Column="1" WidthRequest="80" HeightRequest="4"
-                                                            StrokeShape="RoundRectangle CornerRadius='2'"
+                                                            StrokeShape="RoundRectangle 2"
                                                             StrokeThickness="0" Margin="0,0,10,0"
                                                             BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLow}, Dark={StaticResource SurfaceLowDark}}"
                                                             VerticalOptions="Center">

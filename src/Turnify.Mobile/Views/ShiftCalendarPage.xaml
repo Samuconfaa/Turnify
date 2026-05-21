@@ -22,7 +22,7 @@
                 <!-- Admin action buttons -->
                 <HorizontalStackLayout Grid.Column="1" Spacing="8" IsVisible="{Binding IsAdmin}">
                     <!-- View mode toggle -->
-                    <Border StrokeShape="RoundRectangle CornerRadius='10'"
+                    <Border StrokeShape="RoundRectangle 10"
                             StrokeThickness="0" WidthRequest="36" HeightRequest="36"
                             BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLow}, Dark={StaticResource SurfaceLowDark}}">
                         <Border.GestureRecognizers>
@@ -34,7 +34,7 @@
                                HorizontalOptions="Center" VerticalOptions="Center"/>
                     </Border>
                     <!-- Add shift -->
-                    <Border StrokeShape="RoundRectangle CornerRadius='10'"
+                    <Border StrokeShape="RoundRectangle 10"
                             StrokeThickness="0" WidthRequest="36" HeightRequest="36"
                             BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}">
                         <Border.GestureRecognizers>
@@ -50,7 +50,7 @@
             <!-- Week nav -->
             <HorizontalStackLayout Spacing="8">
                 <!-- Prev week -->
-                <Border StrokeShape="RoundRectangle CornerRadius='10'"
+                <Border StrokeShape="RoundRectangle 10"
                         StrokeThickness="1"
                         Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                         WidthRequest="32" HeightRequest="32"
@@ -63,7 +63,7 @@
                            HorizontalOptions="Center" VerticalOptions="Center"/>
                 </Border>
                 <!-- Week label -->
-                <Border StrokeShape="RoundRectangle CornerRadius='10'"
+                <Border StrokeShape="RoundRectangle 10"
                         StrokeThickness="1"
                         Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                         HeightRequest="32"
@@ -80,7 +80,7 @@
                     </HorizontalStackLayout>
                 </Border>
                 <!-- Next week -->
-                <Border StrokeShape="RoundRectangle CornerRadius='10'"
+                <Border StrokeShape="RoundRectangle 10"
                         StrokeThickness="1"
                         Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                         WidthRequest="32" HeightRequest="32"
@@ -93,7 +93,7 @@
                            HorizontalOptions="Center" VerticalOptions="Center"/>
                 </Border>
                 <!-- Oggi pill (only when not current week) -->
-                <Border StrokeShape="RoundRectangle CornerRadius='10'"
+                <Border StrokeShape="RoundRectangle 10"
                         StrokeThickness="0" HeightRequest="32"
                         HorizontalOptions="EndAndExpand"
                         BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryLightDark}}"
@@ -170,7 +170,7 @@
             </Grid>
 
             <!-- Admin: Copy previous week -->
-            <Border StrokeShape="RoundRectangle CornerRadius='10'"
+            <Border StrokeShape="RoundRectangle 10"
                     StrokeThickness="1"
                     Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                     Padding="0" IsVisible="{Binding IsAdmin}"
@@ -193,7 +193,7 @@
 
             <!-- Error banner -->
             <Border Grid.Row="0" IsVisible="{Binding HasError}"
-                    StrokeShape="RoundRectangle CornerRadius='10'"
+                    StrokeShape="RoundRectangle 10"
                     StrokeThickness="1"
                     Stroke="{AppThemeBinding Light={StaticResource Danger}, Dark={StaticResource DangerDark}}"
                     Padding="12,8" Margin="16,8,16,0"
@@ -210,7 +210,7 @@
 
                 <!-- Timbratura card -->
                 <Border Grid.Row="0"
-                        StrokeShape="RoundRectangle CornerRadius='16'"
+                        StrokeShape="RoundRectangle 16"
                         StrokeThickness="0" Padding="16"
                         Margin="16,12,16,4"
                         BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryLightDark}}">
@@ -252,7 +252,7 @@
                 <!-- Check-in feedback -->
                 <Border Grid.Row="1"
                         IsVisible="{Binding HasCheckInFeedback}"
-                        StrokeShape="RoundRectangle CornerRadius='10'"
+                        StrokeShape="RoundRectangle 10"
                         StrokeThickness="1"
                         Stroke="{AppThemeBinding Light={StaticResource SuccessText}, Dark={StaticResource SuccessTextDark}}"
                         Padding="12,7" Margin="16,4,16,0"
@@ -292,7 +292,7 @@
                         </CollectionView.EmptyView>
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="vm:ShiftDto">
-                                <Border StrokeShape="RoundRectangle CornerRadius='14'"
+                                <Border StrokeShape="RoundRectangle 14"
                                         StrokeThickness="1"
                                         Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                         Margin="16,0,16,10"
@@ -321,7 +321,7 @@
                                                 <Label Text="{Binding StartTime, StringFormat='{0:HH:mm}'}" FontSize="13" FontFamily="PJSReg"
                                                        TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                                             </VerticalStackLayout>
-                                            <Border StrokeShape="RoundRectangle CornerRadius='8'"
+                                            <Border StrokeShape="RoundRectangle 8"
                                                     StrokeThickness="0" Padding="8,4"
                                                     BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryLightDark}}"
                                                     VerticalOptions="Center">
@@ -343,7 +343,7 @@
 
                 <!-- Day header row -->
                 <Border Grid.Row="0"
-                        StrokeShape="RoundRectangle CornerRadius='0'"
+                        StrokeShape="RoundRectangle 0"
                         StrokeThickness="0,0,0,1"
                         Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                         Padding="0,6,0,6"
@@ -459,7 +459,7 @@
                                                          HorizontalOptions="Center"
                                                          VerticalOptions="Center"
                                                          Spacing="3" Padding="3,0">
-                                        <Border StrokeShape="RoundRectangle CornerRadius='14'"
+                                        <Border StrokeShape="RoundRectangle 14"
                                                 StrokeThickness="0"
                                                 BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryLightDark}}"
                                                 HeightRequest="28" WidthRequest="28"
@@ -478,7 +478,7 @@
                                                MaxLines="2"/>
                                     </VerticalStackLayout>
                                     <!-- Day cells -->
-                                    <Border Grid.Column="1" Margin="2" StrokeShape="RoundRectangle CornerRadius='8'" StrokeThickness="0"
+                                    <Border Grid.Column="1" Margin="2" StrokeShape="RoundRectangle 8" StrokeThickness="0"
                                             BackgroundColor="{Binding Days[0].CellColor}" Padding="2">
                                         <Border.GestureRecognizers>
                                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftCalendarViewModel}}, Path=TapShiftCommand}" CommandParameter="{Binding Days[0]}"/>
@@ -486,42 +486,42 @@
                                         <Label Text="{Binding Days[0].Label}" FontSize="9" FontFamily="PJSBold"
                                                TextColor="{Binding Days[0].LabelColor}" HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
                                     </Border>
-                                    <Border Grid.Column="2" Margin="2" StrokeShape="RoundRectangle CornerRadius='8'" StrokeThickness="0"
+                                    <Border Grid.Column="2" Margin="2" StrokeShape="RoundRectangle 8" StrokeThickness="0"
                                             BackgroundColor="{Binding Days[1].CellColor}" Padding="2">
                                         <Border.GestureRecognizers>
                                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftCalendarViewModel}}, Path=TapShiftCommand}" CommandParameter="{Binding Days[1]}"/>
                                         </Border.GestureRecognizers>
                                         <Label Text="{Binding Days[1].Label}" FontSize="9" FontFamily="PJSBold" TextColor="{Binding Days[1].LabelColor}" HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
                                     </Border>
-                                    <Border Grid.Column="3" Margin="2" StrokeShape="RoundRectangle CornerRadius='8'" StrokeThickness="0"
+                                    <Border Grid.Column="3" Margin="2" StrokeShape="RoundRectangle 8" StrokeThickness="0"
                                             BackgroundColor="{Binding Days[2].CellColor}" Padding="2">
                                         <Border.GestureRecognizers>
                                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftCalendarViewModel}}, Path=TapShiftCommand}" CommandParameter="{Binding Days[2]}"/>
                                         </Border.GestureRecognizers>
                                         <Label Text="{Binding Days[2].Label}" FontSize="9" FontFamily="PJSBold" TextColor="{Binding Days[2].LabelColor}" HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
                                     </Border>
-                                    <Border Grid.Column="4" Margin="2" StrokeShape="RoundRectangle CornerRadius='8'" StrokeThickness="0"
+                                    <Border Grid.Column="4" Margin="2" StrokeShape="RoundRectangle 8" StrokeThickness="0"
                                             BackgroundColor="{Binding Days[3].CellColor}" Padding="2">
                                         <Border.GestureRecognizers>
                                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftCalendarViewModel}}, Path=TapShiftCommand}" CommandParameter="{Binding Days[3]}"/>
                                         </Border.GestureRecognizers>
                                         <Label Text="{Binding Days[3].Label}" FontSize="9" FontFamily="PJSBold" TextColor="{Binding Days[3].LabelColor}" HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
                                     </Border>
-                                    <Border Grid.Column="5" Margin="2" StrokeShape="RoundRectangle CornerRadius='8'" StrokeThickness="0"
+                                    <Border Grid.Column="5" Margin="2" StrokeShape="RoundRectangle 8" StrokeThickness="0"
                                             BackgroundColor="{Binding Days[4].CellColor}" Padding="2">
                                         <Border.GestureRecognizers>
                                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftCalendarViewModel}}, Path=TapShiftCommand}" CommandParameter="{Binding Days[4]}"/>
                                         </Border.GestureRecognizers>
                                         <Label Text="{Binding Days[4].Label}" FontSize="9" FontFamily="PJSBold" TextColor="{Binding Days[4].LabelColor}" HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
                                     </Border>
-                                    <Border Grid.Column="6" Margin="2" StrokeShape="RoundRectangle CornerRadius='8'" StrokeThickness="0"
+                                    <Border Grid.Column="6" Margin="2" StrokeShape="RoundRectangle 8" StrokeThickness="0"
                                             BackgroundColor="{Binding Days[5].CellColor}" Padding="2">
                                         <Border.GestureRecognizers>
                                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftCalendarViewModel}}, Path=TapShiftCommand}" CommandParameter="{Binding Days[5]}"/>
                                         </Border.GestureRecognizers>
                                         <Label Text="{Binding Days[5].Label}" FontSize="9" FontFamily="PJSBold" TextColor="{Binding Days[5].LabelColor}" HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
                                     </Border>
-                                    <Border Grid.Column="7" Margin="2" StrokeShape="RoundRectangle CornerRadius='8'" StrokeThickness="0"
+                                    <Border Grid.Column="7" Margin="2" StrokeShape="RoundRectangle 8" StrokeThickness="0"
                                             BackgroundColor="{Binding Days[6].CellColor}" Padding="2">
                                         <Border.GestureRecognizers>
                                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShiftCalendarViewModel}}, Path=TapShiftCommand}" CommandParameter="{Binding Days[6]}"/>
@@ -540,7 +540,7 @@
                   IsVisible="{Binding IsAdminDayMode}">
                 <!-- Day selector -->
                 <Grid Grid.Row="0" ColumnDefinitions="40,*,40" Padding="8,8,8,4">
-                    <Border Grid.Column="0" StrokeShape="RoundRectangle CornerRadius='10'"
+                    <Border Grid.Column="0" StrokeShape="RoundRectangle 10"
                             StrokeThickness="1"
                             Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                             WidthRequest="32" HeightRequest="32"
@@ -557,7 +557,7 @@
                            FontSize="14" FontFamily="PJSBold"
                            TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                            HorizontalOptions="Center" VerticalOptions="Center"/>
-                    <Border Grid.Column="2" StrokeShape="RoundRectangle CornerRadius='10'"
+                    <Border Grid.Column="2" StrokeShape="RoundRectangle 10"
                             StrokeThickness="1"
                             Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                             WidthRequest="32" HeightRequest="32"
@@ -582,7 +582,7 @@
                                        TextColor="{Binding TimeColor}"
                                        VerticalOptions="Center"/>
                                 <Border Grid.Column="1"
-                                        StrokeShape="RoundRectangle CornerRadius='8'"
+                                        StrokeShape="RoundRectangle 8"
                                         StrokeThickness="0"
                                         BackgroundColor="{Binding RowColor}"
                                         Padding="10,6"
@@ -608,7 +608,7 @@
 
         <!-- Tab bar -->
         <Border Grid.Row="2"
-                StrokeShape="RoundRectangle CornerRadius='28'"
+                StrokeShape="RoundRectangle 28"
                 StrokeThickness="1"
                 Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                 Padding="6" Margin="16,8,16,24"
@@ -626,7 +626,7 @@
                            TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                 </VerticalStackLayout>
                 <!-- Turni (active) -->
-                <Border Grid.Column="1" StrokeShape="RoundRectangle CornerRadius='22'"
+                <Border Grid.Column="1" StrokeShape="RoundRectangle 22"
                         StrokeThickness="0" HeightRequest="44"
                         BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}">
                     <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="1">

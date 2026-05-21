@@ -21,7 +21,7 @@
                    HorizontalOptions="Center" VerticalOptions="Center" CharacterSpacing="-0.3"/>
             <!-- Employee: + Richiedi button -->
             <Border Grid.Column="2"
-                    StrokeShape="RoundRectangle CornerRadius='10'"
+                    StrokeShape="RoundRectangle 10"
                     StrokeThickness="0" Padding="14,0" HeightRequest="36"
                     BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                     IsVisible="{Binding IsAdmin, Converter={StaticResource InverseBoolConverter}}">
@@ -49,7 +49,7 @@
                         <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
                             <HorizontalStackLayout Spacing="8" Padding="0,0,0,4">
                                 <!-- Tutte -->
-                                <Border StrokeShape="RoundRectangle CornerRadius='20'" StrokeThickness="0" Padding="14,8"
+                                <Border StrokeShape="RoundRectangle 20" StrokeThickness="0" Padding="14,8"
                                         BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
                                     <Border.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding SetFilterIndexCommand}" CommandParameter="0"/>
@@ -78,7 +78,7 @@
                                     </Label>
                                 </Border>
                                 <!-- In attesa -->
-                                <Border StrokeShape="RoundRectangle CornerRadius='20'" StrokeThickness="1"
+                                <Border StrokeShape="RoundRectangle 20" StrokeThickness="1"
                                         Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                         Padding="14,8"
                                         BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -101,7 +101,7 @@
                                     </Label>
                                 </Border>
                                 <!-- Approvate -->
-                                <Border StrokeShape="RoundRectangle CornerRadius='20'" StrokeThickness="1"
+                                <Border StrokeShape="RoundRectangle 20" StrokeThickness="1"
                                         Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                         Padding="14,8"
                                         BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -124,7 +124,7 @@
                                     </Label>
                                 </Border>
                                 <!-- Rifiutate -->
-                                <Border StrokeShape="RoundRectangle CornerRadius='20'" StrokeThickness="1"
+                                <Border StrokeShape="RoundRectangle 20" StrokeThickness="1"
                                         Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                         Padding="14,8"
                                         BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -151,7 +151,7 @@
 
                         <!-- Error banner -->
                         <Border IsVisible="{Binding HasError}"
-                                StrokeShape="RoundRectangle CornerRadius='10'" StrokeThickness="1"
+                                StrokeShape="RoundRectangle 10" StrokeThickness="1"
                                 Stroke="{AppThemeBinding Light={StaticResource Danger}, Dark={StaticResource DangerDark}}"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource ErrorBg}, Dark={StaticResource ErrorBgDark}}"
                                 Padding="12,8">
@@ -193,7 +193,7 @@
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="vm:VacationRequestDto">
-                        <Border StrokeShape="RoundRectangle CornerRadius='14'" StrokeThickness="1"
+                        <Border StrokeShape="RoundRectangle 14" StrokeThickness="1"
                                 Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
                                 Margin="16,0,16,10">
@@ -209,7 +209,7 @@
                                     <HorizontalStackLayout Spacing="12" Margin="0,0,0,12"
                                         IsVisible="{Binding Source={RelativeSource AncestorType={x:Type vm:VacationListViewModel}}, Path=IsAdmin}">
                                         <Border WidthRequest="40" HeightRequest="40"
-                                                StrokeShape="RoundRectangle CornerRadius='20'"
+                                                StrokeShape="RoundRectangle 20"
                                                 StrokeThickness="0"
                                                 BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryLightDark}}">
                                             <Label Text="{Binding Initials}" FontSize="13" FontFamily="PJSSemi"
@@ -226,7 +226,7 @@
                                                    TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                    Margin="0,4,0,0"/>
                                         </VerticalStackLayout>
-                                        <Border StrokeShape="RoundRectangle CornerRadius='8'" StrokeThickness="0" Padding="8,4"
+                                        <Border StrokeShape="RoundRectangle 8" StrokeThickness="0" Padding="8,4"
                                                 BackgroundColor="{Binding StatusBgColor}"
                                                 VerticalOptions="Start">
                                             <Label Text="{Binding StatusDisplay}" FontSize="12" FontFamily="PJSSemi"
@@ -247,7 +247,7 @@
                                                    TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                    Margin="0,4,0,0"/>
                                         </VerticalStackLayout>
-                                        <Border StrokeShape="RoundRectangle CornerRadius='8'" StrokeThickness="0" Padding="8,4"
+                                        <Border StrokeShape="RoundRectangle 8" StrokeThickness="0" Padding="8,4"
                                                 BackgroundColor="{Binding StatusBgColor}"
                                                 VerticalOptions="Center">
                                             <Label Text="{Binding StatusDisplay}" FontSize="12" FontFamily="PJSSemi"
@@ -256,7 +256,7 @@
                                     </HorizontalStackLayout>
 
                                     <!-- Review note -->
-                                    <Border StrokeShape="RoundRectangle CornerRadius='10'" StrokeThickness="0"
+                                    <Border StrokeShape="RoundRectangle 10" StrokeThickness="0"
                                             Padding="12,8" Margin="0,0,0,10"
                                             BackgroundColor="{AppThemeBinding Light={StaticResource WarningBg}, Dark={StaticResource WarningBgDark}}"
                                             IsVisible="{Binding ReviewNote, Converter={StaticResource StringNotEmptyConverter}}">
@@ -331,7 +331,7 @@
 
         <!-- ── Tab bar (admin 5-tab / employee 5-tab via IsAdmin) ── -->
         <Border Grid.Row="2"
-                StrokeShape="RoundRectangle CornerRadius='28'" StrokeThickness="1"
+                StrokeShape="RoundRectangle 28" StrokeThickness="1"
                 Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                 Padding="6" Margin="16,8,16,24"
                 BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -371,7 +371,7 @@
                            TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                 </VerticalStackLayout>
                 <!-- Ferie (current, active) -->
-                <Border Grid.Column="3" StrokeShape="RoundRectangle CornerRadius='22'"
+                <Border Grid.Column="3" StrokeShape="RoundRectangle 22"
                         StrokeThickness="0" HeightRequest="44"
                         BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}">
                     <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="1">
@@ -399,7 +399,7 @@
 
         <!-- Employee tab bar overlay (separate Grid to avoid collision) -->
         <Border Grid.Row="2"
-                StrokeShape="RoundRectangle CornerRadius='28'" StrokeThickness="1"
+                StrokeShape="RoundRectangle 28" StrokeThickness="1"
                 Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                 Padding="6" Margin="16,8,16,24"
                 BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
@@ -427,7 +427,7 @@
                            TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                 </VerticalStackLayout>
                 <!-- Ferie (current, active) -->
-                <Border Grid.Column="2" StrokeShape="RoundRectangle CornerRadius='22'"
+                <Border Grid.Column="2" StrokeShape="RoundRectangle 22"
                         StrokeThickness="0" HeightRequest="44"
                         BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}">
                     <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="1">
@@ -465,7 +465,7 @@
         <!-- ── New request bottom sheet overlay ──────────────── -->
         <Grid Grid.RowSpan="3" IsVisible="{Binding IsFormVisible}" BackgroundColor="#66000000">
             <Border VerticalOptions="End"
-                    StrokeShape="RoundRectangle CornerRadius='28,28,0,0'"
+                    StrokeShape="RoundRectangle 28,28,0,0"
                     StrokeThickness="0"
                     BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
                 <Border.Shadow>
@@ -483,7 +483,7 @@
                                    FontSize="18" FontFamily="PJSBold"
                                    TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                    CharacterSpacing="-0.3" VerticalOptions="Center"/>
-                            <Border Grid.Column="1" StrokeShape="RoundRectangle CornerRadius='10'"
+                            <Border Grid.Column="1" StrokeShape="RoundRectangle 10"
                                     StrokeThickness="0" WidthRequest="32" HeightRequest="32"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLow}, Dark={StaticResource SurfaceLowDark}}">
                                 <Border.GestureRecognizers>
@@ -505,7 +505,7 @@
                                    CharacterSpacing="0.8"
                                    TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                    Margin="0,4,0,0"/>
-                            <Border StrokeShape="RoundRectangle CornerRadius='12'" StrokeThickness="1"
+                            <Border StrokeShape="RoundRectangle 12" StrokeThickness="1"
                                     Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                     HeightRequest="50"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -523,7 +523,7 @@
                                    Margin="0,4,0,0"/>
                             <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                                 <Border Grid.Column="0"
-                                        StrokeShape="RoundRectangle CornerRadius='12'"
+                                        StrokeShape="RoundRectangle 12"
                                         Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                                         StrokeThickness="2" HeightRequest="50"
                                         BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -537,7 +537,7 @@
                                     </HorizontalStackLayout>
                                 </Border>
                                 <Border Grid.Column="1"
-                                        StrokeShape="RoundRectangle CornerRadius='12'"
+                                        StrokeShape="RoundRectangle 12"
                                         Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                         StrokeThickness="1" HeightRequest="50"
                                         BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -553,7 +553,7 @@
                             </Grid>
 
                             <!-- Days summary pill -->
-                            <Border StrokeShape="RoundRectangle CornerRadius='12'"
+                            <Border StrokeShape="RoundRectangle 12"
                                     StrokeThickness="0" Padding="14,12"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryLightDark}}">
                                 <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
@@ -572,7 +572,7 @@
                                    CharacterSpacing="0.8"
                                    TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                    Margin="0,4,0,0"/>
-                            <Border StrokeShape="RoundRectangle CornerRadius='12'" StrokeThickness="1"
+                            <Border StrokeShape="RoundRectangle 12" StrokeThickness="1"
                                     Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                     Padding="14" MinimumHeightRequest="80"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">

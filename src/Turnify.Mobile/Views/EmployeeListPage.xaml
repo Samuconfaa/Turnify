@@ -19,7 +19,7 @@
             <Label Grid.Column="0" Text="Team" FontSize="22" FontFamily="PJSBold"
                    TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                    VerticalOptions="Center" CharacterSpacing="-0.3"/>
-            <Border Grid.Column="2" StrokeShape="RoundRectangle CornerRadius='10'"
+            <Border Grid.Column="2" StrokeShape="RoundRectangle 10"
                     StrokeThickness="0" Padding="14,0" HeightRequest="32"
                     BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}">
                 <Border.GestureRecognizers>
@@ -41,7 +41,7 @@
                     <VerticalStackLayout Padding="16,12,16,0" Spacing="10">
 
                         <!-- Search input -->
-                        <Border StrokeShape="RoundRectangle CornerRadius='12'"
+                        <Border StrokeShape="RoundRectangle 12"
                                 StrokeThickness="1"
                                 Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                 HeightRequest="48"
@@ -62,7 +62,7 @@
                         <!-- Business filter chips -->
                         <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
                             <HorizontalStackLayout Spacing="8" Padding="0,0,0,2">
-                                <Border StrokeShape="RoundRectangle CornerRadius='20'" StrokeThickness="0" Padding="14,8"
+                                <Border StrokeShape="RoundRectangle 20" StrokeThickness="0" Padding="14,8"
                                         BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}">
                                     <Border.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EmployeeListViewModel}}, Path=LoadDataCommand}"/>
@@ -77,7 +77,7 @@
                                     </Label>
                                 </Border>
                                 <!-- Dynamic business picker rendered as a Picker beneath chips -->
-                                <Border StrokeShape="RoundRectangle CornerRadius='20'" StrokeThickness="1"
+                                <Border StrokeShape="RoundRectangle 20" StrokeThickness="1"
                                         Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                         Padding="0,0,14,0"
                                         BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -129,7 +129,7 @@
                                            Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                                            Margin="0,4,0,4"/>
                         <!-- Add employee dashed card -->
-                        <Border StrokeShape="RoundRectangle CornerRadius='14'"
+                        <Border StrokeShape="RoundRectangle 14"
                                 StrokeThickness="1.5"
                                 Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                 Padding="16" BackgroundColor="Transparent">
@@ -150,7 +150,7 @@
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="vm:EmployeeListDto">
-                        <Border StrokeShape="RoundRectangle CornerRadius='14'" StrokeThickness="1"
+                        <Border StrokeShape="RoundRectangle 14" StrokeThickness="1"
                                 Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                 Padding="14"
                                 Margin="16,0,16,8"
@@ -171,7 +171,7 @@
                             <HorizontalStackLayout Spacing="12">
                                 <!-- Avatar -->
                                 <Border WidthRequest="44" HeightRequest="44"
-                                        StrokeShape="RoundRectangle CornerRadius='14'"
+                                        StrokeShape="RoundRectangle 14"
                                         StrokeThickness="0"
                                         BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryLightDark}}">
                                     <Border.Triggers>
@@ -196,7 +196,7 @@
                                         <Label Text="{Binding FullName}" FontSize="14" FontFamily="PJSSemi"
                                                TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                                VerticalOptions="Center"/>
-                                        <Border StrokeShape="RoundRectangle CornerRadius='6'" StrokeThickness="0"
+                                        <Border StrokeShape="RoundRectangle 6" StrokeThickness="0"
                                                 Padding="8,2"
                                                 BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLow}, Dark={StaticResource SurfaceLowDark}}"
                                                 IsVisible="{Binding ContractType, Converter={StaticResource StringNotEmptyConverter}}">
@@ -210,7 +210,7 @@
 
                                 <!-- Status badge + chevron -->
                                 <VerticalStackLayout Spacing="4" VerticalOptions="Center">
-                                    <Border StrokeShape="RoundRectangle CornerRadius='8'" StrokeThickness="0"
+                                    <Border StrokeShape="RoundRectangle 8" StrokeThickness="0"
                                             Padding="8,4"
                                             BackgroundColor="{AppThemeBinding Light={StaticResource SuccessBg}, Dark={StaticResource SuccessBgDark}}">
                                         <Border.Triggers>
@@ -241,7 +241,7 @@
 
         <!-- ── Tab bar (admin: Casa, Turni, Team*, Ferie, Profilo) ── -->
         <Border Grid.Row="3"
-                StrokeShape="RoundRectangle CornerRadius='28'" StrokeThickness="1"
+                StrokeShape="RoundRectangle 28" StrokeThickness="1"
                 Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                 Padding="6" Margin="16,8,16,24"
                 BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -271,7 +271,7 @@
                 </VerticalStackLayout>
 
                 <!-- Team (current, active) -->
-                <Border Grid.Column="2" StrokeShape="RoundRectangle CornerRadius='22'"
+                <Border Grid.Column="2" StrokeShape="RoundRectangle 22"
                         StrokeThickness="0" HeightRequest="44"
                         BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}">
                     <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="1">

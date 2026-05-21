@@ -20,7 +20,7 @@
 
                 <!-- Nome + Cognome row -->
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                    <Border Grid.Column="0" StrokeShape="RoundRectangle CornerRadius='12'"
+                    <Border Grid.Column="0" StrokeShape="RoundRectangle 12"
                             StrokeThickness="1"
                             Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                             HeightRequest="50"
@@ -33,7 +33,7 @@
                                    BackgroundColor="Transparent"/>
                         </VerticalStackLayout>
                     </Border>
-                    <Border Grid.Column="1" StrokeShape="RoundRectangle CornerRadius='12'"
+                    <Border Grid.Column="1" StrokeShape="RoundRectangle 12"
                             StrokeThickness="1"
                             Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                             HeightRequest="50"
@@ -49,7 +49,7 @@
                 </Grid>
 
                 <!-- Username (highlighted) -->
-                <Border StrokeShape="RoundRectangle CornerRadius='12'"
+                <Border StrokeShape="RoundRectangle 12"
                         Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                         StrokeThickness="2" HeightRequest="56"
                         BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -75,7 +75,7 @@
                 <Label Text="CONTATTI" FontSize="11" FontFamily="PJSSemi" CharacterSpacing="0.8"
                        TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                        Margin="0,8,0,0"/>
-                <Border StrokeShape="RoundRectangle CornerRadius='12'"
+                <Border StrokeShape="RoundRectangle 12"
                         StrokeThickness="1"
                         Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                         HeightRequest="56"
@@ -95,7 +95,7 @@
                         </HorizontalStackLayout>
                     </VerticalStackLayout>
                 </Border>
-                <Border StrokeShape="RoundRectangle CornerRadius='12'"
+                <Border StrokeShape="RoundRectangle 12"
                         StrokeThickness="1"
                         Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                         HeightRequest="56"
@@ -120,7 +120,7 @@
                 <Label Text="LAVORO" FontSize="11" FontFamily="PJSSemi" CharacterSpacing="0.8"
                        TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                        Margin="0,8,0,0"/>
-                <Border StrokeShape="RoundRectangle CornerRadius='12'"
+                <Border StrokeShape="RoundRectangle 12"
                         StrokeThickness="1"
                         Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                         HeightRequest="56"
@@ -142,7 +142,7 @@
 
                 <!-- Contratto + Ore settimanali -->
                 <Grid ColumnDefinitions="1.4*,*" ColumnSpacing="10">
-                    <Border Grid.Column="0" StrokeShape="RoundRectangle CornerRadius='12'"
+                    <Border Grid.Column="0" StrokeShape="RoundRectangle 12"
                             StrokeThickness="1"
                             Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                             HeightRequest="56"
@@ -157,7 +157,7 @@
                                     Margin="0,0"/>
                         </VerticalStackLayout>
                     </Border>
-                    <Border Grid.Column="1" StrokeShape="RoundRectangle CornerRadius='12'"
+                    <Border Grid.Column="1" StrokeShape="RoundRectangle 12"
                             StrokeThickness="1"
                             Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                             HeightRequest="56"
@@ -195,7 +195,7 @@
                 </Grid>
 
                 <!-- Attività picker -->
-                <Border StrokeShape="RoundRectangle CornerRadius='12'"
+                <Border StrokeShape="RoundRectangle 12"
                         StrokeThickness="1"
                         Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                         HeightRequest="56"
@@ -225,7 +225,7 @@
                 </Border>
 
                 <!-- Ruolo account picker -->
-                <Border StrokeShape="RoundRectangle CornerRadius='12'"
+                <Border StrokeShape="RoundRectangle 12"
                         StrokeThickness="1"
                         Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                         HeightRequest="56"
@@ -250,7 +250,7 @@
                 <VerticalStackLayout IsVisible="{Binding IsCreateMode}" Spacing="6" Margin="0,8,0,0">
                     <Label Text="SICUREZZA" FontSize="11" FontFamily="PJSSemi" CharacterSpacing="0.8"
                            TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
-                    <Border StrokeShape="RoundRectangle CornerRadius='12'"
+                    <Border StrokeShape="RoundRectangle 12"
                             StrokeThickness="1"
                             Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                             HeightRequest="56"
@@ -279,14 +279,14 @@
                 <VerticalStackLayout IsVisible="{Binding ShowEmployeeBalance}" Spacing="6" Margin="0,8,0,0">
                     <Label Text="SALDO FERIE" FontSize="11" FontFamily="PJSSemi" CharacterSpacing="0.8"
                            TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
-                    <Border StrokeShape="RoundRectangle CornerRadius='14'" StrokeThickness="1"
+                    <Border StrokeShape="RoundRectangle 14" StrokeThickness="1"
                             Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                             Padding="16"
                             BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
                         <Border.Shadow><Shadow Brush="Black" Offset="0,4" Radius="12" Opacity="0.08"/></Border.Shadow>
                         <HorizontalStackLayout Spacing="14">
                             <Border WidthRequest="40" HeightRequest="40"
-                                    StrokeShape="RoundRectangle CornerRadius='12'"
+                                    StrokeShape="RoundRectangle 12"
                                     StrokeThickness="0"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryLightDark}}">
                                 <Label Text="🌴" FontSize="18"
@@ -319,7 +319,7 @@
                 <!-- Action buttons -->
                 <Grid ColumnDefinitions="*,2*" ColumnSpacing="10" Margin="0,8,0,0">
                     <!-- Disattiva (edit only) -->
-                    <Border Grid.Column="0" StrokeShape="RoundRectangle CornerRadius='12'"
+                    <Border Grid.Column="0" StrokeShape="RoundRectangle 12"
                             StrokeThickness="1.5"
                             Stroke="{AppThemeBinding Light={StaticResource Danger}, Dark={StaticResource DangerDark}}"
                             HeightRequest="50" BackgroundColor="Transparent"

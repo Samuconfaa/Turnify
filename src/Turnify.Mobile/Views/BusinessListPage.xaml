@@ -13,7 +13,7 @@
         <!-- Header -->
         <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Padding="20,8,20,16"
               BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
-            <Border Grid.Column="0" StrokeShape="RoundRectangle CornerRadius='10'"
+            <Border Grid.Column="0" StrokeShape="RoundRectangle 10"
                     StrokeThickness="0" WidthRequest="32" HeightRequest="32"
                     BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLow}, Dark={StaticResource SurfaceLowDark}}">
                 <Label Text="&#8249;" FontSize="18" FontFamily="PJSSemi"
@@ -60,7 +60,7 @@
                 <CollectionView.Footer>
                     <VerticalStackLayout Padding="16,4,16,24">
                         <!-- Add business dashed -->
-                        <Border StrokeShape="RoundRectangle CornerRadius='14'"
+                        <Border StrokeShape="RoundRectangle 14"
                                 StrokeThickness="1.5"
                                 Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                 Padding="16" Margin="0,4,0,0"
@@ -82,7 +82,7 @@
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="vm:BusinessDto">
-                        <Border StrokeShape="RoundRectangle CornerRadius='16'" StrokeThickness="1"
+                        <Border StrokeShape="RoundRectangle 16" StrokeThickness="1"
                                 Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
                                 Margin="16,10,16,0">
@@ -95,7 +95,7 @@
                                         <Label Grid.Column="0" Text="{Binding Name}" FontSize="15" FontFamily="PJSSemi"
                                                TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                                VerticalOptions="Center"/>
-                                        <Border Grid.Column="1" StrokeShape="RoundRectangle CornerRadius='8'" StrokeThickness="0"
+                                        <Border Grid.Column="1" StrokeShape="RoundRectangle 8" StrokeThickness="0"
                                                 Padding="8,4"
                                                 BackgroundColor="{AppThemeBinding Light={StaticResource SuccessBg}, Dark={StaticResource SuccessBgDark}}">
                                             <Label Text="{Binding StatusText, StringFormat='&#9679; {0}'}" FontSize="11" FontFamily="PJSSemi"
@@ -109,7 +109,7 @@
                                            Margin="0,4,0,14"
                                            IsVisible="{Binding Address, Converter={StaticResource StringNotEmptyConverter}}"/>
                                     <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
-                                        <Border Grid.Column="0" StrokeShape="RoundRectangle CornerRadius='10'"
+                                        <Border Grid.Column="0" StrokeShape="RoundRectangle 10"
                                                 StrokeThickness="0" HeightRequest="36"
                                                 BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLow}, Dark={StaticResource SurfaceLowDark}}">
                                             <Border.GestureRecognizers>
@@ -121,7 +121,7 @@
                                                    TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                                    HorizontalOptions="Center" VerticalOptions="Center"/>
                                         </Border>
-                                        <Border Grid.Column="1" StrokeShape="RoundRectangle CornerRadius='10'"
+                                        <Border Grid.Column="1" StrokeShape="RoundRectangle 10"
                                                 StrokeThickness="0" HeightRequest="36"
                                                 BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryLightDark}}">
                                             <Border.GestureRecognizers>

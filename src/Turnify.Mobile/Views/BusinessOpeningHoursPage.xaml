@@ -13,7 +13,7 @@
         <!-- Header -->
         <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Padding="20,8,20,16"
               BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
-            <Border Grid.Column="0" StrokeShape="RoundRectangle CornerRadius='10'"
+            <Border Grid.Column="0" StrokeShape="RoundRectangle 10"
                     StrokeThickness="0" WidthRequest="32" HeightRequest="32"
                     BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLow}, Dark={StaticResource SurfaceLowDark}}">
                 <Label Text="&#8249;" FontSize="18" FontFamily="PJSSemi"
@@ -37,7 +37,7 @@
                 <VerticalStackLayout Spacing="16">
 
                     <!-- Days card -->
-                    <Border StrokeShape="RoundRectangle CornerRadius='16'" StrokeThickness="1"
+                    <Border StrokeShape="RoundRectangle 16" StrokeThickness="1"
                             Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                             BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
                         <Border.Shadow><Shadow Brush="Black" Offset="0,4" Radius="12" Opacity="0.08"/></Border.Shadow>
@@ -51,7 +51,7 @@
                                                    TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                                    VerticalOptions="Center"/>
                                             <HorizontalStackLayout Grid.Column="1" Spacing="8" IsVisible="{Binding IsOpen}">
-                                                <Border StrokeShape="RoundRectangle CornerRadius='10'" StrokeThickness="1"
+                                                <Border StrokeShape="RoundRectangle 10" StrokeThickness="1"
                                                         Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                                         HeightRequest="36" HorizontalOptions="FillAndExpand"
                                                         BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -65,7 +65,7 @@
                                                                     VerticalOptions="Center"/>
                                                     </HorizontalStackLayout>
                                                 </Border>
-                                                <Border StrokeShape="RoundRectangle CornerRadius='10'" StrokeThickness="1"
+                                                <Border StrokeShape="RoundRectangle 10" StrokeThickness="1"
                                                         Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                                         HeightRequest="36" HorizontalOptions="FillAndExpand"
                                                         BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">

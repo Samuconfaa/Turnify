@@ -25,7 +25,7 @@
                            TextColor="{AppThemeBinding Light={StaticResource PrimaryText}, Dark={StaticResource PrimaryTextDark}}"
                            Opacity="0.85" VerticalOptions="Center"/>
                     <Border Grid.Column="1"
-                            StrokeShape="RoundRectangle CornerRadius='10'"
+                            StrokeShape="RoundRectangle 10"
                             StrokeThickness="0" WidthRequest="36" HeightRequest="36"
                             BackgroundColor="#2DFFFFFF">
                         <Border.GestureRecognizers>
@@ -44,7 +44,7 @@
                         </Grid.GestureRecognizers>
                         <!-- Photo avatar -->
                         <Border WidthRequest="88" HeightRequest="88"
-                                StrokeShape="RoundRectangle CornerRadius='44'"
+                                StrokeShape="RoundRectangle 44"
                                 StrokeThickness="2.5" Stroke="#99FFFFFF"
                                 IsVisible="{Binding ShowPhoto}">
                             <Image Source="{Binding AvatarPhoto}" Aspect="AspectFill"
@@ -52,7 +52,7 @@
                         </Border>
                         <!-- Emoji avatar -->
                         <Border WidthRequest="88" HeightRequest="88"
-                                StrokeShape="RoundRectangle CornerRadius='44'"
+                                StrokeShape="RoundRectangle 44"
                                 StrokeThickness="2.5" Stroke="#99FFFFFF"
                                 BackgroundColor="#F2FFFFFF"
                                 IsVisible="{Binding ShowEmoji}">
@@ -61,7 +61,7 @@
                         </Border>
                         <!-- Initials avatar -->
                         <Border WidthRequest="88" HeightRequest="88"
-                                StrokeShape="RoundRectangle CornerRadius='44'"
+                                StrokeShape="RoundRectangle 44"
                                 StrokeThickness="2.5" Stroke="#99FFFFFF"
                                 BackgroundColor="#F2FFFFFF"
                                 IsVisible="{Binding ShowInitials}">
@@ -71,7 +71,7 @@
                         </Border>
                         <!-- Camera badge -->
                         <Border WidthRequest="28" HeightRequest="28"
-                                StrokeShape="RoundRectangle CornerRadius='14'"
+                                StrokeShape="RoundRectangle 14"
                                 StrokeThickness="2"
                                 Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
@@ -87,7 +87,7 @@
                         <Label Text="{Binding Email}" FontSize="13" FontFamily="PJSReg"
                                TextColor="{AppThemeBinding Light={StaticResource PrimaryText}, Dark={StaticResource PrimaryTextDark}}"
                                Opacity="0.88"/>
-                        <Border StrokeShape="RoundRectangle CornerRadius='10'"
+                        <Border StrokeShape="RoundRectangle 10"
                                 StrokeThickness="0" Padding="10,4"
                                 BackgroundColor="#38FFFFFF"
                                 HorizontalOptions="Start" Margin="0,8,0,0">
@@ -102,7 +102,7 @@
 
         <!-- Settings sheet -->
         <ScrollView Grid.Row="2" Margin="0,-28,0,0">
-            <Border StrokeShape="RoundRectangle CornerRadius='24,24,0,0'"
+            <Border StrokeShape="RoundRectangle 24,24,0,0"
                     StrokeThickness="0"
                     BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
                 <VerticalStackLayout Padding="20,14,20,16" Spacing="8">
@@ -115,7 +115,7 @@
                            IsVisible="{Binding IsAdmin}"/>
 
                     <!-- Le mie attività (admin) -->
-                    <Border StrokeShape="RoundRectangle CornerRadius='14'" StrokeThickness="1"
+                    <Border StrokeShape="RoundRectangle 14" StrokeThickness="1"
                             Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                             Padding="14,12"
                             BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
@@ -124,7 +124,7 @@
                             <TapGestureRecognizer Command="{Binding ManageBusinessesCommand}"/>
                         </Border.GestureRecognizers>
                         <HorizontalStackLayout Spacing="12">
-                            <Border WidthRequest="36" HeightRequest="36" StrokeShape="RoundRectangle CornerRadius='10'"
+                            <Border WidthRequest="36" HeightRequest="36" StrokeShape="RoundRectangle 10"
                                     StrokeThickness="0"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryLightDark}}">
                                 <Label Text="&#127962;" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center"/>
@@ -139,7 +139,7 @@
                     </Border>
 
                     <!-- Orari di apertura (admin) -->
-                    <Border StrokeShape="RoundRectangle CornerRadius='14'" StrokeThickness="1"
+                    <Border StrokeShape="RoundRectangle 14" StrokeThickness="1"
                             Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                             Padding="14,12"
                             BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
@@ -148,7 +148,7 @@
                             <TapGestureRecognizer Command="{Binding ManageOpeningHoursCommand}"/>
                         </Border.GestureRecognizers>
                         <HorizontalStackLayout Spacing="12">
-                            <Border WidthRequest="36" HeightRequest="36" StrokeShape="RoundRectangle CornerRadius='10'"
+                            <Border WidthRequest="36" HeightRequest="36" StrokeShape="RoundRectangle 10"
                                     StrokeThickness="0"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource KpiBlueBg}, Dark={StaticResource KpiBlueBgDark}}">
                                 <Label Text="&#9201;" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center"/>
@@ -163,7 +163,7 @@
                     </Border>
 
                     <!-- Gestisci team (admin) -->
-                    <Border StrokeShape="RoundRectangle CornerRadius='14'" StrokeThickness="1"
+                    <Border StrokeShape="RoundRectangle 14" StrokeThickness="1"
                             Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                             Padding="14,12"
                             BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
@@ -172,7 +172,7 @@
                             <TapGestureRecognizer Command="{Binding GoToTeamCommand}"/>
                         </Border.GestureRecognizers>
                         <HorizontalStackLayout Spacing="12">
-                            <Border WidthRequest="36" HeightRequest="36" StrokeShape="RoundRectangle CornerRadius='10'"
+                            <Border WidthRequest="36" HeightRequest="36" StrokeShape="RoundRectangle 10"
                                     StrokeThickness="0"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource WarningBg}, Dark={StaticResource WarningBgDark}}">
                                 <Label Text="&#128101;" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center"/>
@@ -187,7 +187,7 @@
                     </Border>
 
                     <!-- Scambi turno (admin) -->
-                    <Border StrokeShape="RoundRectangle CornerRadius='14'" StrokeThickness="1"
+                    <Border StrokeShape="RoundRectangle 14" StrokeThickness="1"
                             Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                             Padding="14,12"
                             BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
@@ -196,7 +196,7 @@
                             <TapGestureRecognizer Command="{Binding GoToShiftSwapsCommand}"/>
                         </Border.GestureRecognizers>
                         <HorizontalStackLayout Spacing="12">
-                            <Border WidthRequest="36" HeightRequest="36" StrokeShape="RoundRectangle CornerRadius='10'"
+                            <Border WidthRequest="36" HeightRequest="36" StrokeShape="RoundRectangle 10"
                                     StrokeThickness="0" BackgroundColor="#EEE5F7">
                                 <Label Text="&#8644;" FontSize="16" TextColor="#6D28D9"
                                        HorizontalOptions="Center" VerticalOptions="Center"/>
@@ -211,7 +211,7 @@
                     </Border>
 
                     <!-- Report ore dipendenti (admin) -->
-                    <Border StrokeShape="RoundRectangle CornerRadius='14'" StrokeThickness="1"
+                    <Border StrokeShape="RoundRectangle 14" StrokeThickness="1"
                             Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                             Padding="14,12"
                             BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
@@ -220,7 +220,7 @@
                             <TapGestureRecognizer Command="{Binding GoToEmployeeReportsCommand}"/>
                         </Border.GestureRecognizers>
                         <HorizontalStackLayout Spacing="12">
-                            <Border WidthRequest="36" HeightRequest="36" StrokeShape="RoundRectangle CornerRadius='10'"
+                            <Border WidthRequest="36" HeightRequest="36" StrokeShape="RoundRectangle 10"
                                     StrokeThickness="0"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource KpiDangerBg}, Dark={StaticResource KpiDangerBgDark}}">
                                 <Label Text="&#128202;" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center"/>
@@ -235,7 +235,7 @@
                     </Border>
 
                     <!-- Report e statistiche (admin) -->
-                    <Border StrokeShape="RoundRectangle CornerRadius='14'" StrokeThickness="1"
+                    <Border StrokeShape="RoundRectangle 14" StrokeThickness="1"
                             Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                             Padding="14,12"
                             BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
@@ -244,7 +244,7 @@
                             <TapGestureRecognizer Command="{Binding GoToReportsCommand}"/>
                         </Border.GestureRecognizers>
                         <HorizontalStackLayout Spacing="12">
-                            <Border WidthRequest="36" HeightRequest="36" StrokeShape="RoundRectangle CornerRadius='10'"
+                            <Border WidthRequest="36" HeightRequest="36" StrokeShape="RoundRectangle 10"
                                     StrokeThickness="0"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLow}, Dark={StaticResource SurfaceLowDark}}">
                                 <Label Text="&#128196;" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center"/>
@@ -266,7 +266,7 @@
                            IsVisible="{Binding IsAdmin, Converter={StaticResource InverseBoolConverter}}"/>
 
                     <!-- Scambi turno (employee) -->
-                    <Border StrokeShape="RoundRectangle CornerRadius='14'" StrokeThickness="1"
+                    <Border StrokeShape="RoundRectangle 14" StrokeThickness="1"
                             Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                             Padding="14,12"
                             BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
@@ -275,7 +275,7 @@
                             <TapGestureRecognizer Command="{Binding GoToShiftSwapsCommand}"/>
                         </Border.GestureRecognizers>
                         <HorizontalStackLayout Spacing="12">
-                            <Border WidthRequest="36" HeightRequest="36" StrokeShape="RoundRectangle CornerRadius='10'"
+                            <Border WidthRequest="36" HeightRequest="36" StrokeShape="RoundRectangle 10"
                                     StrokeThickness="0" BackgroundColor="#EEE5F7">
                                 <Label Text="&#8644;" FontSize="16" TextColor="#6D28D9"
                                        HorizontalOptions="Center" VerticalOptions="Center"/>
@@ -296,7 +296,7 @@
                            Margin="0,14,0,4"/>
 
                     <!-- Cambia foto profilo -->
-                    <Border StrokeShape="RoundRectangle CornerRadius='14'" StrokeThickness="1"
+                    <Border StrokeShape="RoundRectangle 14" StrokeThickness="1"
                             Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                             Padding="14,12"
                             BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -304,7 +304,7 @@
                             <TapGestureRecognizer Command="{Binding PickAvatarCommand}"/>
                         </Border.GestureRecognizers>
                         <HorizontalStackLayout Spacing="12">
-                            <Border WidthRequest="36" HeightRequest="36" StrokeShape="RoundRectangle CornerRadius='10'"
+                            <Border WidthRequest="36" HeightRequest="36" StrokeShape="RoundRectangle 10"
                                     StrokeThickness="0"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLow}, Dark={StaticResource SurfaceLowDark}}">
                                 <Label Text="&#128247;" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center"/>
@@ -319,7 +319,7 @@
                     </Border>
 
                     <!-- Cambia password -->
-                    <Border StrokeShape="RoundRectangle CornerRadius='14'" StrokeThickness="1"
+                    <Border StrokeShape="RoundRectangle 14" StrokeThickness="1"
                             Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                             Padding="14,12"
                             BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -327,7 +327,7 @@
                             <TapGestureRecognizer Command="{Binding ChangePasswordCommand}"/>
                         </Border.GestureRecognizers>
                         <HorizontalStackLayout Spacing="12">
-                            <Border WidthRequest="36" HeightRequest="36" StrokeShape="RoundRectangle CornerRadius='10'"
+                            <Border WidthRequest="36" HeightRequest="36" StrokeShape="RoundRectangle 10"
                                     StrokeThickness="0"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLow}, Dark={StaticResource SurfaceLowDark}}">
                                 <Label Text="&#128274;" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center"/>
@@ -342,12 +342,12 @@
                     </Border>
 
                     <!-- Tema scuro -->
-                    <Border StrokeShape="RoundRectangle CornerRadius='14'" StrokeThickness="1"
+                    <Border StrokeShape="RoundRectangle 14" StrokeThickness="1"
                             Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                             Padding="14,12"
                             BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
                         <HorizontalStackLayout Spacing="12">
-                            <Border WidthRequest="36" HeightRequest="36" StrokeShape="RoundRectangle CornerRadius='10'"
+                            <Border WidthRequest="36" HeightRequest="36" StrokeShape="RoundRectangle 10"
                                     StrokeThickness="0"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLow}, Dark={StaticResource SurfaceLowDark}}">
                                 <Label Text="&#127769;" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center"/>
@@ -388,7 +388,7 @@
 
         <!-- Custom tab bar -->
         <Border Grid.Row="3"
-                StrokeShape="RoundRectangle CornerRadius='28'" StrokeThickness="1"
+                StrokeShape="RoundRectangle 28" StrokeThickness="1"
                 Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                 Padding="6" Margin="16,8,16,24"
                 BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
@@ -445,7 +445,7 @@
                            TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                 </VerticalStackLayout>
                 <!-- Profilo (active) -->
-                <Border Grid.Column="4" StrokeShape="RoundRectangle CornerRadius='22'"
+                <Border Grid.Column="4" StrokeShape="RoundRectangle 22"
                         StrokeThickness="0" HeightRequest="44"
                         BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}">
                     <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="1">

@@ -2,6 +2,148 @@
 
 ---
 
+## Prompt 62
+
+### Data
+2026-05-25
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Implementare it-27: Employee views complete — dashboard, turni+timbratura, ferie+richiesta, disponibilità, storico presenze, notifiche, profilo dipendente, report export (admin), report ore dipendenti (admin).
+
+### Prompt
+Creare `EmployeeTabLayout` con tab routes `/(employee)/X` e active detection via `usePathname()`. Creare `AttendanceService` (checkIn, checkOut, getTodayAttendance, getHistory, getSummary) e `ReportService` (downloadHours/Attendance/Vacations, getEmployeeHoursReport). Implementare `(employee)/dashboard.tsx` con: greeting + bell red dot, hero card green prossimo turno, 3 quick action tiles (ferie/timbratura/disponibilità), timbratura oggi 2-col (successBg/warningBg), ore settimanali+mensili con progress bar, ferie rimanenti card, link storico presenze. Implementare `(employee)/shifts/index.tsx` con WeekNav + live timbratura card (primaryLight) + lista 7 giorni card con accent border. Implementare `(employee)/vacations.tsx` employee role (no Avatar, no admin actions) + "Richiedi" button → `vacations/new` transparentModal. Implementare `(employee)/vacations/new.tsx` bottom sheet: 3-col tipo assenza + 2-col date + summary pill + note textarea. Implementare `(employee)/availability.tsx` con info banner + 7 Toggle giorni + nota manager textarea. Implementare `(employee)/attendance.tsx` con month nav + stats 2-col + registro giornaliero (icon check/palm per tipo). Implementare `(employee)/notifications.tsx` con unread state locale + "Segna lette". Implementare `(employee)/profile.tsx` con gradient hero primary + card overlay settings (Lavoro: swap/disponibilità/storico; Account: foto/password/tema/GDPR; logout). Implementare `(admin)/reports.tsx` con success banner + date range + 3 export cards con spinner. Implementare `(admin)/employee-reports.tsx` con 3-col filter + team total card + righe espandibili con breakdown settimanale e progress bar.
+
+### Output utile
+- 14 file creati, 2 modificati (employee _layout.tsx + plan.md)
+- 3 servizi: EmployeeTabLayout, AttendanceService, ReportService
+- 11 schermate: dashboard, shifts, vacations, vacations/new, availability, attendance, notifications, profile (employee) + reports, employee-reports (admin)
+- 0 nuovi errori TypeScript
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Design fedele a screens-dash.jsx (S_DashEmployee), screens-shifts.jsx (S_ShiftsEmp), screens-leave-profile.jsx (S_LeaveList employee/S_LeaveNew/S_Notifs/S_Profile), screens-misc.jsx (S_Attendance/S_Availability), screens-reports.jsx (S_Report/S_HoursReport). Routing group `/(employee)/X` evita conflitti con route admin. TypeScript pulito.
+
+---
+
+## Prompt 61
+
+### Data
+2026-05-25
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Implementare it-26: Team (EmployeeList/Detail), Business (List/Detail/Hours), VacationList admin, ShiftSwaps.
+
+### Prompt
+Creare `EmployeeService` (getEmployees, getEmployee, createEmployee, updateEmployee, deactivateEmployee, getVacationBalance, updateVacationBalance), `BusinessService` (CRUD + getOpeningHours/saveOpeningHours), `VacationService` (getVacations, approve/reject vacation + swap). Implementare `team.tsx` con ricerca + filtro business + card dipendenti + "Aggiungi" dashed. Implementare `team/[id].tsx` con form dati personali/contatti/lavoro + saldo ferie stepper (edit) + password temporanea (create) + footer Disattiva+Salva. Implementare `vacations.tsx` con chip filter (Tutte/In attesa/Approvate/Rifiutate) + card con accent border + approva/rifiuta inline + nota in warningBg. Implementare `businesses.tsx` con card accent + bottoni Modifica/Orari. Implementare `businesses/[id].tsx` form + card dipendenti/orari. Implementare `business-hours.tsx` con card 7 righe giorni (Toggle + DAL/AL inputs). Implementare `shift-swaps.tsx` con chip filter + swap cards (due avatar + icona scambio + azioni pending). Aggiornare Business interface con phone/businessType/isActive.
+
+### Output utile
+- 11 file creati/modificati: 3 servizi + 7 schermate + 1 tipo
+- Zero TypeScript errors
+- Routing Expo Router: businesses.tsx + businesses/[id].tsx coesistono senza conflitti
+- business-hours.tsx usa useLocalSearchParams per businessId
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Design fedele a screens-team.jsx, screens-leave-profile.jsx, screens-shifts.jsx. API reali con fallback a array vuoto. TypeScript pulito.
+
+---
+
+## Prompt 60
+
+### Data
+2026-05-25
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Implementare it-25: Admin Dashboard completa + ShiftCalendar admin (griglia dipendenti) + ShiftDetail (bottom sheet modal) + ShiftService.
+
+### Prompt
+Creare `ShiftService` con getShifts, getShift, createShift, createRecurring, updateShift, deleteShift, getWeekCoverage. Creare `AdminTabLayout` wrapper con TabBar (usePathname + router.replace per tab switching). Aggiornare `(admin)/_layout.tsx` con Stack + `presentation: transparentModal` per `shifts/[id]`. Implementare `dashboard.tsx` con: header saluto+settimana+bell con red dot, 4 KPI (primary/amber/danger/blue), turni oggi con Avatar+StatusBadge, ferie in attesa con approve/reject API, copertura settimana ScrollView orizzontale con celle colorate (ok=successBg, part=warningBg, empty=errorBg). Implementare `shifts/index.tsx` con WeekNav (prev/next/oggi), griglia dipendenti×7giorni con celle colorate per fascia oraria (mattina=primaryLight, pomeriggio=amber, sera=viola, FERIE=warningBg). Implementare `shifts/[id].tsx` come modal bottom sheet con overlay, DragHandle, employee row, date+orari input, nota, stepper settimane ripeti (new mode), footer delete+save. Schermate placeholder per team/notifications/profile.
+
+### Output utile
+- 10 file creati/modificati
+- `ShiftService` completo in `src/services/shift.service.ts`
+- `AdminTabLayout` in `src/components/AdminTabLayout.tsx`
+- Dashboard con 4 chiamate API parallele (Promise.all + catch resiliente)
+- Griglia turni admin con scroll orizzontale + celle colorate per fascia oraria
+- ShiftDetail come `transparentModal` con tap-backdrop per chiudere
+- TypeScript: 0 errori
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Design fedele a `UI/screens-dash.jsx` e `UI/screens-shifts.jsx`. TypeScript pulito, API reali con fallback a array vuoto.
+
+---
+
+## Prompt 59
+
+### Data
+2026-05-25
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Implementare it-24: tutte le schermate auth Expo + AuthService, identiche al design `UI/screens-auth.jsx`.
+
+### Prompt
+Creare `Hero` + `DragHandle` come componenti UI. Creare `auth.service.ts` con loginAdmin (email+password → `/api/auth/login`), loginEmployee (slug+username+password → `/api/auth/employee-login`), register (`/api/auth/register`), forgotPassword, refreshToken. `parseJwtUser()` per decodificare JWT senza librerie extra. Hook `useStoredFlag` su SecureStore per flag GDPR/onboarding. Aggiornare `index.tsx` con logica: GDPR not given → gdpr-consent; not logged → role-selection; admin+not onboarded → onboarding; altrimenti dashboard. Implementare 5 schermate: `gdpr-consent` (privacy obbligatorio + marketing facoltativo), `role-selection` (card Admin con bordo verde, card Dipendente), `login` (hero verde clock+Turnify, DragHandle, form admin/employee, error box, links), `register` (hero breve, 2 sezioni, auto-slug, gestione 409), `forgot-password` (input email + success state con check verde), `onboarding` (progress dots 3 step, feature grid 2x2, business form + API, dipendente form + API, skip).
+
+### Output utile
+- 12 file creati/modificati: Hero/DragHandle, auth.service.ts, useStoredFlag.ts, index.tsx aggiornato, 5 schermate auth complete
+- ThemeTokens tipizzata come interface esplicita (fix TS)
+- TypeScript: 0 errori nel codice Turnify
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Tutte le schermate implementate con logica completa, design fedele a `UI/screens-auth.jsx`, TypeScript pulito.
+
+---
+
+## Prompt 58
+
+### Data
+2026-05-25
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Migrare il progetto mobile da .NET MAUI a Expo (React Native + TypeScript) in `src/Mobile/`, suddividendo il lavoro in iterazioni progressive (it-23 → it-29). Design identico alla cartella `UI/`. Progetto MAUI mantenuto.
+
+### Prompt
+Creare progetto Expo SDK 56 in `src/Mobile/` con Expo Router v3, TypeScript, react-native-svg, axios, expo-secure-store, @expo-google-fonts/plus-jakarta-sans. Tradurre `UI/tokens.jsx` in `constants/tokens.ts` (TOKENS light/dark + textOnPrimary). Creare ThemeContext (useColorScheme) e AuthContext (JWT + refresh in SecureStore). Creare 16 componenti React Native in `components/ui/` fedeli al design system di `UI/components.jsx`: Icon (react-native-svg, 43 path), Avatar, PrimaryBtn/OutlineBtn/DangerBtn/SmallPill, Card, Input (label floating, focus, error), Header, TabBar (badge), StatusBadge, Chip, KPI, Toggle, Logo, FAB, EmptyState, SectionLabel, SettingsRow. Axios client con interceptor JWT + refresh automatico su 401. Types TypeScript per auth/shift/employee/vacation/common. Root `_layout.tsx` con font loading. Routing skeleton `(auth)`, `(admin)`, `(employee)`. Pianificare it-24 → it-29 in `docs/plan.md`.
+
+### Output utile
+- Progetto Expo SDK 56 funzionante in `src/Mobile/` con 35+ file creati
+- Design system completo: tokens, ThemeContext, AuthContext, 16 componenti UI, api.ts con refresh automatico
+- Types base per tutte le entità del dominio
+- Piano iterazioni it-23→it-29 in `docs/plan.md` e `docs/iterations/it-23.md`
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Scaffold creato con struttura pronta per le iterazioni successive. Componenti UI fedeli al design originale `UI/components.jsx` tradotti in React Native StyleSheet.
+
+---
+
 ## Prompt 57
 
 ### Data

@@ -331,6 +331,21 @@ orleans.codegen.cs
 appsettings.Development.json
 
 ## =========================
+## EXPO / REACT NATIVE (src/Mobile)
+## =========================
+src/Mobile/.expo/
+src/Mobile/dist/
+src/Mobile/web-build/
+src/Mobile/expo-env.d.ts
+src/Mobile/.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.mobileprovision
+.metro-health-check*
+
+## =========================
 ## OTHERS
 ## =========================
 Turnify-Presentazione.pptx

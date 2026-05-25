@@ -613,3 +613,137 @@ Derivata dallo stato attuale del repository e dalle verifiche documentate:
 - 24 View XAML adattate: LoginPage, RoleSelectionPage, RegisterPage, ForgotPasswordPage, GdprConsentPage, OnboardingPage, DashboardPage, EmployeeDashboardPage, ShiftCalendarPage, ShiftDetailPage, EmployeeListPage, EmployeeDetailPage, VacationListPage, VacationEditPage, ShiftSwapsPage, AttendanceHistoryPage, BusinessDetailPage, BusinessListPage, BusinessOpeningHoursPage, ProfilePage, NotificationsPage, AvailabilityPage, EmployeeReportsPage, ReportsPage
 
 **Status:** ✅ Completata (2026-05-20)
+
+---
+
+### Iterazione 23 — Expo scaffold + design system
+
+**Data:** 2026-05-25
+
+**Obiettivo:** Creare il progetto Expo (React Native + TypeScript) in `src/Mobile/` come base per la migrazione da MAUI. Design system identico alla cartella `UI/` (tokens, tema, componenti condivisi). Il progetto MAUI rimane intatto.
+
+**Deliverable:**
+- Progetto Expo SDK 56 + Expo Router v3 in `src/Mobile/` (TypeScript, file-based routing)
+- `app.json` aggiornato: name=Turnify, scheme=turnify, splash verde, FCM plugin
+- Dipendenze: `expo-secure-store`, `expo-notifications`, `expo-application`, `react-native-svg`, `axios`, `@expo-google-fonts/plus-jakarta-sans`
+- `src/constants/tokens.ts` — TOKENS light/dark + `textOnPrimary()` + `FONT_FAMILY`
+- `src/context/ThemeContext.tsx` — `ThemeProvider` + `useTheme()`
+- `src/context/AuthContext.tsx` — `AuthProvider` + `useAuth()` con SecureStore (JWT, refresh, user)
+- `src/components/ui/` — 16 componenti: Icon (43 icone svg), Avatar, PrimaryBtn/OutlineBtn/DangerBtn/SmallPill, Card, Input, Header, TabBar (con badge), StatusBadge, Chip, KPI, Toggle, Logo, FAB, EmptyState, SectionLabel, SettingsRow
+- `src/services/api.ts` — Axios con interceptor JWT + refresh token automatico su 401
+- `src/types/` — auth, shift, employee, vacation, common types
+- `src/app/_layout.tsx` — font loading (Plus Jakarta Sans) + ThemeProvider + AuthProvider
+- `src/app/index.tsx` — redirect auth-based (login / admin dashboard / employee dashboard)
+- Routing skeleton: `(auth)/_layout`, `(admin)/_layout`, `(employee)/_layout` con placeholder screens
+
+**Status:** ✅ Completata (2026-05-25)
+
+---
+
+### Iterazione 24 — Auth screens + AuthService
+
+**Data:** TBD
+
+**Obiettivo:** Implementare tutte le schermate di autenticazione e il servizio API auth, identiche al design UI/.
+
+**Deliverable:**
+- `AuthService` (login admin/email, login dipendente/username, register, forgot-password, refresh)
+- `LoginPage` — hero verde, input email/username + password, toggle ruolo
+- `RegisterPage` — form azienda + admin
+- `ForgotPasswordPage` — reset via email
+- `RoleSelectionPage` — scelta Admin/Dipendente
+- `GdprConsentPage` — consenso GDPR con AsyncStorage persistence
+- `OnboardingPage` — multi-step guide
+- Navigazione post-login: admin → `(admin)/dashboard`, dipendente → `(employee)/dashboard`
+
+**Status:** 🔜 Pianificata
+
+---
+
+### Iterazione 25 — Admin Dashboard + ShiftCalendar + ShiftDetail
+
+**Data:** TBD
+
+**Obiettivo:** Dashboard admin con KPI reali e calendario turni a 3 viste (Dipendenti/Settimana/Giorno).
+
+**Deliverable:**
+- `DashboardPage` — 4 KPI (ore, presenze, ferie pendenti, dipendenti), copertura settimanale, turni del giorno
+- `ShiftCalendarPage` — 3 viste: Employee (lista per dipendente), Week (griglia oraria 7 giorni), Day (lista verticale oraria)
+- `ShiftDetailPage` — dettaglio turno, edit, gestione ricorrenza (singolo/tutti i successivi)
+- `ShiftService` (getShifts, createShift, updateShift, deleteShift, createRecurring)
+
+**Status:** 🔜 Pianificata
+
+---
+
+### Iterazione 26 — Team + Business + Vacations + ShiftSwaps
+
+**Data:** TBD
+
+**Obiettivo:** Gestione completa team, attività aziendali, ferie (admin) e scambi turno.
+
+**Deliverable:**
+- `EmployeeListPage` / `EmployeeDetailPage` — CRUD dipendenti con ricerca
+- `BusinessListPage` / `BusinessDetailPage` / `BusinessOpeningHoursPage`
+- `VacationListPage` / `VacationEditPage` — filtri, approvazione admin
+- `ShiftSwapsPage` — proposta, accettazione peer, approvazione admin
+- `EmployeeService`, `BusinessService`, `VacationService`
+
+**Status:** 🔜 Pianificata
+
+---
+
+### Iterazione 27 — Employee views
+
+**Data:** 2026-05-25
+
+**Obiettivo:** Tutte le schermate lato dipendente.
+
+**Deliverable:**
+- `EmployeeDashboardPage` — turni del giorno, check-in/out, saldo ferie, ore riepilogo ✅
+- `AttendanceHistoryPage` — storico presenze mensile con check-in/out ✅
+- `AvailabilityPage` — toggle giorni disponibili + nota manager ✅
+- `ReportsPage` (admin) — download CSV ore/presenze/ferie con range date ✅
+- `EmployeeReportsPage` (admin) — report ore per dipendente con breakdown settimanale ✅
+- `EmployeeShiftsPage` — week view + timbratura live ✅
+- `VacationsPage` (employee) — lista ferie personali + richiesta modal bottom sheet ✅
+- `NotificationsPage` (employee) — lista notifiche con badge ✅
+- `ProfilePage` (employee) — hero gradient + settings sections ✅
+- `AttendanceService`, `ReportService`, `EmployeeTabLayout` ✅
+
+**Status:** ✅ Completata
+
+---
+
+### Iterazione 28 — Profile + Notifications + misc
+
+**Data:** TBD
+
+**Obiettivo:** Profilo utente, notifiche push, schermate misc.
+
+**Deliverable:**
+- `ProfilePage` — avatar emoji, info utente, sezioni admin/dipendente
+- `NotificationsPage` — lista notifiche, badge real-time
+- `ChangePasswordPage`
+- `EmojiPickerPage` — griglia emoji per avatar
+- Push notifications via `expo-notifications` + FCM
+- `NotificationService` — registrazione device token, gestione foreground
+
+**Status:** 🔜 Pianificata
+
+---
+
+### Iterazione 29 — API services completi + Cache + polish
+
+**Data:** TBD
+
+**Obiettivo:** Completare tutti i service, aggiungere cache locale e polish finale.
+
+**Deliverable:**
+- Cache layer (AsyncStorage, stale-while-revalidate, TTL per chiave)
+- Error reporting service (cattura eccezioni → `POST /api/errorlogs`)
+- `SessionService` — auto-login al lancio se refresh token valido
+- Polish UI: skeleton loaders, pull-to-refresh, infinite scroll su liste
+- `tsconfig.json` strict mode, lint clean
+
+**Status:** 🔜 Pianificata

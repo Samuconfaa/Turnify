@@ -3,6 +3,9 @@
 ## Commit
 - Non aggiungere mai la riga `Co-Authored-By` nei messaggi di commit.
 
+## Regole Expo (src/Mobile)
+Per qualsiasi lavoro su file `.ts` o `.tsx` in `src/Mobile`, leggere la documentazione ufficiale Expo SDK 56 su https://docs.expo.dev/versions/v56.0.0/ prima di scrivere codice che dipenda da API Expo.
+
 ## Regole MAUI
 Per qualsiasi lavoro su file `.cs` o `.xaml` del progetto mobile, seguire sempre le regole definite in `.agents/skills/maui-expert/SKILL.md`, `docs/method/man-in-the-loop.md` e `AGENTS-md`.
 

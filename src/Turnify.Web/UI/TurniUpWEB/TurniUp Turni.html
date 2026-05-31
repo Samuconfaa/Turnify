@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TurniUp — Turni</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="turniup.css">
+</head>
+<body data-page="shifts">
+<div class="app">
+  <div id="sb"></div>
+  <div class="main">
+    <header class="topbar">
+      <div>
+        <h1 class="page-title">Turni</h1>
+        <p class="page-sub">Pianificazione settimanale · 3 attività</p>
+      </div>
+      <div class="weeknav grow" style="justify-content:flex-end">
+        <button class="icon-btn sm" title="Settimana precedente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m14 6-6 6 6 6"/></svg></button>
+        <span class="wk">26 mag – 1 giu 2026</span>
+        <button class="icon-btn sm" title="Settimana successiva"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m10 6 6 6-6 6"/></svg></button>
+        <button class="btn-secondary" style="height:34px;padding:0 14px;margin-left:4px">Oggi</button>
+      </div>
+      <div data-theme-toggle></div>
+      <button class="btn-primary" style="height:40px" data-modal-open="modal-shift"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Nuovo turno</button>
+    </header>
+
+    <main class="content">
+      <div class="week-strip rise" id="weekStrip" style="animation-delay:.04s"></div>
+
+      <div class="filter-bar rise" style="animation-delay:.2s">
+        <div class="select"><select><option>Tutte le attività</option><option>Ristorante Centro</option><option>Bar Aurora</option><option>Bistrot Sud</option></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>
+        <div class="select"><select><option>Tutti i ruoli</option><option>Sala</option><option>Cucina</option><option>Bar</option></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>
+        <span class="badge badge-primary spacer"><span class="bdot"></span>126 turni · 1.284 h questa settimana</span>
+      </div>
+
+      <div class="card tbl-wrap rise" style="animation-delay:.26s">
+        <table class="tbl">
+          <thead><tr><th>Dipendente</th><th>Giorno</th><th>Orario</th><th>Ruolo</th><th>Attività</th><th>Stato</th><th class="r">Azioni</th></tr></thead>
+          <tbody id="shiftBody"></tbody>
+        </table>
+        <div class="pager">
+          <span>Turni di oggi e domani · 14 totali</span>
+          <div class="pages"><button>‹</button><button class="on">1</button><button>2</button><button>›</button></div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="turniup.js"></script>
+<script>
+const days=[
+  {n:'Lun',d:'26',pct:62,c:8},{n:'Mar',d:'27',pct:74,c:9},{n:'Mer',d:'28',pct:55,c:7},
+  {n:'Gio',d:'29',pct:80,c:10},{n:'Ven',d:'30',pct:92,c:12},{n:'Sab',d:'31',pct:100,c:14,today:true},{n:'Dom',d:'1',pct:40,c:5}
+];
+const ws=document.getElementById('weekStrip');
+days.forEach((d,i)=>{
+  const el=document.createElement('div');
+  el.className='day-card'+(d.today?' today':'');
+  el.style.animationDelay=(.05+i*.04)+'s';
+  el.innerHTML=`<div class="dn">${d.n}</div><div class="dd">${d.d}</div><div class="db"><i data-w="${d.pct}"></i></div><div class="dc"><b>${d.c}</b> turni</div>`;
+  ws.appendChild(el);
+});
+const C={primary:'var(--primary)',green:'var(--green)',amber:'var(--amber)'};
+const shifts=[
+  {n:'Giulia Ferrari',i:'GF',day:'Oggi · Sab 31',t:'08:00 – 14:00',role:'Sala',biz:'Ristorante Centro',bz:'primary',st:['badge-green','In corso'],c:'oklch(0.6 0.13 25)'},
+  {n:'Luca Bianchi',i:'LB',day:'Oggi · Sab 31',t:'07:30 – 13:30',role:'Bar',biz:'Bar Aurora',bz:'green',st:['badge-green','In corso'],c:'oklch(0.58 0.12 250)'},
+  {n:'Sara Conti',i:'SC',day:'Oggi · Sab 31',t:'12:00 – 18:00',role:'Sala',biz:'Ristorante Centro',bz:'primary',st:['badge-primary','Programmato'],c:'oklch(0.6 0.13 320)'},
+  {n:'Davide Greco',i:'DG',day:'Oggi · Sab 31',t:'15:00 – 23:00',role:'Cucina',biz:'Bistrot Sud',bz:'amber',st:['badge-primary','Programmato'],c:'oklch(0.55 0.11 150)'},
+  {n:'Elena Marino',i:'EM',day:'Oggi · Sab 31',t:'17:00 – 23:00',role:'Sala',biz:'Bar Aurora',bz:'green',st:['badge-primary','Programmato'],c:'oklch(0.6 0.12 60)'},
+  {n:'Francesca Galli',i:'FG',day:'Dom 1 giu',t:'09:00 – 15:00',role:'Sala',biz:'Ristorante Centro',bz:'primary',st:['badge-muted','Bozza'],c:'oklch(0.52 0.12 180)'},
+  {n:'Matteo Romano',i:'MR',day:'Dom 1 giu',t:'18:00 – 23:30',role:'Cucina',biz:'Bistrot Sud',bz:'amber',st:['badge-primary','Programmato'],c:'oklch(0.55 0.13 290)'},
+];
+const tb=document.getElementById('shiftBody');
+shifts.forEach(s=>{
+  const tr=document.createElement('tr');
+  tr.innerHTML=`
+    <td><div class="cell-user"><div class="avatar" style="background:${s.c}">${s.i}</div><div><div class="nm">${s.n}</div></div></div></td>
+    <td class="muted">${s.day}</td>
+    <td class="mono">${s.t}</td>
+    <td>${s.role}</td>
+    <td><span class="dot-pip"><span class="pip" style="background:${C[s.bz]}"></span>${s.biz}</span></td>
+    <td><span class="badge ${s.st[0]}"><span class="bdot"></span>${s.st[1]}</span></td>
+    <td class="r"><div class="row-actions">
+      <button class="icon-btn sm" title="Modifica" data-modal-open="modal-shift"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L18.5 9.5a2 2 0 0 0-2.8-2.8L5 17.2V20Z"/><path d="M14 7l3 3"/></svg></button>
+      <button class="icon-btn sm" title="Elimina"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13"/></svg></button>
+    </div></td>`;
+  tb.appendChild(tr);
+});
+window.addEventListener('load',()=>{setTimeout(()=>{document.querySelectorAll('.db i').forEach(i=>i.style.width=i.dataset.w+'%');},300);});
+</script>
+</body>
+</html>

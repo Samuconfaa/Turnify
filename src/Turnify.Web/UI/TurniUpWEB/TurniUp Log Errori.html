@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TurniUp — Log errori</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="turniup.css">
+</head>
+<body data-page="errors">
+<div class="app">
+  <div id="sb"></div>
+  <div class="main">
+    <header class="topbar">
+      <div>
+        <h1 class="page-title">Log errori</h1>
+        <p class="page-sub">Errori riportati dall'app mobile · ultime 24 ore</p>
+      </div>
+      <label class="search grow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input placeholder="Cerca per messaggio, dispositivo…">
+      </label>
+      <div data-theme-toggle></div>
+      <button class="btn-secondary" style="height:40px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v9m0 0 3.5-3.5M12 14l-3.5-3.5M5 19h14"/></svg>Esporta log</button>
+    </header>
+
+    <main class="content">
+      <div class="filter-bar rise" style="animation-delay:.04s">
+        <div class="select"><select><option>Ultime 24 ore</option><option>Ultimi 7 giorni</option><option>Ultimi 30 giorni</option><option>Intervallo personalizzato</option></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>
+        <div class="segmented">
+          <button class="on">Tutte</button>
+          <button>iOS</button>
+          <button>Android</button>
+        </div>
+        <div class="select"><select><option>Tutte le gravità</option><option>Critico</option><option>Errore</option><option>Warning</option></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>
+        <span class="badge badge-red spacer"><span class="bdot"></span>42 eventi · 6 critici</span>
+      </div>
+
+      <div class="card tbl-wrap rise" style="animation-delay:.12s" id="logList"></div>
+    </main>
+  </div>
+</div>
+
+<script src="turniup.js"></script>
+<script>
+const PLAT={
+  ios:'<span class="plat plat-ios"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.8c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9s-1.8-.9-3-.8c-1.5 0-3 .9-3.7 2.3-1.6 2.8-.4 6.9 1.1 9.2.8 1.1 1.6 2.3 2.8 2.3 1.1 0 1.5-.7 2.9-.7s1.7.7 2.9.7 2-1.1 2.7-2.1c.9-1.3 1.2-2.5 1.3-2.6-.1 0-2.5-1-2.5-3.8M14.3 5.9c.6-.8 1-1.8.9-2.9-.9 0-2 .6-2.6 1.4-.6.7-1.1 1.7-.9 2.7 1 .1 2-.5 2.6-1.2"/></svg>iOS</span>',
+  android:'<span class="plat plat-android"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 9v7a1 1 0 0 0 1 1h1v3a1 1 0 0 0 2 0v-3h4v3a1 1 0 0 0 2 0v-3h1a1 1 0 0 0 1-1V9H6Zm-1.5 0A1.5 1.5 0 0 0 3 10.5v4a1.5 1.5 0 0 0 3 0v-4A1.5 1.5 0 0 0 4.5 9Zm15 0a1.5 1.5 0 0 0-1.5 1.5v4a1.5 1.5 0 0 0 3 0v-4A1.5 1.5 0 0 0 19.5 9ZM7.5 7.5h9c0-2.2-1.6-4-3.8-4.4l.9-1.6a.3.3 0 0 0-.5-.3l-1 1.7a5.3 5.3 0 0 0-3.7 0l-1-1.7a.3.3 0 0 0-.5.3l.9 1.6C9.1 3.5 7.5 5.3 7.5 7.5Zm2-1.2a.6.6 0 1 1 0-1.2.6.6 0 0 1 0 1.2Zm5 0a.6.6 0 1 1 0-1.2.6.6 0 0 1 0 1.2Z"/></svg>Android</span>'
+};
+const logs=[
+  {time:'31 mag · 14:22:08',plat:'ios',sev:['badge-red','Critico'],msg:'<code>RangeError</code> Index out of range in ShiftListView',device:'iPhone 14 · iOS 17.4',ver:'2.3.1',user:'g.ferrari',
+   stack:`<span class="err">RangeError: Index 9 beyond bounds [0...8]</span>
+<span class="at">    at</span> <span class="fn">ShiftListView.cellForRow</span> (<span class="file">ShiftListView.swift:142</span>)
+<span class="at">    at</span> <span class="fn">UITableView.layoutSubviews</span> (<span class="file">UIKitCore</span>)
+<span class="at">    at</span> <span class="fn">ShiftCoordinator.reload</span> (<span class="file">ShiftCoordinator.swift:88</span>)
+<span class="at">    at</span> <span class="fn">APIClient.onShiftsFetched</span> (<span class="file">APIClient.swift:210</span>)`},
+  {time:'31 mag · 13:47:51',plat:'android',sev:['badge-amber','Warning'],msg:'<code>NetworkTimeout</code> Richiesta /shifts scaduta dopo 30s',device:'Pixel 7 · Android 14',ver:'2.3.1',user:'l.bianchi',
+   stack:`<span class="err">java.net.SocketTimeoutException: timeout</span>
+<span class="at">    at</span> <span class="fn">okhttp3.internal.http2.Http2Stream</span> (<span class="file">Http2Stream.kt:678</span>)
+<span class="at">    at</span> <span class="fn">ApiService.getShifts</span> (<span class="file">ApiService.kt:94</span>)
+<span class="at">    at</span> <span class="fn">ShiftRepository.refresh</span> (<span class="file">ShiftRepository.kt:51</span>)`},
+  {time:'31 mag · 11:12:33',plat:'ios',sev:['badge-red','Errore'],msg:'<code>NSError</code> Decodifica JSON fallita: chiave "endTime" mancante',device:'iPhone 13 · iOS 16.7',ver:'2.3.0',user:'s.conti',
+   stack:`<span class="err">Swift.DecodingError.keyNotFound("endTime")</span>
+<span class="at">    at</span> <span class="fn">Shift.init(from:)</span> (<span class="file">Shift.swift:34</span>)
+<span class="at">    at</span> <span class="fn">JSONDecoder.decode</span> (<span class="file">Foundation</span>)
+<span class="at">    at</span> <span class="fn">APIClient.parse</span> (<span class="file">APIClient.swift:178</span>)`},
+  {time:'31 mag · 09:05:17',plat:'android',sev:['badge-red','Critico'],msg:'<code>NullPointerException</code> employee == null in VacationFragment',device:'Samsung S23 · Android 14',ver:'2.3.1',user:'d.greco',
+   stack:`<span class="err">java.lang.NullPointerException</span>
+<span class="at">    at</span> <span class="fn">VacationFragment.bindEmployee</span> (<span class="file">VacationFragment.kt:120</span>)
+<span class="at">    at</span> <span class="fn">VacationAdapter.onBindViewHolder</span> (<span class="file">VacationAdapter.kt:67</span>)`},
+  {time:'30 mag · 22:41:09',plat:'ios',sev:['badge-amber','Warning'],msg:'<code>MemoryWarning</code> Cache immagini sopra soglia (180 MB)',device:'iPhone 12 · iOS 17.2',ver:'2.3.0',user:'e.marino',
+   stack:`<span class="err">UIApplicationDidReceiveMemoryWarningNotification</span>
+<span class="at">    at</span> <span class="fn">ImageCache.purge</span> (<span class="file">ImageCache.swift:55</span>)
+<span class="at">    at</span> <span class="fn">AppDelegate.didReceiveMemoryWarning</span> (<span class="file">AppDelegate.swift:88</span>)`},
+];
+const ll=document.getElementById('logList');
+logs.forEach(l=>{
+  const row=document.createElement('div');
+  row.className='log-row';
+  row.innerHTML=`
+    <div class="log-head">
+      <span class="log-time">${l.time}</span>
+      ${PLAT[l.plat]}
+      <span class="log-msg">${l.msg}</span>
+      <span class="badge ${l.sev[0]}"><span class="bdot"></span>${l.sev[1]}</span>
+      <svg class="log-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+    </div>
+    <div class="log-detail"><div class="log-detail-inner">
+      <div class="log-tags">
+        <span class="lt">Dispositivo · <b>${l.device}</b></span>
+        <span class="lt">Versione app · <b>${l.ver}</b></span>
+        <span class="lt">Utente · <b>${l.user}</b></span>
+      </div>
+      <pre class="stack">${l.stack}</pre>
+    </div></div>`;
+  row.querySelector('.log-head').addEventListener('click',()=>row.classList.toggle('open'));
+  ll.appendChild(row);
+});
+</script>
+</body>
+</html>

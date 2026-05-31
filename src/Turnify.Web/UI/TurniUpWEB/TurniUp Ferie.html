@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TurniUp — Ferie e permessi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="turniup.css">
+</head>
+<body data-page="vacations">
+<div class="app">
+  <div id="sb"></div>
+  <div class="main">
+    <header class="topbar">
+      <div>
+        <h1 class="page-title">Ferie e permessi</h1>
+        <p class="page-sub">7 richieste in attesa di approvazione</p>
+      </div>
+      <label class="search grow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input placeholder="Cerca dipendente…">
+      </label>
+      <div data-theme-toggle></div>
+      <button class="icon-btn" title="Notifiche"><span class="dot"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 0 1 12 0c0 5 1.5 6.5 1.5 6.5h-15S6 14 6 9ZM10 19a2 2 0 0 0 4 0"/></svg></button>
+    </header>
+
+    <main class="content">
+      <section class="stat-strip">
+        <div class="card stat rise" style="animation-delay:.04s"><div class="v" data-count="7">0</div><div class="k"><span class="pip" style="background:var(--amber)"></span>In attesa</div></div>
+        <div class="card stat rise" style="animation-delay:.1s"><div class="v" data-count="23">0</div><div class="k"><span class="pip" style="background:var(--green)"></span>Approvate (mese)</div></div>
+        <div class="card stat rise" style="animation-delay:.16s"><div class="v" data-count="3">0</div><div class="k"><span class="pip" style="background:var(--red)"></span>Rifiutate (mese)</div></div>
+        <div class="card stat rise" style="animation-delay:.22s"><div class="v"><span data-count="148">0</span><span class="unit"> gg</span></div><div class="k"><span class="pip" style="background:var(--text-faint)"></span>Giorni residui totali</div></div>
+      </section>
+
+      <div class="filter-bar rise" style="animation-delay:.26s">
+        <div class="segmented">
+          <button class="on">In attesa <span class="cnt">7</span></button>
+          <button>Approvate <span class="cnt">23</span></button>
+          <button>Rifiutate <span class="cnt">3</span></button>
+          <button>Tutte <span class="cnt">33</span></button>
+        </div>
+        <div class="select"><select><option>Tutti i tipi</option><option>Ferie</option><option>Permesso</option><option>Malattia</option></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>
+      </div>
+
+      <div class="card tbl-wrap rise" style="animation-delay:.32s">
+        <table class="tbl">
+          <thead><tr><th>Dipendente</th><th>Tipo</th><th>Periodo</th><th>Durata</th><th>Richiesta il</th><th class="r">Azioni</th></tr></thead>
+          <tbody id="vacBody"></tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="turniup.js"></script>
+<script>
+const TYPE={Ferie:'badge-primary',Permesso:'badge-muted',Malattia:'badge-amber'};
+const vacs=[
+  {n:'Martina Russo',i:'MR',type:'Ferie',period:'12 – 19 giu 2026',dur:'8 giorni',req:'28 mag',c:'oklch(0.6 0.13 300)'},
+  {n:'Andrea Costa',i:'AC',type:'Permesso',period:'5 giu · 09:00 – 13:00',dur:'4 ore',req:'29 mag',c:'oklch(0.55 0.12 200)'},
+  {n:'Chiara Moretti',i:'CM',type:'Ferie',period:'2 – 4 lug 2026',dur:'3 giorni',req:'29 mag',c:'oklch(0.58 0.13 25)'},
+  {n:'Paolo Esposito',i:'PE',type:'Malattia',period:'30 mag – 2 giu 2026',dur:'4 giorni',req:'30 mag',c:'oklch(0.55 0.11 150)'},
+  {n:'Valentina Rizzo',i:'VR',type:'Ferie',period:'21 – 31 lug 2026',dur:'11 giorni',req:'30 mag',c:'oklch(0.6 0.12 60)'},
+  {n:'Simone De Luca',i:'SD',type:'Permesso',period:'7 giu · 14:00 – 18:00',dur:'4 ore',req:'31 mag',c:'oklch(0.55 0.13 290)'},
+  {n:'Federica Greco',i:'FG',type:'Ferie',period:'14 – 18 ago 2026',dur:'5 giorni',req:'31 mag',c:'oklch(0.52 0.12 180)'},
+];
+const tb=document.getElementById('vacBody');
+vacs.forEach(v=>{
+  const tr=document.createElement('tr');
+  tr.innerHTML=`
+    <td><div class="cell-user"><div class="avatar" style="background:${v.c}">${v.i}</div><div><div class="nm">${v.n}</div></div></div></td>
+    <td><span class="badge ${TYPE[v.type]}">${v.type}</span></td>
+    <td class="mono muted">${v.period}</td>
+    <td>${v.dur}</td>
+    <td class="muted">${v.req}</td>
+    <td class="r"><div class="row-actions">
+      <button class="btn-primary" style="padding:7px 12px;font-size:13px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Approva</button>
+      <button class="btn-danger" style="padding:7px 12px;font-size:13px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg>Rifiuta</button>
+    </div></td>`;
+  tb.appendChild(tr);
+});
+window.addEventListener('load',()=>{setTimeout(()=>document.querySelectorAll('[data-count]').forEach(el=>countUp(el,+el.dataset.count)),250);});
+</script>
+</body>
+</html>

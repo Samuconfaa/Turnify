@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TurniUp — Attività</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="turniup.css">
+</head>
+<body data-page="businesses">
+<div class="app">
+  <div id="sb"></div>
+  <div class="main">
+    <header class="topbar">
+      <div>
+        <h1 class="page-title">Attività</h1>
+        <p class="page-sub">3 attività attive · gestisci sedi e orari</p>
+      </div>
+      <label class="search grow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input placeholder="Cerca attività…">
+      </label>
+      <div data-theme-toggle></div>
+      <button class="icon-btn" title="Notifiche"><span class="dot"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 0 1 12 0c0 5 1.5 6.5 1.5 6.5h-15S6 14 6 9ZM10 19a2 2 0 0 0 4 0"/></svg></button>
+      <button class="btn-primary" style="height:40px" data-modal-open="modal-business"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Nuova attività</button>
+    </header>
+
+    <main class="content">
+      <div class="biz-grid" id="bizGrid"></div>
+    </main>
+  </div>
+</div>
+
+<script src="turniup.js"></script>
+<script>
+const ICON={
+  rist:'<path d="M5 3v7a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V3M7 12v9M16 3c-1.5 0-2.5 2-2.5 5s1 4 2.5 4m0 0v9"/>',
+  bar:'<path d="M5 3h14l-6 8v7M5 3l7 8M19 21H7"/>',
+  bistrot:'<path d="M5 3v7a2 2 0 0 0 2 2v9M7 12a2 2 0 0 0 2-2V3M15 3c-1.5 1-2.5 3-2.5 6s1 3 2.5 3v9"/>'
+};
+const biz=[
+  {name:'Ristorante Centro',type:'Ristorante · Cucina italiana',addr:'Via Roma 12, Milano',cov:'var(--primary)',ico:'rist',emp:18,sh:57,st:['badge-green','Aperto']},
+  {name:'Bar Aurora',type:'Bar · Caffetteria',addr:'Corso Buenos Aires 88, Milano',cov:'var(--green)',ico:'bar',emp:14,sh:41,st:['badge-green','Aperto']},
+  {name:'Bistrot Sud',type:'Bistrot · Cucina mediterranea',addr:'Piazza Sole 4, Milano',cov:'var(--amber)',ico:'bistrot',emp:16,sh:28,st:['badge-muted','Chiuso oggi']},
+];
+const g=document.getElementById('bizGrid');
+biz.forEach((b,idx)=>{
+  const el=document.createElement('div');
+  el.className='card biz-card rise';
+  el.style.animationDelay=(.05+idx*.07)+'s';
+  el.innerHTML=`
+    <div class="biz-cover" style="--cov:${b.cov}">
+      <div class="biz-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">${ICON[b.ico]}</svg></div>
+      <span class="biz-st badge ${b.st[0]}"><span class="bdot"></span>${b.st[1]}</span>
+    </div>
+    <div class="biz-body">
+      <div class="biz-name">${b.name}</div>
+      <div class="biz-type">${b.type}</div>
+      <div class="biz-addr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.5 7-11a7 7 0 0 0-14 0c0 5.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>${b.addr}</div>
+      <div class="biz-stats">
+        <div class="bs"><div class="n" data-count="${b.emp}">0</div><div class="l">Dipendenti</div></div>
+        <div class="bs"><div class="n" data-count="${b.sh}">0</div><div class="l">Turni / sett.</div></div>
+      </div>
+    </div>
+    <div class="biz-foot">
+      <button class="btn-secondary" data-modal-open="modal-business"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L18.5 9.5a2 2 0 0 0-2.8-2.8L5 17.2V20Z"/><path d="M14 7l3 3"/></svg>Modifica</button>
+      <button class="btn-secondary" style="flex:0 0 auto" title="Elimina"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13"/></svg></button>
+    </div>`;
+  g.appendChild(el);
+});
+window.addEventListener('load',()=>{setTimeout(()=>document.querySelectorAll('[data-count]').forEach(el=>countUp(el,+el.dataset.count)),300);});
+</script>
+</body>
+</html>

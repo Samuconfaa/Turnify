@@ -3,26 +3,7 @@
 import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { login } from '@/lib/auth';
-
-const FEATURES = [
-  'Pianificazione turni settimanali',
-  'Gestione presenze e ferie',
-  'Report ore lavorate',
-  'Notifiche push ai dipendenti',
-];
-
-function EyeIcon({ open }: { open: boolean }) {
-  return open ? (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-    </svg>
-  ) : (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-    </svg>
-  );
-}
+import ThemeToggle from '@/components/ThemeToggle';
 
 function LoginForm() {
   const router       = useRouter();
@@ -32,6 +13,7 @@ function LoginForm() {
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
   const [showPwd, setShowPwd]   = useState(false);
+  const [remember, setRemember] = useState(true);
   const [error, setError]       = useState('');
   const [loading, setLoading]   = useState(false);
 
@@ -44,9 +26,7 @@ function LoginForm() {
       router.push('/dashboard');
     } catch (err: unknown) {
       if (err instanceof Error && err.message === 'employee') {
-        setError(
-          "Questo portale è riservato ai datori di lavoro. Per i tuoi turni usa l'app mobile TurniUp."
-        );
+        setError("Questo portale è riservato ai datori di lavoro. Per i tuoi turni usa l'app mobile TurniUp.");
       } else {
         setError(err instanceof Error ? err.message : 'Errore di accesso');
       }
@@ -56,139 +36,150 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen flex">
-
-      {/* ── Left panel: brand gradient ── */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-800 flex-col justify-between p-12 relative overflow-hidden">
-        {/* Decorative circles */}
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-white/5 rounded-full" />
-        <div className="absolute -bottom-32 -left-16 w-80 h-80 bg-white/5 rounded-full" />
-
-        <div className="relative z-10">
-          {/* Logo */}
-          <div className="flex items-center gap-3 mb-12">
-            <div className="w-11 h-11 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white font-bold text-xl shadow-lg">
-              T
-            </div>
-            <span className="text-2xl font-bold text-white tracking-tight">TurniUp</span>
+    <div className="login-wrap">
+      {/* Brand panel */}
+      <aside className="login-aside">
+        <div className="la-brand">
+          <div className="brand-mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 2v3M12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10ZM12 12l2.5 1.5"/>
+            </svg>
           </div>
-
-          <h2 className="text-4xl font-bold text-white mb-4 leading-tight">
-            Gestisci il tuo<br />team con semplicità
-          </h2>
-          <p className="text-indigo-200 text-base mb-10 leading-relaxed">
-            Pianifica turni, approva ferie e monitora le presenze<br />
-            tutto dalla tua dashboard web.
-          </p>
-
-          <div className="space-y-3">
-            {FEATURES.map(f => (
-              <div key={f} className="flex items-center gap-3">
-                <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-                  <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <span className="text-indigo-100 text-sm">{f}</span>
-              </div>
-            ))}
+          <div>
+            <div className="nm">TurniUp</div>
+            <div className="sb">Gestione turni</div>
           </div>
         </div>
 
-        <p className="relative z-10 text-indigo-400 text-xs">
-          © {new Date().getFullYear()} TurniUp. Tutti i diritti riservati.
-        </p>
-      </div>
-
-      {/* ── Right panel: form ── */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
-        <div className="w-full max-w-sm">
-
-          {/* Mobile logo */}
-          <div className="lg:hidden flex items-center gap-2.5 mb-10">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white font-bold text-base">
-              T
-            </div>
-            <span className="text-xl font-bold text-slate-900">TurniUp</span>
+        <div className="la-mid">
+          <div className="la-quote">
+            I turni del tuo team,{' '}
+            <b>sotto controllo.</b>{' '}
+            Pianifica, approva, monitora — da un unico pannello.
           </div>
-
-          <div className="mb-8">
-            <h1 className="text-2xl font-bold text-slate-900 mb-1.5">Accedi al pannello</h1>
-            <p className="text-sm text-slate-500">Portale riservato ai datori di lavoro</p>
+          <div className="la-sub">
+            La piattaforma pensata per ristoranti, bar e attività che vogliono gestire personale e orari senza fogli di calcolo.
           </div>
+          <div className="la-stats">
+            <div className="s"><div className="n">3.200+</div><div className="l">Attività attive</div></div>
+            <div className="s"><div className="n">98%</div><div className="l">Turni coperti</div></div>
+            <div className="s"><div className="n">4.9★</div><div className="l">Valutazione</div></div>
+          </div>
+        </div>
+      </aside>
+
+      {/* Form panel */}
+      <main className="login-main">
+        <div className="login-top">
+          <span className="hint">Accesso riservato ai datori di lavoro</span>
+          <ThemeToggle />
+        </div>
+
+        <div className="login-box">
+          <div className="login-eyebrow">Bentornato</div>
+          <h1 className="login-h">Accedi al pannello</h1>
+          <p className="login-p">Inserisci le tue credenziali per gestire turni e dipendenti.</p>
 
           {bloccato && !error && (
-            <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3.5 text-sm text-amber-800">
-              <p className="font-semibold mb-0.5">Accesso non consentito</p>
-              <p className="text-amber-700">Questo portale è riservato ai datori di lavoro. Per i tuoi turni usa l&apos;app mobile TurniUp.</p>
+            <div style={{ marginTop: 20, padding: '14px 16px', background: 'var(--amber-soft)', border: '1px solid var(--amber)', borderRadius: 12 }}>
+              <p style={{ fontWeight: 600, fontSize: 13, color: 'oklch(0.5 0.12 60)', marginBottom: 4 }}>Accesso non consentito</p>
+              <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>Questo portale è riservato ai datori di lavoro. Per i tuoi turni usa l&apos;app mobile TurniUp.</p>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="label">Email</label>
+          <form onSubmit={handleSubmit}>
+            <div className="field">
+              <label htmlFor="email">Email aziendale</label>
               <input
+                className="input"
+                id="email"
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
+                placeholder="nome@tuaazienda.it"
+                autoComplete="username"
                 required
-                autoComplete="email"
-                placeholder="admin@esempio.it"
-                className="input"
               />
             </div>
 
-            <div>
-              <label className="label">Password</label>
-              <div className="relative">
+            <div className="field">
+              <label htmlFor="pw">Password</label>
+              <div className="pwrap">
                 <input
+                  className="input"
+                  id="pw"
                   type={showPwd ? 'text' : 'password'}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
-                  required
+                  placeholder="••••••••••"
                   autoComplete="current-password"
-                  className="input pr-12"
+                  required
                 />
                 <button
                   type="button"
+                  className="eye"
                   onClick={() => setShowPwd(v => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
-                  tabIndex={-1}
+                  title="Mostra password"
                 >
-                  <EyeIcon open={showPwd} />
+                  {showPwd ? (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3 3l18 18M10.6 10.7a3 3 0 0 0 4 4M9.4 5.3A9.7 9.7 0 0 1 12 5c6 0 9.5 7 9.5 7a16 16 0 0 1-3 3.8M6.1 6.2A16 16 0 0 0 2.5 12S6 19 12 19a9.4 9.4 0 0 0 3.4-.6"/>
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M2.5 12S6 5 12 5s9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7Z"/>
+                      <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  )}
                 </button>
               </div>
             </div>
 
+            <div className="login-row">
+              <label className="check">
+                <input type="checkbox" checked={remember} onChange={e => setRemember(e.target.checked)} />
+                <span className="bx">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="m5 13 4 4L19 7"/>
+                  </svg>
+                </span>
+                Ricordami
+              </label>
+              <span className="link">Password dimenticata?</span>
+            </div>
+
             {error && (
-              <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 leading-relaxed">
+              <div style={{ marginTop: 16, padding: '12px 14px', background: 'var(--red-soft)', border: '1px solid var(--red)', borderRadius: 10, fontSize: 13.5, color: 'var(--red)', lineHeight: 1.5 }}>
                 {error}
               </div>
             )}
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-indigo-600 text-white rounded-lg py-3 text-sm font-semibold hover:bg-indigo-700 active:bg-indigo-800 disabled:opacity-50 transition-colors shadow-sm shadow-indigo-200 mt-2"
-            >
+            <button type="submit" disabled={loading} className="btn-primary login-btn">
               {loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                <>
+                  <svg style={{ animation: 'spin 1s linear infinite', width: 16, height: 16 }} viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity=".25"/>
+                    <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
                   </svg>
                   Accesso in corso…
-                </span>
-              ) : 'Accedi'}
+                </>
+              ) : (
+                <>
+                  Accedi al pannello
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M5 12h14M13 6l6 6-6 6"/>
+                  </svg>
+                </>
+              )}
             </button>
           </form>
 
-          <p className="mt-8 text-center text-xs text-slate-400">
-            Sei un dipendente?{' '}
-            <span className="text-indigo-600 font-medium">Usa l&apos;app mobile TurniUp.</span>
-          </p>
+          <div className="divider">oppure</div>
+          <div className="login-foot">
+            Non hai un account aziendale? <span className="link">Richiedi una demo</span>
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

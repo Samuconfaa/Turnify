@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { api } from '@/lib/api';
+import ThemeToggle from '@/components/ThemeToggle';
 
 interface Employee {
   id: number; firstName: string; lastName: string; email: string;
@@ -12,47 +13,39 @@ interface Business { id: number; name: string; }
 
 const CONTRACT_TYPES = ['FullTime', 'PartTime', 'Apprenticeship', 'FixedTerm', 'OnCall'];
 const CONTRACT_LABEL: Record<string, string> = {
-  FullTime:       'Tempo pieno',
-  PartTime:       'Part-time',
-  Apprenticeship: 'Apprendistato',
-  FixedTerm:      'Tempo determinato',
-  OnCall:         'A chiamata',
+  FullTime: 'Tempo pieno', PartTime: 'Part-time',
+  Apprenticeship: 'Apprendistato', FixedTerm: 'Tempo determinato', OnCall: 'A chiamata',
 };
+
+const AVATAR_COLORS = [
+  'oklch(0.6 0.13 25)', 'oklch(0.58 0.12 250)', 'oklch(0.6 0.13 320)',
+  'oklch(0.55 0.11 150)', 'oklch(0.6 0.12 60)', 'oklch(0.52 0.12 180)',
+  'oklch(0.55 0.13 290)', 'oklch(0.6 0.12 100)',
+];
+function avatarColor(name: string) {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffff;
+  return AVATAR_COLORS[h % AVATAR_COLORS.length];
+}
+function initials(f: string, l: string) { return (f[0] ?? '') + (l[0] ?? ''); }
 
 const emptyForm = {
   firstName: '', lastName: '', email: '', phone: '', role: '',
   contractType: 'FullTime', weeklyHours: 40, businessId: '', password: '', isActive: true,
 };
 
-function Field({ label, value, onChange, type = 'text', placeholder, required }: {
-  label: string; value: string; onChange: (v: string) => void;
-  type?: string; placeholder?: string; required?: boolean;
-}) {
-  return (
-    <div>
-      <label className="label">{label}</label>
-      <input
-        type={type} value={value} onChange={e => onChange(e.target.value)}
-        placeholder={placeholder} required={required}
-        className="input"
-      />
-    </div>
-  );
-}
-
 export default function EmployeesPage() {
-  const [employees, setEmployees]   = useState<Employee[]>([]);
+  const [employees, setEmployees] = useState<Employee[]>([]);
   const [businesses, setBusinesses] = useState<Business[]>([]);
-  const [loading, setLoading]       = useState(true);
-  const [error, setError]           = useState('');
-  const [modal, setModal]           = useState<null | 'create' | 'edit'>(null);
+  const [loading, setLoading]     = useState(true);
+  const [error, setError]         = useState('');
+  const [modal, setModal]         = useState<null | 'create' | 'edit'>(null);
   const [editTarget, setEditTarget] = useState<Employee | null>(null);
-  const [form, setForm]             = useState({ ...emptyForm });
-  const [saving, setSaving]         = useState(false);
-  const [formError, setFormError]   = useState('');
-  const [search, setSearch]         = useState('');
-  const [filterContract, setFilterContract] = useState('');
-  const [filterStatus, setFilterStatus]     = useState<'all' | 'active' | 'inactive'>('active');
+  const [form, setForm]           = useState({ ...emptyForm });
+  const [saving, setSaving]       = useState(false);
+  const [formError, setFormError] = useState('');
+  const [search, setSearch]       = useState('');
+  const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'inactive'>('active');
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -85,8 +78,7 @@ export default function EmployeesPage() {
     try {
       if (modal === 'create') {
         await api.post('/api/employees', {
-          ...form,
-          weeklyHours: Number(form.weeklyHours),
+          ...form, weeklyHours: Number(form.weeklyHours),
           businessId: form.businessId !== '' ? Number(form.businessId) : null,
         });
       } else if (editTarget) {
@@ -115,198 +107,273 @@ export default function EmployeesPage() {
   const visible = employees.filter(emp => {
     const q = search.toLowerCase();
     const matchSearch = !q || [emp.firstName, emp.lastName, emp.email, emp.role]
-      .some(s => s.toLowerCase().includes(q));
-    const matchContract = !filterContract || emp.contractType === filterContract;
+      .some(s => s?.toLowerCase().includes(q));
     const matchStatus =
-      filterStatus === 'all'    ? true :
+      filterStatus === 'all' ? true :
       filterStatus === 'active' ? emp.isActive : !emp.isActive;
-    return matchSearch && matchContract && matchStatus;
+    return matchSearch && matchStatus;
   });
 
-  const activeCount   = employees.filter(e => e.isActive).length;
-  const inactiveCount = employees.filter(e => !e.isActive).length;
+  const total   = employees.length;
+  const active  = employees.filter(e => e.isActive).length;
+  const inactive = employees.filter(e => !e.isActive).length;
+
+  const statuses: Array<{ key: 'all' | 'active' | 'inactive'; label: string; count: number }> = [
+    { key: 'all', label: 'Tutti', count: total },
+    { key: 'active', label: 'Attivi', count: active },
+    { key: 'inactive', label: 'Inattivi', count: inactive },
+  ];
 
   return (
-    <div>
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+    <>
+      <header className="topbar">
         <div>
           <h1 className="page-title">Dipendenti</h1>
-          <p className="page-sub">{activeCount} attivi · {inactiveCount} inattivi</p>
+          <p className="page-sub">{active} attivi · {inactive} inattivi · {businesses.length} attività</p>
         </div>
-        <button onClick={openCreate} className="btn-primary">
-          + Nuovo dipendente
+        <label className="search grow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/>
+          </svg>
+          <input
+            placeholder="Cerca per nome, email, ruolo…"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+        </label>
+        <ThemeToggle />
+        <button className="btn-primary" style={{ height: 40 }} onClick={openCreate}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 5v14M5 12h14"/>
+          </svg>
+          Nuovo dipendente
         </button>
-      </div>
+      </header>
 
-      {/* Filtri */}
-      <div className="flex flex-wrap gap-3 mb-5">
-        <input
-          type="search"
-          placeholder="Cerca per nome, email, ruolo…"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 w-64 bg-white"
-        />
-        <select
-          value={filterContract}
-          onChange={e => setFilterContract(e.target.value)}
-          className="border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700"
-        >
-          <option value="">Tutti i contratti</option>
-          {CONTRACT_TYPES.map(c => <option key={c} value={c}>{CONTRACT_LABEL[c]}</option>)}
-        </select>
-        <div className="flex rounded-lg border border-slate-200 overflow-hidden text-sm bg-white">
-          {(['active', 'inactive', 'all'] as const).map((s, i) => (
-            <button
-              key={s}
-              onClick={() => setFilterStatus(s)}
-              className={`px-3 py-2 transition-colors ${i > 0 ? 'border-l border-slate-200' : ''} ${
-                filterStatus === s ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              {s === 'active' ? 'Attivi' : s === 'inactive' ? 'Inattivi' : 'Tutti'}
-            </button>
+      <main className="content">
+        {/* Stat strip */}
+        <section className="stat-strip rise" style={{ animationDelay: '.04s' }}>
+          {[
+            { label: 'Totale dipendenti', count: total, color: 'var(--text-faint)' },
+            { label: 'Attivi', count: active, color: 'var(--green)' },
+            { label: 'Inattivi', count: inactive, color: 'var(--red)' },
+          ].map(s => (
+            <div key={s.label} className="card stat">
+              <div className="v">{s.count}</div>
+              <div className="k"><span className="pip" style={{ background: s.color }} />{s.label}</div>
+            </div>
           ))}
+          <div className="card stat">
+            <div className="v">{businesses.length}</div>
+            <div className="k"><span className="pip" style={{ background: 'var(--primary)' }} />Attività</div>
+          </div>
+        </section>
+
+        {/* Filter bar */}
+        <div className="filter-bar rise" style={{ animationDelay: '.12s' }}>
+          <div className="segmented">
+            {statuses.map(s => (
+              <button
+                key={s.key}
+                className={filterStatus === s.key ? 'on' : ''}
+                onClick={() => setFilterStatus(s.key)}
+              >
+                {s.label} <span className="cnt">{s.count}</span>
+              </button>
+            ))}
+          </div>
+          {(search || filterStatus !== 'active') && (
+            <button className="btn-ghost" onClick={() => { setSearch(''); setFilterStatus('active'); }}>
+              Reimposta
+            </button>
+          )}
         </div>
-        {(search || filterContract || filterStatus !== 'active') && (
-          <button
-            onClick={() => { setSearch(''); setFilterContract(''); setFilterStatus('active'); }}
-            className="text-sm text-slate-400 hover:text-slate-600 px-2 transition-colors"
-          >
-            Reimposta
-          </button>
-        )}
-      </div>
 
-      {loading && <p className="text-sm text-slate-400 py-4">Caricamento…</p>}
-      {error   && <p className="text-sm text-red-500 py-2">{error}</p>}
+        {loading && <p style={{ color: 'var(--text-faint)', fontSize: 14, padding: '24px 0' }}>Caricamento…</p>}
+        {error   && <p style={{ color: 'var(--red)', fontSize: 14 }}>{error}</p>}
 
-      {!loading && !error && (
-        <div className="card overflow-hidden">
-          <table className="w-full text-sm">
-            <thead className="bg-slate-50 border-b border-slate-200">
-              <tr>
-                {['Nome', 'Email', 'Telefono', 'Ruolo', 'Contratto', 'Ore/sett.', 'Stato', ''].map(h => (
-                  <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {visible.length === 0 && (
+        {!loading && !error && (
+          <div className="card tbl-wrap rise" style={{ animationDelay: '.2s' }}>
+            <table className="tbl">
+              <thead>
                 <tr>
-                  <td colSpan={8} className="px-4 py-12 text-center text-slate-400 text-sm">
-                    {employees.length === 0 ? 'Nessun dipendente.' : 'Nessun risultato per i filtri applicati.'}
-                  </td>
+                  <th>Dipendente</th>
+                  <th>Ruolo</th>
+                  <th>Contratto</th>
+                  <th>Attività</th>
+                  <th>Stato</th>
+                  <th className="r">Azioni</th>
                 </tr>
-              )}
-              {visible.map(emp => (
-                <tr key={emp.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="px-4 py-3 font-semibold text-slate-900">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold shrink-0">
-                        {emp.firstName[0]}{emp.lastName[0]}
-                      </div>
-                      {emp.firstName} {emp.lastName}
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 text-slate-500">{emp.email}</td>
-                  <td className="px-4 py-3 text-slate-500">{emp.phone || '—'}</td>
-                  <td className="px-4 py-3 text-slate-600">{emp.role || '—'}</td>
-                  <td className="px-4 py-3 text-slate-600">{CONTRACT_LABEL[emp.contractType] ?? emp.contractType}</td>
-                  <td className="px-4 py-3 text-slate-600 font-mono text-xs">{emp.weeklyHours}h</td>
-                  <td className="px-4 py-3">
-                    <span className={`badge border ${emp.isActive ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-slate-100 text-slate-500 border-slate-200'}`}>
-                      {emp.isActive ? 'Attivo' : 'Inattivo'}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-right space-x-3">
-                    <button onClick={() => openEdit(emp)} className="text-indigo-600 hover:text-indigo-800 text-xs font-semibold transition-colors">
-                      Modifica
-                    </button>
-                    {emp.isActive && (
-                      <button onClick={() => handleDelete(emp)} className="text-red-500 hover:text-red-700 text-xs font-semibold transition-colors">
-                        Disattiva
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+              </thead>
+              <tbody>
+                {visible.length === 0 && (
+                  <tr>
+                    <td colSpan={6} style={{ textAlign: 'center', color: 'var(--text-faint)', padding: '48px 0' }}>
+                      {employees.length === 0 ? 'Nessun dipendente.' : 'Nessun risultato.'}
+                    </td>
+                  </tr>
+                )}
+                {visible.map(emp => {
+                  const biz = businesses.find(b => b.id === emp.businessId);
+                  return (
+                    <tr key={emp.id}>
+                      <td>
+                        <div className="cell-user">
+                          <div className="avatar" style={{ background: avatarColor(`${emp.firstName} ${emp.lastName}`) }}>
+                            {initials(emp.firstName, emp.lastName)}
+                          </div>
+                          <div>
+                            <div className="nm">{emp.firstName} {emp.lastName}</div>
+                            <div className="em">{emp.email}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>{emp.role || '—'}</td>
+                      <td><span className="badge badge-muted">{CONTRACT_LABEL[emp.contractType] ?? emp.contractType}</span></td>
+                      <td>
+                        {biz ? (
+                          <span className="dot-pip">
+                            <span className="pip" style={{ background: 'var(--primary)' }} />
+                            {biz.name}
+                          </span>
+                        ) : '—'}
+                      </td>
+                      <td>
+                        <span className={`badge ${emp.isActive ? 'badge-green' : 'badge-muted'}`}>
+                          <span className="bdot" />
+                          {emp.isActive ? 'Attivo' : 'Inattivo'}
+                        </span>
+                      </td>
+                      <td className="r">
+                        <div className="row-actions">
+                          <button className="icon-btn sm" title="Modifica" onClick={() => openEdit(emp)}>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M4 20h4L18.5 9.5a2 2 0 0 0-2.8-2.8L5 17.2V20Z"/><path d="M14 7l3 3"/>
+                            </svg>
+                          </button>
+                          {emp.isActive && (
+                            <button className="icon-btn sm" title="Disattiva" onClick={() => handleDelete(emp)}>
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13"/>
+                              </svg>
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+            {visible.length > 0 && (
+              <div className="pager">
+                <span>1–{visible.length} di {visible.length} dipendenti</span>
+              </div>
+            )}
+          </div>
+        )}
+      </main>
 
       {/* Modal */}
       {modal && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-            <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
-              <h2 className="font-semibold text-slate-900 text-base">
-                {modal === 'create' ? 'Nuovo dipendente' : 'Modifica dipendente'}
-              </h2>
-              <button onClick={() => setModal(null)} className="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 flex items-center justify-center transition-colors">
-                ✕
-              </button>
-            </div>
-            <div className="p-6 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <Field label="Nome"    value={form.firstName} onChange={v => set('firstName', v)} required />
-                <Field label="Cognome" value={form.lastName}  onChange={v => set('lastName', v)}  required />
-              </div>
-              <Field label="Email" type="email" value={form.email} onChange={v => set('email', v)} required />
-              <Field label="Telefono" value={form.phone} onChange={v => set('phone', v)} placeholder="es. +39 333 1234567" />
-              <Field label="Ruolo lavorativo" value={form.role} onChange={v => set('role', v)} placeholder="es. Cameriere" />
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="label">Tipo contratto</label>
-                  <select
-                    value={form.contractType}
-                    onChange={e => set('contractType', e.target.value)}
-                    className="input"
-                  >
-                    {CONTRACT_TYPES.map(c => <option key={c} value={c}>{CONTRACT_LABEL[c]}</option>)}
-                  </select>
-                </div>
-                <Field label="Ore/settimana" type="number" value={String(form.weeklyHours)} onChange={v => set('weeklyHours', Number(v))} />
+        <div className={`modal-backdrop open`} onClick={e => e.target === e.currentTarget && setModal(null)}>
+          <div className="modal">
+            <div className="modal-head">
+              <div className="mh-ico">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="9" cy="8" r="3.2"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0M19 8v6M22 11h-6"/>
+                </svg>
               </div>
               <div>
-                <label className="label">Attività</label>
-                <select
-                  value={form.businessId}
-                  onChange={e => set('businessId', e.target.value)}
-                  className="input"
-                >
-                  <option value="">Nessuna</option>
-                  {businesses.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
-                </select>
+                <div className="modal-title">{modal === 'create' ? 'Nuovo dipendente' : 'Modifica dipendente'}</div>
+                <div className="modal-sub">Compila i dati del membro del team</div>
               </div>
-              {modal === 'create' && (
-                <Field label="Password" type="password" value={form.password} onChange={v => set('password', v)} required />
-              )}
-              {modal === 'edit' && (
-                <label className="flex items-center gap-2.5 cursor-pointer group">
-                  <input
-                    type="checkbox" checked={form.isActive}
-                    onChange={e => set('isActive', e.target.checked)}
-                    className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
-                  />
-                  <span className="text-sm text-slate-700 group-hover:text-slate-900">Dipendente attivo</span>
-                </label>
-              )}
+              <button className="modal-close" onClick={() => setModal(null)}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M6 6l12 12M18 6 6 18"/>
+                </svg>
+              </button>
+            </div>
+
+            <div className="modal-body">
+              <div className="form-grid">
+                {[
+                  { label: 'Nome', k: 'firstName' as const, placeholder: 'Es. Giulia' },
+                  { label: 'Cognome', k: 'lastName' as const, placeholder: 'Es. Ferrari' },
+                ].map(f => (
+                  <div key={f.k} className="ff">
+                    <label>{f.label}</label>
+                    <input className="input" value={form[f.k] as string} onChange={e => set(f.k, e.target.value)} placeholder={f.placeholder} />
+                  </div>
+                ))}
+                <div className="ff full">
+                  <label>Email</label>
+                  <input className="input" type="email" value={form.email} onChange={e => set('email', e.target.value)} placeholder="nome@turniup.it" />
+                </div>
+                <div className="ff">
+                  <label>Telefono</label>
+                  <input className="input" value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="+39 333 1234567" />
+                </div>
+                <div className="ff">
+                  <label>Ruolo</label>
+                  <input className="input" value={form.role} onChange={e => set('role', e.target.value)} placeholder="Es. Cameriere" />
+                </div>
+                <div className="ff">
+                  <label>Contratto</label>
+                  <div className="tu-select" style={{ width: '100%' }}>
+                    <select className="input" value={form.contractType} onChange={e => set('contractType', e.target.value)} style={{ paddingRight: 34 }}>
+                      {CONTRACT_TYPES.map(c => <option key={c} value={c}>{CONTRACT_LABEL[c]}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div className="ff">
+                  <label>Ore/settimana</label>
+                  <input className="input" type="number" value={form.weeklyHours} onChange={e => set('weeklyHours', Number(e.target.value))} min={0} max={60} />
+                </div>
+                <div className="ff">
+                  <label>Attività</label>
+                  <div className="tu-select" style={{ width: '100%' }}>
+                    <select className="input" value={form.businessId} onChange={e => set('businessId', e.target.value)} style={{ paddingRight: 34 }}>
+                      <option value="">Nessuna</option>
+                      {businesses.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
+                    </select>
+                  </div>
+                </div>
+                {modal === 'create' && (
+                  <div className="ff">
+                    <label>Password</label>
+                    <input className="input" type="password" value={form.password} onChange={e => set('password', e.target.value)} />
+                  </div>
+                )}
+                {modal === 'edit' && (
+                  <div className="ff full">
+                    <div className="switch-row">
+                      <div className="sr-txt">
+                        <b>Dipendente attivo</b>
+                        <span>Il dipendente può accedere all&apos;app</span>
+                      </div>
+                      <label className="switch">
+                        <input type="checkbox" checked={form.isActive} onChange={e => set('isActive', e.target.checked)} />
+                        <span className="tr" />
+                      </label>
+                    </div>
+                  </div>
+                )}
+              </div>
               {formError && (
-                <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2.5">{formError}</p>
+                <p style={{ marginTop: 14, color: 'var(--red)', background: 'var(--red-soft)', border: '1px solid var(--red)', borderRadius: 10, padding: '10px 14px', fontSize: 13 }}>{formError}</p>
               )}
             </div>
-            <div className="px-6 py-4 border-t border-slate-100 flex justify-end gap-3">
-              <button onClick={() => setModal(null)} className="btn-secondary">Annulla</button>
-              <button onClick={handleSave} disabled={saving} className="btn-primary">
-                {saving ? 'Salvataggio…' : 'Salva'}
+
+            <div className="modal-foot">
+              <button className="btn-secondary" onClick={() => setModal(null)}>Annulla</button>
+              <button className="btn-primary" disabled={saving} onClick={handleSave}>
+                {saving ? 'Salvataggio…' : modal === 'create' ? 'Salva dipendente' : 'Salva modifiche'}
               </button>
             </div>
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

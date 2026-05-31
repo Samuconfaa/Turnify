@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TurniUp — Dipendenti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="turniup.css">
+</head>
+<body data-page="employees">
+<div class="app">
+  <div id="sb"></div>
+  <div class="main">
+    <header class="topbar">
+      <div>
+        <h1 class="page-title">Dipendenti</h1>
+        <p class="page-sub">48 dipendenti · 3 attività</p>
+      </div>
+      <label class="search grow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input placeholder="Cerca per nome, email, ruolo…">
+      </label>
+      <div data-theme-toggle></div>
+      <button class="icon-btn" title="Notifiche"><span class="dot"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 0 1 12 0c0 5 1.5 6.5 1.5 6.5h-15S6 14 6 9ZM10 19a2 2 0 0 0 4 0"/></svg></button>
+      <button class="btn-primary" style="height:40px" data-modal-open="modal-employee"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Nuovo dipendente</button>
+    </header>
+
+    <main class="content">
+      <section class="stat-strip">
+        <div class="card stat rise" style="animation-delay:.04s"><div class="v" data-count="48">0</div><div class="k"><span class="pip" style="background:var(--text-faint)"></span>Totale dipendenti</div></div>
+        <div class="card stat rise" style="animation-delay:.1s"><div class="v" data-count="41">0</div><div class="k"><span class="pip" style="background:var(--green)"></span>Attivi</div></div>
+        <div class="card stat rise" style="animation-delay:.16s"><div class="v" data-count="5">0</div><div class="k"><span class="pip" style="background:var(--amber)"></span>In ferie</div></div>
+        <div class="card stat rise" style="animation-delay:.22s"><div class="v" data-count="2">0</div><div class="k"><span class="pip" style="background:var(--red)"></span>Sospesi</div></div>
+      </section>
+
+      <div class="filter-bar rise" style="animation-delay:.26s">
+        <div class="segmented">
+          <button class="on">Tutti <span class="cnt">48</span></button>
+          <button>Attivi <span class="cnt">41</span></button>
+          <button>In ferie <span class="cnt">5</span></button>
+          <button>Sospesi <span class="cnt">2</span></button>
+        </div>
+        <div class="select"><select><option>Tutti i contratti</option><option>Tempo pieno</option><option>Part-time</option><option>A chiamata</option></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>
+        <div class="select"><select><option>Tutte le attività</option><option>Ristorante Centro</option><option>Bar Aurora</option><option>Bistrot Sud</option></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>
+        <button class="btn-secondary spacer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Esporta</button>
+      </div>
+
+      <div class="card tbl-wrap rise" style="animation-delay:.32s">
+        <table class="tbl">
+          <thead><tr><th>Dipendente</th><th>Ruolo</th><th>Contratto</th><th>Attività</th><th>Stato</th><th class="r">Azioni</th></tr></thead>
+          <tbody id="empBody"></tbody>
+        </table>
+        <div class="pager">
+          <span>1–8 di 48 dipendenti</span>
+          <div class="pages"><button>‹</button><button class="on">1</button><button>2</button><button>3</button><button>›</button></div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="turniup.js"></script>
+<script>
+const C={primary:'var(--primary)',green:'var(--green)',amber:'var(--amber)'};
+const emps=[
+  {n:'Giulia Ferrari',e:'g.ferrari@turniup.it',i:'GF',role:'Cameriera di sala',contract:'Tempo pieno',biz:'Ristorante Centro',bz:'primary',st:['badge-green','Attivo'],c:'oklch(0.6 0.13 25)'},
+  {n:'Luca Bianchi',e:'l.bianchi@turniup.it',i:'LB',role:'Barista',contract:'Part-time',biz:'Bar Aurora',bz:'green',st:['badge-green','Attivo'],c:'oklch(0.58 0.12 250)'},
+  {n:'Sara Conti',e:'s.conti@turniup.it',i:'SC',role:'Chef de rang',contract:'Tempo pieno',biz:'Ristorante Centro',bz:'primary',st:['badge-amber','In ferie'],c:'oklch(0.6 0.13 320)'},
+  {n:'Davide Greco',e:'d.greco@turniup.it',i:'DG',role:'Cuoco',contract:'Tempo pieno',biz:'Bistrot Sud',bz:'amber',st:['badge-green','Attivo'],c:'oklch(0.55 0.11 150)'},
+  {n:'Elena Marino',e:'e.marino@turniup.it',i:'EM',role:'Cameriera',contract:'A chiamata',biz:'Bar Aurora',bz:'green',st:['badge-green','Attivo'],c:'oklch(0.6 0.12 60)'},
+  {n:'Matteo Romano',e:'m.romano@turniup.it',i:'MR',role:'Aiuto cuoco',contract:'Part-time',biz:'Bistrot Sud',bz:'amber',st:['badge-red','Sospeso'],c:'oklch(0.55 0.13 290)'},
+  {n:'Francesca Galli',e:'f.galli@turniup.it',i:'FG',role:'Responsabile sala',contract:'Tempo pieno',biz:'Ristorante Centro',bz:'primary',st:['badge-green','Attivo'],c:'oklch(0.52 0.12 180)'},
+  {n:'Alessandro Fontana',e:'a.fontana@turniup.it',i:'AF',role:'Barista',contract:'A chiamata',biz:'Bar Aurora',bz:'green',st:['badge-amber','In ferie'],c:'oklch(0.6 0.12 100)'},
+];
+const tb=document.getElementById('empBody');
+emps.forEach(p=>{
+  const tr=document.createElement('tr');
+  tr.innerHTML=`
+    <td><div class="cell-user"><div class="avatar" style="background:${p.c}">${p.i}</div><div><div class="nm">${p.n}</div><div class="em">${p.e}</div></div></div></td>
+    <td>${p.role}</td>
+    <td><span class="badge badge-muted">${p.contract}</span></td>
+    <td><span class="dot-pip"><span class="pip" style="background:${C[p.bz]}"></span>${p.biz}</span></td>
+    <td><span class="badge ${p.st[0]}"><span class="bdot"></span>${p.st[1]}</span></td>
+    <td class="r"><div class="row-actions">
+      <button class="icon-btn sm" title="Modifica" data-modal-open="modal-employee"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L18.5 9.5a2 2 0 0 0-2.8-2.8L5 17.2V20Z"/><path d="M14 7l3 3"/></svg></button>
+      <button class="icon-btn sm" title="Elimina"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13"/></svg></button>
+    </div></td>`;
+  tb.appendChild(tr);
+});
+window.addEventListener('load',()=>{setTimeout(()=>document.querySelectorAll('[data-count]').forEach(el=>countUp(el,+el.dataset.count)),250);});
+</script>
+</body>
+</html>

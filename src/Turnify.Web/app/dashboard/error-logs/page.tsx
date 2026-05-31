@@ -2,40 +2,23 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { api } from '@/lib/api';
+import ThemeToggle from '@/components/ThemeToggle';
 
 interface ErrorLog {
-  id: number;
-  userId: number | null;
-  companyId: number | null;
-  deviceId: string;
-  platform: string;
-  appVersion: string;
-  errorType: string;
-  message: string;
-  stackTrace: string | null;
-  screenName: string | null;
-  occurredAt: string;
-  receivedAt: string;
+  id: number; userId: number | null; companyId: number | null;
+  deviceId: string; platform: string; appVersion: string;
+  errorType: string; message: string; stackTrace: string | null;
+  screenName: string | null; occurredAt: string; receivedAt: string;
 }
-interface ApiResponse {
-  data: ErrorLog[];
-  total: number;
-  page: number;
-  pageSize: number;
-}
+interface ApiResponse { data: ErrorLog[]; total: number; page: number; pageSize: number; }
 
 const PLATFORM_BADGE: Record<string, string> = {
-  Android: 'bg-emerald-50 text-emerald-700 border-emerald-100',
-  iOS:     'bg-indigo-50 text-indigo-700 border-indigo-100',
-  Windows: 'bg-violet-50 text-violet-700 border-violet-100',
-  macOS:   'bg-purple-50 text-purple-700 border-purple-100',
+  Android: 'badge-green', iOS: 'badge-primary',
+  Windows: 'badge-muted', macOS: 'badge-muted',
 };
 
 function fmtDate(iso: string) {
-  return new Date(iso).toLocaleString('it-IT', {
-    day: '2-digit', month: '2-digit', year: 'numeric',
-    hour: '2-digit', minute: '2-digit', second: '2-digit',
-  });
+  return new Date(iso).toLocaleString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
 }
 function isoDate(d: Date) { return d.toISOString().slice(0, 10); }
 
@@ -44,14 +27,12 @@ export default function ErrorLogsPage() {
   const [total, setTotal]   = useState(0);
   const [page, setPage]     = useState(1);
   const pageSize = 50;
-
   const today = new Date();
   const [from, setFrom] = useState(isoDate(new Date(today.getTime() - 7 * 86400000)));
   const [to, setTo]     = useState(isoDate(today));
-
-  const [loading, setLoading]     = useState(true);
-  const [error, setError]         = useState('');
-  const [expanded, setExpanded]   = useState<number | null>(null);
+  const [loading, setLoading]   = useState(true);
+  const [error, setError]       = useState('');
+  const [expanded, setExpanded] = useState<number | null>(null);
   const [filterPlatform, setFilterPlatform] = useState('');
   const [filterType, setFilterType]         = useState('');
 
@@ -60,170 +41,127 @@ export default function ErrorLogsPage() {
     try {
       const fromISO = new Date(from + 'T00:00:00Z').toISOString();
       const toISO   = new Date(to   + 'T23:59:59Z').toISOString();
-      const res = await api.get<ApiResponse>(
-        `/api/errorlogs?from=${fromISO}&to=${toISO}&page=${page}&pageSize=${pageSize}`
-      );
-      setLogs(res?.data ?? []);
-      setTotal(res?.total ?? 0);
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Errore nel caricamento dei log.');
-    } finally {
-      setLoading(false);
-    }
+      const res = await api.get<ApiResponse>(`/api/errorlogs?from=${fromISO}&to=${toISO}&page=${page}&pageSize=${pageSize}`);
+      setLogs(res?.data ?? []); setTotal(res?.total ?? 0);
+    } catch (e: unknown) { setError(e instanceof Error ? e.message : 'Errore'); }
+    finally { setLoading(false); }
   }, [from, to, page]);
 
   useEffect(() => { load(); }, [load]);
 
   const filtered = logs.filter(l =>
     (!filterPlatform || l.platform === filterPlatform) &&
-    (!filterType     || l.errorType.toLowerCase().includes(filterType.toLowerCase()))
+    (!filterType || l.errorType.toLowerCase().includes(filterType.toLowerCase()))
   );
-
   const platforms  = Array.from(new Set(logs.map(l => l.platform)));
   const totalPages = Math.ceil(total / pageSize);
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
+    <>
+      <header className="topbar">
         <div>
           <h1 className="page-title">Log Errori App</h1>
           <p className="page-sub">Errori segnalati dai dispositivi degli utenti</p>
         </div>
-        <button onClick={load} className="btn-secondary">
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        <ThemeToggle />
+        <button className="btn-secondary" style={{ height: 40 }} onClick={load}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
           </svg>
           Aggiorna
         </button>
-      </div>
+      </header>
 
-      {/* Filtri */}
-      <div className="card p-4 mb-5 flex flex-wrap gap-3 items-end">
-        <div>
-          <label className="label">Dal</label>
-          <input type="date" value={from} onChange={e => { setFrom(e.target.value); setPage(1); }}
-            className="border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white" />
-        </div>
-        <div>
-          <label className="label">Al</label>
-          <input type="date" value={to} onChange={e => { setTo(e.target.value); setPage(1); }}
-            className="border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white" />
-        </div>
-        <div>
-          <label className="label">Piattaforma</label>
-          <select value={filterPlatform} onChange={e => setFilterPlatform(e.target.value)}
-            className="border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700">
-            <option value="">Tutte</option>
-            {platforms.map(p => <option key={p}>{p}</option>)}
-          </select>
-        </div>
-        <div>
-          <label className="label">Tipo errore</label>
-          <input value={filterType} onChange={e => setFilterType(e.target.value)} placeholder="es. NullReference"
-            className="border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white w-48" />
-        </div>
-        {total > 0 && (
-          <div className="ml-auto self-end text-sm text-slate-500 pb-0.5">
-            <span className="font-semibold text-slate-800">{total}</span> errori totali
-          </div>
-        )}
-      </div>
-
-      {loading && <p className="text-sm text-slate-400 py-4">Caricamento…</p>}
-      {error   && (
-        <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3 mb-4">{error}</p>
-      )}
-
-      {!loading && !error && (
-        <>
-          <div className="space-y-2">
-            {filtered.length === 0 && (
-              <div className="card px-4 py-12 text-center text-slate-400 text-sm">
-                Nessun errore trovato nel periodo selezionato.
+      <main className="content">
+        {/* Filtri */}
+        <div className="card rise" style={{ marginBottom: 18, padding: '16px 20px', animationDelay: '.04s' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'flex-end' }}>
+            <div>
+              <div className="label" style={{ marginBottom: 6 }}>Dal</div>
+              <input type="date" className="input" style={{ width: 'auto' }} value={from} onChange={e => { setFrom(e.target.value); setPage(1); }} />
+            </div>
+            <div>
+              <div className="label" style={{ marginBottom: 6 }}>Al</div>
+              <input type="date" className="input" style={{ width: 'auto' }} value={to} onChange={e => { setTo(e.target.value); setPage(1); }} />
+            </div>
+            <div>
+              <div className="label" style={{ marginBottom: 6 }}>Piattaforma</div>
+              <div className="tu-select">
+                <select className="input" value={filterPlatform} onChange={e => setFilterPlatform(e.target.value)} style={{ paddingRight: 34 }}>
+                  <option value="">Tutte</option>
+                  {platforms.map(p => <option key={p}>{p}</option>)}
+                </select>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div>
+              <div className="label" style={{ marginBottom: 6 }}>Tipo errore</div>
+              <input className="input" style={{ width: 192 }} value={filterType} onChange={e => setFilterType(e.target.value)} placeholder="es. NullReference" />
+            </div>
+            {total > 0 && (
+              <div style={{ marginLeft: 'auto', alignSelf: 'flex-end', fontSize: 13, color: 'var(--text-muted)' }}>
+                <b style={{ color: 'var(--text)' }}>{total}</b> errori totali
               </div>
             )}
-            {filtered.map(log => (
-              <div key={log.id} className="card overflow-hidden">
-                <button
-                  className="w-full text-left px-5 py-4 hover:bg-slate-50 transition-colors"
-                  onClick={() => setExpanded(expanded === log.id ? null : log.id)}
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap mb-1.5">
-                        <span className={`badge border ${PLATFORM_BADGE[log.platform] ?? 'bg-slate-100 text-slate-600 border-slate-200'}`}>
-                          {log.platform}
-                        </span>
-                        <span className="text-xs text-slate-500 font-mono bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded">
-                          v{log.appVersion}
-                        </span>
-                        <span className="badge border bg-red-50 text-red-700 border-red-100 font-semibold">
-                          {log.errorType}
-                        </span>
-                        {log.screenName && (
-                          <span className="text-xs text-slate-400">
-                            su <span className="font-medium text-slate-600">{log.screenName}</span>
-                          </span>
-                        )}
+          </div>
+        </div>
+
+        {loading && <p style={{ color: 'var(--text-faint)', fontSize: 14, padding: '24px 0' }}>Caricamento…</p>}
+        {error && <p style={{ color: 'var(--red)', background: 'var(--red-soft)', border: '1px solid var(--red)', borderRadius: 13, padding: '14px 18px', fontSize: 14, marginBottom: 14 }}>{error}</p>}
+
+        {!loading && !error && (
+          <>
+            <div className="card rise" style={{ overflow: 'hidden', animationDelay: '.12s' }}>
+              {filtered.length === 0 && (
+                <p style={{ textAlign: 'center', color: 'var(--text-faint)', padding: '48px 0', fontSize: 14 }}>
+                  Nessun errore nel periodo selezionato.
+                </p>
+              )}
+              {filtered.map(log => (
+                <div key={log.id} className={`log-row${expanded === log.id ? ' open' : ''}`}>
+                  <div className="log-head" onClick={() => setExpanded(expanded === log.id ? null : log.id)}>
+                    <span className="log-time">{fmtDate(log.occurredAt)}</span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 4 }}>
+                        <span className={`badge ${PLATFORM_BADGE[log.platform] ?? 'badge-muted'}`}>{log.platform}</span>
+                        <span className="mono" style={{ fontSize: 12, background: 'var(--surface-2)', padding: '2px 7px', borderRadius: 6, border: '1px solid var(--border)' }}>v{log.appVersion}</span>
+                        <span className="badge badge-red" style={{ fontWeight: 600 }}>{log.errorType}</span>
+                        {log.screenName && <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>su <b style={{ color: 'var(--text)' }}>{log.screenName}</b></span>}
                       </div>
-                      <p className="text-sm font-semibold text-slate-900 truncate mb-1">{log.message}</p>
-                      <div className="flex flex-wrap gap-x-4 gap-y-0.5 text-xs text-slate-400">
-                        <span>Accaduto: {fmtDate(log.occurredAt)}</span>
-                        <span>Ricevuto: {fmtDate(log.receivedAt)}</span>
-                        {log.userId && <span>UserID: {log.userId}</span>}
-                        <span className="font-mono truncate max-w-[140px]">Device: {log.deviceId}</span>
-                      </div>
+                      <div className="log-msg">{log.message}</div>
                     </div>
-                    <svg
-                      className={`w-4 h-4 text-slate-400 shrink-0 mt-0.5 transition-transform ${expanded === log.id ? 'rotate-180' : ''}`}
-                      fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    <svg className="log-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="m9 6 6 6-6 6"/>
                     </svg>
                   </div>
-                </button>
 
-                {expanded === log.id && (
-                  <div className="border-t border-slate-100 bg-slate-950 px-5 py-4">
-                    {log.stackTrace ? (
-                      <>
-                        <p className="text-xs text-slate-400 mb-2 font-semibold uppercase tracking-wider">Stack Trace</p>
-                        <pre className="text-xs text-emerald-400 overflow-x-auto whitespace-pre-wrap font-mono leading-relaxed">
-                          {log.stackTrace}
-                        </pre>
-                      </>
-                    ) : (
-                      <p className="text-xs text-slate-500 italic">Nessuno stack trace disponibile.</p>
-                    )}
+                  <div className="log-detail">
+                    <div className="log-detail-inner">
+                      <div className="log-tags">
+                        {log.userId && <span className="lt">UserID <b>{log.userId}</b></span>}
+                        <span className="lt">Ricevuto <b>{fmtDate(log.receivedAt)}</b></span>
+                        <span className="lt mono">Device <b>{log.deviceId.slice(0, 16)}…</b></span>
+                      </div>
+                      {log.stackTrace
+                        ? <pre className="stack">{log.stackTrace}</pre>
+                        : <p style={{ margin: '0 18px 18px', fontSize: 13, color: 'var(--text-faint)', fontStyle: 'italic' }}>Nessuno stack trace disponibile.</p>
+                      }
+                    </div>
                   </div>
-                )}
-              </div>
-            ))}
-          </div>
-
-          {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-3 mt-6">
-              <button
-                disabled={page === 1}
-                onClick={() => setPage(p => p - 1)}
-                className="btn-secondary disabled:opacity-40"
-              >
-                ← Precedente
-              </button>
-              <span className="text-sm text-slate-600 bg-white border border-slate-200 px-4 py-2 rounded-lg">
-                {page} / {totalPages}
-              </span>
-              <button
-                disabled={page >= totalPages}
-                onClick={() => setPage(p => p + 1)}
-                className="btn-secondary disabled:opacity-40"
-              >
-                Successiva →
-              </button>
+                </div>
+              ))}
             </div>
-          )}
-        </>
-      )}
-    </div>
+
+            {totalPages > 1 && (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginTop: 20 }}>
+                <button className="btn-secondary" disabled={page === 1} onClick={() => setPage(p => p - 1)}>← Precedente</button>
+                <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>{page} / {totalPages}</span>
+                <button className="btn-secondary" disabled={page >= totalPages} onClick={() => setPage(p => p + 1)}>Successiva →</button>
+              </div>
+            )}
+          </>
+        )}
+      </main>
+    </>
   );
 }

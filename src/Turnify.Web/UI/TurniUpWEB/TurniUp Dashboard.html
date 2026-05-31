@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TurniUp — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="turniup.css">
+</head>
+<body data-page="dashboard">
+<div class="app">
+  <div id="sb"></div>
+  <div class="main">
+    <header class="topbar">
+      <div>
+        <h1 class="page-title">Buongiorno, Marco</h1>
+        <p class="page-sub">Sabato 31 maggio · Ecco la panoramica della settimana</p>
+      </div>
+      <label class="search grow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input placeholder="Cerca dipendenti, turni…">
+      </label>
+      <div data-theme-toggle></div>
+      <button class="icon-btn" title="Notifiche"><span class="dot"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 0 1 12 0c0 5 1.5 6.5 1.5 6.5h-15S6 14 6 9ZM10 19a2 2 0 0 0 4 0"/></svg></button>
+      <button class="btn-primary" style="height:40px" data-modal-open="modal-shift"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Nuovo turno</button>
+    </header>
+
+    <main class="content">
+      <section class="kpi-grid">
+        <div class="card kpi rise" style="animation-delay:.04s">
+          <div class="kpi-top"><div class="kpi-ico ico-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0M16 5.2a3 3 0 0 1 0 5.6M18 19a5 5 0 0 0-3-4.6"/></svg></div></div>
+          <div class="kpi-val" data-count="48">0</div>
+          <div class="kpi-name">Dipendenti attivi</div>
+          <div class="kpi-delta delta-up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15l7-7 7 7"/></svg>+3 questo mese</div>
+          <svg class="spark" viewBox="0 0 108 46" preserveAspectRatio="none"><path class="line" style="stroke:var(--primary)" d="M2 38 L17 34 L32 36 L47 28 L62 30 L77 20 L92 22 L106 12"/></svg>
+        </div>
+        <div class="card kpi rise" style="animation-delay:.1s">
+          <div class="kpi-top"><div class="kpi-ico ico-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9h18M8 2.5v4M16 2.5v4"/></svg></div></div>
+          <div class="kpi-val" data-count="126">0</div>
+          <div class="kpi-name">Turni questa settimana</div>
+          <div class="kpi-delta delta-up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15l7-7 7 7"/></svg>+12% vs scorsa</div>
+          <svg class="spark" viewBox="0 0 108 46" preserveAspectRatio="none"><path class="line" style="stroke:var(--green)" d="M2 30 L17 32 L32 24 L47 26 L62 18 L77 22 L92 14 L106 16"/></svg>
+        </div>
+        <div class="card kpi rise" style="animation-delay:.16s">
+          <div class="kpi-top"><div class="kpi-ico ico-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2.5 19.5h19L12 3ZM12 9.5v4M12 16.6v.1"/></svg></div></div>
+          <div class="kpi-val" data-count="7">0</div>
+          <div class="kpi-name">Ferie in attesa</div>
+          <div class="kpi-delta delta-warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Richiede attenzione</div>
+          <svg class="spark" viewBox="0 0 108 46" preserveAspectRatio="none"><path class="line" style="stroke:var(--amber)" d="M2 24 L17 26 L32 22 L47 30 L62 24 L77 28 L92 18 L106 22"/></svg>
+        </div>
+        <div class="card kpi rise" style="animation-delay:.22s">
+          <div class="kpi-top"><div class="kpi-ico ico-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div></div>
+          <div class="kpi-val"><span data-count="1284">0</span><span class="unit">h</span></div>
+          <div class="kpi-name">Ore programmate</div>
+          <div class="kpi-delta delta-flat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></svg>In linea col budget</div>
+          <svg class="spark" viewBox="0 0 108 46" preserveAspectRatio="none"><path class="line" style="stroke:var(--text-faint)" d="M2 28 L17 24 L32 26 L47 22 L62 24 L77 20 L92 24 L106 20"/></svg>
+        </div>
+      </section>
+
+      <section class="cols">
+        <div class="card rise" style="animation-delay:.28s">
+          <div class="sec-head">
+            <div><div class="sec-title">Ore programmate per settimana</div><div class="sec-sub">Ultime 8 settimane · tutte le attività</div></div>
+            <span class="badge badge-green"><span class="bdot"></span>+12%</span>
+          </div>
+          <div class="chart-wrap"><div class="chart" id="barChart">
+            <div class="gridline" style="bottom:0"></div><div class="gridline" style="bottom:33%"></div><div class="gridline" style="bottom:66%"></div><div class="gridline" style="bottom:99%"></div>
+          </div></div>
+        </div>
+        <div class="card donut-card rise" style="animation-delay:.34s">
+          <div class="sec-head"><div><div class="sec-title">Copertura turni</div><div class="sec-sub">Distribuzione per attività</div></div></div>
+          <div class="donut-wrap"><div class="donut">
+            <svg width="188" height="188" viewBox="0 0 188 188">
+              <circle cx="94" cy="94" r="74" fill="none" stroke="var(--surface-2)" stroke-width="22"/>
+              <circle class="dseg" cx="94" cy="94" r="74" fill="none" stroke="var(--primary)" stroke-width="22" stroke-linecap="round" data-frac="0.45"/>
+              <circle class="dseg" cx="94" cy="94" r="74" fill="none" stroke="var(--green)" stroke-width="22" stroke-linecap="round" data-frac="0.33"/>
+              <circle class="dseg" cx="94" cy="94" r="74" fill="none" stroke="var(--amber)" stroke-width="22" stroke-linecap="round" data-frac="0.22"/>
+            </svg>
+            <div class="donut-center"><div class="big" data-count="126">0</div><div class="sm">turni totali</div></div>
+          </div></div>
+          <div class="legend">
+            <div class="leg-row"><span class="leg-dot" style="background:var(--primary)"></span><span class="leg-name">Ristorante Centro</span><span class="leg-val">57</span></div>
+            <div class="leg-row"><span class="leg-dot" style="background:var(--green)"></span><span class="leg-name">Bar Aurora</span><span class="leg-val">41</span></div>
+            <div class="leg-row"><span class="leg-dot" style="background:var(--amber)"></span><span class="leg-name">Bistrot Sud</span><span class="leg-val">28</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="cols">
+        <div class="card rise" style="animation-delay:.4s">
+          <div class="sec-head"><div><div class="sec-title">Turni di oggi</div><div class="sec-sub">9 turni programmati · 2 in corso</div></div><a class="btn-ghost" href="TurniUp Turni.html">Vedi tutti</a></div>
+          <div class="list" id="shiftList"></div>
+        </div>
+        <div class="card rise" style="animation-delay:.46s">
+          <div class="sec-head"><div><div class="sec-title">Ferie in attesa</div><div class="sec-sub">7 richieste da approvare</div></div><span class="badge badge-amber"><span class="bdot"></span>7</span></div>
+          <div id="vacList" style="padding-top:6px"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script src="turniup.js"></script>
+<script>
+const weeks = [{w:'S14',v:980},{w:'S15',v:1110},{w:'S16',v:1040},{w:'S17',v:1190},{w:'S18',v:1090},{w:'S19',v:1230},{w:'S20',v:1170},{w:'Ora',v:1284}];
+const maxV = 1400, barChart = document.getElementById('barChart');
+weeks.forEach((d,i)=>{
+  const col = document.createElement('div');
+  col.className = 'bar-col' + (i===weeks.length-1?' now':'');
+  col.innerHTML = `<div class="bar-track"><div class="bar ${i===weeks.length-1?'':'muted'}" data-h="${(d.v/maxV*100).toFixed(1)}"><span class="tip">${d.v.toLocaleString('it-IT')} h</span></div></div><span class="bar-x">${d.w}</span>`;
+  barChart.appendChild(col);
+});
+const R=74, C=2*Math.PI*R;
+function drawDonut(){let off=0;document.querySelectorAll('.dseg').forEach(seg=>{const f=parseFloat(seg.dataset.frac);const len=f*C-4;seg.style.transition='none';seg.setAttribute('stroke-dasharray',`0 ${C}`);seg.dataset.target=len;seg.setAttribute('stroke-dashoffset',-off);off+=f*C;});}
+function animateDonut(){document.querySelectorAll('.dseg').forEach((seg,i)=>{setTimeout(()=>{seg.style.transition='stroke-dasharray 1s cubic-bezier(.22,1,.36,1)';seg.setAttribute('stroke-dasharray',`${seg.dataset.target} ${C}`);},350+i*180);});}
+const palette={primary:'var(--primary)',green:'var(--green)',amber:'var(--amber)'};
+const shifts=[
+  {n:'Giulia Ferrari',i:'GF',role:'Cameriera di sala',biz:'Ristorante Centro',bz:'primary',t:'08:00 – 14:00',dur:'6h',st:['badge-green','In corso'],c:'oklch(0.6 0.13 25)'},
+  {n:'Luca Bianchi',i:'LB',role:'Barista',biz:'Bar Aurora',bz:'green',t:'07:30 – 13:30',dur:'6h',st:['badge-green','In corso'],c:'oklch(0.58 0.12 250)'},
+  {n:'Sara Conti',i:'SC',role:'Chef de rang',biz:'Ristorante Centro',bz:'primary',t:'12:00 – 18:00',dur:'6h',st:['badge-primary','Programmato'],c:'oklch(0.6 0.13 320)'},
+  {n:'Davide Greco',i:'DG',role:'Cuoco',biz:'Bistrot Sud',bz:'amber',t:'15:00 – 23:00',dur:'8h',st:['badge-primary','Programmato'],c:'oklch(0.55 0.11 150)'},
+  {n:'Elena Marino',i:'EM',role:'Cameriera',biz:'Bar Aurora',bz:'green',t:'17:00 – 23:00',dur:'6h',st:['badge-muted','Pausa'],c:'oklch(0.6 0.12 60)'},
+];
+const sl=document.getElementById('shiftList');
+shifts.forEach(s=>{const el=document.createElement('div');el.className='shift';el.innerHTML=`<div class="avatar" style="background:${s.c}">${s.i}</div><div class="shift-info" style="flex:1"><div class="shift-name">${s.n}</div><div class="shift-role">${s.role}</div></div><div class="shift-biz"><span class="bz" style="background:${palette[s.bz]}"></span>${s.biz}</div><div class="shift-time">${s.t}<span class="dur">${s.dur}</span></div><span class="badge ${s.st[0]}"><span class="bdot"></span>${s.st[1]}</span>`;sl.appendChild(el);});
+const vacs=[
+  {n:'Martina Russo',i:'MR',type:'Ferie',range:'12 – 19 giu',days:'8 giorni',c:'oklch(0.6 0.13 300)'},
+  {n:'Andrea Costa',i:'AC',type:'Permesso',range:'5 giu · 09–13',days:'4 ore',c:'oklch(0.55 0.12 200)'},
+  {n:'Chiara Moretti',i:'CM',type:'Ferie',range:'2 – 4 lug',days:'3 giorni',c:'oklch(0.58 0.13 25)'},
+];
+const vl=document.getElementById('vacList');
+vacs.forEach(v=>{const el=document.createElement('div');el.className='vac';el.innerHTML=`<div class="vac-top"><div class="avatar" style="background:${v.c}">${v.i}</div><div style="flex:1"><div class="vac-name">${v.n}</div><div class="vac-meta">${v.type} · ${v.days}</div></div></div><div class="vac-dates"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9h18M8 2.5v4M16 2.5v4"/></svg>${v.range}</div><div class="vac-actions"><button class="btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Approva</button><button class="btn-secondary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg>Rifiuta</button></div>`;vl.appendChild(el);});
+
+drawDonut();
+window.addEventListener('load',()=>{setTimeout(()=>{
+  document.querySelectorAll('.bar').forEach(b=>b.style.height=b.dataset.h+'%');
+  document.querySelectorAll('[data-count]').forEach(el=>countUp(el,+el.dataset.count));
+  animateDonut();
+},250);});
+</script>
+</body>
+</html>

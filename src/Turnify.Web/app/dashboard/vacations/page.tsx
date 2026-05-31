@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { api } from '@/lib/api';
+import ThemeToggle from '@/components/ThemeToggle';
 
 interface VacationRequest {
   id: number; employeeId: number; employeeName: string;
@@ -10,19 +11,35 @@ interface VacationRequest {
 }
 
 const TYPE_LABEL: Record<string, string> = {
-  Holiday:     'Ferie',
-  PaidLeave:   'Permesso retribuito',
-  UnpaidLeave: 'Permesso non retribuito',
-  SickLeave:   'Malattia',
+  Holiday: 'Ferie', PaidLeave: 'Permesso retribuito',
+  UnpaidLeave: 'Permesso non retribuito', SickLeave: 'Malattia',
+};
+const TYPE_BADGE: Record<string, string> = {
+  Holiday: 'badge-primary', PaidLeave: 'badge-muted',
+  UnpaidLeave: 'badge-muted', SickLeave: 'badge-amber',
 };
 const STATUS_MAP: Record<string, { label: string; cls: string }> = {
-  Pending:   { label: 'In attesa',  cls: 'bg-amber-50 text-amber-700 border-amber-100' },
-  Approved:  { label: 'Approvata',  cls: 'bg-emerald-50 text-emerald-700 border-emerald-100' },
-  Rejected:  { label: 'Rifiutata',  cls: 'bg-red-50 text-red-600 border-red-100' },
-  Cancelled: { label: 'Annullata',  cls: 'bg-slate-100 text-slate-500 border-slate-200' },
+  Pending:   { label: 'In attesa',  cls: 'badge-amber' },
+  Approved:  { label: 'Approvata',  cls: 'badge-green' },
+  Rejected:  { label: 'Rifiutata',  cls: 'badge-red' },
+  Cancelled: { label: 'Annullata',  cls: 'badge-muted' },
 };
 
-type FilterMode = 'Pending' | 'all';
+const AVATAR_COLORS = [
+  'oklch(0.6 0.13 25)', 'oklch(0.58 0.12 250)', 'oklch(0.6 0.13 320)',
+  'oklch(0.55 0.11 150)', 'oklch(0.6 0.12 60)', 'oklch(0.52 0.12 180)',
+];
+function avatarColor(name: string) {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffff;
+  return AVATAR_COLORS[h % AVATAR_COLORS.length];
+}
+function initials(name: string) {
+  const p = name.split(' ');
+  return (p[0]?.[0] ?? '') + (p[1]?.[0] ?? '');
+}
+
+type FilterMode = 'Pending' | 'Approved' | 'Rejected' | 'all';
 
 export default function VacationsPage() {
   const [requests, setRequests] = useState<VacationRequest[]>([]);
@@ -33,8 +50,10 @@ export default function VacationsPage() {
 
   const load = useCallback(async () => {
     setLoading(true);
-    try { const res = await api.get<VacationRequest[] | { data: VacationRequest[] }>('/api/vacation-requests'); setRequests(Array.isArray(res) ? res : Array.isArray((res as { data?: VacationRequest[] })?.data) ? (res as { data: VacationRequest[] }).data : []); }
-    catch (e: unknown) { setError(e instanceof Error ? e.message : 'Errore'); }
+    try {
+      const res = await api.get<VacationRequest[] | { data: VacationRequest[] }>('/api/vacation-requests');
+      setRequests(Array.isArray(res) ? res : Array.isArray((res as { data?: VacationRequest[] })?.data) ? (res as { data: VacationRequest[] }).data : []);
+    } catch (e: unknown) { setError(e instanceof Error ? e.message : 'Errore'); }
     finally { setLoading(false); }
   }, []);
 
@@ -53,104 +72,127 @@ export default function VacationsPage() {
     finally { setActing(null); }
   }
 
-  const visible    = filter === 'Pending' ? requests.filter(r => r.status === 'Pending') : requests;
+  const visible    = filter === 'all' ? requests : requests.filter(r => r.status === filter);
   const pendingCnt = requests.filter(r => r.status === 'Pending').length;
-  const fmt        = (iso: string) => new Date(iso).toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  const approvedCnt = requests.filter(r => r.status === 'Approved').length;
+  const rejectedCnt = requests.filter(r => r.status === 'Rejected').length;
+  const fmt = (iso: string) => new Date(iso).toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' });
+
+  const filters: Array<{ key: FilterMode; label: string; count: number }> = [
+    { key: 'Pending',  label: 'In attesa',  count: pendingCnt },
+    { key: 'Approved', label: 'Approvate',  count: approvedCnt },
+    { key: 'Rejected', label: 'Rifiutate',  count: rejectedCnt },
+    { key: 'all',      label: 'Tutte',      count: requests.length },
+  ];
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
+    <>
+      <header className="topbar">
         <div>
-          <h1 className="page-title">Ferie &amp; Permessi</h1>
+          <h1 className="page-title">Ferie e permessi</h1>
           <p className="page-sub">
-            {requests.length} richieste totali
-            {pendingCnt > 0 && (
-              <span className="ml-2 text-amber-600 font-semibold">· {pendingCnt} in attesa</span>
-            )}
+            {pendingCnt > 0
+              ? `${pendingCnt} richieste in attesa di approvazione`
+              : `${requests.length} richieste totali`}
           </p>
         </div>
-        <div className="flex gap-2">
-          {(['Pending', 'all'] as const).map(f => (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              className={`text-sm px-4 py-2 rounded-lg border transition-colors font-medium ${
-                filter === f
-                  ? 'bg-indigo-600 text-white border-indigo-600'
-                  : 'border-slate-200 text-slate-600 hover:bg-slate-50 bg-white'
-              }`}
-            >
-              {f === 'Pending' ? (
-                <>In attesa {pendingCnt > 0 && <span className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${filter === f ? 'bg-white/25 text-white' : 'bg-amber-100 text-amber-700'}`}>{pendingCnt}</span>}</>
-              ) : 'Tutte'}
-            </button>
-          ))}
+        <ThemeToggle />
+      </header>
+
+      <main className="content">
+        {/* Stat strip */}
+        <section className="stat-strip rise" style={{ animationDelay: '.04s' }}>
+          <div className="card stat"><div className="v">{pendingCnt}</div><div className="k"><span className="pip" style={{ background: 'var(--amber)' }} />In attesa</div></div>
+          <div className="card stat"><div className="v">{approvedCnt}</div><div className="k"><span className="pip" style={{ background: 'var(--green)' }} />Approvate</div></div>
+          <div className="card stat"><div className="v">{rejectedCnt}</div><div className="k"><span className="pip" style={{ background: 'var(--red)' }} />Rifiutate</div></div>
+          <div className="card stat"><div className="v">{requests.length}</div><div className="k"><span className="pip" style={{ background: 'var(--text-faint)' }} />Totali</div></div>
+        </section>
+
+        {/* Filter bar */}
+        <div className="filter-bar rise" style={{ animationDelay: '.12s' }}>
+          <div className="segmented">
+            {filters.map(f => (
+              <button key={f.key} className={filter === f.key ? 'on' : ''} onClick={() => setFilter(f.key)}>
+                {f.label} <span className="cnt">{f.count}</span>
+              </button>
+            ))}
+          </div>
+          <div className="tu-select">
+            <select className="input" style={{ paddingRight: 34 }}>
+              <option>Tutti i tipi</option>
+              <option>Ferie</option>
+              <option>Permesso</option>
+              <option>Malattia</option>
+            </select>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </div>
         </div>
-      </div>
 
-      {loading && <p className="text-sm text-slate-400 py-4">Caricamento…</p>}
-      {error   && <p className="text-sm text-red-500 py-2">{error}</p>}
+        {loading && <p style={{ color: 'var(--text-faint)', fontSize: 14, padding: '24px 0' }}>Caricamento…</p>}
+        {error   && <p style={{ color: 'var(--red)', fontSize: 14 }}>{error}</p>}
 
-      {!loading && !error && (
-        <div className="card overflow-hidden">
-          <table className="w-full text-sm">
-            <thead className="bg-slate-50 border-b border-slate-200">
-              <tr>
-                {['Dipendente', 'Tipo', 'Dal', 'Al', 'Giorni', 'Motivo', 'Stato', ''].map(h => (
-                  <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {visible.length === 0 && (
+        {!loading && !error && (
+          <div className="card tbl-wrap rise" style={{ animationDelay: '.2s' }}>
+            <table className="tbl">
+              <thead>
                 <tr>
-                  <td colSpan={8} className="px-4 py-12 text-center text-slate-400 text-sm">
-                    {filter === 'Pending' ? 'Nessuna richiesta in attesa di approvazione.' : 'Nessuna richiesta.'}
-                  </td>
+                  <th>Dipendente</th><th>Tipo</th><th>Periodo</th>
+                  <th>Durata</th><th>Motivo</th><th>Stato</th><th className="r">Azioni</th>
                 </tr>
-              )}
-              {visible.map(r => {
-                const st = STATUS_MAP[r.status];
-                return (
-                  <tr key={r.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-4 py-3 font-semibold text-slate-900">{r.employeeName}</td>
-                    <td className="px-4 py-3 text-slate-600">{TYPE_LABEL[r.type] ?? r.type}</td>
-                    <td className="px-4 py-3 text-slate-500 font-mono text-xs">{fmt(r.startDate)}</td>
-                    <td className="px-4 py-3 text-slate-500 font-mono text-xs">{fmt(r.endDate)}</td>
-                    <td className="px-4 py-3 text-slate-600 font-mono text-xs">
-                      {r.totalDays} {r.totalDays === 1 ? 'g.' : 'gg.'}
-                    </td>
-                    <td className="px-4 py-3 text-slate-400 max-w-[160px] truncate text-xs" title={r.reason}>
-                      {r.reason || '—'}
-                    </td>
-                    <td className="px-4 py-3">
-                      {st && <span className={`badge border ${st.cls}`}>{st.label}</span>}
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      {r.status === 'Pending' && (
-                        <div className="flex items-center justify-end gap-2">
-                          <button
-                            onClick={() => approve(r.id)} disabled={acting === r.id}
-                            className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-100 hover:bg-emerald-100 px-2.5 py-1 rounded-lg disabled:opacity-50 transition-colors"
-                          >
-                            ✓ Approva
-                          </button>
-                          <button
-                            onClick={() => reject(r.id)} disabled={acting === r.id}
-                            className="inline-flex items-center gap-1 text-xs font-semibold text-red-600 bg-red-50 border border-red-100 hover:bg-red-100 px-2.5 py-1 rounded-lg disabled:opacity-50 transition-colors"
-                          >
-                            ✕ Rifiuta
-                          </button>
+              </thead>
+              <tbody>
+                {visible.length === 0 && (
+                  <tr><td colSpan={7} style={{ textAlign: 'center', color: 'var(--text-faint)', padding: '48px 0' }}>
+                    {filter === 'Pending' ? 'Nessuna richiesta in attesa.' : 'Nessuna richiesta.'}
+                  </td></tr>
+                )}
+                {visible.map(r => {
+                  const st = STATUS_MAP[r.status];
+                  return (
+                    <tr key={r.id}>
+                      <td>
+                        <div className="cell-user">
+                          <div className="avatar" style={{ background: avatarColor(r.employeeName) }}>{initials(r.employeeName)}</div>
+                          <div><div className="nm">{r.employeeName}</div></div>
                         </div>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </div>
+                      </td>
+                      <td><span className={`badge ${TYPE_BADGE[r.type] ?? 'badge-muted'}`}>{TYPE_LABEL[r.type] ?? r.type}</span></td>
+                      <td className="mono muted">{fmt(r.startDate)} – {fmt(r.endDate)}</td>
+                      <td>{r.totalDays} {r.totalDays === 1 ? 'g.' : 'gg.'}</td>
+                      <td className="muted" style={{ maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 13 }} title={r.reason}>{r.reason || '—'}</td>
+                      <td>{st && <span className={`badge ${st.cls}`}><span className="bdot" />{st.label}</span>}</td>
+                      <td className="r">
+                        {r.status === 'Pending' && (
+                          <div className="row-actions">
+                            <button
+                              className="btn-primary"
+                              style={{ padding: '7px 12px', fontSize: 13 }}
+                              disabled={acting === r.id}
+                              onClick={() => approve(r.id)}
+                            >
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><path d="m5 13 4 4L19 7"/></svg>
+                              Approva
+                            </button>
+                            <button
+                              className="btn-danger"
+                              style={{ padding: '7px 12px', fontSize: 13 }}
+                              disabled={acting === r.id}
+                              onClick={() => reject(r.id)}
+                            >
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+                              Rifiuta
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </main>
+    </>
   );
 }

@@ -733,6 +733,24 @@ Derivata dallo stato attuale del repository e dalle verifiche documentate:
 
 ---
 
+### Iterazione 30 — Bugfix dipendenti + foto profilo + form turno
+
+**Data:** 2026-05-31
+
+**Obiettivo:** Fix mapping employee API (firstName+lastName → name), rimozione KPI amber, implementazione foto profilo con expo-image-picker, form creazione turno con DateTimePicker e selettori modali.
+
+**Deliverable:**
+- `employee.service.ts` — mapping `firstName`+`lastName` → `name` dal payload API
+- `dashboard.tsx` — rimosso KPI "Turni questa settimana" (kpiAmber), layout 3 KPI
+- `KPI.tsx` — aggiunto `numberOfLines={2}` sul label per uniformità altezze
+- `Avatar.tsx` — aggiunto prop `uri` per mostrare foto reale
+- `(admin)/profile.tsx` + `(employee)/profile.tsx` — gestione foto profilo (camera/galleria) con `expo-image-picker`, persistenza in `SecureStore`
+- `(admin)/shifts/new.tsx` — form creazione turno con selettori dipendente/attività, DateTimePicker data+orari, campo note, submit a `ShiftService.createShift`
+
+**Status:** ✅ Completata
+
+---
+
 ### Iterazione 29 — API services completi + Cache + polish
 
 **Data:** TBD

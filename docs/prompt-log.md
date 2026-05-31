@@ -2,6 +2,65 @@
 
 ---
 
+## Prompt 64
+
+### Data
+2026-05-31
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Fix "errore sconosciuto" al click dipendente + sistema avatar globale persistente.
+
+### Prompt
+Fix `EmployeeService.getEmployee` che non mappava `firstName`+`lastName` → `name`, causando crash JS in `[id].tsx` riga `e.name.split(' ')`. Creare `AvatarContext.tsx` con `AvatarProvider` (chiave SecureStore per-userId `turnify_avatar_${id}`) e hook `useAvatar()` che espone `avatarUri` + `pickAvatar()`. Wrappare `AvatarProvider` in `_layout.tsx`. Refactoring di entrambi i profili (admin/employee) per usare `useAvatar()` anziché stato locale.
+
+### Output utile
+- `employee.service.ts` — fix `getEmployee` con stessa mappatura di `getEmployees`
+- `context/AvatarContext.tsx` — creato con `AvatarProvider`, chiave per-userId, `pickAvatar` con camera+gallery
+- `_layout.tsx` — aggiunto `<AvatarProvider>` nel provider tree
+- `(admin)/profile.tsx` + `(employee)/profile.tsx` — rimosso stato locale, usa `useAvatar()`
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Crash confermato: `name` undefined su `getEmployee` → TypeError silenzioso → apiError restituisce "Errore sconosciuto". AvatarContext garantisce persistenza cross-screen e cross-sessione (stessa chiave per-userId).
+
+---
+
+## Prompt 63
+
+### Data
+2026-05-31
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Fix bug lista dipendenti (nome non mostrato), rimozione KPI amber dalla dashboard, fix allineamento KPI, implementazione foto profilo con fotocamera/galleria, implementazione form creazione turno.
+
+### Prompt
+Nel progetto Mobile Expo: (1) `EmployeeService.getEmployees` mappa correttamente `firstName`+`lastName` → `name` dal payload API `{ data: [], total, page }`. (2) Rimuovere il KPI `kpiAmber` "Turni questa settimana" da `dashboard.tsx`, mantenendo 3 KPI in riga. (3) Aggiungere `numberOfLines={2}` al label in `KPI.tsx` per uniformare altezze. (4) Aggiungere prop `uri` ad `Avatar.tsx` per mostrare foto reale via `Image`. (5) Implementare `pickPhoto` in `(admin)/profile.tsx` e `(employee)/profile.tsx` con `expo-image-picker` (camera + gallery), persistenza in `SecureStore`. (6) Creare `(admin)/shifts/new.tsx` con form: selettore dipendente + attività (modal FlatList), DateTimePicker per data/inizio/fine, campo note, submit `ShiftService.createShift`.
+
+### Output utile
+- `employee.service.ts` — fix mapping nome
+- `dashboard.tsx` — rimosso KPI amber + variabile weekCount
+- `KPI.tsx` — numberOfLines={2}
+- `Avatar.tsx` — prop uri con Image fallback
+- `(admin)/profile.tsx` + `(employee)/profile.tsx` — pickPhoto con expo-image-picker + SecureStore
+- `(admin)/shifts/new.tsx` — form completo creato (130+ righe)
+- Installati `expo-image-picker`, `@react-native-community/datetimepicker`
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Fix dati dipendenti confermato analizzando EmployeeDto (firstName/lastName separati). Foto profilo persiste localmente in SecureStore, accettabile senza backend endpoint. Form turno usa modal nativi compatibili iOS/Android.
+
+---
+
 ## Prompt 62
 
 ### Data

@@ -59,7 +59,7 @@ export default function GdprConsentScreen() {
           <View style={styles.toggleLeft}>
             <Text style={[styles.toggleTitle, { color: t.text }]}>Comunicazioni marketing</Text>
             <Text style={[styles.toggleSub, { color: t.textSecondary }]}>
-              Acconsento a ricevere aggiornamenti e novità su Turnify. Facoltativo.
+              Acconsento a ricevere aggiornamenti e novità su TurniUp. Facoltativo.
             </Text>
           </View>
           <Toggle t={t} value={marketingAccepted} onValueChange={setMarketingAccepted} />

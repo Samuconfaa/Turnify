@@ -33,9 +33,9 @@ const AuthContext = createContext<AuthContextValue>({
 });
 
 const KEYS = {
-  token: 'turnify_access_token',
-  refresh: 'turnify_refresh_token',
-  user: 'turnify_user',
+  token: 'turniup_access_token',
+  refresh: 'turniup_refresh_token',
+  user: 'turniup_user',
 } as const;
 
 export function AuthProvider({ children }: { children: ReactNode }) {

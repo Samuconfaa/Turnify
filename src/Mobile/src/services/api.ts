@@ -11,7 +11,7 @@ export const api: AxiosInstance = axios.create({
 });
 
 api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
-  const token = await SecureStore.getItemAsync('turnify_access_token');
+  const token = await SecureStore.getItemAsync('turniup_access_token');
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
@@ -42,15 +42,15 @@ api.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      const refreshToken = await SecureStore.getItemAsync('turnify_refresh_token');
+      const refreshToken = await SecureStore.getItemAsync('turniup_refresh_token');
       if (!refreshToken) throw new Error('No refresh token');
 
       const { data } = await axios.post(`${BASE_URL}/api/auth/refresh`, { refreshToken });
       const newToken: string = data.accessToken;
 
-      await SecureStore.setItemAsync('turnify_access_token', newToken);
+      await SecureStore.setItemAsync('turniup_access_token', newToken);
       if (data.refreshToken) {
-        await SecureStore.setItemAsync('turnify_refresh_token', data.refreshToken);
+        await SecureStore.setItemAsync('turniup_refresh_token', data.refreshToken);
       }
 
       refreshQueue.forEach(cb => cb(newToken));
@@ -61,9 +61,9 @@ api.interceptors.response.use(
     } catch {
       refreshQueue = [];
       await Promise.all([
-        SecureStore.deleteItemAsync('turnify_access_token'),
-        SecureStore.deleteItemAsync('turnify_refresh_token'),
-        SecureStore.deleteItemAsync('turnify_user'),
+        SecureStore.deleteItemAsync('turniup_access_token'),
+        SecureStore.deleteItemAsync('turniup_refresh_token'),
+        SecureStore.deleteItemAsync('turniup_user'),
       ]);
       return Promise.reject(error);
     } finally {

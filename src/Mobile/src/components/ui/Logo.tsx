@@ -30,7 +30,7 @@ export function Logo({ size = 40, color = '#006948', textColor = '#171D19', with
         </Svg>
       </View>
       {withText && (
-        <Text style={[styles.name, { fontSize: size * 0.5, color: textColor }]}>Turnify</Text>
+        <Text style={[styles.name, { fontSize: size * 0.5, color: textColor }]}>TurniUp</Text>
       )}
     </View>
   );

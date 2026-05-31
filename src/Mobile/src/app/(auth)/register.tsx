@@ -83,7 +83,7 @@ export default function RegisterScreen() {
             <Input t={t} label="Slug identificativo" value={companySlug}
               onChangeText={setCompanySlug}
               autoCapitalize="none" autoCorrect={false} leadingIcon="globe"
-              helper={companySlug ? `turnify.it/${companySlug}` : undefined} />
+              helper={companySlug ? `turniup.it/${companySlug}` : undefined} />
             <Input t={t} label="Email aziendale" value={companyEmail} onChangeText={setCompanyEmail}
               keyboardType="email-address" autoCapitalize="none" leadingIcon="mail" />
           </View>

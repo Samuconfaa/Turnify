@@ -6,6 +6,7 @@ import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/context/ThemeContext';
 import { useAuth } from '@/context/AuthContext';
+import { useAvatar } from '@/context/AvatarContext';
 import { EmployeeTabLayout } from '@/components/EmployeeTabLayout';
 import { Avatar, DangerBtn, Icon, SectionLabel, SettingsRow, Toggle } from '@/components/ui';
 import { textOnPrimary } from '@/constants/tokens';
@@ -17,6 +18,7 @@ function initials(name: string): string {
 export default function EmployeeProfileScreen() {
   const { t, dark } = useTheme();
   const { user, clearAuth } = useAuth();
+  const { avatarUri, pickAvatar } = useAvatar();
   const insets = useSafeAreaInsets();
   const textOnPri = textOnPrimary(t);
   const purpleBg = '#EEE5F7';
@@ -42,8 +44,8 @@ export default function EmployeeProfileScreen() {
           </View>
           <View style={styles.heroInfo}>
             <View>
-              <Avatar t={t} initials={initials(user?.name ?? '?')} size={88} bg="rgba(255,255,255,0.95)" color={t.primary} />
-              <TouchableOpacity style={[styles.cameraBtn, { backgroundColor: t.surface, borderColor: t.primary }]}>
+              <Avatar t={t} initials={initials(user?.name ?? '?')} size={88} bg="rgba(255,255,255,0.95)" color={t.primary} uri={avatarUri} />
+              <TouchableOpacity style={[styles.cameraBtn, { backgroundColor: t.surface, borderColor: t.primary }]} onPress={pickAvatar}>
                 <Icon name="camera" size={14} color={t.primary} strokeWidth={2} />
               </TouchableOpacity>
             </View>
@@ -73,9 +75,9 @@ export default function EmployeeProfileScreen() {
           <SectionLabel t={t} style={{ marginTop: 14, marginBottom: 0 }}>Account</SectionLabel>
           <View>
             <SettingsRow t={t} icon="camera" iconBg={t.surfaceLow} iconColor={t.textSecondary} title="Cambia foto profilo"
-              onPress={() => Alert.alert('Info', 'Disponibile nella prossima versione.')} />
+              onPress={pickAvatar} />
             <SettingsRow t={t} icon="lock" iconBg={t.surfaceLow} iconColor={t.textSecondary} title="Cambia password"
-              onPress={() => Alert.alert('Info', 'Disponibile nella prossima versione.')} />
+              onPress={() => router.push('/(employee)/change-password' as any)} />
             <SettingsRow
               t={t} icon="moon" iconBg={t.surfaceLow} iconColor={t.textSecondary} title="Tema scuro"
               trailing={<Toggle t={t} value={dark} onValueChange={() => Alert.alert('Info', 'Cambia tema nelle impostazioni del dispositivo.')} />}
@@ -89,7 +91,7 @@ export default function EmployeeProfileScreen() {
               <Icon name="logout" size={18} color={t.danger} strokeWidth={2} /> Esci dall'account
             </DangerBtn>
           </View>
-          <Text style={[styles.version, { color: t.textSecondary }]}>Turnify v1.0.0</Text>
+          <Text style={[styles.version, { color: t.textSecondary }]}>TurniUp v1.0.0</Text>
         </View>
       </ScrollView>
     </EmployeeTabLayout>

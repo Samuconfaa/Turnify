@@ -103,7 +103,7 @@ export default function OnboardingScreen() {
               <FeatureCard t={t} icon="palm" iconBg={t.kpiBlueBg} iconColor={t.kpiBlue} title="Ferie e permessi" sub="Approva con un tap" />
               <FeatureCard t={t} icon="bar" iconBg={t.kpiDangerBg} iconColor={t.danger} title="Report ore" sub="Esporta in CSV" />
             </View>
-            <Text style={[styles.welcomeTitle, { color: t.text }]}>Benvenuto in Turnify</Text>
+            <Text style={[styles.welcomeTitle, { color: t.text }]}>Benvenuto in TurniUp</Text>
             <Text style={[styles.welcomeSub, { color: t.textSecondary }]}>
               Configuriamo insieme la tua attività. Tre passi, due minuti.
             </Text>

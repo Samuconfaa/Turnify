@@ -73,7 +73,7 @@ export default function LoginScreen() {
             <View style={[styles.iconBox, { borderColor: 'rgba(255,255,255,0.30)' }]}>
               <Icon name="clock" size={32} color={fg} strokeWidth={2} />
             </View>
-            <Text style={[styles.heroTitle, { color: fg }]}>Turnify</Text>
+            <Text style={[styles.heroTitle, { color: fg }]}>TurniUp</Text>
           </View>
         </Hero>
 

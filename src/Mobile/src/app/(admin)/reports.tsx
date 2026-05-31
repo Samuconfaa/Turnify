@@ -29,7 +29,7 @@ export default function ReportsScreen() {
       if (type === 'hours') await ReportService.downloadHours(from, to);
       else if (type === 'attendance') await ReportService.downloadAttendance(from, to);
       else await ReportService.downloadVacations(from, to);
-      setLastExport(`turnify-${type}-${from}.csv`);
+      setLastExport(`turniup-${type}-${from}.csv`);
     } catch (e) { Alert.alert('Errore', apiError(e)); }
     finally { setExporting(null); }
   };

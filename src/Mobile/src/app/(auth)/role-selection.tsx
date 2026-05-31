@@ -19,7 +19,7 @@ export default function RoleSelectionScreen() {
       <View style={styles.heading}>
         <Text style={[styles.title, { color: t.text }]}>Bentornato</Text>
         <Text style={[styles.subtitle, { color: t.textSecondary }]}>
-          Scegli come vuoi accedere a Turnify.
+          Scegli come vuoi accedere a TurniUp.
         </Text>
       </View>
 

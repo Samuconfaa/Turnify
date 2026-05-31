@@ -11,17 +11,11 @@ interface Employee { id: number; firstName: string; lastName: string; }
 
 const STATUS_OPTIONS = ['Scheduled', 'InProgress', 'Completed', 'Cancelled'];
 
-const STATUS_LABEL: Record<string, string> = {
-  Scheduled:  'Pianificato',
-  InProgress: 'In corso',
-  Completed:  'Completato',
-  Cancelled:  'Annullato',
-};
-const STATUS_STYLE: Record<string, string> = {
-  Scheduled:  'bg-blue-100 text-blue-700',
-  InProgress: 'bg-yellow-100 text-yellow-700',
-  Completed:  'bg-green-100 text-green-700',
-  Cancelled:  'bg-red-100 text-red-700',
+const STATUS_MAP: Record<string, { label: string; cls: string }> = {
+  Scheduled:  { label: 'Pianificato', cls: 'bg-indigo-50 text-indigo-700 border-indigo-100' },
+  InProgress: { label: 'In corso',    cls: 'bg-amber-50 text-amber-700 border-amber-100' },
+  Completed:  { label: 'Completato',  cls: 'bg-emerald-50 text-emerald-700 border-emerald-100' },
+  Cancelled:  { label: 'Annullato',   cls: 'bg-red-50 text-red-600 border-red-100' },
 };
 
 function weekStart(d: Date) {
@@ -123,7 +117,6 @@ export default function ShiftsPage() {
   const nextWeek = () => setWeek(d => new Date(d.getTime() + 7 * 86400000));
   const weekEnd  = new Date(week.getTime() + 6 * 86400000);
   const isCurrentWeek = weekStart(new Date()).getTime() === week.getTime();
-
   const weekLabel = `${week.toLocaleDateString('it-IT', { day: '2-digit', month: 'short' })} – ${weekEnd.toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' })}`;
 
   const countByStatus = STATUS_OPTIONS.reduce<Record<string, number>>((acc, s) => {
@@ -133,83 +126,80 @@ export default function ShiftsPage() {
 
   return (
     <div>
+      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Turni</h1>
+          <h1 className="page-title">Turni</h1>
           {!loading && !error && (
-            <p className="text-sm text-gray-500 mt-1">
-              {shifts.length} turni · {' '}
+            <p className="page-sub">
+              {shifts.length} turni ·{' '}
               {STATUS_OPTIONS.filter(s => countByStatus[s] > 0).map(s =>
-                `${countByStatus[s]} ${STATUS_LABEL[s].toLowerCase()}`
+                `${countByStatus[s]} ${STATUS_MAP[s]?.label.toLowerCase() ?? s}`
               ).join(' · ')}
             </p>
           )}
         </div>
-        <button
-          onClick={openCreate}
-          className="bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-        >
+        <button onClick={openCreate} className="btn-primary">
           + Nuovo turno
         </button>
       </div>
 
-      {/* Navigazione settimana */}
-      <div className="flex items-center gap-2 mb-4">
-        <button onClick={prevWeek} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-600">
-          ← Prec.
-        </button>
-        <span className="text-sm font-medium text-gray-700 min-w-[200px] text-center">{weekLabel}</span>
-        <button onClick={nextWeek} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-600">
-          Succ. →
-        </button>
+      {/* Week navigator */}
+      <div className="flex items-center gap-2 mb-5">
+        <button onClick={prevWeek} className="btn-secondary px-3 py-2">← Prec.</button>
+        <span className="text-sm font-semibold text-slate-700 min-w-[220px] text-center bg-white border border-slate-200 rounded-lg px-4 py-2">
+          {weekLabel}
+        </span>
+        <button onClick={nextWeek} className="btn-secondary px-3 py-2">Succ. →</button>
         {!isCurrentWeek && (
-          <button onClick={() => setWeek(weekStart(new Date()))} className="ml-1 text-sm text-blue-600 hover:text-blue-800 font-medium">
+          <button onClick={() => setWeek(weekStart(new Date()))} className="text-sm text-indigo-600 hover:text-indigo-800 font-semibold ml-1 transition-colors">
             Oggi
           </button>
         )}
       </div>
 
-      {loading && <p className="text-sm text-gray-400">Caricamento…</p>}
-      {error   && <p className="text-sm text-red-500">{error}</p>}
+      {loading && <p className="text-sm text-slate-400 py-4">Caricamento…</p>}
+      {error   && <p className="text-sm text-red-500 py-2">{error}</p>}
 
       {!loading && !error && (
-        <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+        <div className="card overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-slate-50 border-b border-slate-200">
               <tr>
                 {['Dipendente', 'Inizio', 'Fine', 'Etichetta', 'Note', 'Stato', ''].map(h => (
-                  <th key={h} className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">{h}</th>
+                  <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-slate-100">
               {shifts.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-4 py-10 text-center text-gray-400">
+                  <td colSpan={7} className="px-4 py-12 text-center text-slate-400 text-sm">
                     Nessun turno questa settimana.
                   </td>
                 </tr>
               )}
-              {shifts.map(s => (
-                <tr key={s.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 font-medium text-gray-900">{s.employeeName}</td>
-                  <td className="px-4 py-3 text-gray-600 font-mono text-xs">{fmtDT(s.startTime)}</td>
-                  <td className="px-4 py-3 text-gray-600 font-mono text-xs">{fmtTime(s.endTime)}</td>
-                  <td className="px-4 py-3 text-gray-600">{s.label || '—'}</td>
-                  <td className="px-4 py-3 text-gray-400 max-w-[140px] truncate text-xs" title={s.note}>
-                    {s.note || '—'}
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_STYLE[s.status] ?? 'bg-gray-100 text-gray-600'}`}>
-                      {STATUS_LABEL[s.status] ?? s.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-right space-x-3">
-                    <button onClick={() => openEdit(s)} className="text-blue-600 hover:text-blue-800 text-xs font-medium">Modifica</button>
-                    <button onClick={() => handleDelete(s.id)} className="text-red-500 hover:text-red-700 text-xs font-medium">Elimina</button>
-                  </td>
-                </tr>
-              ))}
+              {shifts.map(s => {
+                const st = STATUS_MAP[s.status];
+                return (
+                  <tr key={s.id} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-4 py-3 font-semibold text-slate-900">{s.employeeName}</td>
+                    <td className="px-4 py-3 text-slate-500 font-mono text-xs">{fmtDT(s.startTime)}</td>
+                    <td className="px-4 py-3 text-slate-500 font-mono text-xs">{fmtTime(s.endTime)}</td>
+                    <td className="px-4 py-3 text-slate-600">{s.label || '—'}</td>
+                    <td className="px-4 py-3 text-slate-400 max-w-[140px] truncate text-xs" title={s.note}>
+                      {s.note || '—'}
+                    </td>
+                    <td className="px-4 py-3">
+                      {st && <span className={`badge border ${st.cls}`}>{st.label}</span>}
+                    </td>
+                    <td className="px-4 py-3 text-right space-x-3">
+                      <button onClick={() => openEdit(s)} className="text-indigo-600 hover:text-indigo-800 text-xs font-semibold transition-colors">Modifica</button>
+                      <button onClick={() => handleDelete(s.id)} className="text-red-500 hover:text-red-700 text-xs font-semibold transition-colors">Elimina</button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -217,21 +207,20 @@ export default function ShiftsPage() {
 
       {/* Modal */}
       {modal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md">
-            <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-              <h2 className="font-semibold text-gray-900">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+            <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
+              <h2 className="font-semibold text-slate-900">
                 {modal === 'create' ? 'Nuovo turno' : 'Modifica turno'}
               </h2>
-              <button onClick={() => setModal(null)} className="text-gray-400 hover:text-gray-600 text-lg leading-none">✕</button>
+              <button onClick={() => setModal(null)} className="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 flex items-center justify-center transition-colors">
+                ✕
+              </button>
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Dipendente</label>
-                <select
-                  value={form.employeeId} onChange={e => set('employeeId', e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
+                <label className="label">Dipendente</label>
+                <select value={form.employeeId} onChange={e => set('employeeId', e.target.value)} className="input">
                   <option value="">Seleziona…</option>
                   {employees.map(e => <option key={e.id} value={e.id}>{e.firstName} {e.lastName}</option>)}
                 </select>
@@ -239,49 +228,39 @@ export default function ShiftsPage() {
               <div className="grid grid-cols-2 gap-4">
                 {(['startTime', 'endTime'] as const).map((k, i) => (
                   <div key={k}>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">{i === 0 ? 'Inizio' : 'Fine'}</label>
+                    <label className="label">{i === 0 ? 'Inizio' : 'Fine'}</label>
                     <input
                       type="datetime-local" value={form[k]} onChange={e => set(k, e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="input"
                     />
                   </div>
                 ))}
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Etichetta</label>
-                <input
-                  value={form.label} onChange={e => set('label', e.target.value)}
-                  placeholder="es. Apertura"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+                <label className="label">Etichetta</label>
+                <input value={form.label} onChange={e => set('label', e.target.value)} placeholder="es. Apertura" className="input" />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Note</label>
+                <label className="label">Note</label>
                 <textarea
                   value={form.note} onChange={e => set('note', e.target.value)}
                   rows={2} placeholder="Note opzionali…"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  className="input resize-none"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Stato</label>
-                <select
-                  value={form.status} onChange={e => set('status', e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  {STATUS_OPTIONS.map(s => <option key={s} value={s}>{STATUS_LABEL[s]}</option>)}
+                <label className="label">Stato</label>
+                <select value={form.status} onChange={e => set('status', e.target.value)} className="input">
+                  {STATUS_OPTIONS.map(s => <option key={s} value={s}>{STATUS_MAP[s]?.label ?? s}</option>)}
                 </select>
               </div>
               {formError && (
-                <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{formError}</p>
+                <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2.5">{formError}</p>
               )}
             </div>
-            <div className="p-6 border-t border-gray-100 flex justify-end gap-3">
-              <button onClick={() => setModal(null)} className="text-sm text-gray-600 px-4 py-2">Annulla</button>
-              <button
-                onClick={handleSave} disabled={saving}
-                className="bg-blue-600 text-white text-sm font-medium px-5 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
-              >
+            <div className="px-6 py-4 border-t border-slate-100 flex justify-end gap-3">
+              <button onClick={() => setModal(null)} className="btn-secondary">Annulla</button>
+              <button onClick={handleSave} disabled={saving} className="btn-primary">
                 {saving ? 'Salvataggio…' : 'Salva'}
               </button>
             </div>

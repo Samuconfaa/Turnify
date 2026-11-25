@@ -12,7 +12,8 @@ const CONTRACT_LABELS: Record<string, string> = {
   FullTime: 'Full-time', PartTime: 'Part-time', Freelance: 'Freelance', Internship: 'Stage',
 };
 
-function initials(name: string): string {
+function initials(name?: string): string {
+  if (!name) return '';
   return name.split(' ').map(p => p[0] ?? '').join('').toUpperCase().slice(0, 2);
 }
 

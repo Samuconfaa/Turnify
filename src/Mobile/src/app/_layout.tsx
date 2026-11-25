@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
-import { useColorScheme } from 'react-native';
 import {
   useFonts,
   PlusJakartaSans_400Regular,
@@ -11,12 +10,22 @@ import {
   PlusJakartaSans_700Bold,
 } from '@expo-google-fonts/plus-jakarta-sans';
 import { ThemeProvider, useTheme } from '@/context/ThemeContext';
-import { AuthProvider } from '@/context/AuthContext';
+import { AuthProvider, useAuth } from '@/context/AuthContext';
+import { AvatarProvider } from '@/context/AvatarContext';
+import { NotificationService } from '@/services/notification.service';
 
 SplashScreen.preventAutoHideAsync();
 
 function RootStack() {
   const { dark } = useTheme();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      NotificationService.registerDeviceToken();
+    }
+  }, [user?.id]);
+
   return (
     <>
       <StatusBar style={dark ? 'light' : 'dark'} />
@@ -42,7 +51,9 @@ export default function RootLayout() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <RootStack />
+        <AvatarProvider>
+          <RootStack />
+        </AvatarProvider>
       </AuthProvider>
     </ThemeProvider>
   );

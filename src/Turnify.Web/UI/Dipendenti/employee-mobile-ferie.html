@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="it" data-page="ferie">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ferie · TurniUp Mobile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="turniup.css">
+<link rel="stylesheet" href="turniup-mobile.css">
+</head>
+<body class="m-body">
+<div class="device">
+  <div class="screen">
+    <div class="statusbar" id="statusbar"></div>
+
+    <header class="m-topbar">
+      <img class="mt-logo" src="../image/splash.png" alt="TurniUp">
+      <h1 style="font-size:18px">Ferie & permessi</h1>
+    </header>
+
+    <main class="m-content">
+      <!-- BILANCIO -->
+      <div class="m-card" style="display:flex;align-items:center;gap:18px">
+        <div style="text-align:center">
+          <div style="font-family:var(--font-display);font-weight:800;font-size:48px;line-height:.9;color:var(--primary)">12</div>
+          <div style="font-size:12px;color:var(--text-muted);font-weight:600;margin-top:4px">giorni rimanenti</div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:9px;border-left:1px solid var(--border);padding-left:18px">
+          <div style="display:flex;justify-content:space-between"><span style="font-size:13px;color:var(--text-muted)">Usati</span><span class="mono" style="font-weight:600">16</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="font-size:13px;color:var(--text-muted)">Totali annui</span><span class="mono" style="font-weight:600">28</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="font-size:13px;color:var(--text-muted)">In attesa</span><span class="mono" style="font-weight:600;color:var(--amber)">3</span></div>
+        </div>
+      </div>
+
+      <!-- FILTRI -->
+      <div class="h-scroll chips" style="margin-top:16px;gap:8px">
+        <button class="chip active">Tutte</button>
+        <button class="chip">In attesa</button>
+        <button class="chip">Approvate</button>
+        <button class="chip">Rifiutate</button>
+      </div>
+
+      <!-- LISTA -->
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:16px">
+        <div class="m-card">
+          <div style="display:flex;align-items:center;gap:10px"><span class="badge badge-primary no-dot">Ferie</span><div style="flex:1"></div><span class="badge badge-amber">In attesa</span></div>
+          <div style="font-family:var(--font-display);font-weight:700;font-size:16px;margin-top:10px">14 lug → 25 lug 2026</div>
+          <div style="font-size:13px;color:var(--text-muted);margin-top:3px">10 giorni · Vacanza estiva in famiglia</div>
+        </div>
+        <div class="m-card">
+          <div style="display:flex;align-items:center;gap:10px"><span class="badge badge-blue no-dot">Permesso</span><div style="flex:1"></div><span class="badge badge-green">Approvata</span></div>
+          <div style="font-family:var(--font-display);font-weight:700;font-size:16px;margin-top:10px">20 giu 2026 · 14:00 – 17:00</div>
+          <div style="font-size:13px;color:var(--text-muted);margin-top:3px">3 ore · Visita medica</div>
+        </div>
+        <div class="m-card">
+          <div style="display:flex;align-items:center;gap:10px"><span class="badge badge-primary no-dot">Ferie</span><div style="flex:1"></div><span class="badge badge-green">Approvata</span></div>
+          <div style="font-family:var(--font-display);font-weight:700;font-size:16px;margin-top:10px">2 mag → 5 mag 2026</div>
+          <div style="font-size:13px;color:var(--text-muted);margin-top:3px">4 giorni · Ponte del 1° maggio</div>
+        </div>
+        <div class="m-card">
+          <div style="display:flex;align-items:center;gap:10px"><span class="badge badge-red no-dot">Malattia</span><div style="flex:1"></div><span class="badge badge-green">Approvata</span></div>
+          <div style="font-family:var(--font-display);font-weight:700;font-size:16px;margin-top:10px">10 apr → 12 apr 2026</div>
+          <div style="font-size:13px;color:var(--text-muted);margin-top:3px">3 giorni · Certificato INPS allegato</div>
+        </div>
+        <div class="m-card">
+          <div style="display:flex;align-items:center;gap:10px"><span class="badge badge-primary no-dot">Ferie</span><div style="flex:1"></div><span class="badge badge-red">Rifiutata</span></div>
+          <div style="font-family:var(--font-display);font-weight:700;font-size:16px;margin-top:10px">23 dic → 27 dic 2025</div>
+          <div style="font-size:13px;color:var(--text-muted);margin-top:3px">3 giorni · Personale insufficiente</div>
+        </div>
+      </div>
+    </main>
+
+    <!-- FAB -->
+    <button class="fab-single" aria-label="Nuova richiesta" onclick="MTU.openSheet('sheet-req')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+
+    <!-- BOTTOM SHEET -->
+    <div class="sheet-overlay" id="sheet-req">
+      <div class="sheet">
+        <div class="handle"></div>
+        <div class="sheet-head"><h2>Nuova richiesta</h2><div style="flex:1"></div><button class="m-icon-btn" data-action="close-sheet" aria-label="Chiudi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+        <div class="sheet-body">
+          <div class="field"><label for="r-tipo">Tipo</label><select class="select" id="r-tipo"><option>Ferie</option><option>Permesso</option><option>Malattia</option></select></div>
+          <div class="field"><label for="r-da">Data inizio</label><input class="input" id="r-da" type="date" value="2026-07-14"></div>
+          <div class="field"><label for="r-a">Data fine</label><input class="input" id="r-a" type="date" value="2026-07-25"></div>
+          <div class="field"><label for="r-note">Note</label><textarea class="textarea" id="r-note" placeholder="Aggiungi una nota per il responsabile…"></textarea></div>
+        </div>
+        <div class="sheet-foot"><button class="btn btn-primary btn-lg" onclick="MTU.closeSheet('sheet-req'); MTU.toast('Richiesta inviata','green');">Invia richiesta</button></div>
+      </div>
+    </div>
+
+    <nav class="tabbar" id="tabbar"></nav>
+  </div>
+</div>
+<script src="mobile-nav.js"></script>
+<script>
+  document.querySelectorAll(".chips .chip").forEach(function(c){
+    c.addEventListener("click", function(){
+      document.querySelectorAll(".chips .chip").forEach(function(x){x.classList.remove("active");});
+      c.classList.add("active");
+    });
+  });
+</script>
+</body>
+</html>

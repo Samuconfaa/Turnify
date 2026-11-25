@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="it" data-page="turni">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>I miei turni · TurniUp Dipendente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="turniup.css">
+<style>
+  .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
+  .day-col { display: flex; flex-direction: column; gap: 8px; }
+  .day-head { text-align: center; padding: 9px 4px; border-radius: var(--r-sm); }
+  .day-head .dow { font-family: var(--font-display); font-weight: 700; font-size: 13px; }
+  .day-head .dnum { font-family: var(--font-mono); font-size: 13px; color: var(--text-muted); }
+  .day-head.today { background: var(--primary-soft); }
+  .day-head.today .dow, .day-head.today .dnum { color: var(--primary-strong); }
+  .day-head.sat { background: var(--amber-soft); }
+  .day-head.sun { background: var(--red-soft); }
+  html[data-theme="dark"] .day-head.sat .dnum { color: var(--amber); }
+  .shift-cell {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-sm);
+    padding: 10px; box-shadow: var(--shadow-sm); min-height: 84px;
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  .shift-cell.empty { background: var(--surface-2); border-style: dashed; align-items: center; justify-content: center; color: var(--text-muted); font-size: 12px; min-height: 84px; box-shadow: none; }
+  .shift-cell.today-cell { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-soft); }
+  .shift-time { font-family: var(--font-mono); font-weight: 600; font-size: 13.5px; }
+  .shift-biz { font-size: 12px; color: var(--text-muted); line-height: 1.2; }
+  .shift-dur { margin-top: auto; font-size: 11px; font-weight: 600; color: var(--primary-strong); }
+
+  .shift-card { display: flex; align-items: center; gap: 18px; padding: 16px 20px; }
+  .shift-card .big-time { font-family: var(--font-display); font-weight: 800; font-size: 24px; letter-spacing: -0.01em; min-width: 168px; }
+  .shift-card .meta { flex: 1; line-height: 1.3; }
+  .shift-card .meta .d { font-weight: 600; }
+  .shift-card .meta .s { font-size: 13px; color: var(--text-muted); }
+  @media (max-width: 768px) {
+    .week-grid { grid-template-columns: repeat(7, minmax(120px,1fr)); overflow-x: auto; padding-bottom: 8px; }
+    .shift-card { flex-wrap: wrap; gap: 10px; }
+    .shift-card .big-time { min-width: 0; font-size: 21px; }
+  }
+</style>
+</head>
+<body>
+<div class="scrim"></div>
+<div class="app">
+  <div id="sb"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn hamburger" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <div class="topbar-title">
+        <span class="topbar-eyebrow">I miei turni</span>
+        <h1>Settimana 1 – 7 giugno</h1>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="topbar-actions">
+        <button class="btn btn-secondary btn-sm" aria-label="Settimana precedente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <button class="btn btn-secondary btn-sm">Oggi</button>
+        <button class="btn btn-secondary btn-sm" aria-label="Settimana successiva"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+        <button class="icon-btn" data-action="theme" aria-label="Tema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+      </div>
+    </header>
+
+    <div class="content">
+      <!-- VISTA SETTIMANALE -->
+      <div class="card card-pad" style="margin-bottom:24px">
+        <div class="week-grid">
+          <div class="day-col">
+            <div class="day-head today"><div class="dow">Lun</div><div class="dnum">1</div></div>
+            <div class="shift-cell today-cell"><div class="shift-time">09:00–17:00</div><div class="shift-biz">Cassa Nord</div><div class="shift-dur">8h</div></div>
+          </div>
+          <div class="day-col">
+            <div class="day-head"><div class="dow">Mar</div><div class="dnum">2</div></div>
+            <div class="shift-cell"><div class="shift-time">13:00–21:00</div><div class="shift-biz">Cassa Nord</div><div class="shift-dur">8h</div></div>
+          </div>
+          <div class="day-col">
+            <div class="day-head"><div class="dow">Mer</div><div class="dnum">3</div></div>
+            <div class="shift-cell empty">Riposo</div>
+          </div>
+          <div class="day-col">
+            <div class="day-head"><div class="dow">Gio</div><div class="dnum">4</div></div>
+            <div class="shift-cell"><div class="shift-time">09:00–17:00</div><div class="shift-biz">Cassa Nord</div><div class="shift-dur">8h</div></div>
+          </div>
+          <div class="day-col">
+            <div class="day-head"><div class="dow">Ven</div><div class="dnum">5</div></div>
+            <div class="shift-cell"><div class="shift-time">09:00–13:00</div><div class="shift-biz">Magazzino</div><div class="shift-dur">4h</div></div>
+          </div>
+          <div class="day-col">
+            <div class="day-head sat"><div class="dow">Sab</div><div class="dnum">6</div></div>
+            <div class="shift-cell"><div class="shift-time">10:00–18:00</div><div class="shift-biz">Cassa Nord</div><div class="shift-dur">8h</div></div>
+          </div>
+          <div class="day-col">
+            <div class="day-head sun"><div class="dow">Dom</div><div class="dnum">7</div></div>
+            <div class="shift-cell empty">Riposo</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LISTA TURNI -->
+      <div class="section-title">Turni della settimana</div>
+      <div class="grid" style="gap:12px">
+
+        <div class="card shift-card">
+          <div class="big-time">09:00 – 17:00</div>
+          <div class="meta">
+            <div class="d">Lunedì 1 giugno · <span class="mono">8h</span></div>
+            <div class="s">Cassa Nord</div>
+          </div>
+          <span class="badge badge-green">Entrata 08:58</span>
+          <button class="btn btn-green btn-sm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Timbra uscita</button>
+        </div>
+
+        <div class="card shift-card">
+          <div class="big-time">13:00 – 21:00</div>
+          <div class="meta">
+            <div class="d">Martedì 2 giugno · <span class="mono">8h</span></div>
+            <div class="s">Cassa Nord</div>
+          </div>
+          <span class="badge badge-gray">In programma</span>
+          <button class="btn btn-secondary btn-sm" disabled style="opacity:.6">Timbra entrata</button>
+        </div>
+
+        <div class="card shift-card">
+          <div class="big-time">09:00 – 17:00</div>
+          <div class="meta">
+            <div class="d">Giovedì 4 giugno · <span class="mono">8h</span></div>
+            <div class="s">Cassa Nord</div>
+          </div>
+          <span class="badge badge-gray">In programma</span>
+          <button class="btn btn-secondary btn-sm" disabled style="opacity:.6">Timbra entrata</button>
+        </div>
+
+        <div class="card shift-card">
+          <div class="big-time">09:00 – 13:00</div>
+          <div class="meta">
+            <div class="d">Venerdì 5 giugno · <span class="mono">4h</span></div>
+            <div class="s">Magazzino</div>
+          </div>
+          <span class="badge badge-gray">In programma</span>
+          <button class="btn btn-secondary btn-sm" disabled style="opacity:.6">Timbra entrata</button>
+        </div>
+
+        <div class="card shift-card">
+          <div class="big-time">10:00 – 18:00</div>
+          <div class="meta">
+            <div class="d">Sabato 6 giugno · <span class="mono">8h</span></div>
+            <div class="s">Cassa Nord</div>
+          </div>
+          <span class="badge badge-amber no-dot">Weekend</span>
+          <button class="btn btn-secondary btn-sm" disabled style="opacity:.6">Timbra entrata</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<script src="sidebar.js"></script>
+<script>
+  document.querySelectorAll(".shift-card .btn-green").forEach(function(b){
+    b.addEventListener("click", function(){
+      b.outerHTML = '<span class="badge badge-amber no-dot">Uscita 17:05</span>';
+      TU.toast("Uscita registrata", "green");
+    });
+  });
+</script>
+</body>
+</html>

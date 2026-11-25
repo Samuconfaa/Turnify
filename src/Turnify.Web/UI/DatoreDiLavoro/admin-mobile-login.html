@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>TurniUp Mobile — Accedi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="turniup.css">
+<link rel="stylesheet" href="turniup-mobile.css">
+<style>
+.login-screen{display:flex;flex-direction:column;padding:0 26px;overflow-y:auto}
+.login-screen .top{display:flex;justify-content:flex-end;padding-top:calc(env(safe-area-inset-top) + 22px)}
+.phone .login-screen .top{padding-top:26px}
+.login-hero{text-align:center;margin-top:30px}
+.login-hero .bm{width:64px;height:64px;border-radius:19px;margin:0 auto;overflow:hidden;
+  box-shadow:0 12px 28px -8px oklch(0.6 0.14 45 / .6)}
+.login-hero .bm img{width:100%;height:100%;object-fit:cover;display:block}
+.login-hero .nm{font-family:var(--font-display);font-weight:700;font-size:27px;letter-spacing:-.02em;color:var(--text);margin-top:16px}
+.login-hero .admin-chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--primary);background:var(--primary-soft);padding:4px 11px;border-radius:99px;margin-top:10px;font-weight:600}
+[data-theme="dark"] .login-hero .admin-chip{color:var(--primary)}
+.login-form{margin-top:38px}
+.login-form .mf label{font-size:13.5px}
+.login-form .input{height:50px;font-size:15px;padding:0 15px}
+.pw-wrap{position:relative}
+.pw-wrap .eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:none;background:none;color:var(--text-faint);display:grid;place-items:center;cursor:pointer}
+.pw-wrap .eye svg{width:19px;height:19px;stroke-width:1.9}
+.pw-wrap .input{padding-right:46px}
+.forgot{display:block;text-align:right;margin-top:13px;font-size:13.5px;font-weight:600;color:var(--primary)}
+.login-btn{width:100%;height:52px;font-size:15.5px;margin-top:26px}
+.login-foot{margin-top:auto;text-align:center;padding:30px 0 calc(28px + env(safe-area-inset-bottom));font-size:12.5px;color:var(--text-faint)}
+</style>
+</head>
+<body class="m-body" data-page="login" data-no-tabbar>
+<div class="phone">
+  <div class="notch"></div>
+  <div class="screen">
+    <div class="login-screen m-scroll no-tab" style="padding-left:26px;padding-right:26px">
+      <div class="top"><div data-theme-toggle></div></div>
+
+      <div class="login-hero">
+        <div class="bm"><img src="../image/splash.png" alt="TurniUp"></div>
+        <div class="nm">TurniUp</div>
+        <div class="admin-chip">Pannello Admin</div>
+      </div>
+
+      <form class="login-form" onsubmit="return false">
+        <div class="mf"><label>Email aziendale</label><input class="input" type="email" placeholder="marco@turniup.it" autocomplete="username"></div>
+        <div class="mf"><label>Password</label>
+          <div class="pw-wrap">
+            <input class="input" id="pw" type="password" placeholder="••••••••••" autocomplete="current-password">
+            <button class="eye" id="eye" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6 5 12 5s9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+        </div>
+        <a class="forgot" href="#">Hai dimenticato la password?</a>
+        <a class="btn-primary login-btn" href="admin-mobile-dashboard.html">Accedi<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </form>
+
+      <div class="login-foot">© TurniUp 2026 · Accesso riservato ai datori di lavoro</div>
+    </div>
+  </div>
+</div>
+<script src="turniup-mobile.js"></script>
+<script>
+document.querySelectorAll('[data-theme-toggle]').forEach(s=>s.innerHTML=window.themeToggleHTML);
+const eye=document.getElementById('eye'),pw=document.getElementById('pw');
+eye.addEventListener('click',()=>{const show=pw.type==='password';pw.type=show?'text':'password';
+  eye.innerHTML=show?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18M10.6 10.7a3 3 0 0 0 4 4M9.4 5.3A9.7 9.7 0 0 1 12 5c6 0 9.5 7 9.5 7a16 16 0 0 1-3 3.8M6.1 6.2A16 16 0 0 0 2.5 12S6 19 12 19a9.4 9.4 0 0 0 3.4-.6"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6 5 12 5s9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7Z"/><circle cx="12" cy="12" r="3"/></svg>';});
+</script>
+</body>
+</html>

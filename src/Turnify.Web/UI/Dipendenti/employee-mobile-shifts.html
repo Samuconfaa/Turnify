@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="it" data-page="turni">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Turni · TurniUp Mobile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="turniup.css">
+<link rel="stylesheet" href="turniup-mobile.css">
+</head>
+<body class="m-body">
+<div class="device">
+  <div class="screen">
+    <div class="statusbar" id="statusbar"></div>
+
+    <header class="m-topbar">
+      <button class="m-icon-btn" aria-label="Settimana precedente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <div style="text-align:center;flex:1">
+        <div class="mt-eyebrow">I miei turni</div>
+        <div style="font-family:var(--font-display);font-weight:700;font-size:15px">26 mag – 1 giu</div>
+      </div>
+      <button class="m-icon-btn" aria-label="Settimana successiva"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+    </header>
+
+    <main class="m-content">
+      <div class="day-strip" id="day-strip"></div>
+      <div class="m-section-label" id="day-heading" style="margin-top:16px">Lunedì 1 giugno</div>
+      <div id="day-shifts" style="display:flex;flex-direction:column;gap:12px"></div>
+    </main>
+
+    <nav class="tabbar" id="tabbar"></nav>
+  </div>
+</div>
+<script src="mobile-nav.js"></script>
+<script>
+  var DAYS = [
+    { dw:"Lun", dn:1, full:"Lunedì 1 giugno", today:true, shifts:[{t:"09:00 – 17:00",biz:"Cassa Nord",dur:"8h",st:"corso"}] },
+    { dw:"Mar", dn:2, full:"Martedì 2 giugno", shifts:[{t:"13:00 – 21:00",biz:"Cassa Nord",dur:"8h",st:"prog"}] },
+    { dw:"Mer", dn:3, full:"Mercoledì 3 giugno", shifts:[] },
+    { dw:"Gio", dn:4, full:"Giovedì 4 giugno", shifts:[{t:"09:00 – 17:00",biz:"Cassa Nord",dur:"8h",st:"prog"}] },
+    { dw:"Ven", dn:5, full:"Venerdì 5 giugno", shifts:[{t:"09:00 – 13:00",biz:"Magazzino",dur:"4h",st:"prog"}] },
+    { dw:"Sab", dn:6, full:"Sabato 6 giugno", we:true, shifts:[{t:"10:00 – 18:00",biz:"Cassa Nord",dur:"8h",st:"prog"}] },
+    { dw:"Dom", dn:7, full:"Domenica 7 giugno", we:true, sun:true, shifts:[] }
+  ];
+  var STATES = {
+    corso: '<span class="badge badge-green">In corso</span>',
+    prog:  '<span class="badge badge-gray">Programmato</span>',
+    done:  '<span class="badge badge-blue">Completato</span>'
+  };
+  var sel = 0;
+  var strip = document.getElementById("day-strip");
+  var heading = document.getElementById("day-heading");
+  var box = document.getElementById("day-shifts");
+
+  function renderStrip() {
+    strip.innerHTML = DAYS.map(function (d, i) {
+      var cls = "day-pill" + (i === sel ? " sel" : "") + (d.today ? " today" : "") + (d.we ? " we" : "") + (d.sun ? " sun" : "");
+      return '<button class="' + cls + '" data-i="' + i + '"><span class="dw">' + d.dw + '</span><span class="dn">' + d.dn + '</span></button>';
+    }).join("");
+    strip.querySelectorAll(".day-pill").forEach(function (b) {
+      b.addEventListener("click", function () { sel = +b.dataset.i; renderStrip(); renderDay(); });
+    });
+  }
+  function renderDay() {
+    var d = DAYS[sel];
+    heading.textContent = d.full;
+    if (!d.shifts.length) {
+      box.innerHTML = '<div class="m-card" style="text-align:center;color:var(--text-muted);padding:30px 16px"><div style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--text)">Giorno di riposo</div><div style="font-size:13px;margin-top:4px">Nessun turno programmato</div></div>';
+      return;
+    }
+    box.innerHTML = d.shifts.map(function (s) {
+      var btn = s.st === "corso"
+        ? '<button class="btn btn-block" style="background:var(--amber);color:#fff;margin-top:6px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Timbra uscita</button>'
+        : '';
+      return '<div class="m-card shift-m">' +
+        '<div class="row1"><div class="stime">' + s.t + '</div><div style="flex:1"></div>' + STATES[s.st] + '</div>' +
+        '<div class="sbiz">' + s.biz + ' · <span class="mono">' + s.dur + '</span></div>' +
+        btn + '</div>';
+    }).join("");
+    box.querySelectorAll("button.btn").forEach(function (b) {
+      b.addEventListener("click", function () { MTU.toast("Uscita registrata", "green"); b.remove(); });
+    });
+  }
+  renderStrip(); renderDay();
+</script>
+</body>
+</html>

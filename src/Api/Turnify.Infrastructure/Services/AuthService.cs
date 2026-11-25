@@ -172,7 +172,7 @@ public class AuthService : IAuthService
         user.PasswordResetTokenExpiryTime = DateTime.UtcNow.AddHours(2);
         await _userRepository.UpdateAsync(user, ct);
 
-        var appUrl   = _config["App:BaseUrl"] ?? "https://samuconfa.it/turnify";
+        var appUrl   = _config["App:BaseUrl"] ?? "https://turniup.it/api";
         var resetLink = $"{appUrl}/reset-password?token={Uri.EscapeDataString(rawToken)}&email={Uri.EscapeDataString(email)}";
 
         var html = $"""

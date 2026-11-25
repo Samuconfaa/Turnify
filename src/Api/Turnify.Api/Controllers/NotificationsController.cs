@@ -84,6 +84,32 @@ public class NotificationsController : ControllerBase
         return NoContent();
     }
 
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteNotification(int id, CancellationToken ct)
+    {
+        var userId = GetUserId();
+        var n = await _context.Notifications
+            .FirstOrDefaultAsync(x => x.Id == id && x.RecipientUserId == userId, ct);
+        if (n == null) return NotFound();
+
+        _context.Notifications.Remove(n);
+        await _context.SaveChangesAsync(ct);
+        return NoContent();
+    }
+
+    [HttpDelete]
+    public async Task<IActionResult> DeleteAllNotifications(CancellationToken ct)
+    {
+        var userId = GetUserId();
+        var all = await _context.Notifications
+            .Where(n => n.RecipientUserId == userId)
+            .ToListAsync(ct);
+
+        _context.Notifications.RemoveRange(all);
+        await _context.SaveChangesAsync(ct);
+        return NoContent();
+    }
+
     [HttpPut("read-all")]
     public async Task<IActionResult> MarkAllRead(CancellationToken ct)
     {

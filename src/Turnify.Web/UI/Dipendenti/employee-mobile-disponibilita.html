@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="it" data-page="disponibilita">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Disponibilità · TurniUp Mobile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="turniup.css">
+<link rel="stylesheet" href="turniup-mobile.css">
+</head>
+<body class="m-body">
+<div class="device">
+  <div class="screen">
+    <div class="statusbar" id="statusbar"></div>
+
+    <header class="m-topbar">
+      <a class="m-back" href="employee-mobile-dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>Indietro</a>
+      <div class="grow"></div>
+      <h1 style="font-size:17px">Disponibilità</h1>
+      <div class="grow"></div>
+      <div style="width:60px"></div>
+    </header>
+
+    <main class="m-content" style="padding-bottom:110px">
+      <p style="color:var(--text-muted);font-size:13.5px;margin:2px 2px 16px">Indica i giorni in cui sei disponibile a lavorare. Il responsabile ne terrà conto nella pianificazione.</p>
+
+      <div class="set-list" id="dispo-list">
+        <div class="set-row"><div class="s-v" style="flex:1">Lunedì</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="thumb"></span></label></div>
+        <div class="set-row"><div class="s-v" style="flex:1">Martedì</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="thumb"></span></label></div>
+        <div class="set-row"><div class="s-v" style="flex:1">Mercoledì</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="thumb"></span></label></div>
+        <div class="set-row"><div class="s-v" style="flex:1">Giovedì</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="thumb"></span></label></div>
+        <div class="set-row"><div class="s-v" style="flex:1">Venerdì</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="thumb"></span></label></div>
+        <div class="set-row we"><div class="s-v" style="flex:1;color:var(--amber)">Sabato</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="thumb"></span></label></div>
+        <div class="set-row sun"><div class="s-v" style="flex:1;color:var(--red)">Domenica</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="thumb"></span></label></div>
+      </div>
+
+      <div class="m-section-label" style="margin-top:22px">Note</div>
+      <div class="m-card" style="padding:12px">
+        <textarea class="textarea" placeholder="Es. Disponibile per straordinari con preavviso…">Disponibile per straordinari infrasettimanali con preavviso. Preferibilmente non oltre le 21:00 il venerdì.</textarea>
+      </div>
+    </main>
+
+    <div class="sticky-action">
+      <button class="btn btn-primary btn-lg" id="save-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>Salva disponibilità</button>
+    </div>
+  </div>
+</div>
+<script src="mobile-nav.js"></script>
+<script>
+  // re-color weekend labels when toggled on
+  document.querySelectorAll("#dispo-list .we input, #dispo-list .sun input").forEach(function(inp){
+    inp.addEventListener("change", function(){
+      var lbl = inp.closest(".set-row").querySelector(".s-v");
+      var sun = inp.closest(".set-row").classList.contains("sun");
+      lbl.style.color = inp.checked ? "var(--text)" : (sun ? "var(--red)" : "var(--amber)");
+    });
+  });
+  document.getElementById("save-btn").addEventListener("click", function(){ MTU.toast("Disponibilità aggiornata", "green"); });
+</script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert, RefreshControl,
+  View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert, RefreshControl, useWindowDimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/context/ThemeContext';
@@ -64,9 +64,10 @@ export default function AdminDashboard() {
   const { t, dark } = useTheme();
   const { user } = useAuth();
   const insets = useSafeAreaInsets();
+  const { width: screenW } = useWindowDimensions();
+  const covCellW = Math.floor((screenW - 40 - 6 * 8) / 7); // 40=padding*2, 48=6 gaps
 
   const [todayShifts, setTodayShifts] = useState<Shift[]>([]);
-  const [weekCount, setWeekCount] = useState(0);
   const [pending, setPending] = useState<VacationRequest[]>([]);
   const [coverage, setCoverage] = useState<Array<{ date: string; day: string; count: number }>>([]);
   const [loading, setLoading] = useState(true);
@@ -88,12 +89,11 @@ export default function AdminDashboard() {
       const [todShifts, wkShifts, vacations, cov] = await Promise.all([
         ShiftService.getShifts({ startDate: todayStr, endDate: todayStr }).catch(() => [] as Shift[]),
         ShiftService.getShifts({ startDate: mondayStr, endDate: sundayStr }).catch(() => [] as Shift[]),
-        api.get<VacationRequest[]>('/api/vacation-requests', { params: { status: 'Pending' } }).then(r => r.data).catch(() => [] as VacationRequest[]),
+        api.get<unknown>('/api/vacation-requests', { params: { status: 'Pending' } }).then(r => Array.isArray(r.data) ? r.data as VacationRequest[] : []).catch(() => [] as VacationRequest[]),
         ShiftService.getWeekCoverage(mondayStr).catch(() => []),
       ]);
 
       setTodayShifts(todShifts);
-      setWeekCount(wkShifts.length);
       setPending(vacations);
 
       if (cov.length > 0) {
@@ -168,7 +168,6 @@ export default function AdminDashboard() {
           {/* KPIs */}
           <View style={styles.kpiGrid}>
             <KPI label="In turno oggi" value={todayShifts.length} icon="users" bg={t.primary} fg={textOnPri} dark={dark} />
-            <KPI label="Turni questa settimana" value={weekCount} icon="cal" bg={t.kpiAmber} fg="#FFF" dark={dark} />
             <KPI label="Ferie in attesa" value={pending.length} icon="palm" bg={t.danger} fg="#FFF" dark={dark} />
             <KPI label="Ore totali" value="—" icon="clock" bg={t.kpiBlue} fg="#FFF" dark={dark} />
           </View>
@@ -257,7 +256,7 @@ export default function AdminDashboard() {
                 {loading ? 'Caricamento…' : 'Nessun dato'}
               </Text>
             ) : (
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.covRow}>
+              <View style={styles.covRow}>
                 {coverage.map((c, i) => {
                   const kind = coverageKind(c.count);
                   const isToday = c.date === toISO(today);
@@ -267,6 +266,7 @@ export default function AdminDashboard() {
                       style={[
                         styles.covCell,
                         {
+                          width: covCellW,
                           backgroundColor: covBg[kind],
                           borderColor: isToday ? t.primary : dark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)',
                           borderWidth: isToday ? 2 : 1,
@@ -279,7 +279,7 @@ export default function AdminDashboard() {
                     </View>
                   );
                 })}
-              </ScrollView>
+              </View>
             )}
           </View>
         </ScrollView>
@@ -317,8 +317,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6,
   },
   actionTxt: { fontFamily: 'PlusJakartaSans-SemiBold', fontSize: 13 },
-  covRow: { gap: 8, paddingBottom: 4 },
-  covCell: { width: 64, height: 84, borderRadius: 14, alignItems: 'center', justifyContent: 'center', gap: 4 },
+  covRow: { flexDirection: 'row', gap: 8 },
+  covCell: { height: 80, borderRadius: 14, alignItems: 'center', justifyContent: 'center', gap: 4 },
   covDay: { fontFamily: 'PlusJakartaSans-SemiBold', fontSize: 11, letterSpacing: 0.3, opacity: 0.85 },
   covCount: { fontFamily: 'PlusJakartaSans-Bold', fontSize: 22, letterSpacing: -0.4 },
   covDot: { width: 6, height: 6, borderRadius: 3, opacity: 0.7 },

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>TurniUp Mobile — Ferie e permessi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="turniup.css">
+<link rel="stylesheet" href="turniup-mobile.css">
+</head>
+<body class="m-body" data-page="vacations">
+<div class="phone">
+  <div class="notch"></div>
+  <div class="screen">
+    <header class="m-top">
+      <button class="m-ico" data-drawer-open aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <div class="m-h">Ferie e permessi<small>7 richieste in attesa</small></div>
+      <div class="select m-spacer" style="margin-left:auto"><select style="font-size:12.5px;padding:7px 28px 7px 11px"><option>Tutti i tipi</option><option>Ferie</option><option>Permesso</option><option>Malattia</option></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>
+    </header>
+
+    <div class="m-scroll">
+      <div class="pill-rail" style="margin-top:4px">
+        <div class="stat-pill"><span class="pip" style="background:var(--amber)"></span><div><div class="pv">7</div><div class="pl">In attesa</div></div></div>
+        <div class="stat-pill"><span class="pip" style="background:var(--green)"></span><div><div class="pv">23</div><div class="pl">Approvate</div></div></div>
+        <div class="stat-pill"><span class="pip" style="background:var(--red)"></span><div><div class="pv">3</div><div class="pl">Rifiutate</div></div></div>
+        <div class="stat-pill"><span class="pip" style="background:var(--text-faint)"></span><div><div class="pv">148</div><div class="pl">Residui (gg)</div></div></div>
+      </div>
+
+      <div class="chip-rail">
+        <button class="chip on">In attesa <span class="cc">7</span></button>
+        <button class="chip">Approvate <span class="cc">23</span></button>
+        <button class="chip">Rifiutate <span class="cc">3</span></button>
+        <button class="chip">Tutte <span class="cc">33</span></button>
+      </div>
+
+      <p style="font-size:12px;color:var(--text-faint);margin:14px 2px 0;display:flex;align-items:center;gap:7px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="M8 12h8M8 12l3-3M8 12l3 3M16 6v12"/></svg>
+        Scorri una richiesta per approvare o rifiutare
+      </p>
+
+      <div class="m-list" id="vacList" style="margin-top:10px"></div>
+    </div>
+  </div>
+</div>
+
+<script src="turniup-mobile.js"></script>
+<script>
+const TYPE={Ferie:'badge-primary',Permesso:'badge-muted',Malattia:'badge-amber'};
+const vacs=[
+  {n:'Martina Russo',i:'MR',type:'Ferie',period:'12 – 19 giu',dur:'8 giorni',c:'oklch(0.6 0.13 300)'},
+  {n:'Andrea Costa',i:'AC',type:'Permesso',period:'5 giu · 09:00–13:00',dur:'4 ore',c:'oklch(0.55 0.12 200)'},
+  {n:'Chiara Moretti',i:'CM',type:'Ferie',period:'2 – 4 lug',dur:'3 giorni',c:'oklch(0.58 0.13 25)'},
+  {n:'Paolo Esposito',i:'PE',type:'Malattia',period:'30 mag – 2 giu',dur:'4 giorni',c:'oklch(0.55 0.11 150)'},
+  {n:'Valentina Rizzo',i:'VR',type:'Ferie',period:'21 – 31 lug',dur:'11 giorni',c:'oklch(0.6 0.12 60)'},
+];
+const vl=document.getElementById('vacList');
+vacs.forEach((v,idx)=>{
+  const wrap=document.createElement('div');wrap.className='swipe card mr';wrap.style.animationDelay=(idx*.05)+'s';wrap.style.boxShadow='var(--shadow-card)';
+  wrap.innerHTML=`
+    <div class="swipe-bg">
+      <div class="sa sa-approve"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Approva</div>
+      <div class="sa sa-reject">Rifiuta<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></div>
+    </div>
+    <div class="swipe-card" style="padding:15px">
+      <div class="mc-row"><div class="avatar" style="background:${v.c}">${v.i}</div>
+        <div style="flex:1"><div class="mc-name">${v.n}</div><div class="mc-sub">Richiesta il 30 mag</div></div>
+        <span class="badge ${TYPE[v.type]}">${v.type}</span></div>
+      <div class="mc-meta"><span class="dot-pip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;color:var(--text-faint)"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9h18M8 2.5v4M16 2.5v4"/></svg>${v.period}</span><span class="badge badge-muted">${v.dur}</span></div>
+      <div class="vac-act">
+        <button class="btn-approve" data-toast="Richiesta approvata" onclick="window.__act(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="m5 13 4 4L19 7"/></svg>Approva</button>
+        <button class="btn-reject" data-toast="Richiesta rifiutata" onclick="window.__act(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M6 6l12 12M18 6 6 18"/></svg>Rifiuta</button>
+      </div>
+    </div>`;
+  vl.appendChild(wrap);
+});
+window.__act=function(btn){
+  const card=btn.closest('.swipe');
+  const w=document.querySelector('.toast-wrap')||(()=>{const x=document.createElement('div');x.className='toast-wrap';document.querySelector('.screen').appendChild(x);return x;})();
+  const t=document.createElement('div');t.className='toast';t.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;stroke-width:2.4;color:var(--green)"><path d="m5 13 4 4L19 7"/></svg><span>'+btn.dataset.toast+'</span>';
+  w.appendChild(t);requestAnimationFrame(()=>t.classList.add('show'));setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),320);},2400);
+  if(card){card.style.transition='opacity .25s, transform .25s, height .25s, margin .25s';card.style.opacity='0';card.style.transform='scale(.96)';setTimeout(()=>card.remove(),260);}
+};
+</script>
+</body>
+</html>

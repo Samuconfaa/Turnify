@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet } from 'react-native';
 import { ThemeTokens } from '@/constants/tokens';
 
 interface AvatarProps {
@@ -9,18 +9,33 @@ interface AvatarProps {
   bg?: string;
   color?: string;
   ring?: string;
+  uri?: string;
 }
 
-export function Avatar({ t, initials, size = 44, bg, color, ring }: AvatarProps) {
+export function Avatar({ t, initials, size = 44, bg, color, ring, uri }: AvatarProps) {
+  const ringStyle = ring
+    ? { shadowColor: ring, shadowOffset: { width: 0, height: 0 }, shadowRadius: 0, shadowOpacity: 1, borderWidth: 2, borderColor: ring }
+    : {};
+  const radius = size / 2;
+
+  if (uri) {
+    return (
+      <Image
+        source={{ uri }}
+        style={[styles.base, { width: size, height: size, borderRadius: radius, ...ringStyle }]}
+      />
+    );
+  }
+
   return (
     <View style={[
       styles.base,
       {
         width: size,
         height: size,
-        borderRadius: size / 2,
+        borderRadius: radius,
         backgroundColor: bg ?? t.primaryLight,
-        ...(ring ? { shadowColor: ring, shadowOffset: { width: 0, height: 0 }, shadowRadius: 0, shadowOpacity: 1, borderWidth: 2, borderColor: ring } : {}),
+        ...ringStyle,
       },
     ]}>
       <Text style={[styles.text, { fontSize: Math.round(size * 0.32), color: color ?? t.primary }]}>

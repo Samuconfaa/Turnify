@@ -17,25 +17,60 @@ function getClaim(token: string, key: string): string {
   return ((p[key] ?? '') as string);
 }
 
+const ADMIN_ROLES = ['Admin', 'Owner', 'Employer'];
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const isLoginPage  = pathname.startsWith('/admin/login');
-  const accessToken  = request.cookies.get('access_token')?.value  ?? '';
-  const refreshToken = request.cookies.get('refresh_token')?.value ?? '';
-  const hasSession   = !!refreshToken;
+  const isLoginPage    = pathname === '/login' || pathname === '/login/employee';
+  const isPublicPage   = pathname === '/register' || pathname === '/termini' || pathname === '/privacy' || pathname === '/cookie';
+  const isEmployeePage = pathname.startsWith('/employee');
+  const isDashboard    = pathname.startsWith('/dashboard');
+  const accessToken    = request.cookies.get('access_token')?.value  ?? '';
+  const refreshToken   = request.cookies.get('refresh_token')?.value ?? '';
+  const hasSession     = !!refreshToken;
 
-  if (!hasSession && !isLoginPage) {
+  if (pathname === '/') {
+    return NextResponse.next();
+  }
+
+  if (!hasSession && !isLoginPage && !isPublicPage) {
     const url = request.nextUrl.clone();
-    url.pathname = '/admin/login';
+    url.pathname = '/login';
     return NextResponse.redirect(url);
+  }
+
+  if (isPublicPage) {
+    if (hasSession) {
+      const url = request.nextUrl.clone();
+      const role = getClaim(accessToken, ROLE_CLAIM) || getClaim(accessToken, 'role');
+      url.pathname = role === 'Employee' ? '/employee' : '/dashboard';
+      return NextResponse.redirect(url);
+    }
+    return NextResponse.next();
   }
 
   if (hasSession && !isLoginPage) {
     const role = getClaim(accessToken, ROLE_CLAIM) || getClaim(accessToken, 'role');
-    if (role === 'Employee') {
+
+    if (isDashboard && role === 'Employee') {
       const url = request.nextUrl.clone();
-      url.pathname = '/admin/login';
+      url.pathname = '/login';
       url.searchParams.set('bloccato', '1');
+      const res = NextResponse.redirect(url);
+      res.cookies.delete('access_token');
+      res.cookies.delete('refresh_token');
+      return res;
+    }
+
+    if (isEmployeePage && ADMIN_ROLES.includes(role)) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/dashboard';
+      return NextResponse.redirect(url);
+    }
+
+    if (isEmployeePage && !role) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/login';
       const res = NextResponse.redirect(url);
       res.cookies.delete('access_token');
       res.cookies.delete('refresh_token');
@@ -44,8 +79,9 @@ export function middleware(request: NextRequest) {
   }
 
   if (hasSession && isLoginPage) {
+    const role = getClaim(accessToken, ROLE_CLAIM) || getClaim(accessToken, 'role');
     const url = request.nextUrl.clone();
-    url.pathname = '/dashboard';
+    url.pathname = role === 'Employee' ? '/employee' : '/dashboard';
     return NextResponse.redirect(url);
   }
 

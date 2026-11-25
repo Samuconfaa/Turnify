@@ -50,11 +50,12 @@ export default function EmployeesPage() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const [emps, bizs] = await Promise.all([
-        api.get<Employee[]>('/api/employees'),
+      const [empsRaw, bizs] = await Promise.all([
+        api.get<Employee[] | { data: Employee[] }>('/api/employees'),
         api.get<Business[]>('/api/businesses'),
       ]);
-      setEmployees(Array.isArray(emps) ? emps : []);
+      const emps = Array.isArray(empsRaw) ? empsRaw : (empsRaw as { data: Employee[] }).data ?? [];
+      setEmployees(emps);
       setBusinesses(Array.isArray(bizs) ? bizs : []);
     } catch (e: unknown) { setError(e instanceof Error ? e.message : 'Errore'); }
     finally { setLoading(false); }

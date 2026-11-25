@@ -17,12 +17,23 @@ export interface CreateEmployeeRequest {
 export const EmployeeService = {
   async getEmployees(params?: { search?: string; businessId?: number; page?: number }): Promise<Employee[]> {
     const { data } = await api.get<any>('/api/employees', { params });
-    return Array.isArray(data) ? data : (data.items ?? data.data ?? []);
+    const raw: any[] = Array.isArray(data) ? data : (data.items ?? data.data ?? []);
+    return raw.map(e => ({
+      ...e,
+      name: e.name ?? `${e.firstName ?? ''} ${e.lastName ?? ''}`.trim(),
+      username: e.username ?? null,
+      email: e.email ?? null,
+    }));
   },
 
   async getEmployee(id: number): Promise<Employee> {
-    const { data } = await api.get<Employee>(`/api/employees/${id}`);
-    return data;
+    const { data } = await api.get<any>(`/api/employees/${id}`);
+    return {
+      ...data,
+      name: data.name ?? `${data.firstName ?? ''} ${data.lastName ?? ''}`.trim(),
+      username: data.username ?? null,
+      email: data.email ?? null,
+    };
   },
 
   async createEmployee(req: CreateEmployeeRequest): Promise<Employee> {

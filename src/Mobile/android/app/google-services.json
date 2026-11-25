@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "290806483365",
+    "project_id": "turniup",
+    "storage_bucket": "turniup.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:290806483365:android:e81e23cd390df6c4bd404c",
+        "android_client_info": {
+          "package_name": "com.turniup.mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRM06XoFa90S_DFdBeEZ2WBXiyZjS1Jjo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

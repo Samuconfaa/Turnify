@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>TurniUp Mobile — Dipendenti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="turniup.css">
+<link rel="stylesheet" href="turniup-mobile.css">
+</head>
+<body class="m-body" data-page="employees">
+<div class="phone">
+  <div class="notch"></div>
+  <div class="screen">
+    <header class="m-top">
+      <button class="m-ico" data-drawer-open aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <div class="m-h">Dipendenti<small>48 totali · 3 attività</small></div>
+      <button class="m-ico ghost m-spacer" data-search-toggle="empSearch" aria-label="Cerca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg></button>
+    </header>
+
+    <div class="m-scroll">
+      <div class="m-search" id="empSearch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><input placeholder="Cerca per nome, ruolo…"></div>
+
+      <div class="pill-rail" style="margin-top:14px">
+        <div class="stat-pill"><span class="pip" style="background:var(--text-faint)"></span><div><div class="pv">48</div><div class="pl">Totale</div></div></div>
+        <div class="stat-pill"><span class="pip" style="background:var(--green)"></span><div><div class="pv">41</div><div class="pl">Attivi</div></div></div>
+        <div class="stat-pill"><span class="pip" style="background:var(--amber)"></span><div><div class="pv">5</div><div class="pl">In ferie</div></div></div>
+        <div class="stat-pill"><span class="pip" style="background:var(--red)"></span><div><div class="pv">2</div><div class="pl">Sospesi</div></div></div>
+      </div>
+
+      <div class="chip-rail">
+        <button class="chip on">Tutti <span class="cc">48</span></button>
+        <button class="chip">Attivi <span class="cc">41</span></button>
+        <button class="chip">In ferie <span class="cc">5</span></button>
+        <button class="chip">Sospesi <span class="cc">2</span></button>
+      </div>
+
+      <div class="m-list" id="empList"></div>
+    </div>
+
+    <button class="fab" data-sheet-open="sheet-employee" aria-label="Nuovo dipendente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></button>
+    <div id="empDetailHolder"></div>
+  </div>
+</div>
+
+<script src="turniup-mobile.js"></script>
+<script>
+const palette={primary:'var(--primary)',green:'var(--green)',amber:'var(--amber)'};
+const emps=[
+  {n:'Giulia Ferrari',i:'GF',role:'Cameriera di sala',contract:'Tempo pieno',biz:'Ristorante Centro',bz:'primary',st:['badge-green','Attivo'],c:'oklch(0.6 0.13 25)',email:'g.ferrari@turniup.it',tel:'+39 333 1122334'},
+  {n:'Luca Bianchi',i:'LB',role:'Barista',contract:'Part-time',biz:'Bar Aurora',bz:'green',st:['badge-green','Attivo'],c:'oklch(0.58 0.12 250)',email:'l.bianchi@turniup.it',tel:'+39 333 2233445'},
+  {n:'Sara Conti',i:'SC',role:'Chef de rang',contract:'Tempo pieno',biz:'Ristorante Centro',bz:'primary',st:['badge-amber','In ferie'],c:'oklch(0.6 0.13 320)',email:'s.conti@turniup.it',tel:'+39 333 3344556'},
+  {n:'Davide Greco',i:'DG',role:'Cuoco',contract:'Tempo pieno',biz:'Bistrot Sud',bz:'amber',st:['badge-green','Attivo'],c:'oklch(0.55 0.11 150)',email:'d.greco@turniup.it',tel:'+39 333 4455667'},
+  {n:'Elena Marino',i:'EM',role:'Cameriera',contract:'A chiamata',biz:'Bar Aurora',bz:'green',st:['badge-green','Attivo'],c:'oklch(0.6 0.12 60)',email:'e.marino@turniup.it',tel:'+39 333 5566778'},
+  {n:'Matteo Romano',i:'MR',role:'Aiuto cuoco',contract:'Part-time',biz:'Bistrot Sud',bz:'amber',st:['badge-red','Sospeso'],c:'oklch(0.55 0.13 290)',email:'m.romano@turniup.it',tel:'+39 333 6677889'},
+  {n:'Francesca Galli',i:'FG',role:'Responsabile sala',contract:'Tempo pieno',biz:'Ristorante Centro',bz:'primary',st:['badge-green','Attivo'],c:'oklch(0.52 0.12 180)',email:'f.galli@turniup.it',tel:'+39 333 7788990'},
+];
+const el=document.getElementById('empList');
+emps.forEach((p,idx)=>{const c=document.createElement('div');c.className='m-card tap mr';c.style.animationDelay=(idx*.045)+'s';
+  c.innerHTML=`<div class="mc-row"><div class="avatar" style="background:${p.c}">${p.i}</div>
+    <div style="flex:1"><div class="mc-name">${p.n}</div><div class="mc-sub">${p.role}</div></div>
+    <span class="badge ${p.st[0]}"><span class="bdot"></span>${p.st[1]}</span></div>
+    <div class="mc-meta"><span class="dot-pip"><span class="pip" style="background:${palette[p.bz]}"></span>${p.biz}</span><span class="badge badge-muted">${p.contract}</span></div>`;
+  c.addEventListener('click',()=>openDetail(p));
+  el.appendChild(c);});
+
+function openDetail(p){
+  document.getElementById('empDetailHolder').innerHTML = window.sheet('sheet-emp-detail',
+    '<circle cx="9" cy="8" r="3.2"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0M16 5.2a3 3 0 0 1 0 5.6M18 19a5 5 0 0 0-3-4.6"/>',
+    p.n, p.role,
+    `<div class="det-row"><span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg></span><div><div class="dl">Email</div><div class="dv">${p.email}</div></div></div>
+     <div class="det-row"><span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l1.5 4-2 1.5a12 12 0 0 0 6 6l1.5-2 4 1.5v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1Z"/></svg></span><div><div class="dl">Telefono</div><div class="dv">${p.tel}</div></div></div>
+     <div class="det-row"><span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 5 4h14l2 5.5M4 9.5h16V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5Z"/></svg></span><div><div class="dl">Attività</div><div class="dv">${p.biz}</div></div></div>
+     <div class="det-row"><span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9h18M8 2.5v4M16 2.5v4"/></svg></span><div><div class="dl">Contratto</div><div class="dv">${p.contract}</div></div></div>
+     <div class="det-row"><span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg></span><div><div class="dl">Stato</div><div class="dv">${p.st[1]}</div></div></div>`,
+    `<button class="btn-secondary" data-sheet-open="sheet-employee" data-sheet-close>Modifica</button>`+
+    (p.st[1]==='Sospeso'
+      ? `<button class="btn-approve" data-sheet-save data-toast="Dipendente riattivato">Riattiva</button>`
+      : `<button class="btn-reject" data-sheet-save data-toast="Dipendente sospeso">Sospendi</button>`));
+  setTimeout(()=>window.openSheet('sheet-emp-detail'),0);
+}
+</script>
+</body>
+</html>

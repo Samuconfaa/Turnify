@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="it" data-page="timbra">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timbra · TurniUp Mobile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="turniup.css">
+<link rel="stylesheet" href="turniup-mobile.css">
+</head>
+<body class="m-body">
+<div class="device">
+  <div class="screen">
+    <div class="statusbar" id="statusbar"></div>
+
+    <header class="m-topbar">
+      <img class="mt-logo" src="../image/splash.png" alt="TurniUp">
+      <div><div class="mt-eyebrow">Timbratura</div><div style="font-family:var(--font-display);font-weight:700;font-size:16px">Cassa Nord</div></div>
+      <div class="grow"></div>
+      <a class="m-icon-btn" href="employee-mobile-notifiche.html" aria-label="Notifiche"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><span class="dot"></span></a>
+    </header>
+
+    <main class="m-content">
+      <!-- OROLOGIO -->
+      <div class="clock-wrap">
+        <div class="clock" id="clock">--:--<span class="sec">:--</span></div>
+        <div class="clock-date" id="clock-date">Lunedì 1 giugno 2026</div>
+        <div class="status-pill" id="status-pill"></div>
+      </div>
+
+      <!-- AZIONE -->
+      <button class="big-action in" id="stamp-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5M15 12H3"/></svg>
+        <span id="stamp-label">TIMBRA ENTRATA</span>
+      </button>
+      <div id="stamp-hint" style="text-align:center;font-size:12.5px;color:var(--text-muted);margin-top:10px">Tocca per registrare l'entrata del turno</div>
+
+      <!-- STORICO -->
+      <div class="m-section-label" style="margin-top:26px">Ultime giornate</div>
+      <div class="m-card" style="padding:2px 14px">
+        <div class="m-list">
+          <div class="m-row"><div style="width:64px"><div style="font-weight:600;font-size:14px">Ven 29</div></div><span class="mono" style="color:var(--green);font-weight:600">09:02</span><span style="color:var(--text-faint)">→</span><span class="mono" style="color:var(--amber);font-weight:600">17:05</span><div style="flex:1"></div><span class="mono" style="font-weight:600">8h 03</span></div>
+          <div class="m-row"><div style="width:64px"><div style="font-weight:600;font-size:14px">Gio 28</div></div><span class="mono" style="color:var(--green);font-weight:600">08:55</span><span style="color:var(--text-faint)">→</span><span class="mono" style="color:var(--amber);font-weight:600">16:58</span><div style="flex:1"></div><span class="mono" style="font-weight:600">8h 03</span></div>
+          <div class="m-row"><div style="width:64px"><div style="font-weight:600;font-size:14px">Mer 27</div></div><span class="mono" style="color:var(--green);font-weight:600">09:00</span><span style="color:var(--text-faint)">→</span><span class="mono" style="color:var(--amber);font-weight:600">17:01</span><div style="flex:1"></div><span class="mono" style="font-weight:600">8h 01</span></div>
+          <div class="m-row"><div style="width:64px"><div style="font-weight:600;font-size:14px">Mar 26</div></div><span class="mono" style="color:var(--green);font-weight:600">13:00</span><span style="color:var(--text-faint)">→</span><span class="mono" style="color:var(--amber);font-weight:600">21:03</span><div style="flex:1"></div><span class="mono" style="font-weight:600">8h 03</span></div>
+          <div class="m-row"><div style="width:64px"><div style="font-weight:600;font-size:14px">Lun 25</div></div><span class="mono" style="color:var(--green);font-weight:600">09:01</span><span style="color:var(--text-faint)">→</span><span class="mono" style="color:var(--amber);font-weight:600">17:00</span><div style="flex:1"></div><span class="mono" style="font-weight:600">7h 59</span></div>
+        </div>
+      </div>
+    </main>
+
+    <nav class="tabbar" id="tabbar"></nav>
+  </div>
+</div>
+<script src="mobile-nav.js"></script>
+<script>
+  function pad(n){ return n<10 ? "0"+n : ""+n; }
+  var clock = document.getElementById("clock");
+  function tick(){
+    var d = new Date();
+    clock.innerHTML = pad(d.getHours()) + ":" + pad(d.getMinutes()) + '<span class="sec">:' + pad(d.getSeconds()) + '</span>';
+  }
+  tick(); setInterval(tick, 1000);
+
+  // stato: out -> in -> done
+  var state = "out";
+  var pill = document.getElementById("status-pill");
+  var btn = document.getElementById("stamp-btn");
+  var label = document.getElementById("stamp-label");
+  var hint = document.getElementById("stamp-hint");
+
+  function nowStr(){ var d=new Date(); return pad(d.getHours())+":"+pad(d.getMinutes()); }
+  var entrata = "";
+
+  function render(){
+    if (state === "out"){
+      pill.className = "status-pill badge-gray"; pill.style.background="var(--surface-2)"; pill.style.color="var(--text-muted)";
+      pill.innerHTML = '<span style="width:7px;height:7px;border-radius:50%;background:currentColor"></span>Non hai ancora timbrato';
+      btn.className = "big-action in"; label.textContent = "TIMBRA ENTRATA";
+      hint.textContent = "Tocca per registrare l'entrata del turno";
+    } else if (state === "in"){
+      pill.style.background="var(--green-soft)"; pill.style.color="var(--green)";
+      pill.innerHTML = '<span style="width:7px;height:7px;border-radius:50%;background:currentColor"></span>In servizio dalle ' + entrata;
+      btn.className = "big-action out"; label.textContent = "TIMBRA USCITA";
+      hint.textContent = "Turno in corso · ricordati di timbrare l'uscita";
+    } else {
+      pill.style.background="var(--amber-soft)"; pill.style.color="var(--amber)";
+      pill.innerHTML = '<span style="width:7px;height:7px;border-radius:50%;background:currentColor"></span>Uscito alle ' + nowStr();
+      btn.style.display = "none";
+      hint.textContent = "Buona giornata, Sara!";
+    }
+  }
+  btn.addEventListener("click", function(){
+    if (state === "out"){ entrata = nowStr(); state = "in"; MTU.toast("Entrata registrata · " + entrata, "green"); }
+    else if (state === "in"){ state = "done"; MTU.toast("Uscita registrata · " + nowStr(), "green"); }
+    render();
+  });
+  render();
+</script>
+</body>
+</html>

@@ -1,10 +1,10 @@
 {
   "expo": {
     "name": "TurniUp",
-    "slug": "turniup",
+    "slug": "turnify",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/Logo.png",
     "scheme": "turniup",
     "userInterfaceStyle": "automatic",
     "ios": {
@@ -16,15 +16,16 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#1A35B5",
-        "foregroundImage": "./assets/images/android-icon-foreground.png"
+        "backgroundColor": "#FFFFFF",
+        "foregroundImage": "./assets/images/Logo.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.turniup.mobile"
+      "package": "com.turniup.mobile",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/icon.png"
+      "favicon": "./assets/images/Logo.png"
     },
     "plugins": [
       "expo-router",
@@ -32,16 +33,16 @@
       [
         "expo-notifications",
         {
-          "icon": "./assets/images/icon.png",
+          "icon": "./assets/images/splash.png",
           "color": "#1A35B5"
         }
       ],
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#1A35B5",
-          "image": "./assets/images/Logo.png",
-          "imageWidth": 180,
+          "backgroundColor": "#FFFFFF",
+          "image": "./assets/images/splash.png",
+          "imageWidth": 200,
           "resizeMode": "contain"
         }
       ],
@@ -53,7 +54,7 @@
     },
     "extra": {
       "router": {},
-      "apiUrl": "https://samuconfa.it/turnify",
+      "apiUrl": "https://turniup.it/api",
       "eas": {
         "projectId": "360f7f71-f310-4f0c-9d02-37e939904849"
       }

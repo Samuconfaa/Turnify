@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="it" data-page="timbratura">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timbratura · TurniUp Dipendente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="turniup.css">
+<style>
+  .month-nav { display: inline-flex; align-items: center; gap: 6px; }
+  .month-nav .mlabel { font-family: var(--font-display); font-weight: 700; font-size: 15px; min-width: 132px; text-align: center; }
+  .sum-grid { grid-template-columns: repeat(3, 1fr); }
+  .week-sep { font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--text-muted); padding: 16px 20px 7px; background: var(--surface-2); border-top: 1px solid var(--border); }
+  .day-cell-lbl { width: 58px; display: flex; flex-direction: column; }
+  .day-cell-lbl .dow { font-family: var(--font-display); font-weight: 700; font-size: 14px; }
+  .day-cell-lbl .dnum { font-family: var(--font-mono); font-size: 12.5px; color: var(--text-muted); }
+  .stamp-mini { min-width: 78px; }
+  .stamp-mini .k { font-size: 10.5px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .03em; }
+  .stamp-mini .v { font-family: var(--font-mono); font-weight: 600; font-size: 15px; }
+  @media (max-width:768px){ .sum-grid { grid-template-columns: 1fr; } .list-row { flex-wrap: wrap; } }
+</style>
+</head>
+<body>
+<div class="scrim"></div>
+<div class="app">
+  <div id="sb"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn hamburger" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <div class="topbar-title">
+        <span class="topbar-eyebrow">Storico presenze</span>
+        <h1>Timbratura</h1>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="topbar-actions">
+        <div class="month-nav">
+          <button class="icon-btn" aria-label="Mese precedente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <span class="mlabel">Giugno 2026</span>
+          <button class="icon-btn" aria-label="Mese successivo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+        </div>
+        <button class="icon-btn" data-action="theme" aria-label="Tema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+      </div>
+    </header>
+
+    <div class="content">
+      <!-- RIEPILOGO MESE -->
+      <div class="grid sum-grid" style="margin-bottom:24px">
+        <div class="card kpi">
+          <div class="kpi-head"><div class="kpi-icon tint-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><span class="kpi-label">Ore totali</span></div>
+          <div class="kpi-value mono">96<span style="font-size:18px;color:var(--text-muted)">h 40m</span></div>
+        </div>
+        <div class="card kpi">
+          <div class="kpi-head"><div class="kpi-icon tint-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><span class="kpi-label">Giorni presenti</span></div>
+          <div class="kpi-value mono">13<span style="font-size:18px;color:var(--text-muted)"> giorni</span></div>
+        </div>
+        <div class="card kpi">
+          <div class="kpi-head"><div class="kpi-icon tint-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></div><span class="kpi-label">Ore mancanti</span></div>
+          <div class="kpi-value mono" style="color:var(--amber)">2<span style="font-size:18px;color:var(--text-muted)">h 20m</span></div>
+        </div>
+      </div>
+
+      <!-- LISTA GIORNATE -->
+      <div class="card">
+        <div class="card-head"><h2>Dettaglio giornate</h2></div>
+
+        <div class="week-sep">Settimana 1 · 1 – 7 giugno</div>
+        <div class="list">
+          <div class="list-row">
+            <div class="day-cell-lbl"><span class="dow">Lun</span><span class="dnum">01 giu</span></div>
+            <div class="stamp-mini"><div class="k">Entrata</div><div class="v" style="color:var(--green)">08:58</div></div>
+            <div class="stamp-mini"><div class="k">Uscita</div><div class="v" style="color:var(--amber)">17:02</div></div>
+            <div class="topbar-spacer" style="flex:1"></div>
+            <span class="mono" style="font-weight:600">8h 04m</span>
+            <span class="badge badge-green">Completo</span>
+          </div>
+          <div class="list-row">
+            <div class="day-cell-lbl"><span class="dow">Mar</span><span class="dnum">02 giu</span></div>
+            <div class="stamp-mini"><div class="k">Entrata</div><div class="v" style="color:var(--green)">13:01</div></div>
+            <div class="stamp-mini"><div class="k">Uscita</div><div class="v" style="color:var(--amber)">21:00</div></div>
+            <div class="topbar-spacer" style="flex:1"></div>
+            <span class="mono" style="font-weight:600">7h 59m</span>
+            <span class="badge badge-green">Completo</span>
+          </div>
+          <div class="list-row">
+            <div class="day-cell-lbl"><span class="dow">Mer</span><span class="dnum">03 giu</span></div>
+            <div class="stamp-mini"><div class="k">Entrata</div><div class="v" style="color:var(--text-muted)">—</div></div>
+            <div class="stamp-mini"><div class="k">Uscita</div><div class="v" style="color:var(--text-muted)">—</div></div>
+            <div class="topbar-spacer" style="flex:1"></div>
+            <span class="mono" style="font-weight:600;color:var(--text-muted)">—</span>
+            <span class="badge badge-gray">Riposo</span>
+          </div>
+          <div class="list-row">
+            <div class="day-cell-lbl"><span class="dow">Gio</span><span class="dnum">04 giu</span></div>
+            <div class="stamp-mini"><div class="k">Entrata</div><div class="v" style="color:var(--green)">09:00</div></div>
+            <div class="stamp-mini"><div class="k">Uscita</div><div class="v" style="color:var(--text-muted)">—</div></div>
+            <div class="topbar-spacer" style="flex:1"></div>
+            <span class="mono" style="font-weight:600;color:var(--text-muted)">—</span>
+            <span class="badge badge-amber">Mancante uscita</span>
+          </div>
+          <div class="list-row">
+            <div class="day-cell-lbl"><span class="dow">Ven</span><span class="dnum">05 giu</span></div>
+            <div class="stamp-mini"><div class="k">Entrata</div><div class="v" style="color:var(--green)">09:02</div></div>
+            <div class="stamp-mini"><div class="k">Uscita</div><div class="v" style="color:var(--amber)">13:05</div></div>
+            <div class="topbar-spacer" style="flex:1"></div>
+            <span class="mono" style="font-weight:600">4h 03m</span>
+            <span class="badge badge-green">Completo</span>
+          </div>
+        </div>
+
+        <div class="week-sep">Settimana 2 · 8 – 14 giugno</div>
+        <div class="list">
+          <div class="list-row">
+            <div class="day-cell-lbl"><span class="dow">Lun</span><span class="dnum">08 giu</span></div>
+            <div class="stamp-mini"><div class="k">Entrata</div><div class="v" style="color:var(--green)">08:55</div></div>
+            <div class="stamp-mini"><div class="k">Uscita</div><div class="v" style="color:var(--amber)">17:00</div></div>
+            <div class="topbar-spacer" style="flex:1"></div>
+            <span class="mono" style="font-weight:600">8h 05m</span>
+            <span class="badge badge-green">Completo</span>
+          </div>
+          <div class="list-row">
+            <div class="day-cell-lbl"><span class="dow">Mar</span><span class="dnum">09 giu</span></div>
+            <div class="stamp-mini"><div class="k">Entrata</div><div class="v" style="color:var(--text-muted)">—</div></div>
+            <div class="stamp-mini"><div class="k">Uscita</div><div class="v" style="color:var(--text-muted)">—</div></div>
+            <div class="topbar-spacer" style="flex:1"></div>
+            <span class="mono" style="font-weight:600;color:var(--text-muted)">—</span>
+            <span class="badge badge-gray">Assenza</span>
+          </div>
+          <div class="list-row">
+            <div class="day-cell-lbl"><span class="dow">Mer</span><span class="dnum">10 giu</span></div>
+            <div class="stamp-mini"><div class="k">Entrata</div><div class="v" style="color:var(--green)">09:00</div></div>
+            <div class="stamp-mini"><div class="k">Uscita</div><div class="v" style="color:var(--amber)">17:10</div></div>
+            <div class="topbar-spacer" style="flex:1"></div>
+            <span class="mono" style="font-weight:600">8h 10m</span>
+            <span class="badge badge-green">Completo</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script src="sidebar.js"></script>
+</body>
+</html>

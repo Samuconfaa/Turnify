@@ -19,7 +19,7 @@ interface IconProps {
 }
 
 export function Icon({ name, size = 20, color = 'currentColor', strokeWidth = 1.8 }: IconProps) {
-  const p = { width: size, height: size, fill: 'none', stroke: color, strokeWidth, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
+  const p = { width: size, height: size, viewBox: '0 0 24 24', fill: 'none', stroke: color, strokeWidth, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
 
   switch (name) {
     case 'home':

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity, StyleSheet, RefreshControl,
+  View, Text, ScrollView, TouchableOpacity, StyleSheet, RefreshControl, useWindowDimensions,
 } from 'react-native';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -117,8 +117,11 @@ export default function ShiftsAdmin() {
     return { bg: dark ? '#2A1F30' : '#EEE5F7', fg: dark ? '#C49BFF' : '#6D28D9' };
   }
 
-  const CELL_W = 48;
-  const COL_W = 76;
+  const { width: screenW } = useWindowDimensions();
+  const AVATAR_W = 0;
+  const PADDING = 32;  // 16+16
+  const GAP = 4;
+  const CELL_W = Math.floor((screenW - PADDING - AVATAR_W - 6 * GAP) / 7);
 
   return (
     <AdminTabLayout>
@@ -164,83 +167,71 @@ export default function ShiftsAdmin() {
           showsVerticalScrollIndicator={false}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={t.primary} />}
         >
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View style={{ padding: 12, paddingBottom: 8 }}>
-              {/* Day headers */}
-              <View style={[styles.gridRow, { marginBottom: 8 }]}>
-                <View style={{ width: COL_W }} />
-                {DAY_HEADS.map((d, i) => (
-                  <View key={i} style={{ width: CELL_W, alignItems: 'center' }}>
-                    <Text style={[
-                      styles.dayHead,
-                      { color: DAY_COLORS_IDX[i] ?? t.textSecondary },
-                    ]}>{d}</Text>
-                  </View>
-                ))}
-              </View>
+          <View style={styles.gridContainer}>
+            {/* Day headers */}
+            <View style={[styles.gridRow, { marginBottom: 8 }]}>
+              {DAY_HEADS.map((d, i) => (
+                <View key={i} style={{ width: CELL_W, alignItems: 'center' }}>
+                  <Text style={[
+                    styles.dayHead,
+                    { color: DAY_COLORS_IDX[i] ?? t.textSecondary },
+                  ]}>{d}</Text>
+                </View>
+              ))}
+            </View>
 
-              {/* Employee rows */}
-              {loading && rows.length === 0 ? (
-                <View style={{ padding: 24 }}>
-                  <Text style={[styles.emptyTxt, { color: t.textSecondary }]}>Caricamento…</Text>
-                </View>
-              ) : rows.length === 0 ? (
-                <View style={{ padding: 24 }}>
-                  <Text style={[styles.emptyTxt, { color: t.textSecondary }]}>Nessun turno in questa settimana</Text>
-                </View>
-              ) : (
-                <View style={{ gap: 6 }}>
-                  {rows.map(emp => (
-                    <View key={emp.id} style={styles.gridRow}>
-                      {/* Employee name */}
-                      <View style={[styles.empCol, { width: COL_W }]}>
-                        <Avatar t={t} initials={emp.inits} size={28} />
-                        <Text style={[styles.empName, { color: t.text }]} numberOfLines={1}>{emp.name.split(' ')[0]}</Text>
-                      </View>
-                      {/* 7 day cells */}
-                      {emp.cells.map((cell, i) => {
-                        if (!cell) {
-                          return (
-                            <TouchableOpacity
-                              key={i}
-                              style={[styles.cell, { width: CELL_W, backgroundColor: t.surfaceLow, borderColor: t.border, borderStyle: 'dashed', borderWidth: 1 }]}
-                              onPress={() => router.push('/(admin)/shifts/new' as any)}
-                            />
-                          );
-                        }
-                        const c = cellColor(cell);
-                        const label = cell === 'FERIE' ? 'FERIE' : formatCell(cell.startTime, cell.endTime);
+            {/* Employee rows */}
+            {loading && rows.length === 0 ? (
+              <Text style={[styles.emptyTxt, { color: t.textSecondary, paddingVertical: 24, textAlign: 'center' }]}>Caricamento…</Text>
+            ) : rows.length === 0 ? (
+              <Text style={[styles.emptyTxt, { color: t.textSecondary, paddingVertical: 24, textAlign: 'center' }]}>Nessun turno in questa settimana</Text>
+            ) : (
+              <View style={{ gap: 6 }}>
+                {rows.map(emp => (
+                  <View key={emp.id} style={styles.gridRow}>
+                    <Avatar t={t} initials={emp.inits} size={20} />
+                    {emp.cells.map((cell, i) => {
+                      if (!cell) {
                         return (
                           <TouchableOpacity
                             key={i}
-                            style={[styles.cell, { width: CELL_W, backgroundColor: c.bg }]}
-                            onPress={() => cell !== 'FERIE' && router.push(`/(admin)/shifts/${cell.id}` as any)}
-                          >
-                            <Text style={[styles.cellTxt, { color: c.fg }]} numberOfLines={2}>{label}</Text>
-                          </TouchableOpacity>
+                            style={[styles.cell, { width: CELL_W, backgroundColor: t.surfaceLow, borderColor: t.border, borderStyle: 'dashed', borderWidth: 1 }]}
+                            onPress={() => router.push('/(admin)/shifts/new' as any)}
+                          />
                         );
-                      })}
-                    </View>
-                  ))}
-                </View>
-              )}
-
-              {/* Legend */}
-              <View style={styles.legend}>
-                {[
-                  { color: t.primary, label: 'Mattina' },
-                  { color: t.kpiAmber, label: 'Pomeriggio' },
-                  { color: dark ? '#C49BFF' : '#6D28D9', label: 'Sera' },
-                  { color: t.warningText, label: 'Ferie' },
-                ].map((l, i) => (
-                  <View key={i} style={styles.legendItem}>
-                    <View style={[styles.legendDot, { backgroundColor: l.color }]} />
-                    <Text style={[styles.legendTxt, { color: t.textSecondary }]}>{l.label}</Text>
+                      }
+                      const c = cellColor(cell);
+                      const label = cell === 'FERIE' ? 'FERIE' : formatCell(cell.startTime, cell.endTime);
+                      return (
+                        <TouchableOpacity
+                          key={i}
+                          style={[styles.cell, { width: CELL_W, backgroundColor: c.bg }]}
+                          onPress={() => cell !== 'FERIE' && router.push(`/(admin)/shifts/${cell.id}` as any)}
+                        >
+                          <Text style={[styles.cellTxt, { color: c.fg }]} numberOfLines={2}>{label}</Text>
+                        </TouchableOpacity>
+                      );
+                    })}
                   </View>
                 ))}
               </View>
+            )}
+
+            {/* Legend */}
+            <View style={styles.legend}>
+              {[
+                { color: t.primary, label: 'Mattina' },
+                { color: t.kpiAmber, label: 'Pomeriggio' },
+                { color: dark ? '#C49BFF' : '#6D28D9', label: 'Sera' },
+                { color: t.warningText, label: 'Ferie' },
+              ].map((l, i) => (
+                <View key={i} style={styles.legendItem}>
+                  <View style={[styles.legendDot, { backgroundColor: l.color }]} />
+                  <Text style={[styles.legendTxt, { color: t.textSecondary }]}>{l.label}</Text>
+                </View>
+              ))}
             </View>
-          </ScrollView>
+          </View>
         </ScrollView>
       </View>
     </AdminTabLayout>
@@ -269,6 +260,7 @@ const styles = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center', marginLeft: 'auto',
   },
   todayTxt: { fontFamily: 'PlusJakartaSans-SemiBold', fontSize: 13 },
+  gridContainer: { padding: 16, paddingBottom: 8 },
   gridRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   dayHead: { fontFamily: 'PlusJakartaSans-SemiBold', fontSize: 10.5, letterSpacing: 0.8, textAlign: 'center' },
   empCol: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 4 },

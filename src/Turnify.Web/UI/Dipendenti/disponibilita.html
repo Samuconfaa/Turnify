@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="it" data-page="disponibilita">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Disponibilità · TurniUp Dipendente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="turniup.css">
+<style>
+  .dispo-row { display: flex; align-items: center; gap: 14px; padding: 15px 20px; }
+  .dispo-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); flex: none; }
+  .dispo-row.off .dispo-dot { background: var(--border); }
+  .dispo-name { font-family: var(--font-display); font-weight: 700; font-size: 15.5px; flex: 1; }
+  .dispo-row.we .dispo-name { color: var(--amber); }
+  .dispo-row.we.sun .dispo-name { color: var(--red); }
+  .dispo-row.off .dispo-name { color: var(--text-muted); }
+  .dispo-state { font-size: 13px; font-weight: 600; color: var(--green); min-width: 96px; text-align: right; }
+  .dispo-row.off .dispo-state { color: var(--text-muted); }
+  .dispo-time { font-family: var(--font-mono); font-size: 13px; color: var(--text-muted); min-width: 110px; text-align: right; }
+  @media (max-width:520px){ .dispo-time { display:none; } }
+</style>
+</head>
+<body>
+<div class="scrim"></div>
+<div class="app">
+  <div id="sb"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn hamburger" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <div class="topbar-title">
+        <span class="topbar-eyebrow">Preferenze</span>
+        <h1>Disponibilità</h1>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="topbar-actions">
+        <button class="btn btn-primary" id="save-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>Salva</button>
+        <button class="icon-btn" data-action="theme" aria-label="Tema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+      </div>
+    </header>
+
+    <div class="content" style="max-width:760px">
+      <p style="color:var(--text-muted);margin-bottom:18px;max-width:60ch">Indica i giorni in cui sei generalmente disponibile a lavorare. Il responsabile terrà conto delle tue preferenze nella pianificazione dei turni.</p>
+
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-head"><h2>Giorni della settimana</h2></div>
+        <div class="list" id="dispo-list">
+          <div class="dispo-row"><span class="dispo-dot"></span><span class="dispo-name">Lunedì</span><span class="dispo-time">Tutto il giorno</span><span class="dispo-state">Disponibile</span><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="thumb"></span></label></div>
+          <div class="dispo-row"><span class="dispo-dot"></span><span class="dispo-name">Martedì</span><span class="dispo-time">Tutto il giorno</span><span class="dispo-state">Disponibile</span><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="thumb"></span></label></div>
+          <div class="dispo-row"><span class="dispo-dot"></span><span class="dispo-name">Mercoledì</span><span class="dispo-time">Tutto il giorno</span><span class="dispo-state">Disponibile</span><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="thumb"></span></label></div>
+          <div class="dispo-row"><span class="dispo-dot"></span><span class="dispo-name">Giovedì</span><span class="dispo-time">Tutto il giorno</span><span class="dispo-state">Disponibile</span><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="thumb"></span></label></div>
+          <div class="dispo-row"><span class="dispo-dot"></span><span class="dispo-name">Venerdì</span><span class="dispo-time">Solo mattina</span><span class="dispo-state">Disponibile</span><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="thumb"></span></label></div>
+          <div class="dispo-row we off"><span class="dispo-dot"></span><span class="dispo-name">Sabato</span><span class="dispo-time">—</span><span class="dispo-state">Non disponibile</span><label class="switch"><input type="checkbox"><span class="track"></span><span class="thumb"></span></label></div>
+          <div class="dispo-row we sun off"><span class="dispo-dot"></span><span class="dispo-name">Domenica</span><span class="dispo-time">—</span><span class="dispo-state">Non disponibile</span><label class="switch"><input type="checkbox"><span class="track"></span><span class="thumb"></span></label></div>
+        </div>
+      </div>
+
+      <div class="card card-pad">
+        <div class="field">
+          <label for="dispo-note">Note sulla disponibilità</label>
+          <textarea class="textarea" id="dispo-note" placeholder="Es. Disponibile per turni serali in via straordinaria con preavviso di 48h…">Disponibile per straordinari infrasettimanali con preavviso. Preferibilmente non oltre le 21:00 il venerdì.</textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="sidebar.js"></script>
+<script>
+  // sync visual state of each row to its toggle
+  document.querySelectorAll("#dispo-list .switch input").forEach(function(input){
+    input.addEventListener("change", function(){
+      var row = input.closest(".dispo-row");
+      var state = row.querySelector(".dispo-state");
+      var time = row.querySelector(".dispo-time");
+      if (input.checked) {
+        row.classList.remove("off");
+        state.textContent = "Disponibile";
+        time.textContent = "Tutto il giorno";
+      } else {
+        row.classList.add("off");
+        state.textContent = "Non disponibile";
+        time.textContent = "—";
+      }
+    });
+  });
+  document.getElementById("save-btn").addEventListener("click", function(){
+    TU.toast("Disponibilità aggiornata", "green");
+  });
+</script>
+</body>
+</html>

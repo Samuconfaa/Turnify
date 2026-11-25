@@ -31,7 +31,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
 var corsOrigins = builder.Configuration
     .GetSection("Cors:AllowedOrigins")
     .Get<string[]>()
-    ?? ["https://samuconfa.it", "https://www.samuconfa.it"];
+    ?? ["https://turniup.it", "https://www.turniup.it"];
 
 builder.Services.AddCors(options =>
 {
@@ -149,8 +149,8 @@ builder.Services.AddRateLimiter(opts =>
     opts.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 });
 
-// HttpClient per FcmPushNotificationService
-builder.Services.AddHttpClient<FcmPushNotificationService>();
+// HttpClient per ExpoPushNotificationService
+builder.Services.AddHttpClient<ExpoPushNotificationService>();
 
 // ── Services ─────────────────────────────────────────────────────
 builder.Services.AddScoped<IEmailService,             SmtpEmailService>();
@@ -158,7 +158,7 @@ builder.Services.AddScoped<IAuthService,              AuthService>();
 builder.Services.AddScoped<IShiftService,             ShiftService>();
 builder.Services.AddScoped<IVacationService,          VacationService>();
 builder.Services.AddScoped<IDashboardService,         DashboardService>();
-builder.Services.AddScoped<IPushNotificationService,  FcmPushNotificationService>();
+builder.Services.AddScoped<IPushNotificationService,  ExpoPushNotificationService>();
 
 // ── Repositories ─────────────────────────────────────────────────
 builder.Services.AddScoped<IShiftRepository,       ShiftRepository>();
@@ -179,7 +179,7 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
 });
 
-app.UsePathBase("/turnify");
+app.UsePathBase("/api");
 
 app.UseCors(CorsPolicy);
 
@@ -189,7 +189,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>
-        c.SwaggerEndpoint("/turnify/swagger/v1/swagger.json", "Turnify API v1"));
+        c.SwaggerEndpoint("/api/swagger/v1/swagger.json", "Turnify API v1"));
 }
 
 if (!app.Environment.IsEnvironment("Testing"))

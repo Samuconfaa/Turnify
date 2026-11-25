@@ -22,7 +22,7 @@ export function KPI({ label, value, icon, bg, fg, dark }: KPIProps) {
       </View>
       <View>
         <Text style={[styles.value, { color: fg }]}>{value}</Text>
-        <Text style={[styles.label, { color: fg }]}>{label}</Text>
+        <Text style={[styles.label, { color: fg }]} numberOfLines={2}>{label}</Text>
       </View>
     </View>
   );
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 16,
     padding: 14,
-    minHeight: 96,
+    minHeight: 110,
     justifyContent: 'space-between',
     borderWidth: 1,
   },

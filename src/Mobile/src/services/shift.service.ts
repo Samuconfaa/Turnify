@@ -3,8 +3,8 @@ import type { Shift, CreateShiftRequest, CreateRecurringShiftRequest, WeekCovera
 
 export const ShiftService = {
   async getShifts(params?: { startDate?: string; endDate?: string; employeeId?: number }): Promise<Shift[]> {
-    const { data } = await api.get<Shift[]>('/api/shifts', { params });
-    return data;
+    const { data } = await api.get<unknown>('/api/shifts', { params });
+    return Array.isArray(data) ? (data as Shift[]) : [];
   },
 
   async getShift(id: number): Promise<Shift> {
@@ -32,7 +32,7 @@ export const ShiftService = {
   },
 
   async getWeekCoverage(startDate: string): Promise<WeekCoverage[]> {
-    const { data } = await api.get<WeekCoverage[]>('/api/shifts/coverage', { params: { startDate } });
-    return data;
+    const { data } = await api.get<unknown>('/api/shifts/coverage', { params: { startDate } });
+    return Array.isArray(data) ? (data as WeekCoverage[]) : [];
   },
 };

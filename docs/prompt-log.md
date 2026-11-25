@@ -2,6 +2,329 @@
 
 ---
 
+## Prompt 78
+
+### Data
+2026-06-21
+
+### Strumento
+Claude Code (claude-sonnet-4-6)
+
+### Obiettivo
+Configurare un relay SMTP esterno (Brevo) per l'invio di email dall'indirizzo `noreply@turniup.it` via `SmtpEmailService.cs` già presente in `Turnify.Infrastructure`.
+
+### Prompt
+Aggiungere la sezione `Smtp` in `appsettings.json` e `appsettings.Production.json` con host `smtp-relay.brevo.com`, porta 587, user `samuconfa08@gmail.com`, `From` = `noreply@turniup.it`. Il client SMTP in C# (`SmtpEmailService`) legge già questi valori da `IConfiguration` — nessuna modifica al codice richiesta. Fornire istruzioni complete per attivazione account Brevo, aggiunta dominio @turniup.it, record DNS SPF e DKIM.
+
+### Output utile
+- `appsettings.json`: aggiunto blocco `"Smtp"` con placeholder `BREVO_SMTP_KEY_HERE`
+- `appsettings.Production.json`: aggiunto blocco `"Smtp"` con placeholder da sostituire sulla VPS
+- Nessuna modifica al codice C# necessaria (`SmtpEmailService` già compatibile)
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Il codice era già pronto; mancava solo la configurazione. Brevo scelto dall'utente per deliverability garantita senza gestione di Postfix/IP reputation.
+
+---
+
+## Prompt 77
+
+### Data
+2026-06-20
+
+### Strumento
+Claude Code (claude-sonnet-4-6)
+
+### Obiettivo
+Sostituire il logo SVG inline (icona orologio) con la PNG `ui/image/splash.png` in tutti i file HTML, JS e CSS del pannello web (DatoreDiLavoro, Dipendenti, PaginaIniziale).
+
+### Prompt
+Nella cartella `Turnify.Web/ui/image/` è presente il file `splash.png` con il nuovo logo. Sostituire il logo attuale (SVG inline `<path d="M12 2v3...">`) con questo file immagine in tutte le occorrenze: sidebar desktop admin (`turniup.js`, `turniup.css`), login desktop admin (`TurniUp Login.html`), drawer e login mobile admin (`turniup-mobile.js`, `turniup-mobile.css`, `admin-mobile-login.html`), sidebar dipendente (`sidebar.js`, `turniup.css`), topbar mobile dipendente (`employee-mobile-*.html`, `turniup-mobile.css`), landing page navbar/footer/mockup (`Turnify Landing.html`).
+
+### Output utile
+- `turniup.css` (admin): `.brand-mark` aggiornato — rimosso `background:linear-gradient`, aggiunto `overflow:hidden`; `.brand-mark svg` → `.brand-mark img`.
+- `turniup.js` (admin): riga 36 — SVG clock sostituito con `<img src="../image/splash.png">`.
+- `TurniUp Login.html`: CSS `.la-brand .brand-mark` e HTML riga 68 aggiornati.
+- `turniup-mobile.css` (admin): `.m-top .m-logo .bm` e `.drawer .d-brand .bm` aggiornati.
+- `turniup-mobile.js` (admin): riga 49 — drawer brand mark aggiornato con img.
+- `admin-mobile-login.html`: CSS `.login-hero .bm` e HTML riga 44 aggiornati.
+- `Dipendenti/sidebar.js`: `sb-logo` div "T" → `<img class="sb-logo">`.
+- `Dipendenti/turniup.css`: `.sb-logo` — rimosso background/font/color, aggiunto `overflow:hidden`.
+- `Dipendenti/turniup-mobile.css`: `.mt-logo` aggiornato.
+- `employee-mobile-dashboard/profilo/ferie/timbra.html`: `div.mt-logo "T"` → `img.mt-logo`.
+- `Turnify Landing.html`: `.brand-mark` CSS, `.mock-brand-mark` CSS, navbar, footer e mockup SVG → img.
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Nessuna occorrenza residua del vecchio path SVG rilevata con grep finale. Tutte le istanze (9 file HTML/JS, 4 CSS) aggiornate coerentemente.
+
+---
+
+## Prompt 73
+
+### Data
+2026-06-03
+
+### Strumento
+Claude Code (claude-sonnet-4-6)
+
+### Obiettivo
+Arricchire la landing page `landing/index.html` con: (1) sezione dedicata AI scheduling come funzionalità dell'app; (2) sezione stats; (3) griglia settori; (4) FAQ accordion con 8 domande; (5) SEO completo (title, meta, canonical, OG, Twitter Card); (6) GEO via 3 blocchi JSON-LD (Organization, SoftwareApplication, FAQPage).
+
+### Prompt
+Aggiungere sulla landing page la pianificazione turni con AI come feature dell'app, arricchire i contenuti con FAQ, ottimizzare SEO e GEO.
+
+### Output utile
+- `landing/index.html` riscritto con: card AI full-width in `#funzionalita`, sezione `#ai-turni` con visual terminal interattivo, stats row 4 KPI, griglia 8 settori, FAQ con `<details>/<summary>` CSS-only (8 domande), SEO meta + OG + Twitter, 3 JSON-LD schema.
+- `landing/server.js` aggiunto per preview locale Node.js.
+- `.claude/launch.json` creato con configurazione server preview.
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Verifica visiva via preview screenshot: hero, sezione AI e FAQ tutti renderizzati correttamente.
+
+---
+
+## Prompt 72
+
+### Data
+2026-06-03
+
+### Strumento
+Claude Code (claude-sonnet-4-6)
+
+### Obiettivo
+Sostituire `FcmPushNotificationService` (dipendenza Google.Apis.Auth + Firebase) con `ExpoPushNotificationService` che chiama l'API Expo Push (`https://exp.host/--/api/v2/push/send`) — nessuna dipendenza esterna, gratis e illimitato. Aggiornare anche il mobile per passare `projectId` a `getExpoPushTokenAsync` (obbligatorio in SDK 56).
+
+### Prompt
+Implementa `ExpoPushNotificationService` nel backend ASP.NET Core che sostituisce `FcmPushNotificationService`. Il servizio deve: POST batch a `https://exp.host/--/api/v2/push/send`, gestire ticket di risposta Expo (disattivare token `DeviceNotRegistered`/`InvalidCredentials`), mantenere la stessa interfaccia `IPushNotificationService`. Rimuovere `Google.Apis.Auth` dal csproj. Eliminare `FcmPushNotificationService.cs`. Nel mobile Expo SDK 56, passare `projectId` (da `Constants.expoConfig?.extra?.eas?.projectId`) a `getExpoPushTokenAsync`.
+
+### Output utile
+- Creato `Turnify.Infrastructure/Services/ExpoPushNotificationService.cs`
+- Eliminato `FcmPushNotificationService.cs`
+- Rimosso `Google.Apis.Auth` da `Turnify.Infrastructure.csproj`
+- `Program.cs`: swap `AddHttpClient` e `AddScoped` da Fcm a Expo
+- `notification.service.ts`: aggiunto `import Constants`, `projectId` passato a `getExpoPushTokenAsync`
+- Build: 0 errori, 0 warning
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Build verde. Expo Push è gratis e illimitato, non richiede configurazione Firebase. Il mobile già usava `getExpoPushTokenAsync` — bastava aggiungere il projectId.
+
+---
+
+## Prompt 71
+
+### Data
+2026-06-02
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Configurare icona app e splash screen di TurniUp (Expo) con i nuovi loghi.
+
+### Prompt
+Usare `assets/images/Logo.png` come icona dell'app (iOS, Android adaptive icon, web favicon, notifiche). Usare `assets/images/splash.png` come immagine della splash screen su sfondo bianco (#FFFFFF), stile Instagram (logo centrato su sfondo bianco). Aggiornare `app.json` di conseguenza.
+
+### Output utile
+- `src/Mobile/app.json` — `icon` → `Logo.png`; `android.adaptiveIcon.foregroundImage` → `Logo.png` con `backgroundColor: #FFFFFF`; `web.favicon` → `Logo.png`; `expo-notifications icon` → `Logo.png`; `expo-splash-screen image` → `splash.png`, `backgroundColor: #FFFFFF`, `imageWidth: 200`.
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Sostituzione diretta dei riferimenti ai vecchi asset (già eliminati) con i nuovi loghi forniti dall'utente.
+
+---
+
+## Prompt 70
+
+### Data
+2026-06-02
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Completare la landing page TurniUp: bottoni funzionanti, pagina registrazione, pagine GDPR, rename Turnify→TurniUp, rimozione dati finti.
+
+### Prompt
+Rendere funzionali tutti i CTA della landing (`/register`). Creare `app/register/page.tsx` con form (nome, cognome, nome azienda, email, password, conferma password, accetta T&C) che chiama `POST /api/auth/register`. Rimuovere stats false (3.200+, 98%, 4.9★) dalla landing e dalla sidebar login. Rimuovere i loghi finti (Ristorante Da Marco, Hotel Sole, ecc.) mantenendo solo il testo "già scelto da team italiani". Rinominare "Turnify" → "TurniUp" in tutta la landing e nei documenti. Creare `app/termini/page.tsx`, `app/privacy/page.tsx`, `app/cookie/page.tsx` (conformi GDPR) con stessa navbar/footer della landing. Aggiornare footer con link alle tre pagine. Aggiungere routes pubbliche nel middleware.
+
+### Output utile
+- `app/register/page.tsx` — form registrazione business, stile login-wrap
+- `lib/auth.ts` — funzione `register()` aggiunta
+- `app/termini/page.tsx` — 12 articoli Termini di Servizio
+- `app/privacy/page.tsx` — 11 articoli Privacy Policy (artt. 15-22 GDPR)
+- `app/cookie/page.tsx` — Cookie Policy con tabella cookie tecnici
+- `app/globals.css` — classi `.la-checks`, `.lp-legal`, `.lp-legal-table` aggiunte
+- `middleware.ts` — `isPublicPage` per `/register`, `/termini`, `/privacy`, `/cookie`
+- `app/page.tsx` — TurniUp, CTA→`/register`, loghi finti rimossi, footer link aggiornati
+- `app/login/page.tsx` — stats finte rimosse, "Registrati gratis" linkata a `/register`
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Pagine GDPR necessarie per compliance italiana (Garante Privacy). Pagina registrazione necessaria per onboarding self-service. Stats false rimosse per evitare misleading advertising.
+
+---
+
+## Prompt 69
+
+### Data
+2026-06-02
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Creare `landing/index.html` — pagina marketing statica per `turniup.it/` basata sul prototipo HTML in `src/Turnify.Web/UI/PaginaIniziale/Turnify Landing.html`.
+
+### Prompt
+Convertire il prototipo Claude Design `UI/PaginaIniziale/Turnify Landing.html` in un file statico production-ready `landing/index.html`. Requisiti: rimuovere il tweaks panel React/Babel (dev-only); fissare i colori ai TWEAK_DEFAULTS (accento `#10b981`/`#0ea5a3`, bg Ardesia `#101521`/`#161c2b`, radius 14px); aggiungere la social proof strip (mancante nell'HTML originale); aggiornare tutti i CTA/link a `/dashboard/login`; posizionare il file in `landing/` alla root del repo (non in `src/Turnify.Web/public/` che eredita il basePath `/dashboard`).
+
+### Output utile
+- `landing/index.html` — 391 righe, CSS inline, Google Fonts CDN, zero JS, zero dipendenze build
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Next.js non gestisce la root `/` con `basePath: '/dashboard'` → file statico servito direttamente da nginx è l'unica soluzione senza modifiche architetturali. Tweaks panel rimosso perché usa React/Babel UMD non adatti a produzione.
+
+---
+
+## Prompt 68
+
+### Data
+2026-06-02
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Fix 404 su dashboard e turni del portale dipendente: tutti gli endpoint `/api/employee/*` puntavano a path inesistenti. Mappatura corretta a endpoint reali dell'API ASP.NET.
+
+### Prompt
+Nel portale `src/Turnify.Web`, correggere tutti gli endpoint del portale employee che restituivano 404 perché chiamavano `/api/employee/*` (non esistente). Mappare: dashboard → `/api/dashboard/employee-summary` + `/api/attendance/history`, shifts → `/api/shifts`, vacations → `/api/vacation-requests` + `/api/vacation-balance/me`, availability → `/api/employees/me/availability`, notifications → `/api/notifications` (GET) + `/api/notifications/read-all` (PUT non POST), profile → `/api/users/me` + `/api/users/me/password` (PUT). Adattare le interfacce TypeScript ai response shape reali.
+
+### Output utile
+- `app/employee/page.tsx` — endpoint + interfaccia adattata a `employee-summary`, attendance da `/api/attendance/history`
+- `app/employee/shifts/page.tsx` — `/api/shifts`
+- `app/employee/vacations/page.tsx` — `/api/vacation-requests` + `/api/vacation-balance/me`, interfaccia balance adattata a `{ holiday, paidLeave, ... }`
+- `app/employee/availability/page.tsx` — `/api/employees/me/availability`
+- `app/employee/notifications/page.tsx` — `/api/notifications`, risposta `{ data }`, PUT per read-all
+- `app/employee/profile/page.tsx` — `/api/users/me`, PUT password, phone read-only
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Gli endpoint `/api/employee/*` non esistono nel backend — tutti i controller usano route diverse (`/api/shifts`, `/api/vacation-requests`, ecc.). I response shape erano incompatibili con le interfacce TypeScript definite nel frontend.
+
+---
+
+## Prompt 67
+
+### Data
+2026-06-02
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Fix di tre bug nel portale web: aggiunta pagina login dipendente (`/login/employee`) con form slug+username+password, fix spinner sul pulsante login (mancava `@keyframes spin`), fix caricamento dipendenti nella dashboard (API restituisce `{ data, total }` non array piatto).
+
+### Prompt
+Nel portale `src/Turnify.Web`: (1) creare `app/login/employee/page.tsx` con form per employee login (companySlug, username, password) che chiama `/api/auth/employee-login`; aggiungere link "Sei un dipendente?" in `app/login/page.tsx`; aggiornare `middleware.ts` per escludere `/login/employee` dal redirect non-autenticato; aggiungere `employeeLogin()` in `lib/auth.ts`. (2) Aggiungere `@keyframes spin` in `globals.css` per il loading spinner del pulsante submit. (3) Correggere `app/dashboard/employees/page.tsx`: l'API `GET /api/employees` ritorna `{ data: Employee[], total, page, pageSize, hasMore }` non `Employee[]`; adattare il parsing.
+
+### Output utile
+- `globals.css` — aggiunto `@keyframes spin`
+- `app/login/employee/page.tsx` — nuova pagina login dipendenti
+- `app/login/page.tsx` — aggiunto link a `/login/employee`
+- `lib/auth.ts` — aggiunta funzione `employeeLogin()`
+- `middleware.ts` — `isLoginPage` include ora `/login/employee`
+- `app/dashboard/employees/page.tsx` — parsing adattato a risposta paginata
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Bug verificati nel codice sorgente: `@keyframes spin` assente, `Array.isArray()` su oggetto paginato sempre `false`, pagina employee-login mancante.
+
+---
+
+## Prompt 66
+
+### Data
+2026-06-02
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Aggiornare il basePath dell'API ASP.NET Core da `/turnify` a `/api` e aggiornare tutti i riferimenti a `samuconfa.it` → `turniup.it`.
+
+### Prompt
+In `Turnify.Api/Program.cs` cambiare `UsePathBase("/turnify")` → `UsePathBase("/api")`, aggiornare `SwaggerEndpoint` da `/turnify/swagger/...` a `/api/swagger/...`. In `appsettings.json` e `appsettings.Production.json` aggiornare CORS `AllowedOrigins` da `samuconfa.it` a `turniup.it`, aggiungere chiave `App:BaseUrl = https://turniup.it/api`. In `Program.cs` aggiornare fallback CORS. In `AuthService.cs` aggiornare fallback `App:BaseUrl`.
+
+### Output utile
+- `Program.cs` — `UsePathBase("/api")`, SwaggerEndpoint aggiornato, CORS fallback aggiornato
+- `appsettings.json` — CORS origins → `turniup.it`, aggiunta `App:BaseUrl`
+- `appsettings.Production.json` — stesse modifiche
+- `AuthService.cs` — fallback `App:BaseUrl` → `https://turniup.it/api`
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Allineamento del basePath API al dominio produzione `turniup.it/api`.
+
+---
+
+## Prompt 65
+
+### Data
+2026-06-02
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Implementare portale web dipendente (app/employee/*) in Next.js, refactoring percorsi admin (basePath, login), e aggiornamento middleware con routing role-based.
+
+### Prompt
+In `Turnify.Web`: (1) Cambiare `basePath` da `/admin` a `/dashboard` in `next.config.mjs`. (2) Aggiornare `.env.example` con `NEXT_PUBLIC_API_URL=https://turniup.it/api`. (3) Spostare la login page reale da `app/admin/login/page.tsx` a `app/login/page.tsx`, rimuovere `app/admin/`. (4) Aggiornare `middleware.ts` per gestire ruoli separati: `/login` pubblica, `/dashboard/*` solo Admin/Owner/Employer, `/employee/*` solo Employee; admin autenticato su `/login` → `/dashboard`, employee autenticato su `/login` → `/employee`. (5) Aggiornare `lib/api.ts` e `lib/auth.ts` redirect 401/logout da `/admin/login` a `/dashboard/login`. (6) Aggiungere CSS classi employee (sb-*, tint-*, kpi-head, kpi-icon, section-title, grid, qa-tile, chip, switch, list-row, ecc.) in `globals.css` leggendo `UI/Dipendenti/turniup.css`. (7) Creare `components/EmployeeSidebar.tsx` con nav: Dashboard, I miei turni, Timbratura, Ferie & permessi, Disponibilità, Notifiche, Profilo. (8) Creare `app/employee/layout.tsx`, `app/employee/page.tsx` (dashboard con KPI 2x2 + azioni rapide + storico presenze), `app/employee/shifts/page.tsx` (vista settimanale grid 7col + lista), `app/employee/vacations/page.tsx` (bilancio + chip filter + lista + modal nuova richiesta), `app/employee/availability/page.tsx` (7 toggle giorni + textarea note), `app/employee/attendance/page.tsx` (KPI 3col + lista giornate per settimana), `app/employee/notifications/page.tsx` (chip filter + lista), `app/employee/profile/page.tsx` (big avatar + form profilo + cambio password). Tutti i design seguono i prototipi HTML in `UI/Dipendenti/*.html`.
+
+### Output utile
+- `next.config.mjs` — basePath `/dashboard`
+- `.env.example` — API URL aggiornato
+- `app/login/page.tsx` — login page reale (ex `app/admin/login/page.tsx`)
+- `app/admin/` — rimossa
+- `middleware.ts` — routing role-based: admin→/dashboard, employee→/employee, non autenticato→/login
+- `lib/api.ts`, `lib/auth.ts` — redirect aggiornati
+- `app/globals.css` — aggiunta sezione CSS employee (180+ righe)
+- `components/EmployeeSidebar.tsx` — sidebar dipendente con 7 nav item + logout
+- `app/employee/layout.tsx`, `page.tsx`, `shifts/page.tsx`, `vacations/page.tsx`, `availability/page.tsx`, `attendance/page.tsx`, `notifications/page.tsx`, `profile/page.tsx`
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Implementazione completa seguendo i prototipi HTML. Il CSS employee è stato integrato in globals.css per riusare il design system esistente senza doppioni. Il middleware gestisce correttamente i tre ruoli con redirect appropriati. Fix post-integrazione: aggiunte variabili `--blue` e `--blue-soft` in globals.css (light + dark) mancanti ma usate da `.tint-blue` e `.badge-blue`.
+
+---
+
 ## Prompt 64
 
 ### Data
@@ -1732,3 +2055,30 @@ Accettato integralmente
 
 ### Motivazione
 Tutti i binding MVVM originali preservati in ogni file. Verifica: x:Class corretto, x:DataType presente, {Binding ...} wired su ogni controllo funzionale.
+
+---
+
+## Prompt 39
+
+### Data
+2026-06-02
+
+### Strumento
+Claude Code
+
+### Obiettivo
+Spostare il pulsante logout in alto a destra in tutte le view della dashboard e del portale dipendente.
+
+### Prompt
+Aggiungere un pulsante "Esci" con icona logout posizionato `position:fixed; top:14px; right:18px; z-index:40` in `Sidebar.tsx` e `EmployeeSidebar.tsx`, visibile su tutte le pagine. Su mobile (≤768px) mostrare solo l'icona (nascondere il testo `<span>`). Rimuovere il vecchio pulsante logout dalla sidebar footer in entrambi i componenti. Aggiungere classe `.topbar-logout` in `globals.css` con stile neutro e hover rosso (`--red-soft`, `--red`).
+
+### Output utile
+- `components/Sidebar.tsx`: rimosso logout da `side-foot`, aggiunto `<button className="topbar-logout">` come sibling di `<aside>` e `<nav className="mobile-nav">`
+- `components/EmployeeSidebar.tsx`: rimosso `sb-logout` da `sb-foot`, aggiunto `<button className="topbar-logout">`
+- `app/globals.css`: aggiunta classe `.topbar-logout` e regola mobile `@media(max-width:768px)` per nascondere il testo
+
+### Decisione presa
+Accettato integralmente
+
+### Motivazione
+Il pulsante fisso non richiede modifiche a nessuna delle 6 pagine dashboard — appare automaticamente su tutte tramite il componente Sidebar renderizzato nel layout.

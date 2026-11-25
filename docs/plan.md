@@ -765,3 +765,33 @@ Derivata dallo stato attuale del repository e dalle verifiche documentate:
 - `tsconfig.json` strict mode, lint clean
 
 **Status:** 🔜 Pianificata
+
+---
+
+### Iterazione 28 (Web) — Portale web employee + refactor path
+
+**Data:** 2026-06-02
+
+**Obiettivo:** Implementare portale web per dipendenti, refactoring percorsi admin, middleware ruoli separati.
+
+**Deliverable:**
+- basePath `/admin` → `/dashboard`, login spostato a `/login`
+- Middleware con routing role-based (Admin vs Employee)
+- CSS employee integrato in globals.css
+- `components/EmployeeSidebar.tsx`
+- `app/employee/*` — 7 pagine: dashboard, turni, ferie, disponibilità, timbratura, notifiche, profilo
+
+**Status:** ✅ Completata
+
+---
+
+### Iterazione 29 (Web) — Landing page turniup.it
+
+**Data:** 2026-06-02
+
+**Obiettivo:** Pagina marketing statica servita da nginx alla root `turniup.it/`, basata sul prototipo in `src/Turnify.Web/UI/PaginaIniziale/`.
+
+**Deliverable:**
+- `landing/index.html` — hero, feature, come funziona, CTA, footer; tweaks panel rimosso, accento verde, tutti i link → `/dashboard/login`
+
+**Status:** ✅ Completata

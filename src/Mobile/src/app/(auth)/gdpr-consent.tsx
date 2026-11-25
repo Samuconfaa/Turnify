@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert, Linking } from 'react-native';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/context/ThemeContext';
@@ -48,7 +48,11 @@ export default function GdprConsentScreen() {
             </Text>
             <Text style={[styles.toggleSub, { color: t.textSecondary }]}>
               Acconsento al trattamento dei miei dati personali per l'utilizzo del servizio.{' '}
-              <Text style={{ color: t.primary, fontFamily: 'PlusJakartaSans-SemiBold' }}>Leggi</Text>
+              <Text
+                style={{ color: t.primary, fontFamily: 'PlusJakartaSans-SemiBold' }}
+                onPress={() => Linking.openURL('https://turniup.it/privacy')}>
+                Leggi
+              </Text>
             </Text>
           </View>
           <Toggle t={t} value={privacyAccepted} onValueChange={setPrivacyAccepted} />
@@ -80,9 +84,13 @@ export default function GdprConsentScreen() {
           Accetta e continua
         </PrimaryBtn>
         <View style={styles.linksRow}>
-          <TouchableOpacity><Text style={[styles.link, { color: t.textSecondary }]}>Termini di servizio</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => Linking.openURL('https://turniup.it/termini')}>
+            <Text style={[styles.link, { color: t.textSecondary }]}>Termini di servizio</Text>
+          </TouchableOpacity>
           <Text style={{ color: t.border }}> · </Text>
-          <TouchableOpacity><Text style={[styles.link, { color: t.textSecondary }]}>Privacy policy</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => Linking.openURL('https://turniup.it/privacy')}>
+            <Text style={[styles.link, { color: t.textSecondary }]}>Privacy policy</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>

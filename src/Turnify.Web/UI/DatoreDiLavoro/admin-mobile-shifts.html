@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>TurniUp Mobile — Turni</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="turniup.css">
+<link rel="stylesheet" href="turniup-mobile.css">
+</head>
+<body class="m-body" data-page="shifts">
+<div class="phone">
+  <div class="notch"></div>
+  <div class="screen">
+    <header class="m-top">
+      <button class="m-ico" data-drawer-open aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <div style="display:flex;align-items:center;gap:6px;margin:0 auto">
+        <button class="m-ico ghost" style="width:32px;height:32px" aria-label="Settimana precedente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><path d="m14 6-6 6 6 6"/></svg></button>
+        <span style="font-family:var(--font-display);font-weight:700;font-size:14.5px;color:var(--text);white-space:nowrap">26 mag – 1 giu</span>
+        <button class="m-ico ghost" style="width:32px;height:32px" aria-label="Settimana successiva"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><path d="m10 6 6 6-6 6"/></svg></button>
+      </div>
+      <button class="btn-secondary" style="height:34px;padding:0 13px;font-size:13px">Oggi</button>
+    </header>
+
+    <div class="m-scroll">
+      <div class="day-strip" id="dayStrip"></div>
+      <div class="m-sec-title" id="dayTitle" style="margin-top:18px">Domenica 1 giugno <span class="sub" style="font-weight:500" id="dayCount">5 turni</span></div>
+      <div class="m-list" id="shiftList" style="margin-top:2px"></div>
+    </div>
+
+    <button class="fab" data-sheet-open="sheet-shift" aria-label="Nuovo turno"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></button>
+  </div>
+</div>
+
+<script src="turniup-mobile.js"></script>
+<script>
+const days=[
+  {n:'Lun',d:'26',c:8},{n:'Mar',d:'27',c:9},{n:'Mer',d:'28',c:7},{n:'Gio',d:'29',c:10},
+  {n:'Ven',d:'30',c:12},{n:'Sab',d:'31',c:14},{n:'Dom',d:'1',c:5,today:true}
+];
+const palette={primary:'var(--primary)',green:'var(--green)',amber:'var(--amber)'};
+const byDay={
+  '1':[
+    {n:'Giulia Ferrari',i:'GF',biz:'Ristorante Centro',bz:'primary',t:'09:00 – 15:00',role:'Sala',st:['badge-green','In corso'],c:'oklch(0.6 0.13 25)'},
+    {n:'Luca Bianchi',i:'LB',biz:'Bar Aurora',bz:'green',t:'07:30 – 13:30',role:'Bar',st:['badge-green','In corso'],c:'oklch(0.58 0.12 250)'},
+    {n:'Davide Greco',i:'DG',biz:'Bistrot Sud',bz:'amber',t:'15:00 – 23:00',role:'Cucina',st:['badge-primary','Programmato'],c:'oklch(0.55 0.11 150)'},
+    {n:'Elena Marino',i:'EM',biz:'Bar Aurora',bz:'green',t:'17:00 – 23:00',role:'Sala',st:['badge-primary','Programmato'],c:'oklch(0.6 0.12 60)'},
+    {n:'Sara Conti',i:'SC',biz:'Ristorante Centro',bz:'primary',t:'18:00 – 23:30',role:'Sala',st:['badge-primary','Programmato'],c:'oklch(0.6 0.13 320)'},
+  ],
+  '31':[
+    {n:'Francesca Galli',i:'FG',biz:'Ristorante Centro',bz:'primary',t:'08:00 – 14:00',role:'Sala',st:['badge-muted','Completato'],c:'oklch(0.52 0.12 180)'},
+    {n:'Matteo Romano',i:'MR',biz:'Bistrot Sud',bz:'amber',t:'18:00 – 23:30',role:'Cucina',st:['badge-muted','Completato'],c:'oklch(0.55 0.13 290)'},
+  ]
+};
+const ds=document.getElementById('dayStrip');
+days.forEach(d=>{const el=document.createElement('div');
+  el.className='day-pill'+(d.today?' today on':'')+(d.c>0?' has':'');
+  el.dataset.d=d.d;el.dataset.label=d.n+' '+d.d;el.dataset.count=d.c;
+  el.innerHTML=`<span class="dn">${d.n}</span><span class="dd">${d.d}</span><span class="dot"></span>`;
+  ds.appendChild(el);});
+
+function renderDay(d,label,count){
+  const list=byDay[d]||[];
+  document.getElementById('dayCount').textContent=count+' turni';
+  const sl=document.getElementById('shiftList');
+  if(list.length===0){
+    sl.innerHTML=`<div class="m-empty"><div class="ei"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9h18M8 2.5v4M16 2.5v4M9 14h.01M15 14h.01M9 17.5h6"/></svg></div>
+      <div class="et">Nessun turno per questo giorno</div><div class="es">Non ci sono turni programmati.</div>
+      <span class="el" data-sheet-open="sheet-shift"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>Crea turno</span></div>`;
+    return;
+  }
+  sl.innerHTML='';
+  list.forEach((s,idx)=>{const el=document.createElement('div');el.className='m-card mr';el.style.animationDelay=(idx*.05)+'s';
+    el.innerHTML=`<div class="mc-row"><div class="avatar" style="background:${s.c}">${s.i}</div>
+      <div style="flex:1"><div class="mc-name">${s.n}</div><div class="mc-time" style="margin-top:2px">${s.t}</div></div>
+      <span class="badge ${s.st[0]}"><span class="bdot"></span>${s.st[1]}</span></div>
+      <div class="mc-meta"><span class="dot-pip"><span class="pip" style="background:${palette[s.bz]}"></span>${s.biz}</span><span class="badge badge-muted">${s.role}</span></div>`;
+    sl.appendChild(el);});
+}
+window.onDaySelect=function(pill){renderDay(pill.dataset.d, pill.dataset.label, pill.dataset.count);};
+renderDay('1','Dom 1',5);
+</script>
+</body>
+</html>

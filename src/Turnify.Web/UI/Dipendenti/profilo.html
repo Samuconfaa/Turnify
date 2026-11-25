@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="it" data-page="profilo">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profilo · TurniUp Dipendente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="turniup.css">
+<style>
+  .profile-grid { grid-template-columns: 1fr 1fr; align-items: start; }
+  .big-avatar { width: 96px; height: 96px; border-radius: 50%; background: var(--primary); color: #fff; display: grid; place-items: center; font-family: var(--font-display); font-weight: 800; font-size: 38px; box-shadow: 0 8px 22px -8px var(--primary); margin: 0 auto 14px; }
+  .profile-name { text-align: center; font-size: 22px; }
+  .profile-role { text-align: center; color: var(--text-muted); margin-bottom: 20px; }
+  .info-list { display: flex; flex-direction: column; gap: 0; }
+  @media (max-width:768px){ .profile-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="scrim"></div>
+<div class="app">
+  <div id="sb"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn hamburger" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <div class="topbar-title">
+        <span class="topbar-eyebrow">Account</span>
+        <h1>Profilo</h1>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" data-action="theme" aria-label="Tema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="grid profile-grid">
+
+        <!-- PROFILO -->
+        <div class="card card-pad">
+          <div class="big-avatar">SR</div>
+          <h2 class="profile-name">Sara Ricci</h2>
+          <p class="profile-role">Addetta vendite · Cassa Nord</p>
+
+          <div class="grid" style="gap:14px">
+            <div class="field">
+              <label for="p-email">Email</label>
+              <input class="input" id="p-email" type="email" value="sara.ricci@turniup.it" readonly style="color:var(--text-muted)">
+              <span class="field-msg">Per modificare l'email contatta l'amministratore</span>
+            </div>
+            <div class="field">
+              <label for="p-tel">Numero di telefono</label>
+              <input class="input" id="p-tel" type="tel" value="+39 348 552 1190">
+            </div>
+            <div class="grid grid-2" style="gap:14px">
+              <div class="field">
+                <label>Ruolo</label>
+                <input class="input" value="Dipendente" readonly style="color:var(--text-muted)">
+              </div>
+              <div class="field">
+                <label>Matricola</label>
+                <input class="input mono" value="TU-0428" readonly style="color:var(--text-muted)">
+              </div>
+            </div>
+            <button class="btn btn-primary btn-block" id="save-profile">Salva modifiche</button>
+          </div>
+        </div>
+
+        <!-- CAMBIO PASSWORD -->
+        <div class="card card-pad">
+          <h2 style="font-size:18px;margin-bottom:5px">Cambio password</h2>
+          <p style="color:var(--text-muted);font-size:13.5px;margin-bottom:18px">Usa almeno 8 caratteri con una lettera maiuscola e un numero.</p>
+
+          <form class="grid" style="gap:15px" id="pw-form">
+            <div class="field">
+              <label for="pw-cur">Password attuale</label>
+              <input class="input" id="pw-cur" type="password" placeholder="••••••••">
+            </div>
+            <div class="field ok">
+              <label for="pw-new">Nuova password</label>
+              <input class="input" id="pw-new" type="password" value="Estate2026">
+              <span class="field-msg">Sicurezza: buona</span>
+            </div>
+            <div class="field error">
+              <label for="pw-conf">Conferma nuova password</label>
+              <input class="input" id="pw-conf" type="password" value="Estate202">
+              <span class="field-msg">Le password non coincidono</span>
+            </div>
+            <button class="btn btn-primary btn-block" type="submit">Aggiorna password</button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="sidebar.js"></script>
+<script>
+  document.getElementById("save-profile").addEventListener("click", function(){
+    TU.toast("Profilo aggiornato", "green");
+  });
+
+  var form = document.getElementById("pw-form");
+  var nw = document.getElementById("pw-new");
+  var cf = document.getElementById("pw-conf");
+  function validate(){
+    var fNew = nw.closest(".field");
+    var fConf = cf.closest(".field");
+    var strong = nw.value.length >= 8 && /[A-Z]/.test(nw.value) && /[0-9]/.test(nw.value);
+    fNew.classList.toggle("ok", strong && nw.value.length>0);
+    fNew.classList.toggle("error", nw.value.length>0 && !strong);
+    fNew.querySelector(".field-msg").textContent = nw.value.length===0 ? "" : (strong ? "Sicurezza: buona" : "Troppo debole: aggiungi maiuscola e numero");
+
+    var match = cf.value.length>0 && cf.value === nw.value;
+    fConf.classList.toggle("ok", match);
+    fConf.classList.toggle("error", cf.value.length>0 && !match);
+    fConf.querySelector(".field-msg").textContent = cf.value.length===0 ? "" : (match ? "Le password coincidono" : "Le password non coincidono");
+    return strong && match;
+  }
+  nw.addEventListener("input", validate);
+  cf.addEventListener("input", validate);
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    if (validate()) { TU.toast("Password aggiornata", "green"); form.reset(); validate(); }
+    else { TU.toast("Controlla i campi evidenziati"); }
+  });
+</script>
+</body>
+</html>
